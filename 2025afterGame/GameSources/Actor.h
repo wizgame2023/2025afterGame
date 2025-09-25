@@ -19,17 +19,5 @@ namespace basecross {
 		virtual void OnCreate()override;
 
 	};
-
-	Actor::Actor(const shared_ptr<Stage>& stagePtr) :
-		MyGameObject(stagePtr)
-	{
-
-	}
-
-	Actor::~Actor()
-	{
-	}
-
-
 }
 //end basecross

@@ -17,17 +17,5 @@ namespace basecross {
 	private:
 
 	};
-
-	MyGameObject::MyGameObject(const shared_ptr<Stage>& stagePtr) :
-		GameObject(stagePtr)
-	{
-
-	}
-
-	MyGameObject::~MyGameObject()
-	{
-
-	}
-
 }
 //end basecross
