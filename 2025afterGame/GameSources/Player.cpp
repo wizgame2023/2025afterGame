@@ -1,6 +1,7 @@
 /*!
 @file Player.cpp
 @brief プレイヤーなど実体
+担当：吉田 智貴
 */
 
 #include "stdafx.h"
@@ -11,7 +12,11 @@ namespace basecross{
 		Actor(ptrStage),
 		m_stickL(Vec3()),
 		m_speed(NORMAL_SPEED),
-		m_bustGauge(MAX_GAUGE)
+		m_bustGauge(MAX_GAUGE),
+		m_attackCollisionFlag(false),
+		m_timeOfStartAttack(1.0f),
+		m_timeOfAttack(0.0f),
+		m_plusAttack(0)
 	{
 	}
 
@@ -22,8 +27,13 @@ namespace basecross{
 
 	void Player::OnCreate()
 	{
+		Actor::OnCreate();
+
 		auto ptrTrans = GetComponent<Transform>();
-		ptrTrans->SetPosition(Vec3(0.0f));
+		ptrTrans->SetPosition(Vec3(0.0f, 0.0f, -1.0f));
+
+		auto ptrCol = AddComponent<CollisionObb>();
+		ptrCol->SetDrawActive(true);
 
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
@@ -34,10 +44,13 @@ namespace basecross{
 		auto& app = App::GetApp();
 		auto input = app->GetInputDevice();
 		auto pad = input.GetControlerVec()[0];
+		auto elapsed = app->GetElapsedTime();
 
 		PlayerMove();
 		PlayerBust();
 		PlayerHealBust();
+		PlayerAttack();
+		PlayerComboReset();
 	}
 
 	void Player::PlayerMove()
@@ -62,11 +75,11 @@ namespace basecross{
 		}
 
 		// 上下の移動
-		if (pad.wButtons & XINPUT_GAMEPAD_DPAD_UP)
+		if (pad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
 		{
 			currentPos.y += m_speed * elapsed;
 		}
-		if (pad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)
+		if (pad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
 		{
 			currentPos.y -= m_speed * elapsed;
 		}
@@ -77,8 +90,10 @@ namespace basecross{
 	bool Player::IsBoostInputActive(const CONTROLER_STATE& pad) const
 	{
 		// 入力とデッドゾーンのみで、ブーストの入力が有効かどうかを判定
-		return (abs(pad.fThumbLX) > DEAD_ZONE) &&
-			(pad.wButtons & XINPUT_GAMEPAD_B);
+		return ((abs(pad.fThumbLX) > DEAD_ZONE)
+			|| (pad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
+			|| (pad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER))
+			&& (pad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
 	}
 
 	void Player::ClampBustGauge()
@@ -128,9 +143,28 @@ namespace basecross{
 
 	void Player::PlayerAttack()
 	{
-		
-	}
+		auto& app = App::GetApp();
+		auto& input = app->GetInputDevice();
+		auto pad = input.GetControlerVec()[0];
 
+		if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
+		{
+			m_attackCollisionFlag = true;
+		}
+
+		// 攻撃が有効になるタイミングに達したら、攻撃判定情報をセットする
+		if (m_attackCollisionFlag)
+		{
+			auto attack = GetAttackPtr();
+			auto& info = attack->GetHitInfo();
+			info.Damage = 10 + m_plusAttack;
+			info.HitOnce = true;
+
+			attack->ActivateCollision(0.2f);
+
+			m_attackCollisionFlag = false;
+		}
+	}
 }
 //end basecross
 
