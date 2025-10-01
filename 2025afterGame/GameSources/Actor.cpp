@@ -20,7 +20,7 @@ namespace basecross {
 
 	void Actor::OnCreate()
 	{
-
+		CreateChildObjects();
 	}
 }
 //end basecross
