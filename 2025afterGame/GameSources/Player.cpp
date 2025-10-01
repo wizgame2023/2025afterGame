@@ -36,7 +36,20 @@ namespace basecross{
 		ptrCol->SetDrawActive(true);
 
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
-		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+		ptrDraw->SetMeshResource(L"Player");
+		ptrDraw->SetTextureResource(L"P_TX");
+
+		// モデルとトランスフォーム間の差分行列
+		Mat4x4 spanMat;
+		spanMat.affineTransformation(
+			Vec3(0.5f, 0.5f, 0.5f),
+			Vec3(0.0f, 0.0f, 0.0f),
+			Vec3(0.0f, XM_PI, 0.0f),
+			Vec3(0.0f, -0.59f, 0.0f)
+		);
+		ptrDraw->SetMeshToTransformMatrix(spanMat);
+
+
 	}
 
 	void Player::OnUpdate()
@@ -45,12 +58,19 @@ namespace basecross{
 		auto input = app->GetInputDevice();
 		auto pad = input.GetControlerVec()[0];
 		auto elapsed = app->GetElapsedTime();
+		auto nowPos = GetComponent<Transform>()->GetPosition();
 
 		PlayerMove();
 		PlayerBust();
 		PlayerHealBust();
 		PlayerAttack();
 		PlayerComboReset();
+
+		wstringstream wss(L"");
+		wss << "X : " << nowPos.x  << " " << "Y : " << nowPos.y << " " << "Z : " << nowPos.z << " " << endl;
+
+		auto scene = app->GetScene<Scene>();
+		scene->SetDebugString(wss.str());
 	}
 
 	void Player::PlayerMove()
