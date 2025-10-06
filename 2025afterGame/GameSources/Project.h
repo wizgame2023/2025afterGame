@@ -12,6 +12,7 @@
 #include "GameStage.h"
 #include "Character.h"
 #include "Player.h"
+#include "MainCamera.h"
 #include "AttackCollision.h"
 
 
