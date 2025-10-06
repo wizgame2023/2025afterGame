@@ -8,9 +8,19 @@
 #include "Actor.h"
 
 namespace basecross {
-	void Actor::OnCreate()
+	Actor::Actor(const shared_ptr<Stage>& stagePtr) :
+		MyGameObject(stagePtr)
 	{
 
+	}
+
+	Actor::~Actor()
+	{
+	}
+
+	void Actor::OnCreate()
+	{
+		CreateChildObjects();
 	}
 }
 //end basecross
