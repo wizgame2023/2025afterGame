@@ -13,10 +13,13 @@ namespace basecross{
 		m_stickL(Vec3()),
 		m_speed(NORMAL_SPEED),
 		m_bustGauge(MAX_GAUGE),
-		m_attackCollisionFlag(false),
+		m_comboCount(0),
+		m_comboTime(0.0f),
 		m_timeOfStartAttack(1.0f),
 		m_timeOfAttack(0.0f),
-		m_plusAttack(0)
+		m_plusAttack(0),
+		m_attackCollisionFlag(false),
+		m_comboActive(false)
 	{
 	}
 
@@ -73,11 +76,15 @@ namespace basecross{
 		scene->SetDebugString(wss.str());
 	}
 
+	void Player::OnCollisionEnter(const shared_ptr<GameObject>& Other)
+	{
+
+	}
+
 	void Player::PlayerMove()
 	{
 		auto& app = App::GetApp();
-		auto& input = app->GetInputDevice();
-		auto pad = input.GetControlerVec()[0];
+		auto pad = GetFirstPad();
 
 		auto ptrTrans = GetComponent<Transform>();
 		auto elapsed = app->GetElapsedTime();
@@ -125,8 +132,7 @@ namespace basecross{
 	void Player::PlayerBust()
 	{
 		auto& app = App::GetApp();
-		auto& input = app->GetInputDevice();
-		auto pad = input.GetControlerVec()[0];
+		auto pad = GetFirstPad();
 		auto elapsed = app->GetElapsedTime();
 
 		bool isBoosting = IsBoostInputActive(pad) && (m_bustGauge > 0.0f);
@@ -146,10 +152,9 @@ namespace basecross{
 	void Player::PlayerHealBust()
 	{
 		auto& app = App::GetApp();
+		auto pad = GetFirstPad();
 		auto elapsed = app->GetElapsedTime();
 
-		auto& input = app->GetInputDevice();
-		auto pad = input.GetControlerVec()[0];
 		bool currentlyBoosting = IsBoostInputActive(pad) && (m_bustGauge > 0.0f);
 
 		// ƒQ[ƒW‰ñ•œ
@@ -164,8 +169,7 @@ namespace basecross{
 	void Player::PlayerAttack()
 	{
 		auto& app = App::GetApp();
-		auto& input = app->GetInputDevice();
-		auto pad = input.GetControlerVec()[0];
+		auto pad = GetFirstPad();
 
 		if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
 		{

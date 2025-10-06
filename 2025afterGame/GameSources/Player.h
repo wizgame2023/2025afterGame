@@ -24,7 +24,7 @@ namespace basecross{
 		Vec3 m_stickL;
 		float m_speed;
 		float m_bustGauge;
-		float m_comboCount;
+		int m_comboCount;
 		float m_comboTime;
 
 		// 攻撃発生時間
@@ -56,7 +56,23 @@ namespace basecross{
 
 		void OnCreate() override;
 		void OnUpdate() override;
-		
+		void OnCollisionEnter(const shared_ptr<GameObject>& Other);
+
+		// コントローラを持ってくるとき
+		CONTROLER_STATE GetFirstPad()
+		{
+			auto& app = App::GetApp();
+			auto& input = app->GetInputDevice();
+			auto& controllers = input.GetControlerVec();
+
+			if (controllers.empty())
+			{
+				return CONTROLER_STATE{};
+			}
+
+			return controllers[0];
+		}
+
 		// プレイヤーの移動処理
 		void PlayerMove();
 		
