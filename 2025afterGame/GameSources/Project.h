@@ -15,6 +15,6 @@
 #include "Player.h"
 #include "MainCameraManager.h"
 #include "AttackCollision.h"
-
-
+#include "Background.h"
+#include "Plane.h"
 

@@ -30,8 +30,20 @@ namespace basecross {
 
 	void GameStage::OnCreate() {
 		try {
+			auto& app = App::GetApp();
+			auto path = app->GetDataDirWString();
+
+			auto backgroundPath = path + L"Backgrounds/";
+			for (const auto& keyName : Background::pairs) {
+				app->RegisterTexture(keyName.first, backgroundPath + keyName.first + L".bmp");
+			}
+
 			//ビューとライトの作成
 			CreateViewLight();
+
+			//背景
+			AddGameObject<Background>();
+
 			auto player = AddGameObject<Player>();
 			SetSharedGameObject(L"Player", player);
 		}
