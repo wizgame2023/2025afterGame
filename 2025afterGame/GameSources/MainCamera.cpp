@@ -21,9 +21,8 @@ namespace basecross{
 		// プレイヤーの位置を取得
 		m_plPos = m_player->GetComponent<Transform>()->GetPosition();
 
-		// プレイヤーの位置に合わせてカメラを移動
-		SetEye(Vec3(m_plPos.x, m_plPos.y + 3.0f, m_plPos.z - 5.0f));
-		SetAt(m_plPos);
+		m_mainCamera->SetEye(m_plPos + Vec3(0.0f, 2.0f, -5.0f)); // カメラの位置
+		m_mainCamera->SetAt(m_plPos + Vec3(0.0f, 0.0f, 0.0f)); // カメラの注視点
 	}
 }
 //end basecross

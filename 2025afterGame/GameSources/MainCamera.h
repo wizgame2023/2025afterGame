@@ -27,15 +27,6 @@ namespace basecross{
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
 
-		void SetEye(const Vec3& eye)
-		{
-			m_mainCamera->SetEye(eye);
-		}
-
-		void SetAt(const Vec3& at)
-		{
-			m_mainCamera->SetAt(at);
-		}
 	};
 }
 //end basecross
