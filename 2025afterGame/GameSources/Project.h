@@ -10,6 +10,7 @@
 #include "ProjectBehavior.h"
 #include "Scene.h"
 #include "GameStage.h"
+#include "MultiViewStage.h"
 #include "Character.h"
 #include "Player.h"
 #include "MainCamera.h"
