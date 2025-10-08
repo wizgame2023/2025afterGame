@@ -38,6 +38,9 @@ namespace basecross {
 		catch (...) {
 			throw;
 		}
+
+		auto mainCamMana = AddGameObject<MainCameraManager>();
+		SetSharedGameObject(L"MainCameraManager", mainCamMana);
 	}
 
 }
