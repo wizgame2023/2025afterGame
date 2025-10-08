@@ -8,6 +8,7 @@
 #include "stdafx.h"
 
 namespace basecross{
+	class Player;
 	
 	class MainCamera : public MyGameObject
 	{
