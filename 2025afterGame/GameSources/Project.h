@@ -25,6 +25,7 @@
 #include "Actor.h";
 #include "MainCamera.h"
 #include "AttackCollision.h"
+#include "BaseState.h";
 ///////////////////////////////////////////////////
 
 // eƒNƒ‰ƒX‚ªActor/////////////////////////////////
