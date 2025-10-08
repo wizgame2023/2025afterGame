@@ -5,6 +5,7 @@
 
 #include "stdafx.h"
 #include "Project.h"
+#include "Bullet.h"
 
 namespace basecross {
 
@@ -38,6 +39,9 @@ namespace basecross {
 		catch (...) {
 			throw;
 		}
+
+		// ÉeÉXÉgê∂ê¨
+		AddGameObject<Bullet>();
 	}
 
 }

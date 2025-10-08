@@ -17,6 +17,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Actor.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)AttackCollision.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)BaseState.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Bullet.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Camera.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Character.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameStage.h" />
@@ -33,6 +34,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Actor.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)AttackCollision.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)BaseState.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Bullet.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MainCamera.cpp" />
