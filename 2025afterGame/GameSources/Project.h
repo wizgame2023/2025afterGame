@@ -13,7 +13,7 @@
 #include "MultiViewStage.h"
 #include "Character.h"
 #include "Player.h"
-#include "MainCamera.h"
+#include "MainCameraManager.h"
 #include "AttackCollision.h"
 
 
