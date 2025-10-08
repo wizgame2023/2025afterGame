@@ -5,7 +5,6 @@
 
 #pragma once
 #include "stdafx.h"
-#include "MyGameObject.h"
 #include "AttackCollision.h"
 
 namespace basecross {
