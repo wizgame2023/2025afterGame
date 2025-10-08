@@ -45,13 +45,13 @@ namespace basecross {
 		ptrCol->SetDrawActive(true);
 
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
-		ptrDraw->SetMeshResource(L"Player");
-		ptrDraw->SetTextureResource(L"P_TX");
+		ptrDraw->SetMeshResource(L"Sentouki");
+		ptrDraw->SetTextureResource(L"diffuse_TX");
 
 		// モデルとトランスフォーム間の差分行列
 		Mat4x4 spanMat;
 		spanMat.affineTransformation(
-			Vec3(0.5f, 0.5f, 0.5f),
+			Vec3(0.2f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, XM_PI, 0.0f),
 			Vec3(0.0f, -0.59f, 0.0f)
