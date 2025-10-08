@@ -19,6 +19,11 @@ namespace basecross {
 		Vec3 m_Scale;
 		Quat m_Qt;
 
+		// 仮でエネルギーの変数を作成、Player側に実装されたらそっちに移行 
+		float m_energyDebag = 100.0f; 
+		float m_energyEfficiency = 1.0f; // バリア使用時の燃費 高ければ高い程悪い
+		float m_energyLost = 10.0f;	// バリア使用時に弾が当たった時の消費エネルギー 高ければ高い程悪い
+
 		weak_ptr<Actor> m_parent; // 発射元のポインタ
 
 	public:
