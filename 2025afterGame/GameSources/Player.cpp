@@ -7,19 +7,24 @@
 #include "stdafx.h"
 #include "Project.h"
 
-namespace basecross{
+namespace basecross {
 	Player::Player(const shared_ptr<Stage>& ptrStage) :
 		Actor(ptrStage),
-		m_stickL(Vec3()),
+		m_stickL(Vec3(0.0f)),
+		m_velocity(Vec3(0.0f)),
 		m_speed(NORMAL_SPEED),
+		m_targetSpeed(0.0f),
+		m_accleRation(3.0f),
+		m_deceleRation(2.0f),
+		m_maxSpeed(2.5f),
+		m_angleSpeed(1.0f),
 		m_bustGauge(MAX_GAUGE),
-		m_comboCount(0),
-		m_comboTime(0.0f),
 		m_timeOfStartAttack(1.0f),
 		m_timeOfAttack(0.0f),
 		m_plusAttack(0),
 		m_attackCollisionFlag(false),
-		m_comboActive(false)
+		m_pitchAngle(0.0f),
+		m_rollAngle(0.0f)
 	{
 	}
 
@@ -31,6 +36,7 @@ namespace basecross{
 	void Player::OnCreate()
 	{
 		Actor::OnCreate();
+		auto& inputMgr = InputManager::CreateInputManager();
 
 		auto ptrTrans = GetComponent<Transform>();
 		ptrTrans->SetPosition(Vec3(0.0f, 0.0f, -1.0f));
@@ -39,18 +45,21 @@ namespace basecross{
 		ptrCol->SetDrawActive(true);
 
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
-		ptrDraw->SetMeshResource(L"Player");
-		ptrDraw->SetTextureResource(L"P_TX");
+		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 
-		// モデルとトランスフォーム間の差分行列
-		Mat4x4 spanMat;
-		spanMat.affineTransformation(
-			Vec3(0.5f, 0.5f, 0.5f),
-			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, XM_PI, 0.0f),
-			Vec3(0.0f, -0.59f, 0.0f)
-		);
-		ptrDraw->SetMeshToTransformMatrix(spanMat);
+		//auto ptrDraw = AddComponent<PNTStaticDraw>();
+		//ptrDraw->SetMeshResource(L"Player");
+		//ptrDraw->SetTextureResource(L"P_TX");
+
+		//// モデルとトランスフォーム間の差分行列
+		//Mat4x4 spanMat;
+		//spanMat.affineTransformation(
+		//	Vec3(0.5f, 0.5f, 0.5f),
+		//	Vec3(0.0f, 0.0f, 0.0f),
+		//	Vec3(0.0f, XM_PI, 0.0f),
+		//	Vec3(0.0f, -0.59f, 0.0f)
+		//);
+		//ptrDraw->SetMeshToTransformMatrix(spanMat);
 
 
 	}
@@ -62,15 +71,18 @@ namespace basecross{
 		auto pad = input.GetControlerVec()[0];
 		auto elapsed = app->GetElapsedTime();
 		auto nowPos = GetComponent<Transform>()->GetPosition();
+		auto nowRot = GetComponent<Transform>()->GetRotation();
+		InputManager::CreateInputManager()->Update();
 
 		PlayerMove();
-		PlayerBust();
+		PlayerAngle();
+		//PlayerBust();
 		PlayerHealBust();
-		PlayerAttack();
-		PlayerComboReset();
+		// PlayerAttack();
 
 		wstringstream wss(L"");
-		wss << "X : " << nowPos.x  << " " << "Y : " << nowPos.y << " " << "Z : " << nowPos.z << " " << endl;
+		wss << "X : " << nowPos.x << " " << "Y : " << nowPos.y << " " << "Z : " << nowPos.z << " " << endl;
+		wss << "X : " << nowRot.x << " " << "Y : " << nowRot.y << " " << "Z : " << nowRot.z << " " << endl;
 
 		auto scene = app->GetScene<Scene>();
 		scene->SetDebugString(wss.str());
@@ -84,43 +96,89 @@ namespace basecross{
 	void Player::PlayerMove()
 	{
 		auto& app = App::GetApp();
-		auto pad = GetFirstPad();
+		auto& input = InputManager::GetInputManager();
 
 		auto ptrTrans = GetComponent<Transform>();
 		auto elapsed = app->GetElapsedTime();
 		auto currentPos = ptrTrans->GetPosition();
-		auto deadZone = 0.1f;
+		auto forward = ptrTrans->GetForward();
+		float damping = 0.9f;
+		auto Lstick = input->GetLStick();
+
+		if (input->GetButton(L"A"))
+		{
+			m_speed += m_accleRation * elapsed;
+			if (m_speed > m_maxSpeed)
+			{
+				m_speed = m_maxSpeed;
+			}
+		}
+		else
+		{
+			m_speed -= m_deceleRation * elapsed;
+			
+			if (m_speed < 0.0f)
+			{
+				m_speed = 0.0f;
+			}
+		}
+
+		if (m_speed > 1.0f)
+		{
+			m_velocity = forward * m_speed;
+			m_velocity *= damping; 
+
+			currentPos += m_velocity * elapsed;
+		}
 
 		// 左右の移動
-		if (abs(pad.fThumbLX) > deadZone)
+		if (abs(Lstick.x) > DEAD_ZONE)
 		{
-			currentPos.x += pad.fThumbLX * m_speed * elapsed;
-		}
-		if (abs(pad.fThumbLY) > deadZone)
-		{
-			currentPos.z += pad.fThumbLY * m_speed * elapsed;
-		}
-
-		// 上下の移動
-		if (pad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
-		{
-			currentPos.y += m_speed * elapsed;
-		}
-		if (pad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
-		{
-			currentPos.y -= m_speed * elapsed;
+			currentPos.x += Lstick.x * m_speed * elapsed;
 		}
 
 		ptrTrans->SetPosition(currentPos);
 	}
 
-	bool Player::IsBoostInputActive(const CONTROLER_STATE& pad) const
+	void Player::PlayerAngle()
 	{
-		// 入力とデッドゾーンのみで、ブーストの入力が有効かどうかを判定
-		return ((abs(pad.fThumbLX) > DEAD_ZONE)
-			|| (pad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
-			|| (pad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER))
-			&& (pad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
+		auto& app = App::GetApp();
+		auto& input = InputManager::GetInputManager();
+
+		auto ptrTrans = GetComponent<Transform>();
+		auto elapsed = app->GetElapsedTime();
+		auto currentQuat = ptrTrans->GetQuaternion();
+		auto Lstick = input->GetLStick();
+
+		// 上昇下降
+		if (fabs(Lstick.y) > DEAD_ZONE)
+		{
+			// ピッチ変化量を計算
+			float pitch = -Lstick.y * m_angleSpeed * elapsed;
+
+			// ピッチ回転用のクォータニオンを作成
+			Quat pitchQuat;
+			pitchQuat.rotationX(pitch); // X軸の回転
+
+			// 現在の回転に合成
+			currentQuat = currentQuat * pitchQuat;
+			currentQuat.normalize();
+		}
+
+		// 左右の傾け
+		if (fabs(Lstick.x) > DEAD_ZONE)
+		{
+			float roll = -Lstick.x * m_angleSpeed * elapsed;
+
+			// m_rollAngle += roll;
+
+			Quat rollQuat;
+			rollQuat.rotationZ(roll);
+			currentQuat = currentQuat * rollQuat;
+			currentQuat.normalize();
+		}
+
+		ptrTrans->SetQuaternion(currentQuat);
 	}
 
 	void Player::ClampBustGauge()
@@ -135,7 +193,7 @@ namespace basecross{
 		auto pad = GetFirstPad();
 		auto elapsed = app->GetElapsedTime();
 
-		bool isBoosting = IsBoostInputActive(pad) && (m_bustGauge > 0.0f);
+		bool isBoosting = IsBoostInputActive() && (m_bustGauge > 0.0f);
 
 		// 加速処理
 		if (isBoosting)
@@ -155,7 +213,7 @@ namespace basecross{
 		auto pad = GetFirstPad();
 		auto elapsed = app->GetElapsedTime();
 
-		bool currentlyBoosting = IsBoostInputActive(pad) && (m_bustGauge > 0.0f);
+		bool currentlyBoosting = IsBoostInputActive() && (m_bustGauge > 0.0f);
 
 		// ゲージ回復
 		if (currentlyBoosting)
@@ -169,9 +227,9 @@ namespace basecross{
 	void Player::PlayerAttack()
 	{
 		auto& app = App::GetApp();
-		auto pad = GetFirstPad();
+		auto& input = InputManager::GetInputManager();
 
-		if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
+		if (input->GetDownButton(L"A"))
 		{
 			m_attackCollisionFlag = true;
 		}
