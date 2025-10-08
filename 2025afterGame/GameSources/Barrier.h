@@ -22,7 +22,7 @@ namespace basecross {
 		weak_ptr<Actor> m_parent; // ”­ËŒ³‚Ìƒ|ƒCƒ“ƒ^
 
 	public:
-		Barrier(const shared_ptr<Stage>& stagePtr);
+		Barrier(const shared_ptr<Stage>& stagePtr,const shared_ptr<Actor>& parent);
 		~Barrier();
 
 		void OnCreate()override;

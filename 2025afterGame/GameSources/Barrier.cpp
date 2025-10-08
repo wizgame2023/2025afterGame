@@ -8,8 +8,9 @@
 #include "Barrier.h"
 
 namespace basecross {
-	Barrier::Barrier(const shared_ptr<Stage>& stagePtr) :
-		Actor(stagePtr)
+	Barrier::Barrier(const shared_ptr<Stage>& stagePtr,const shared_ptr<Actor>& parent) :
+		Actor(stagePtr),
+		m_parent(parent)
 	{
 
 	}
@@ -34,7 +35,14 @@ namespace basecross {
 
 	void Barrier::OnUpdate()
 	{
+		// 親オブジェクトに追従する
+		auto parentlock = m_parent.lock();
+		Vec3 parentPos = parentlock->GetComponent<Transform>()->GetPosition();
+		m_pos = parentPos;
 
+		// 位置更新
+		auto trans = GetComponent<Transform>();
+		trans->SetPosition(m_pos);
 	}
 
 	// 当たり判定
