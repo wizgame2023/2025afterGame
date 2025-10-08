@@ -25,7 +25,7 @@ namespace basecross{
 		m_plRot = m_plTrans.lock()->GetRotation();
 
 		// カメラの位置の調整
-		Vec3 camPosOffset;
+		Vec3 camPosOffset = Vec3(0.0f, 2.0f, -5.0f);
 
 		// 常にプレイヤーの後ろにカメラを設置する(プレイヤーの角度が変わっても正面が映らないような感じ)
 
