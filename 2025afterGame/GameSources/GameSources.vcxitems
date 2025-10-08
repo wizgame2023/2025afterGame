@@ -16,6 +16,7 @@
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Actor.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)AttackCollision.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Barrier.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)BaseState.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Bullet.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Camera.h" />
@@ -33,6 +34,7 @@
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Actor.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)AttackCollision.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Barrier.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)BaseState.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Bullet.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp" />

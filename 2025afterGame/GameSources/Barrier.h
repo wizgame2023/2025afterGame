@@ -1,0 +1,37 @@
+/*!
+@file Barrier.h
+@brief バリアの処理
+担当者:三瓶裕太
+*/
+
+
+#pragma once
+#include "stdafx.h"
+
+namespace basecross {
+	class Barrier :public Actor
+	{
+	private:
+		bool m_affiliation; // 自分の所属(敵か味方か)
+		bool m_use; // バリアが発動しているか
+
+		Vec3 m_pos;
+		Vec3 m_Scale;
+		Quat m_Qt;
+
+		weak_ptr<Actor> m_parent; // 発射元のポインタ
+
+	public:
+		Barrier(const shared_ptr<Stage>& stagePtr);
+		~Barrier();
+
+		void OnCreate()override;
+		void OnUpdate()override;
+
+		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
+
+		void SetUse(bool use);
+		bool GetUse();
+	};
+}
+//end basecross
