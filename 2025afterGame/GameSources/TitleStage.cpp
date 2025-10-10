@@ -1,19 +1,17 @@
 /*!
-@file GameStage.cpp
+@file TitleStage.cpp
 @brief ゲームステージ実体
 */
 
 #include "stdafx.h"
 #include "Project.h"
-#include "Bullet.h"
-#include "Barrier.h"
 
 namespace basecross {
 
 	//--------------------------------------------------------------------------------------
 	//	ゲームステージクラス実体
 	//--------------------------------------------------------------------------------------
-	void GameStage::CreateViewLight() {
+	void TitleStage::CreateViewLight() {
 		const Vec3 eye(0.0f, 5.0f, -5.0f);
 		const Vec3 at(0.0f);
 		auto PtrView = CreateView<SingleView>();
@@ -30,32 +28,24 @@ namespace basecross {
 
 
 
-	void GameStage::OnCreate() {
+	void TitleStage::OnCreate() {
 		try {
-			auto& app = App::GetApp();
-			auto path = app->GetDataDirWString();
-
-			auto backgroundPath = path + L"Backgrounds/";
-			for (const auto& keyName : Background::pairs) {
-				app->RegisterTexture(keyName.first, backgroundPath + keyName.first + L".bmp");
-			}
-
 			//ビューとライトの作成
 			CreateViewLight();
-
-			//背景
-			AddGameObject<Background>();
-
-			auto player = AddGameObject<Player>();
-			SetSharedGameObject(L"Player", player);
 		}
 		catch (...) {
 			throw;
 		}
-
-		auto mainCamMana = AddGameObject<MainCameraManager>();
-		SetSharedGameObject(L"MainCameraManager", mainCamMana);
 	}
 
+	void TitleStage::OnUpdate() 
+	{
+		auto& inputMgr=InputManager::GetInputManager();
+
+		if (inputMgr->GetDownButton(L"A"))
+		{
+			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
+		}
+	}
 }
 //end basecross

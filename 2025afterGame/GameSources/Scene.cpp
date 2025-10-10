@@ -60,8 +60,12 @@ namespace basecross{
 			ResetActiveStage<GameStage>();
 		}
 		if (event->m_MsgStr == L"ToMultiViewStage") {
-			//最初のアクティブステージの設定
+			//マルチビューのアクティブステージ設定
 			ResetActiveStage<MultiViewStage>();
+		}
+		if (event->m_MsgStr == L"ToTitleStage") {
+			//タイトルステージのアクティブステージ設定
+			ResetActiveStage<TitleStage>();
 		}
 	}
 

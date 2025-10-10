@@ -5,7 +5,6 @@
 
 #pragma once
 #include "stdafx.h"
-#include "MyGameObject.h"
 #include "AttackCollision.h"
 
 namespace basecross {
@@ -14,6 +13,18 @@ namespace basecross {
 	protected:
 		//攻撃判定
 		shared_ptr<AttackCollision> m_attackCol;
+
+		shared_ptr<Transform> m_trans; // Transform
+
+		Vec3 m_pos;		// 位置
+		Vec3 m_scale;	// サイズ
+		Vec3 m_rot;     // 回転度
+
+		Quat m_qt;  // クォータニオン
+
+		float m_angleX; // 向いている方向X軸
+		float m_angleY; // 向いている方向Y軸
+
 
 	private:
 

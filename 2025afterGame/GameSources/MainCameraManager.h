@@ -8,6 +8,7 @@
 #include "stdafx.h"
 
 namespace basecross{
+	class Player;
 	
 	class MainCameraManager : public MyGameObject
 	{
@@ -18,6 +19,8 @@ namespace basecross{
 		
 		Vec3 m_plPos;
 		Vec3 m_plRot;
+		Vec3 m_plUp;
+
 	public:
 		MainCameraManager::MainCameraManager(const shared_ptr<Stage>& stagePtr) :
 			MyGameObject(stagePtr)
