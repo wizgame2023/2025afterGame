@@ -41,6 +41,10 @@
 // ステージ関係は一番下のブロックでインクルードしてください
 #include "GameStage.h"
 #include "MultiViewStage.h"
+#include "ErionStage.h"
+#include "KaitoStage.h"
+#include "TomokiStage.h"
+#include "YuutaStage.h"
 ///////////////////////////////////////////////////
 
 

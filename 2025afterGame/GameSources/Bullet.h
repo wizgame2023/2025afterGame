@@ -30,5 +30,25 @@ namespace basecross {
 
 		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
 	};
+
+	class TestCube :public Actor
+	{
+	private:
+		bool m_affiliation; // ’e‚ÌŠ‘®(“G‚©–¡•û‚©)
+
+		Vec3 m_pos;
+		Vec3 m_Scale;
+		Quat m_Qt;
+
+	public:
+		TestCube(const shared_ptr<Stage>& stagePtr);
+		~TestCube();
+
+		void OnCreate()override;
+		void OnUpdate()override;
+
+		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
+	};
+
 }
 //end basecross
