@@ -23,6 +23,7 @@ namespace basecross{
 	{
 		Vec3 m_stickL;
 		Vec3 m_velocity;
+		Vec3 m_yawvelocity;
 
 		// スピード関連
 		float m_speed;
@@ -46,12 +47,9 @@ namespace basecross{
 		// 攻撃判定出現フラグ
 		bool m_attackCollisionFlag;
 
-		float m_pitchAngle; // 現在のピッチ角 (ラジアン)
-		float m_rollAngle;  // 現在のロール角 (ラジアン)
-
-		// ピッチとロールの最大制限角度 (ラジアン)
-		static constexpr float MAX_PITCH_LIMIT = XMConvertToRadians(90.0f);
-		static constexpr float MAX_ROLL_LIMIT = XMConvertToRadians(90.0f);
+		float m_pitch;
+		float m_roll;
+		float m_yaw;
 
 		// クラス全体で共有される定数
 		// 何度も関数内でローカル変数で読むのは悪いなのでここで初期化、コンパイル時に値を決定
@@ -70,21 +68,6 @@ namespace basecross{
 		void OnUpdate() override;
 		void OnCollisionEnter(const shared_ptr<GameObject>& Other);
 
-		// コントローラを持ってくるとき
-		CONTROLER_STATE GetFirstPad()
-		{
-			auto& app = App::GetApp();
-			auto& input = app->GetInputDevice();
-			auto& controllers = input.GetControlerVec();
-
-			if (controllers.empty())
-			{
-				return CONTROLER_STATE{};
-			}
-
-			return controllers[0];
-		}
-
 		// プレイヤーの移動処理
 		void PlayerMove();
 		
@@ -100,47 +83,75 @@ namespace basecross{
 		// プレイヤーの攻撃
 		void PlayerAttack();
 
-	private:
 		// PlayerBustの入力判定を条件式の関数化
 		// ゲームパッドの入力状態
-		bool Player::IsBoostInputActive() const
-		{
-			auto& inputMgr = InputManager::GetInputManager();
-
-			bool stickActive = fabs(inputMgr->GetLStick().x) > DEAD_ZONE;
-			bool shoulderActive = inputMgr->GetButton(L"L") || inputMgr->GetButton(L"R");
-			bool triggerActive = inputMgr->GetLeftTrigger() > XINPUT_GAMEPAD_TRIGGER_THRESHOLD;
-
-			return (stickActive || shoulderActive) && triggerActive;
-		}
+		bool GetIsBoostInputActive() const;
 
 		// ゲージのクランプ処理
 		void ClampBustGauge();
 
-		Vec3 QuatToEuler(const Quat& q)
+	private:
+
+		// コントローラを持ってくるとき
+		CONTROLER_STATE GetFirstPad()
 		{
-			Vec3 euler;
+			auto& app = App::GetApp();
+			auto& input = app->GetInputDevice();
+			auto& controllers = input.GetControlerVec();
 
-			float sinr_cosp = 2.0f * (q.w * q.z + q.x * q.y);
-			float cosr_cosp = 1.0f - 2.0f * (q.y * q.y + q.z * q.z);
-			euler.z = atan2(sinr_cosp, cosr_cosp);
-
-			float sinp = 2.0f * (q.w * q.y - q.z * q.x);
-
-			if (abs(sinp) >= 1)
+			if (controllers.empty())
 			{
-				euler.y = copysign(XM_PI / 2, sinp);
-			}
-			else
-			{
-				euler.y = asin(sinp);
+				return CONTROLER_STATE{};
 			}
 
-			float siny_cosp = 2.0f * (q.w * q.x + q.y * q.z);
-			float cosy_cosp = 1.0f - 2.0f * (q.x * q.x + q.y * q.y);
-			euler.x = atan2(siny_cosp, cosy_cosp);
+			return controllers[0];
+		}
 
-			return euler;
+		Quat Slerp(const Quat& q1, const Quat& q2, float t)
+		{
+			// ドット積（角度のcosθを求める）
+			float dot = q1.x * q2.x + q1.y * q2.y + q1.z * q2.z + q1.w * q2.w;
+
+			Quat q2b = q2;
+			if (dot < 0.0f)
+			{
+				dot = -dot;
+				q2b = Quat(-q2.x, -q2.y, -q2.z, -q2.w);
+			}
+
+			const float THRESHOLD = 0.9995f;
+			if (dot > THRESHOLD)
+			{
+				// 線形補間でOK
+				Quat result(
+					q1.x + t * (q2b.x - q1.x),
+					q1.y + t * (q2b.y - q1.y),
+					q1.z + t * (q2b.z - q1.z),
+					q1.w + t * (q2b.w - q1.w)
+				);
+				result.normalize();
+				return result;
+			}
+
+			// 角度計算
+			float theta_0 = acosf(dot);
+			float theta = theta_0 * t;
+			float sin_theta = sinf(theta);
+			float sin_theta_0 = sinf(theta_0);
+
+			float s0 = cosf(theta) - dot * sin_theta / sin_theta_0;
+			float s1 = sin_theta / sin_theta_0;
+
+			// 補間結果
+			Quat result(
+				(s0 * q1.x) + (s1 * q2b.x),
+				(s0 * q1.y) + (s1 * q2b.y),
+				(s0 * q1.z) + (s1 * q2b.z),
+				(s0 * q1.w) + (s1 * q2b.w)
+			);
+
+			result.normalize();
+			return result;
 		}
 	};
 
