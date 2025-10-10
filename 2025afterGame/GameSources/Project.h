@@ -16,6 +16,9 @@
 #include "ProjectBehavior.h"
 #include "Scene.h"
 #include "Character.h"
+#include "InputManager.h"
+#include "Background.h"
+#include "Plane.h"
 
 // 殿堂入りMyGameObject本体
 #include "MyGameObject.h";
@@ -23,9 +26,9 @@
 
 // 親クラスがMyGameObject//////////////////////////
 #include "Actor.h";
-#include "MainCamera.h"
 #include "AttackCollision.h"
 #include "BaseState.h";
+#include "MainCameraManager.h"
 ///////////////////////////////////////////////////
 
 // 親クラスがActor/////////////////////////////////

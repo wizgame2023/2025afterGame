@@ -1,5 +1,5 @@
 /*!
-@file MainCamera.h
+@file MainCameraManager.h
 @brief ƒvƒŒƒCƒ„[‚ÌƒJƒƒ‰
 ’S“–:²“¡ ŠC“l
 */
@@ -10,33 +10,27 @@
 namespace basecross{
 	class Player;
 	
-	class MainCamera : public MyGameObject
+	class MainCameraManager : public MyGameObject
 	{
+		weak_ptr<Transform> m_plTrans;
 		shared_ptr<Player> m_player;
 		shared_ptr<Stage> m_stage;
 		shared_ptr<Camera> m_mainCamera;
-
+		
 		Vec3 m_plPos;
+		Vec3 m_plRot;
+		Vec3 m_plUp;
 
 	public:
-		MainCamera::MainCamera() :
-			MyGameObject(m_stage)
+		MainCameraManager::MainCameraManager(const shared_ptr<Stage>& stagePtr) :
+			MyGameObject(stagePtr)
 		{}
 
-		~MainCamera() {}
+		~MainCameraManager() {}
 
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
 
-		void SetEye(const Vec3& eye)
-		{
-			m_mainCamera->SetEye(eye);
-		}
-
-		void SetAt(const Vec3& at)
-		{
-			m_mainCamera->SetAt(at);
-		}
 	};
 }
 //end basecross
