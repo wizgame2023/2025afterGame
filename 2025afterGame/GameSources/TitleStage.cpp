@@ -40,7 +40,7 @@ namespace basecross {
 
 	void TitleStage::OnUpdate() 
 	{
-		auto& inputMgr = InputManager::CreateInputManager();
+		auto& inputMgr=InputManager::GetInputManager();
 
 		if (inputMgr->GetDownButton(L"A"))
 		{
