@@ -5,6 +5,8 @@
 
 #include "stdafx.h"
 #include "Project.h"
+#include "Bullet.h"
+#include "Barrier.h"
 
 namespace basecross {
 
