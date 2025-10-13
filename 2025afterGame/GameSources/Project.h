@@ -30,6 +30,7 @@
 #include "AttackCollision.h"
 #include "BaseState.h";
 #include "MainCameraManager.h"
+#include "GameManager.h"
 ///////////////////////////////////////////////////
 
 // 親クラスがActor/////////////////////////////////
