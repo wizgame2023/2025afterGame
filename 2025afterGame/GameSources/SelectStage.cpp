@@ -1,5 +1,5 @@
 /*!
-@file TitleStage.cpp
+@file SelectStage.cpp
 @brief ゲームステージ実体
 */
 
@@ -11,7 +11,7 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	//	ゲームステージクラス実体
 	//--------------------------------------------------------------------------------------
-	void TitleStage::CreateViewLight() {
+	void SelectStage::CreateViewLight() {
 		const Vec3 eye(0.0f, 5.0f, -5.0f);
 		const Vec3 at(0.0f);
 		auto PtrView = CreateView<SingleView>();
@@ -28,7 +28,7 @@ namespace basecross {
 
 
 
-	void TitleStage::OnCreate() {
+	void SelectStage::OnCreate() {
 		try {
 			//ビューとライトの作成
 			CreateViewLight();
@@ -38,13 +38,13 @@ namespace basecross {
 		}
 	}
 
-	void TitleStage::OnUpdate() 
+	void SelectStage::OnUpdate() 
 	{
 		auto& inputMgr=InputManager::GetInputManager();
 
 		if (inputMgr->GetDownButton(L"A"))
 		{
-			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToSelectStage");
+			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
 		}
 	}
 }
