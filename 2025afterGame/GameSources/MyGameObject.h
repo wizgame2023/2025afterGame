@@ -9,12 +9,18 @@
 
 namespace basecross {
 	class MyGameObject :public GameObject
-	{
+	{	
+	private:
+
+	protected:
+		float m_delta = 0.0f;
+
 	public:
 		MyGameObject(const shared_ptr<Stage>& stagePtr);
 		~MyGameObject();
 
-	private:
+		virtual void OnCreate()override;
+		virtual void OnUpdate()override;
 
 	};
 }

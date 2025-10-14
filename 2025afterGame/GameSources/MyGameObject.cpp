@@ -18,5 +18,16 @@ namespace basecross {
 	{
 
 	}
+
+	void MyGameObject::OnCreate()
+	{
+
+	}
+
+	void MyGameObject::OnUpdate()
+	{
+		//デルタタイム取得
+		m_delta = App::GetApp()->GetElapsedTime();
+	}
 }
 //end basecross
