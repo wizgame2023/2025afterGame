@@ -32,7 +32,8 @@ namespace basecross {
 		Actor(const shared_ptr<Stage>& stagePtr);
 		~Actor();
 
-		void OnCreate() override;
+		virtual void OnCreate() override;
+		virtual void OnUpdate() override;
 
 		// 判定用の子オブジェクトを生成し、Actorに紐付ける
 		virtual void CreateChildObjects()

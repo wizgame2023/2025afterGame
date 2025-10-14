@@ -19,7 +19,16 @@ namespace basecross {
 
 	void Actor::OnCreate()
 	{
+		// 親クラスのOnCreateを呼び出す
+		MyGameObject::OnCreate();
+
 		CreateChildObjects();
+	}
+
+	void Actor::OnUpdate()
+	{
+		// 親クラスのOnUpdateを呼び出す
+		MyGameObject::OnUpdate();
 	}
 }
 //end basecross
