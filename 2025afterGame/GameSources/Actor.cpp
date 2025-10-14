@@ -5,7 +5,6 @@
 
 #include "stdafx.h"
 #include "Project.h"
-#include "Actor.h"
 
 namespace basecross {
 	Actor::Actor(const shared_ptr<Stage>& stagePtr) :
@@ -20,7 +19,16 @@ namespace basecross {
 
 	void Actor::OnCreate()
 	{
+		// 親クラスのOnCreateを呼び出す
+		MyGameObject::OnCreate();
+
 		CreateChildObjects();
+	}
+
+	void Actor::OnUpdate()
+	{
+		// 親クラスのOnUpdateを呼び出す
+		MyGameObject::OnUpdate();
 	}
 }
 //end basecross
