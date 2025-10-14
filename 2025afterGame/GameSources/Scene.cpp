@@ -45,11 +45,21 @@ namespace basecross{
 			
 			CreateResource();
 
+			// ゲームマネージャー作成
+			GameManager::CreateGameManager();
+
 
 		}
 		catch (...) {
 			throw;
 		}
+	}
+
+	void Scene::OnUpdate()
+	{
+		// ゲームマネージャー更新
+		GameManager::GetGameManager()->OnUpdate();
+
 	}
 
 
