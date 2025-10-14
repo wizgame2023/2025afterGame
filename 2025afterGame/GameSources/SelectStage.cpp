@@ -8,6 +8,15 @@
 
 namespace basecross {
 
+	SelectStage::SelectStage() :
+		m_stageSelect(0)
+	{
+	}
+
+	SelectStage::~SelectStage()
+	{
+	}
+
 	//--------------------------------------------------------------------------------------
 	//	ゲームステージクラス実体
 	//--------------------------------------------------------------------------------------
@@ -42,7 +51,7 @@ namespace basecross {
 	{
 		auto& inputMgr=InputManager::GetInputManager();
 
-		if (inputMgr->GetDownButton(L"A"))
+		if (inputMgr->GetDownButton(L"A") && m_stageSelect == 0)
 		{
 			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
 		}

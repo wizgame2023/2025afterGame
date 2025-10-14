@@ -17,11 +17,14 @@ namespace basecross {
 		void CreateViewLight();
 	public:
 		//構築と破棄
-		SelectStage() :Stage() {}
+		SelectStage();
 		virtual ~SelectStage() {}
 		//初期化
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
+
+		//ステージ選択用メンバ変数
+		int m_stageSelect;
 	};
 
 
