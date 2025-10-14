@@ -30,6 +30,9 @@ namespace basecross {
 			{
 				// ©•ª‚ğì¬
 				m_GameManager.reset(new GameManager());
+
+				// ‰Šú‰»
+				m_GameManager->OnCreate();
 			}
 			return m_GameManager;
 		}
@@ -37,8 +40,6 @@ namespace basecross {
 		{
 			throw;
 		}
-		// ‰Šú‰»
-		m_GameManager->OnCreate();
 
 		return m_GameManager;
 	}
