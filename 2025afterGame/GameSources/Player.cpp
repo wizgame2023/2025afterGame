@@ -12,6 +12,7 @@ namespace basecross {
 		Actor(ptrStage),
 		m_stickL(Vec3(0.0f)),
 		m_velocity(Vec3(0.0f)),
+		m_yawvelocity(Vec3(0.0f)),
 		m_speed(NORMAL_SPEED),
 		m_targetSpeed(0.0f),
 		m_accleRation(3.0f),
@@ -23,8 +24,9 @@ namespace basecross {
 		m_timeOfAttack(0.0f),
 		m_plusAttack(0),
 		m_attackCollisionFlag(false),
-		m_pitchAngle(0.0f),
-		m_rollAngle(0.0f)
+		m_pitch(0.0f),
+		m_roll(0.0f),
+		m_yaw(0.0f)
 	{
 	}
 
@@ -45,13 +47,13 @@ namespace basecross {
 		ptrCol->SetDrawActive(true);
 
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
-		ptrDraw->SetMeshResource(L"Player");
-		ptrDraw->SetTextureResource(L"P_TX");
+		ptrDraw->SetMeshResource(L"Sentouki");
+		ptrDraw->SetTextureResource(L"diffuse_TX");
 
 		// モデルとトランスフォーム間の差分行列
 		Mat4x4 spanMat;
 		spanMat.affineTransformation(
-			Vec3(0.5f, 0.5f, 0.5f),
+			Vec3(0.2f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, XM_PI, 0.0f),
 			Vec3(0.0f, -0.59f, 0.0f)
@@ -71,8 +73,8 @@ namespace basecross {
 
 		PlayerMove();
 		PlayerAngle();
-		//PlayerBust();
 		PlayerHealBust();
+		//PlayerBust();
 		// PlayerAttack();
 
 		wstringstream wss(L"");
@@ -94,11 +96,14 @@ namespace basecross {
 		auto& input = InputManager::GetInputManager();
 
 		auto ptrTrans = GetComponent<Transform>();
-		auto elapsed = app->GetElapsedTime();
-		auto currentPos = ptrTrans->GetPosition();
-		auto forward = ptrTrans->GetForward();
+		float elapsed = app->GetElapsedTime();
+		Vec3 currentPos = ptrTrans->GetPosition();
+		Quat currentQuat = ptrTrans->GetQuaternion();
+
+		Vec3 forward = ptrTrans->GetForward();
 		float damping = 0.9f;
 		auto Lstick = input->GetLStick();
+		float m_yawSpeed = 1.0f;
 
 		if (input->GetButton(L"A"))
 		{
@@ -111,7 +116,6 @@ namespace basecross {
 		else
 		{
 			m_speed -= m_deceleRation * elapsed;
-			
 			if (m_speed < 0.0f)
 			{
 				m_speed = 0.0f;
@@ -121,15 +125,8 @@ namespace basecross {
 		if (m_speed > 1.0f)
 		{
 			m_velocity = forward * m_speed;
-			m_velocity *= damping; 
-
+			m_velocity *= damping;
 			currentPos += m_velocity * elapsed;
-		}
-
-		// 左右の移動
-		if (abs(Lstick.x) > DEAD_ZONE)
-		{
-			currentPos.x += Lstick.x * m_speed * elapsed;
 		}
 
 		ptrTrans->SetPosition(currentPos);
@@ -142,36 +139,19 @@ namespace basecross {
 
 		auto ptrTrans = GetComponent<Transform>();
 		auto elapsed = app->GetElapsedTime();
-		auto currentQuat = ptrTrans->GetQuaternion();
 		auto Lstick = input->GetLStick();
 
-		// 上昇下降
-		if (fabs(Lstick.y) > DEAD_ZONE)
-		{
-			// ピッチ変化量を計算
-			float pitch = -Lstick.y * m_angleSpeed * elapsed;
+		Quat currentQuat = ptrTrans->GetQuaternion();
 
-			// ピッチ回転用のクォータニオンを作成
-			Quat pitchQuat;
-			pitchQuat.rotationX(pitch); // X軸の回転
+		Quat qPitch, qYaw, qRoll;
+		qPitch.rotationX(-Lstick.y * m_angleSpeed);
+		qYaw.rotationY(sin(m_roll) * 0.5f);
+		qRoll.rotationZ(-Lstick.x * m_angleSpeed);
+		Quat targetQuat = qYaw * qPitch * qRoll;
+		targetQuat.normalize();
 
-			// 現在の回転に合成
-			currentQuat = currentQuat * pitchQuat;
-			currentQuat.normalize();
-		}
-
-		// 左右の傾け
-		if (fabs(Lstick.x) > DEAD_ZONE)
-		{
-			float roll = -Lstick.x * m_angleSpeed * elapsed;
-
-			// m_rollAngle += roll;
-
-			Quat rollQuat;
-			rollQuat.rotationZ(roll);
-			currentQuat = currentQuat * rollQuat;
-			currentQuat.normalize();
-		}
+		currentQuat = Slerp(currentQuat, targetQuat, elapsed * 5.0f);
+		currentQuat.normalize();
 
 		ptrTrans->SetQuaternion(currentQuat);
 	}
@@ -188,7 +168,7 @@ namespace basecross {
 		auto pad = GetFirstPad();
 		auto elapsed = app->GetElapsedTime();
 
-		bool isBoosting = IsBoostInputActive() && (m_bustGauge > 0.0f);
+		bool isBoosting = GetIsBoostInputActive() && (m_bustGauge > 0.0f);
 
 		// 加速処理
 		if (isBoosting)
@@ -208,7 +188,7 @@ namespace basecross {
 		auto pad = GetFirstPad();
 		auto elapsed = app->GetElapsedTime();
 
-		bool currentlyBoosting = IsBoostInputActive() && (m_bustGauge > 0.0f);
+		bool currentlyBoosting = GetIsBoostInputActive() && (m_bustGauge > 0.0f);
 
 		// ゲージ回復
 		if (currentlyBoosting)
@@ -241,6 +221,17 @@ namespace basecross {
 
 			m_attackCollisionFlag = false;
 		}
+	}
+
+	bool Player::GetIsBoostInputActive() const
+	{
+		auto& inputMgr = InputManager::GetInputManager();
+
+		bool stickActive = fabs(inputMgr->GetLStick().x) > DEAD_ZONE;
+		bool shoulderActive = inputMgr->GetButton(L"L") || inputMgr->GetButton(L"R");
+		bool triggerActive = inputMgr->GetLeftTrigger() > XINPUT_GAMEPAD_TRIGGER_THRESHOLD;
+
+		return (stickActive || shoulderActive) && triggerActive;
 	}
 }
 //end basecross

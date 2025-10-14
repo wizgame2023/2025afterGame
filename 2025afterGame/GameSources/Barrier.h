@@ -15,10 +15,6 @@ namespace basecross {
 		bool m_affiliation; // 自分の所属(敵か味方か)
 		bool m_use; // バリアが発動しているか
 
-		Vec3 m_pos;
-		Vec3 m_Scale;
-		Quat m_Qt;
-
 		// 仮でエネルギーの変数を作成、Player側に実装されたらそっちに移行 
 		float m_energyDebag = 100.0f; 
 		float m_energyEfficiency = 1.0f; // バリア使用時の燃費 高ければ高い程悪い
@@ -34,6 +30,10 @@ namespace basecross {
 		void OnUpdate()override;
 
 		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
+
+		// 親クラスによって所属を決める処理
+		void DecideAffiliation();
+
 
 		void SetUse(bool use);
 		bool GetUse();

@@ -24,12 +24,12 @@ namespace basecross{
 		wstring path = app->GetDataDirWString();
 		wstring modelPath = path + L"Models/";
 
-		auto Modeltex = modelPath + L"P_TX.png";
-		App::GetApp()->RegisterTexture(L"P_TX", Modeltex);
+		auto Modeltex = modelPath + L"diffuse.png";
+		App::GetApp()->RegisterTexture(L"diffuse_TX", Modeltex);
 
 		// Player
-		auto ModelMesh = MeshResource::CreateBoneModelMesh(modelPath, L"Player.bmf");
-		app->RegisterResource(L"Player", ModelMesh);
+		auto ModelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"Sentouki.bmf");
+		app->RegisterResource(L"Sentouki", ModelMesh);
 
 	}
 	
@@ -45,11 +45,21 @@ namespace basecross{
 			
 			CreateResource();
 
+			// ゲームマネージャー作成
+			GameManager::CreateGameManager();
+
 
 		}
 		catch (...) {
 			throw;
 		}
+	}
+
+	void Scene::OnUpdate()
+	{
+		// ゲームマネージャー更新
+		GameManager::GetGameManager()->OnUpdate();
+
 	}
 
 

@@ -30,6 +30,7 @@
 #include "AttackCollision.h"
 #include "BaseState.h";
 #include "MainCameraManager.h"
+#include "GameManager.h"
 ///////////////////////////////////////////////////
 
 // 親クラスがActor/////////////////////////////////
@@ -41,6 +42,10 @@
 // ステージ関係は一番下のブロックでインクルードしてください
 #include "GameStage.h"
 #include "MultiViewStage.h"
+#include "ErionStage.h"
+#include "KaitoStage.h"
+#include "TomokiStage.h"
+#include "YuutaStage.h"
 ///////////////////////////////////////////////////
 
 
