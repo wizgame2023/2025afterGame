@@ -9,7 +9,10 @@
 namespace basecross {
 
 	SelectStage::SelectStage() :
-		m_stageSelect(0)
+		m_stageSelect(0),
+		m_deadZone(0.2f),
+		m_deltaTime(0.0f),
+		m_menuMoveCoolDown(0.2f)
 	{
 	}
 
@@ -51,9 +54,13 @@ namespace basecross {
 	{
 		auto& inputMgr=InputManager::GetInputManager();
 
-		if (inputMgr->GetDownButton(L"A") && m_stageSelect == 0)
+		if (m_deltaTime >= m_menuMoveCoolDown)
 		{
-			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
+			if (inputMgr->GetDownButton(L"A") && m_stageSelect == 0)
+			{
+				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
+			}
+			m_deltaTime = 0.0f;
 		}
 	}
 }
