@@ -65,6 +65,20 @@ namespace basecross {
 		{
 			return m_attackCol;
 		}
+
+		// m_posのゲッタ
+		Vec3 GetPos();
+		// m_qtのゲッタ
+		Quat GetQt();
+		// m_rotのゲッタ
+		Vec3 GetRot();
+		// m_sclceのゲッタ
+		Vec3 GetSclce();
+
+		// 角度のゲッタ
+		// 第一引数　X軸かY軸どちらの軸の角度を取るか
+		float GetAngle(wstring XorY);
+
 	};
 }
 //end basecross
