@@ -52,6 +52,16 @@ namespace basecross {
 			throw;
 		}
 
+		// バリア妨害のテスト処理
+		auto testBullet = AddGameObject<Bullet>();
+		AddGameObject<DisableShield>(testBullet);
+
+		// テストでバリア生成
+		auto testCube = AddGameObject<TestCube>(Vec3(+3.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.5f));
+		AddGameObject<Barrier>(testCube);
+
+
+
 		auto mainCamMana = AddGameObject<MainCameraManager>();
 		SetSharedGameObject(L"MainCameraManager", mainCamMana);
 	}
