@@ -79,6 +79,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)YuutaStage.cpp">
       <Filter>Sources\PrivateStage</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)CheckPoint.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Actor.h">
@@ -161,6 +164,9 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)TomokiStage.h">
       <Filter>Headers\PrivateStage</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)CheckPoint.h">
+      <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

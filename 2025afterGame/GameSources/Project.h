@@ -37,6 +37,7 @@
 #include "Bullet.h";
 #include "Barrier.h";
 #include "DisableShield.h"
+#include "CheckPoint.h"
 ///////////////////////////////////////////////////
 
 // ステージ関係は一番下のブロックでインクルードしてください
