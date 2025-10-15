@@ -83,6 +83,10 @@ namespace basecross{
 			//セレクトステージのアクティブステージ設定
 			ResetActiveStage<SelectStage>();
 		}
+		if (event->m_MsgStr == L"ToErionStage") {
+			//セレクトステージのアクティブステージ設定
+			ResetActiveStage<ErionStage>();
+		}
 	}
 
 }
