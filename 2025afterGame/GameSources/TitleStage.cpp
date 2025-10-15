@@ -51,11 +51,13 @@ namespace basecross {
 		auto& app = App::GetApp();
 		auto& inputMgr=InputManager::GetInputManager();
 
+		//Aボタンを押すとシーン遷移
 		if (inputMgr->GetDownButton(L"A"))
 		{
 			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToSelectStage");
 		}
 
+		//デバッグ用文字
 		wstringstream wss(L"");
 		wss << "CurrentStage : TitleStage" << endl;
 

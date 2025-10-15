@@ -23,6 +23,8 @@ namespace basecross {
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
 
+		virtual wstring NextStage(int nextstage,wstring gotostage);
+
 		//ステージ選択用メンバ変数
 		int m_stageSelect;
 		//コントローラーのデッドゾーン変数
@@ -30,6 +32,8 @@ namespace basecross {
 		//メニュー画面の時間を測定
 		float m_deltaTime;
 		float m_menuMoveCoolDown;
+		//次のステージを指定
+		wstring m_nextStage;
 	};
 
 
