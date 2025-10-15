@@ -19,7 +19,6 @@
 #include "InputManager.h"
 #include "Background.h"
 #include "Plane.h"
-#include "TitleStage.h"
 
 // 殿堂入りMyGameObject本体
 #include "MyGameObject.h";
@@ -47,6 +46,8 @@
 #include "KaitoStage.h"
 #include "TomokiStage.h"
 #include "YuutaStage.h"
+#include "TitleStage.h"
+#include "SelectStage.h"
 ///////////////////////////////////////////////////
 
 

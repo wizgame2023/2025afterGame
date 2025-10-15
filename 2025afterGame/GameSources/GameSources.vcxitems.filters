@@ -90,6 +90,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)GameManager.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)SelectStage.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)DisableShield.h">
       <Filter>Headers</Filter>
     </ClInclude>
@@ -167,6 +170,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)GameManager.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)SelectStage.cpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
     <ClCompile Include="$(MSBuildThisFileDirectory)DisableShield.cpp">
       <Filter>Sources</Filter>
     </ClCompile>

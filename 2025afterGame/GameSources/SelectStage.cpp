@@ -1,5 +1,5 @@
 /*!
-@file TitleStage.cpp
+@file SelectStage.cpp
 @brief ゲームステージ実体
 */
 
@@ -8,18 +8,22 @@
 
 namespace basecross {
 
-	TitleStage::TitleStage()
+	SelectStage::SelectStage() :
+		m_stageSelect(0),
+		m_deadZone(0.2f),
+		m_deltaTime(0.0f),
+		m_menuMoveCoolDown(0.2f)
 	{
 	}
 
-	TitleStage::~TitleStage()
+	SelectStage::~SelectStage()
 	{
 	}
 
 	//--------------------------------------------------------------------------------------
 	//	ゲームステージクラス実体
 	//--------------------------------------------------------------------------------------
-	void TitleStage::CreateViewLight() {
+	void SelectStage::CreateViewLight() {
 		const Vec3 eye(0.0f, 5.0f, -5.0f);
 		const Vec3 at(0.0f);
 		auto PtrView = CreateView<SingleView>();
@@ -36,7 +40,7 @@ namespace basecross {
 
 
 
-	void TitleStage::OnCreate() {
+	void SelectStage::OnCreate() {
 		try {
 			//ビューとライトの作成
 			CreateViewLight();
@@ -46,18 +50,47 @@ namespace basecross {
 		}
 	}
 
-	void TitleStage::OnUpdate() 
+	void SelectStage::OnUpdate() 
 	{
 		auto& app = App::GetApp();
 		auto& inputMgr=InputManager::GetInputManager();
+		auto& game = GameManager::GetGameManager();
+		float elapsed = game->GetDeltaTime();
 
-		if (inputMgr->GetDownButton(L"A"))
+		m_deltaTime += elapsed;
+
+		if (m_deltaTime >= m_menuMoveCoolDown)
 		{
-			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToSelectStage");
+			if (inputMgr->GetLStick().x > m_deadZone)
+			{
+				m_stageSelect++;
+				m_deltaTime = 0.0f;
+			}
+			else if (inputMgr->GetLStick().x < -m_deadZone)
+			{
+				m_stageSelect--;
+				m_deltaTime = 0.0f;
+			}
+
+			if (inputMgr->GetDownButton(L"A"))
+			{
+				switch (m_stageSelect)
+				{
+				case 0:
+					PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
+					m_deltaTime = 0.0f;
+					break;
+
+				default:
+					m_deltaTime = 0.0f;
+					break;
+				}
+			}
 		}
 
 		wstringstream wss(L"");
-		wss << "CurrentStage : TitleStage" << endl;
+		wss << "CurrentStage : SelectStage" << endl;
+		wss << "SelectStage : " << m_stageSelect << endl;
 
 		auto scene = app->GetScene<Scene>();
 		scene->SetDebugString(wss.str());
