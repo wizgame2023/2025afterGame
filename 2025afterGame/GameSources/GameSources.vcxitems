@@ -22,6 +22,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Bullet.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Camera.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Character.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)CheckPoint.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DisableShield.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ErionStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FighterAircraftBase.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameManager.h" />
@@ -37,6 +39,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)ProjectShader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)KaitoStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Scene.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SelectStage.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)StateBase.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)StateEnemy.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TitleStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TomokiStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)YuutaStage.h" />
@@ -49,6 +54,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)BaseState.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Bullet.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)CheckPoint.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)DisableShield.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ErionStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FighterAircraftBase.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameManager.cpp" />
@@ -63,6 +70,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectBehavior.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectShader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Scene.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)SelectStage.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)StateBase.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)StateEnemy.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TitleStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TomokiStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WinMain.cpp" />

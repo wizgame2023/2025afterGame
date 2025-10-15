@@ -21,6 +21,8 @@ namespace basecross {
 
 	void Bullet::OnCreate()
 	{
+		Actor::OnCreate();
+
 		m_trans = GetComponent<Transform>();
 		m_trans->SetPosition(Vec3(-3.0f,0.0f,1.0f));
 		m_trans->SetQuaternion(Quat(0.0f,0.0f,0.0f,-1.0f));
@@ -37,6 +39,11 @@ namespace basecross {
 
 	void Bullet::OnUpdate()
 	{
+		// 継承元ののUpdate更新
+		Actor::OnUpdate();
+
+		// ここで親オブジェクトの向いている方向を取得しその方向に向かう
+
 		auto delta = App::GetApp()->GetElapsedTime();
 
 		m_pos = m_trans->GetPosition();
@@ -48,12 +55,12 @@ namespace basecross {
 	// 当たり判定
 	void Bullet::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
-		
+
 	}
 
 
-	TestCube::TestCube(const shared_ptr<Stage>& stagePtr) :
-		Actor(stagePtr)
+	TestCube::TestCube(const shared_ptr<Stage>& stagePtr,Vec3 pos,Quat qt,Vec3 scale) :
+		Actor(stagePtr,pos,qt,scale)
 	{
 
 	}
@@ -66,9 +73,9 @@ namespace basecross {
 	void TestCube::OnCreate()
 	{
 		auto trans = GetComponent<Transform>();
-		trans->SetPosition(Vec3(0.5f, 0.0f, 0.0f));
-		trans->SetQuaternion(Quat(0.0f, 0.0f, 0.0f, 1.0f));
-		trans->SetScale(Vec3(0.5f));
+		trans->SetPosition(m_pos);
+		trans->SetQuaternion(m_qt);
+		trans->SetScale(m_scale);
 
 		auto ptrCol = AddComponent<CollisionSphere>();
 		ptrCol->SetDrawActive(true);

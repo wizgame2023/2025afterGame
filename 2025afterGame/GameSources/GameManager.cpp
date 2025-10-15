@@ -85,6 +85,22 @@ namespace basecross {
 		InputManager::DeleteInputManager();
 	}
 
+	// DeltaTime‚ÌƒQƒbƒ^
+	float GameManager::GetDeltaTime()
+	{
+		return m_deltaTime;
+	}
+
+	int GameManager::GetGameStageNow()
+	{
+		return m_gameStageNow;
+	}
+
+	void GameManager::SetGameStageNow(int gameStageNow)
+	{
+		m_gameStageNow = gameStageNow;
+	}
+
 }
 
 //end basecross
