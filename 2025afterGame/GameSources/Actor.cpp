@@ -1,16 +1,38 @@
 /*!
 @file Actor.cpp
 @brief ゲーム中の動く3Dオブジェクトの親クラス
+担当：三瓶裕太
 */
 
 #include "stdafx.h"
 #include "Project.h"
+#include "Actor.h"
 
 namespace basecross {
 	Actor::Actor(const shared_ptr<Stage>& stagePtr) :
 		MyGameObject(stagePtr)
 	{
 
+	}
+
+	Actor::Actor(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 rot, Vec3 scale, Col4 color):
+		MyGameObject(stagePtr),
+		m_pos(pos),
+		m_rot(rot),
+		m_scale(scale),
+		m_color(color)
+	{
+
+	}
+
+	Actor::Actor(const shared_ptr<Stage>& stagePtr, Vec3 pos, Quat qt, Vec3 scale, Col4 color):
+		MyGameObject(stagePtr),
+		m_pos(pos),
+		m_qt(qt),
+		m_scale(scale),
+		m_color(color)
+
+	{
 	}
 
 	Actor::~Actor()
@@ -54,6 +76,13 @@ namespace basecross {
 	{
 		return m_scale;
 	}
+
+	// m_colorのゲッタ
+	Col4 Actor::GetColor()
+	{
+		return m_color;
+	}
+
 
 	// 角度のゲッタ
 	// 第一引数　X軸かY軸どちらの軸の角度を取るか
