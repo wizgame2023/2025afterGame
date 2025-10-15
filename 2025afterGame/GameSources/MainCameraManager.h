@@ -16,6 +16,7 @@ namespace basecross{
 		shared_ptr<Player> m_player;
 		shared_ptr<Stage> m_stage;
 		shared_ptr<Camera> m_mainCamera;
+		shared_ptr<Actor> m_target;
 		
 		Vec3 m_plPos;
 		Vec3 m_plRot;
@@ -25,14 +26,15 @@ namespace basecross{
 		// 線形補間関数(滑らかに動かすためのやつ)
 		// 参考 : https://taketakeshi.hatenablog.jp/entry/2025/05/19/205447
 		// start : 開始地 end : 終了値 time : 補間係数(0.0f～1.0f)
+		// 戻り値 : 補間後の値
 		Vec3 Lerp(const Vec3& start, const Vec3& end, float time) {
 			return start + (end - start) * time;
 		}
 
 	public:
-		MainCameraManager::MainCameraManager(const shared_ptr<Stage>& stagePtr) :
-			MyGameObject(stagePtr)
-		{}
+		// コンストラクタ
+		MainCameraManager(const shared_ptr<Stage>& stagPtr);
+		MainCameraManager(const shared_ptr<Stage>& stagePtr, const shared_ptr<Actor>& target);
 
 		~MainCameraManager() {}
 
