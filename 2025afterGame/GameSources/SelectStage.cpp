@@ -52,27 +52,48 @@ namespace basecross {
 
 	void SelectStage::OnUpdate() 
 	{
+		auto& app = App::GetApp();
 		auto& inputMgr=InputManager::GetInputManager();
 		auto& game = GameManager::GetGameManager();
-		float elapsed = game->GetElapsedInGame();
+		float elapsed = game->GetDeltaTime();
+
+		m_deltaTime += elapsed;
 
 		if (m_deltaTime >= m_menuMoveCoolDown)
 		{
 			if (inputMgr->GetLStick().x > m_deadZone)
 			{
 				m_stageSelect++;
+				m_deltaTime = 0.0f;
 			}
 			else if (inputMgr->GetLStick().x < -m_deadZone)
 			{
 				m_stageSelect--;
+				m_deltaTime = 0.0f;
 			}
 
-			if (inputMgr->GetDownButton(L"A") && m_stageSelect == 0)
+			if (inputMgr->GetDownButton(L"A"))
 			{
-				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
+				switch (m_stageSelect)
+				{
+				case 0:
+					PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
+					m_deltaTime = 0.0f;
+					break;
+
+				default:
+					m_deltaTime = 0.0f;
+					break;
+				}
 			}
-			m_deltaTime = 0.0f;
 		}
+
+		wstringstream wss(L"");
+		wss << "CurrentStage : SelectStage" << endl;
+		wss << "SelectStage : " << m_stageSelect << endl;
+
+		auto scene = app->GetScene<Scene>();
+		scene->SetDebugString(wss.str());
 	}
 }
 //end basecross

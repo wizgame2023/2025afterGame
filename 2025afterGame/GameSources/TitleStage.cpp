@@ -48,12 +48,19 @@ namespace basecross {
 
 	void TitleStage::OnUpdate() 
 	{
+		auto& app = App::GetApp();
 		auto& inputMgr=InputManager::GetInputManager();
 
 		if (inputMgr->GetDownButton(L"A"))
 		{
 			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToSelectStage");
 		}
+
+		wstringstream wss(L"");
+		wss << "CurrentStage : TitleStage" << endl;
+
+		auto scene = app->GetScene<Scene>();
+		scene->SetDebugString(wss.str());
 	}
 }
 //end basecross
