@@ -1,6 +1,7 @@
 /*!
 @file StateBase.cpp
 @brief 基盤ステート
+担当者：三瓶裕太
 */
 
 #include "stdafx.h"

@@ -1,6 +1,7 @@
 /*!
-@file ProjectBehavior.h
-@brief プロジェク定義の行動クラス
+@file StateEnemy.h
+@brief 敵のステート処理
+担当者：三瓶裕太
 */
 
 #pragma once
