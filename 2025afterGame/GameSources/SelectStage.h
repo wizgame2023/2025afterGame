@@ -1,5 +1,5 @@
 /*!
-@file TitleStage.h
+@file SelectStage.h
 @brief ゲームステージ
 */
 
@@ -11,17 +11,25 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	//	ゲームステージクラス
 	//--------------------------------------------------------------------------------------
-	class TitleStage : public Stage 
+	class SelectStage : public Stage 
 	{
 		//ビューの作成
 		void CreateViewLight();
 	public:
 		//構築と破棄
-		TitleStage();
-		virtual ~TitleStage();
+		SelectStage();
+		virtual ~SelectStage();
 		//初期化
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
+
+		//ステージ選択用メンバ変数
+		int m_stageSelect;
+		//コントローラーのデッドゾーン変数
+		float m_deadZone;
+		//メニュー画面の時間を測定
+		float m_deltaTime;
+		float m_menuMoveCoolDown;
 	};
 
 
