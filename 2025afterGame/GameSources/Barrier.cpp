@@ -1,6 +1,7 @@
 /*!
 @file Barrier.cpp
-@brief ’e‚ÌŽÀ‘Ì
+@brief ƒoƒŠƒA‚ÌŽÀ‘Ì
+’S“–FŽO•r—T‘¾
 */
 
 #include "stdafx.h"
@@ -107,7 +108,7 @@ namespace basecross {
 				// ’e‚ÌŠ‘®‚ª“¯‚¶‚È‚çƒoƒŠƒA‚Ì”»’è‚Í‚µ‚È‚¢
 				//if()
 
-				// ’e‚©‚çƒvƒŒƒCƒ„[‚ðŽç‚Á‚½‚çƒGƒlƒ‹ƒM[‚ðÁ”ï‚·‚é
+				// ’e‚©‚çƒvƒŒƒCƒ„[‚ðŽç‚Á‚ÄƒGƒlƒ‹ƒM[‚ðÁ”ï‚·‚é
 				m_energyDebag -= m_energyLost;
 				GetStage()->RemoveGameObject<Bullet>(bullet);
 			}

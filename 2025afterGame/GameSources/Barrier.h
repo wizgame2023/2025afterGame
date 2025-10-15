@@ -29,6 +29,7 @@ namespace basecross {
 		void OnCreate()override;
 		void OnUpdate()override;
 
+		// “–‚½‚è”»’èˆ—
 		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
 
 		// eƒNƒ‰ƒX‚É‚æ‚Á‚ÄŠ‘®‚ğŒˆ‚ß‚éˆ—
