@@ -13,9 +13,10 @@ namespace basecross{
 		MyGameObject(stagPtr)
 	{}
 
-	MainCameraManager::MainCameraManager(const shared_ptr<Stage>& stagePtr, const shared_ptr<Actor>& target) :
+	MainCameraManager::MainCameraManager(const shared_ptr<Stage>& stagePtr, const shared_ptr<Actor>& target, const shared_ptr<MultiView>& mulView) :
 		MyGameObject(stagePtr),
-		m_target(target)
+		m_target(target),
+		m_mulView(mulView)
 
 	{}
 	
