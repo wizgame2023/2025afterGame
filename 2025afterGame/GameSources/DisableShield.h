@@ -23,6 +23,7 @@ namespace basecross {
 		bool m_reduction = false; // サイズ縮小フラグ
 
 		weak_ptr<Actor> m_parent; // 親オブジェクト
+		shared_ptr<Actor> m_parentLock; // lockをした親オブジェクト
 
 	public:
 		DisableShield(const shared_ptr<Stage>& ptrStage, const shared_ptr<Actor>& parent, float sizeMax = 3.0f);
@@ -30,6 +31,12 @@ namespace basecross {
 
 		void OnCreate()override;
 		void OnUpdate()override;
+
+		// 親オブジェクトについていく処理
+		void FollowMove();
+
+		// 使用時の処理
+		void UseProcess();
 
 		// 当たり判定処理
 		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;

@@ -1,6 +1,6 @@
 /*!
 @file ProjectShader.cpp
-@brief プロジェクトで使用するシェーダー実体
+@brief バリアを妨害する空間の実体
 */
 
 #include "stdafx.h"
@@ -46,10 +46,10 @@ namespace basecross {
 
 	void DisableShield::OnUpdate()
 	{
-		auto lockParent = m_parent.lock();
+		m_parentLock = m_parent.lock();
 
 		// 親オブジェクトが消えたら自分も消える
-		if (!lockParent)
+		if (!m_parentLock)
 		{
 			GetStage()->RemoveGameObject<DisableShield>(GetThis<DisableShield>());
 			return;
@@ -59,11 +59,24 @@ namespace basecross {
 
 		auto delta = App::GetApp()->GetElapsedTime();
 
+		// 親オブジェクトについていく処理
+		FollowMove();
+		// 使用時処理
+		UseProcess();
+
+	}
+
+	// 親オブジェクトについていく処理
+	void DisableShield::FollowMove()
+	{
 		// 親オブジェクトについていく
-		auto parentPos = lockParent->GetPos();
+		auto parentPos = m_parentLock->GetPos();
 		m_trans->SetPosition(parentPos);
+	}
 
-
+	// 使用時処理
+	void DisableShield::UseProcess()
+	{
 		// 使用状態になったら効果範囲を広くなって最大になったら小さくなる
 		if (m_use)
 		{
@@ -87,7 +100,7 @@ namespace basecross {
 			{
 				m_scale -= (m_delta * m_sizeAddSpeed) / 2;
 				m_trans->SetScale(m_scale);
-			
+
 				// 範囲が0以下になったら使用状態をやめる
 				if (m_scale.x <= 0.0f)
 				{
@@ -99,6 +112,7 @@ namespace basecross {
 			}
 
 		}
+
 	}
 
 
