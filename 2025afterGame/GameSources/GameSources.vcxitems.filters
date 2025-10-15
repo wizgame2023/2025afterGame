@@ -168,6 +168,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)CheckPoint.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)FighterAircraftBase.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sources">
