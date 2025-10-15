@@ -12,17 +12,27 @@ namespace basecross {
 	{
 	private:
 		float m_sizeMax = 0.0f;      // シールド破壊の最大範囲
-		float m_sizeAddSpeed = 0.0f; // シールド破壊の拡大スピード
+		float m_sizeAddSpeed = 3.5f; // シールド破壊の拡大スピード
+		Col4 m_Color;
+
+		// 仮でエネルギーの変数を作成、Player側に実装されたらそっちに移行 
+		float m_energyDebag = 100.0f;
+		float m_energyLost = 50.0f;	// バリア妨害を使用したときの消費 高ければ高い程燃費は悪い
 
 		bool m_use = false; // 使用しているかのフラグ
 		bool m_reduction = false; // サイズ縮小フラグ
 
+		weak_ptr<Actor> m_parent; // 親オブジェクト
+
 	public:
-		DisableShield(const shared_ptr<Stage>& ptrStage);
+		DisableShield(const shared_ptr<Stage>& ptrStage, const shared_ptr<Actor>& parent, float sizeMax = 3.0f);
 		~DisableShield();
 
 		void OnCreate()override;
 		void OnUpdate()override;
+
+		// 当たり判定処理
+		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
 
 		bool GetUse();
 		void SetUse(bool use);
