@@ -21,6 +21,7 @@ namespace basecross {
 		float m_energyLost = 10.0f;	// バリア使用時に弾が当たった時の消費エネルギー 高ければ高い程悪い
 
 		weak_ptr<Actor> m_parent; // 発射元のポインタ
+		shared_ptr<Actor> m_parentLock; // 発射元のポインタをLockして受け取った変数
 
 	public:
 		Barrier(const shared_ptr<Stage>& stagePtr,const shared_ptr<Actor>& parent);
@@ -29,11 +30,17 @@ namespace basecross {
 		void OnCreate()override;
 		void OnUpdate()override;
 
+		// 親クラスによって所属を決める処理
+		void DecideAffiliation();
+		// 親オブジェクトについていく処理
+		void FollowMove();
+		// バリアを使うことによって起きるエネルギーを消費する処理
+		void EnergyConsumption();
+
 		// 当たり判定処理
 		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
 
-		// 親クラスによって所属を決める処理
-		void DecideAffiliation();
+
 
 
 		void SetUse(bool use);

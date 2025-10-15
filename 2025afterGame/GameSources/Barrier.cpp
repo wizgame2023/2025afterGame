@@ -24,6 +24,9 @@ namespace basecross {
 
 	void Barrier::OnCreate()
 	{
+		// 親クラス処理
+		Actor::OnCreate();
+
 		// Trans処理追加
 		auto trans = GetComponent<Transform>();
 		trans->SetPosition(Vec3(0.5f, 0.0f, 1.0f));
@@ -50,30 +53,22 @@ namespace basecross {
 
 	void Barrier::OnUpdate()
 	{		
-		auto parentlock = m_parent.lock();
+		m_parentLock = m_parent.lock();
 
 		// もし、親オブジェクトが消去されたら自分も消える
-		if (!parentlock)
+		if (!m_parentLock)
 		{
 			GetStage()->RemoveGameObject<Barrier>(GetThis<Barrier>());
 			return;
 		}
 
-		// 親オブジェクトに追従する
-		Vec3 parentPos = parentlock->GetComponent<Transform>()->GetPosition();
-		m_pos = parentPos;
+		// 親クラス処理
+		Actor::OnUpdate();
 
-		// バリアを使用している時はエネルギ-を消費する
-		if (m_use)
-		{
-			m_energyDebag -= m_energyEfficiency;	
-			
-			// エネルギーが0以下なら使用できない
-			if (m_energyDebag < 0)
-			{
-				m_use = false;
-			}
-		}
+		// 親オブジェクトについていく処理
+		FollowMove();
+		// バリア使用時のエネルギ-を消費処理
+		EnergyConsumption();
 
 		// 位置更新
 		auto trans = GetComponent<Transform>();
@@ -93,6 +88,29 @@ namespace basecross {
 		else if (!player)
 		{
 			m_affiliation = false;
+		}
+	}
+
+	// 親オブジェクトに追従する処理
+	void Barrier::FollowMove()
+	{
+		Vec3 parentPos = m_parentLock->GetComponent<Transform>()->GetPosition();
+		m_pos = parentPos;
+	}
+
+	// バリアを使うことによって起きるエネルギーを消費する処理
+	void Barrier::EnergyConsumption()
+	{
+		// 使用している時はエネルギ-を消費
+		if (m_use)
+		{
+			m_energyDebag -= m_energyEfficiency * m_delta;
+
+			// エネルギーが0以下なら使用できない
+			if (m_energyDebag < 0)
+			{
+				m_use = false;
+			}
 		}
 	}
 
