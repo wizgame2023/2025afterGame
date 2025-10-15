@@ -37,6 +37,7 @@
 #include "Player.h";
 #include "Bullet.h";
 #include "Barrier.h";
+#include "DisableShield.h"
 ///////////////////////////////////////////////////
 
 // ステージ関係は一番下のブロックでインクルードしてください
