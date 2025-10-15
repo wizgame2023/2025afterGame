@@ -34,6 +34,7 @@
 ///////////////////////////////////////////////////
 
 // 親クラスがActor/////////////////////////////////
+#include "FighterAircraftBase.h"
 #include "Player.h";
 #include "Bullet.h";
 #include "Barrier.h";
