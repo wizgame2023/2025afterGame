@@ -1,6 +1,6 @@
 /*!
 @file CheckPoint.cpp
-@brief ƒ`ƒFƒbƒNƒ|ƒCƒ“ƒg‚ÌŽÀ‘Ì
+@brief ï¿½`ï¿½Fï¿½bï¿½Nï¿½|ï¿½Cï¿½ï¿½ï¿½gï¿½ÌŽï¿½ï¿½ï¿½
 */
 
 #include "stdafx.h"
@@ -32,7 +32,22 @@ namespace basecross{
 
 	}
 
-	// “–‚½‚è”»’è
+	void GetRaceTime(float racetime)
+	{
+		return racetime;
+	}
+
+	void GetEnemyCheckPointTime(float enemycheckpointtime)
+	{
+		return enemycheckpointtime;
+	}
+
+	void GetNextCheckPoint(Vec3 nextcheckpoint)
+	{
+		return nextcheckpoint;
+	}
+
+	// ï¿½ï¿½ï¿½ï¿½ï¿½è”»ï¿½ï¿½
 	void CheckPoint::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
 
