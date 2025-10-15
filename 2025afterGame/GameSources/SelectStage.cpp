@@ -53,9 +53,20 @@ namespace basecross {
 	void SelectStage::OnUpdate() 
 	{
 		auto& inputMgr=InputManager::GetInputManager();
+		auto& game = GameManager::GetGameManager();
+		float elapsed = game->GetElapsedInGame();
 
 		if (m_deltaTime >= m_menuMoveCoolDown)
 		{
+			if (inputMgr->GetLStick().x > m_deadZone)
+			{
+				m_stageSelect++;
+			}
+			else if (inputMgr->GetLStick().x < -m_deadZone)
+			{
+				m_stageSelect--;
+			}
+
 			if (inputMgr->GetDownButton(L"A") && m_stageSelect == 0)
 			{
 				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
