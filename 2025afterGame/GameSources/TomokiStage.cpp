@@ -47,6 +47,15 @@ namespace basecross {
 			auto player = AddGameObject<Player>();
 			SetSharedGameObject(L"Player", player);
 
+			//for (int i = 0; i < 10; i++)
+			//{
+			//	float addPosX = 1.5f * i;
+			//	float addPosY = 1.5f * i;
+			//	auto test = AddGameObject<Test>();
+			//	auto pos = test->GetComponent<Transform>()->GetPosition();
+			//	test->GetComponent<Transform>()->SetPosition(pos.x + addPosX, pos.y + addPosY, pos.z);
+			//}
+
 		}
 		catch (...) {
 			throw;
