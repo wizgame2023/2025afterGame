@@ -15,10 +15,6 @@ namespace basecross {
 	private:
 		bool m_affiliation; // ’e‚ÌŠ‘®(“G‚©–¡•û‚©)
 
-		Vec3 m_pos;
-		Vec3 m_Scale;
-		Quat m_Qt;
-
 		weak_ptr<Actor> m_parent; // ”­ËŒ³‚Ìƒ|ƒCƒ“ƒ^
 
 	public:
@@ -41,7 +37,7 @@ namespace basecross {
 		Quat m_Qt;
 
 	public:
-		TestCube(const shared_ptr<Stage>& stagePtr);
+		TestCube(const shared_ptr<Stage>& stagePtr, Vec3 pos, Quat qt, Vec3 scale);
 		~TestCube();
 
 		void OnCreate()override;

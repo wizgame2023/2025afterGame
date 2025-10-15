@@ -32,6 +32,8 @@ namespace basecross{
 		float m_deceleRation;
 		float m_maxSpeed;
 		float m_angleSpeed;
+		float m_prevRoll;
+		float m_lastYaw;
 
 		float m_bustGauge;
 
@@ -49,7 +51,20 @@ namespace basecross{
 
 		float m_pitch;
 		float m_roll;
-		float m_yaw;
+		float m_autoYawSpeed;
+		float m_currentRollAngle;
+		float m_currentRoll;
+
+		float m_startRoll;
+		float m_startTime;
+		float m_endTime;
+		
+		Quat m_initialQuat;
+		bool m_initialized;
+		bool m_hasInput;
+		bool m_returnToNeutral;
+		bool m_isReturning;
+		float m_returnSpeed;
 
 		// クラス全体で共有される定数
 		// 何度も関数内でローカル変数で読むのは悪いなのでここで初期化、コンパイル時に値を決定
@@ -90,7 +105,6 @@ namespace basecross{
 		// ゲージのクランプ処理
 		void ClampBustGauge();
 
-	private:
 
 		// コントローラを持ってくるとき
 		CONTROLER_STATE GetFirstPad()
@@ -154,7 +168,6 @@ namespace basecross{
 			return result;
 		}
 	};
-
 }
 //end basecross
 
