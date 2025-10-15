@@ -19,6 +19,8 @@
 #include "InputManager.h"
 #include "Background.h"
 #include "Plane.h"
+#include "StateBase.h"
+#include "StateEnemy.h"
 
 // 殿堂入りMyGameObject本体
 #include "MyGameObject.h";
