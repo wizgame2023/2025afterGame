@@ -82,9 +82,15 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)CheckPoint.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)FighterAircraftBase.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)StateBase.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)StateEnemy.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)FighterAircraftBase.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)StateBase.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)StateEnemy.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Actor.h">
@@ -174,8 +180,12 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)FighterAircraftBase.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)StateBase.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)StateEnemy.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)StateBase.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)StateEnemy.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sources">
