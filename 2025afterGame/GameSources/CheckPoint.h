@@ -24,9 +24,10 @@ namespace basecross{
 		void OnCreate()override;
 		void OnUpdate()override;
 
-		void GetRaceTime(float racetime);
-		void GetEnemyCheckPointTime(float enemycheckpointtime);
-		void GetNextCheckPoint(Vec3 nextcheckpoint);
+		float GetRaceTime(float racetime);
+		float SetEnemyCheckPointTime(float enemycheckpointtime);
+		float GetEnemyCheckPointTime(float enemycheckpointtime,float racetime);
+		Vec3 GetNextCheckPoint(Vec3 nextcheckpoint);
 
 		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
 	};

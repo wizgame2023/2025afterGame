@@ -8,7 +8,10 @@
 
 namespace basecross{
 	CheckPoint::CheckPoint(const shared_ptr<Stage>& stageptr) :
-		Actor(stageptr)
+		Actor(stageptr),
+		m_raceTime(0.0f),
+		m_enemyCheckPointTime(0.0f),
+		m_nextCheckPoint(0.0f, 0.0f, 0.0f)
 	{
 
 	}
@@ -29,25 +32,30 @@ namespace basecross{
 
 	void CheckPoint::OnUpdate()
 	{
-
+		
 	}
 
-	void GetRaceTime(float racetime)
+	float GetRaceTime(float racetime)
 	{
 		return racetime;
 	}
 
-	void GetEnemyCheckPointTime(float enemycheckpointtime)
+	float SetEnemyCheckPointTime(float enemycheckpointtime)
 	{
 		return enemycheckpointtime;
 	}
 
-	void GetNextCheckPoint(Vec3 nextcheckpoint)
+	float GetEnemyCheckPointTime(float enemycheckpointtime,float racetime)
+	{
+		enemycheckpointtime -= racetime;
+		return enemycheckpointtime;
+	}
+
+	Vec3 GetNextCheckPoint(Vec3 nextcheckpoint)
 	{
 		return nextcheckpoint;
 	}
 
-	// �����蔻��
 	void CheckPoint::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
 
