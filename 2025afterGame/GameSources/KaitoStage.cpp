@@ -1,19 +1,17 @@
 /*!
-@file GameStage.cpp
-@brief ゲームステージ実体
+@file KaitoStage.cpp
+@brief 個人作業用ゲームステージ
 */
 
 #include "stdafx.h"
 #include "Project.h"
-#include "Bullet.h"
-#include "Barrier.h"
 
 namespace basecross {
 
 	//--------------------------------------------------------------------------------------
 	//	ゲームステージクラス実体
 	//--------------------------------------------------------------------------------------
-	void GameStage::CreateViewLight() {
+	void KaitoStage::CreateViewLight() {
 		const Vec3 eye(0.0f, 5.0f, -5.0f);
 		const Vec3 at(0.0f);
 		auto PtrView = CreateView<SingleView>();
@@ -30,7 +28,7 @@ namespace basecross {
 
 
 
-	void GameStage::OnCreate() {
+	void KaitoStage::OnCreate() {
 		try {
 			auto& app = App::GetApp();
 			auto path = app->GetDataDirWString();
@@ -48,6 +46,7 @@ namespace basecross {
 
 			auto player = AddGameObject<Player>();
 			SetSharedGameObject(L"Player", player);
+
 		}
 		catch (...) {
 			throw;
