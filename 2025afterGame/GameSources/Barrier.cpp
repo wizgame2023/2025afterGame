@@ -31,7 +31,7 @@ namespace basecross {
 		auto trans = GetComponent<Transform>();
 		trans->SetPosition(Vec3(0.5f, 0.0f, 1.0f));
 		trans->SetQuaternion(Quat(0.0f, 0.0f, 0.0f, 1.0f));
-		trans->SetScale(Vec3(1.5f));
+		trans->SetScale(Vec3(1.0f,3.5f,1.0f));
 
 		// コリジョン追加
 		auto ptrCol = AddComponent<CollisionSphere>();
@@ -73,6 +73,8 @@ namespace basecross {
 		// 位置更新
 		auto trans = GetComponent<Transform>();
 		trans->SetPosition(m_pos);
+
+		m_use = true;
 	}
 
 	//親クラスによって所属を決める処理
