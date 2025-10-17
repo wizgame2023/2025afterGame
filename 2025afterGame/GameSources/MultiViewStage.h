@@ -14,6 +14,10 @@ namespace basecross {
 	class MultiViewStage : public Stage {
 		//ƒrƒ…[‚Ìì¬
 		void CreateViewLight();
+		
+		shared_ptr<Camera> m_camera1;
+		shared_ptr<Camera> m_camera2;
+
 	public:
 		//\’z‚Æ”jŠü
 		MultiViewStage() :Stage() {}
