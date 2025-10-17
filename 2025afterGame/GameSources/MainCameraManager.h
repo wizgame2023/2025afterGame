@@ -17,7 +17,7 @@ namespace basecross{
 		shared_ptr<Stage> m_stage;
 		shared_ptr<Camera> m_mainCamera;
 		shared_ptr<Actor> m_target;
-		shared_ptr<MultiView> m_mulView;
+		shared_ptr<Camera> m_mulCam;
 		
 		Vec3 m_plPos;
 		Vec3 m_plRot;
@@ -35,7 +35,7 @@ namespace basecross{
 	public:
 		// コンストラクタ
 		MainCameraManager(const shared_ptr<Stage>& stagPtr);
-		MainCameraManager(const shared_ptr<Stage>& stagePtr, const shared_ptr<Actor>& target, const shared_ptr<MultiView>& mulView);
+		MainCameraManager(const shared_ptr<Stage>& stagePtr, const shared_ptr<Actor>& target, const shared_ptr<Camera>& mulView);
 
 		~MainCameraManager() {}
 
