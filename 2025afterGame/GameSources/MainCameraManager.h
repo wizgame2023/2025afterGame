@@ -24,6 +24,8 @@ namespace basecross{
 		Vec3 m_plUp;
 		Vec3 m_plFwrd;
 
+		wstring m_sharedName = L"Player";
+
 		// 線形補間関数(滑らかに動かすためのやつ)
 		// 参考 : https://taketakeshi.hatenablog.jp/entry/2025/05/19/205447
 		// start : 開始地 end : 終了値 time : 補間係数(0.0f～1.0f)
@@ -35,7 +37,12 @@ namespace basecross{
 	public:
 		// コンストラクタ
 		MainCameraManager(const shared_ptr<Stage>& stagPtr);
-		MainCameraManager(const shared_ptr<Stage>& stagePtr, const shared_ptr<Actor>& target, const shared_ptr<Camera>& mulView);
+		MainCameraManager(
+			const shared_ptr<Stage>& stagePtr, 
+			const shared_ptr<Actor>& target, 
+			const shared_ptr<Camera>& mulView,
+			const wstring& sharedName
+		);
 
 		~MainCameraManager() {}
 
