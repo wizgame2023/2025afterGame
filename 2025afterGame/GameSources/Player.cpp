@@ -94,18 +94,16 @@ namespace basecross {
 		PlayerMove();
 		PlayerAngle();
 		PlayerHealBust();
-		//PlayerBust();
-		// PlayerAttack();
 
-		wstringstream wss(L"");
-		wss << "X : " << nowPos.x << " " << "Y : " << nowPos.y << " " << "Z : " << nowPos.z << " " << endl;
-		Vec3 euler = nowQuaternion.toRotVec(); // ← BaseCrossならこの関数があるか確認
+		//wstringstream wss(L"");
+		//wss << "X : " << nowPos.x << " " << "Y : " << nowPos.y << " " << "Z : " << nowPos.z << " " << endl;
+		//Vec3 euler = nowQuaternion.toRotVec(); // ← BaseCrossならこの関数があるか確認
 
-		wss << "Yaw:" << XMConvertToDegrees(euler.y)
-			<< " Pitch:" << XMConvertToDegrees(euler.x)
-			<< " Roll:" << XMConvertToDegrees(euler.z) << endl;
-		auto scene = app->GetScene<Scene>();
-		scene->SetDebugString(wss.str());
+		//wss << "Yaw:" << XMConvertToDegrees(euler.y)
+		//	<< " Pitch:" << XMConvertToDegrees(euler.x)
+		//	<< " Roll:" << XMConvertToDegrees(euler.z) << endl;
+		//auto scene = app->GetScene<Scene>();
+		//scene->SetDebugString(wss.str());
 	}
 
 	void Player::OnCollisionEnter(const shared_ptr<GameObject>& Other)
@@ -167,21 +165,7 @@ namespace basecross {
 		auto elapsed = app->GetElapsedTime();
 		auto Lstick = input->GetLStick();
 
-		//Vec3 initialEuler = m_initialQuat.toRotVec();
-		//float initialYaw = XMConvertToDegrees(initialEuler.y);
-
 		auto currentQuat = ptrTrans->GetQuaternion();  // 現在の回転
-		//Vec3 euler = currentQuat.toRotVec();          // クォータニオン → オイラー変換
-		//
-		//float currentYaw = XMConvertToDegrees(euler.y); // Y軸回転を度に変換
-
-		//// 反対方向かどうか（±5°くらいの許容を持たせる）
-		//float diffYaw = fmod(fabs(currentYaw - initialYaw), 360.0f);
-		//if (diffYaw > 175.0f && diffYaw < 185.0f)
-		//{
-		//	// ここで新しい初期Quatに置き換える
-		//	m_initialQuat = currentQuat;
-		//}
 
 		if (!m_initialized)
 		{
@@ -219,7 +203,7 @@ namespace basecross {
 			{
 				m_startRoll = m_currentRoll;
 				m_startTime = 0.0f;
-				m_endTime = 0.5f;  // 0.5秒で戻す
+				m_endTime = 0.5f;
 				m_isReturning = true;
 			}
 
@@ -233,7 +217,7 @@ namespace basecross {
 				0.0f,
 				m_endTime,
 				m_startTime,
-				Lerp::Cos   // ← Cosine補間で自然な減速
+				Lerp::Cos
 			);
 
 			// 終了判定
@@ -294,7 +278,6 @@ namespace basecross {
 	void Player::PlayerBust()
 	{
 		auto& app = App::GetApp();
-		auto pad = GetFirstPad();
 		auto elapsed = app->GetElapsedTime();
 
 		bool isBoosting = GetIsBoostInputActive() && (m_bustGauge > 0.0f);
@@ -314,7 +297,6 @@ namespace basecross {
 	void Player::PlayerHealBust()
 	{
 		auto& app = App::GetApp();
-		auto pad = GetFirstPad();
 		auto elapsed = app->GetElapsedTime();
 
 		bool currentlyBoosting = GetIsBoostInputActive() && (m_bustGauge > 0.0f);
@@ -328,30 +310,30 @@ namespace basecross {
 		ClampBustGauge();
 	}
 
-	void Player::PlayerAttack()
-	{
-		auto& app = App::GetApp();
-		auto& game = GameManager::GetGameManager();
-		auto& input = InputManager::GetInputManager();
+	//void Player::PlayerAttack()
+	//{
+	//	auto& app = App::GetApp();
+	//	auto& game = GameManager::GetGameManager();
+	//	auto& input = InputManager::GetInputManager();
 
-		if (input->GetDownButton(L"A"))
-		{
-			m_attackCollisionFlag = true;
-		}
+	//	if (input->GetDownButton(L"A"))
+	//	{
+	//		m_attackCollisionFlag = true;
+	//	}
 
-		// 攻撃が有効になるタイミングに達したら、攻撃判定情報をセットする
-		if (m_attackCollisionFlag)
-		{
-			auto attack = GetAttackPtr();
-			auto& info = attack->GetHitInfo();
-			info.Damage = 10 + m_plusAttack;
-			info.HitOnce = true;
+	//	// 攻撃が有効になるタイミングに達したら、攻撃判定情報をセットする
+	//	if (m_attackCollisionFlag)
+	//	{
+	//		auto attack = GetAttackPtr();
+	//		auto& info = attack->GetHitInfo();
+	//		info.Damage = 10 + m_plusAttack;
+	//		info.HitOnce = true;
 
-			attack->ActivateCollision(0.2f);
+	//		attack->ActivateCollision(0.2f);
 
-			m_attackCollisionFlag = false;
-		}
-	}
+	//		m_attackCollisionFlag = false;
+	//	}
+	//}
 
 	bool Player::GetIsBoostInputActive() const
 	{
