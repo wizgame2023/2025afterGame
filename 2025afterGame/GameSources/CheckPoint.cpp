@@ -11,7 +11,7 @@ namespace basecross{
 		Actor(stageptr),
 		m_raceTime(0.0f),
 		m_previewTime(0.0f),
-		m_nextCheckPoint(0.0f, 0.0f, 0.0f)
+		m_checkPointID(0)
 	{
 
 	}
@@ -24,7 +24,8 @@ namespace basecross{
 	void CheckPoint::OnCreate()
 	{
 		auto ptrCol = AddComponent<CollisionSphere>();
-		ptrCol->SetDrawActive(true);
+		ptrCol->SetDrawActive(false);
+		ptrCol->SetAfterCollision(AfterCollision::None);
 
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
@@ -38,14 +39,26 @@ namespace basecross{
 
 	void CheckPoint::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
-		if (m_previewTime > 0.0f)
+		auto playermachine = dynamic_pointer_cast<Player>(obj);
+
+		if (playermachine)
 		{
-			SetDifferenceTime();
+			if (m_previewTime > 0.0f)
+			{
+				SetDifferenceTime();
+			}
+			else
+			{
+				m_previewTime = m_raceTime;
+			}
+
+			SetNextCheckPoint(m_checkPointID);
 		}
-		else
-		{
-			m_previewTime = m_raceTime;
-		}
+	}
+
+	void CheckPoint::SetCheckPointID(int checkpointid)
+	{
+		m_checkPointID = checkpointid;
 	}
 
 	float CheckPoint::SetDifferenceTime()
@@ -54,6 +67,12 @@ namespace basecross{
 		float differencetime = m_previewTime - game->GetTimeGamePlaying();
 		m_previewTime = game->GetTimeGamePlaying();
 		return differencetime;
+	}
+
+	Vec3 CheckPoint::SetNextCheckPoint(int checkpointid) 
+	{
+		Vec3 nextcheckpoint;
+		return nextcheckpoint;
 	}
 }
 //end basecross

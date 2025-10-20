@@ -48,6 +48,7 @@ namespace basecross {
 			SetSharedGameObject(L"Player", player);
 
 			auto checkpoint = AddGameObject<CheckPoint>();
+			checkpoint->GetComponent<Transform>()->SetPosition(0.0f, 0.0f, 10.0f);
 
 		}
 		catch (...) {
