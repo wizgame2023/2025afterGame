@@ -56,6 +56,9 @@ namespace basecross{
 		bool GetGunUseFlag();
 		// バリア無効化をして以下のフラグゲッタ
 		bool GetDisableShieldFlag();
+
+		// 現在のエネルギーセッタ
+		void SetEnergyCurrent(float energyCurrent);
 	};
 }
 //end basecross

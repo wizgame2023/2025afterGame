@@ -76,6 +76,12 @@ namespace basecross {
 		return m_disableShieldFlag;
 	}
 
+	// 現在のエネルギーセッタ
+	void FighterAircraftBase::SetEnergyCurrent(float energyCurrent)
+	{
+		m_energyCurrent = energyCurrent;
+	}
+
 }
 //end basecross
 
