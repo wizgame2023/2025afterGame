@@ -47,6 +47,8 @@ namespace basecross {
 			auto player = AddGameObject<Player>();
 			SetSharedGameObject(L"Player", player);
 
+			auto checkpoint = AddGameObject<CheckPoint>();
+
 		}
 		catch (...) {
 			throw;
