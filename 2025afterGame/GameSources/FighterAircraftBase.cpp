@@ -28,6 +28,60 @@ namespace basecross {
 
 	}
 
+	// 現在耐久値のゲッタ
+	int FighterAircraftBase::GetHpCurrent()
+	{
+		return m_hpCurrent;
+	}
+
+	// 最大耐久値のゲッタ
+	int FighterAircraftBase::GetHpMax()
+	{
+		return m_hpMax;
+	}
+
+	// 現在のエネルギーのゲッタ
+	float FighterAircraftBase::GetEnergyCurrent()
+	{
+		return m_energyCurrent;
+	}
+
+	// 最大のエネルギー値のゲッタ
+	float FighterAircraftBase::GetEnergyMax()
+	{
+		return m_energyMax;
+	}
+
+	// エネルギー切れになったかのフラグゲッタ
+	bool FighterAircraftBase::GetOutEnergyFlag()
+	{
+		return m_outEnergyFlag;
+	}
+
+	// バリア使用していいかのフラグゲッタ
+	bool FighterAircraftBase::GetBarrierUseFlag()
+	{
+		return m_barrierUseFlag;
+	}
+
+	// 弾を使用していいかのフラグゲッタ
+	bool FighterAircraftBase::GetGunUseFlag()
+	{
+		return m_gunUseFlag;
+	}
+
+	// バリア無効化をして以下のフラグゲッタ
+	bool FighterAircraftBase::GetDisableShieldFlag()
+	{
+		return m_disableShieldFlag;
+	}
+
+	// 現在のエネルギーセッタ
+	void FighterAircraftBase::SetEnergyCurrent(float energyCurrent)
+	{
+		m_energyCurrent = energyCurrent;
+	}
+
 }
 //end basecross
 

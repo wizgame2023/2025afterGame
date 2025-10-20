@@ -9,38 +9,51 @@
 #include<vector>
 
 namespace basecross{
+	MainCameraManager::MainCameraManager(const shared_ptr<Stage>& stagPtr) :
+		MyGameObject(stagPtr)
+	{}
 
+	MainCameraManager::MainCameraManager(
+		const shared_ptr<Stage>& stagePtr, 
+		const shared_ptr<Actor>& target, 
+		const shared_ptr<Camera>& mulCam,
+		const wstring& sharedName
+	) :
+		MyGameObject(stagePtr),
+		m_target(target),
+		m_mulCam(mulCam),
+		m_sharedName(sharedName)
+	{}
+	
 	void MainCameraManager::OnCreate()
 	{
 		m_stage = GetStage();
-		m_mainCamera = OnGetDrawCamera(); // カメラの取得
-		m_player = m_stage->GetSharedGameObject<Player>(L"Player");
-		m_plTrans = m_player->GetComponent<Transform>();
+		m_mulCam = OnGetDrawCamera(); // カメラの取得
+		m_target = m_stage->GetSharedGameObject<Actor>(m_sharedName);
+		m_plTrans = m_target->GetComponent<Transform>();
 	}
 
 	void MainCameraManager::OnUpdate()
 	{
 		auto& app = App::GetApp();
 		float delta = app->GetElapsedTime();
-		float time = 0;
+		static float time = 0;
 		time += delta;
 		// カメラとプレイヤーの距離
-		constexpr float camDis = 6.0f;
+		constexpr float camDis = 7.0f;
 		// カメラの高さ
 		float camHeight = 3.0f;
 		// カメラの追従速度
-		constexpr float followSpeed = 5.0f;
+		constexpr float followSpeed = 20.0f;
 
-
-		// プレイヤーの位置と回転と傾きと正面を取得
+		// プレイヤーの情報取得
 		m_plPos = m_plTrans.lock()->GetPosition();
 		m_plRot = m_plTrans.lock()->GetRotation();
-		m_plUp = m_plTrans.lock()->GetUp();
 		m_plFwrd = m_plTrans.lock()->GetForward();
+		m_plUp = m_plTrans.lock()->GetUp();
 
 		// カメラの現在の位置
-		Vec3 currentCamPos = m_mainCamera->GetEye();
-
+		Vec3 currentCamPos = m_mulCam->GetEye();
 
 		// カメラの位置の調整
 		Vec3 camPosOffset = Vec3(0.0f,0.0f,0.0f);
@@ -52,16 +65,16 @@ namespace basecross{
 		Vec3 newCamPos = Lerp(currentCamPos, desiredPos, delta * followSpeed);
 
 		// 常にプレイヤーの後ろにカメラを設置する(プレイヤーの角度が変わっても正面が映らないような感じ)
-		m_mainCamera->SetEye(newCamPos);
+		m_mulCam->SetEye(newCamPos);
 
 		// プレイヤーの角度に合わせてカメラも傾く
-		m_mainCamera->SetUp(Vec3(m_plUp));
-		
-		//m_mainCamera->SetEye(m_plPos + camPosOffset); // カメラの位置
-		m_mainCamera->SetAt(m_plPos + Vec3(0.0f, 0.0f, 0.0f)); // カメラの注視点
+		m_mulCam->SetUp(Vec3(m_plUp));
+
+		// カメラの注視点
+		m_mulCam->SetAt(m_plPos + Vec3(0.0f, 0.0f, 0.0f));
 
 		wstringstream wss(L"");
-		wss << "UpX : " << m_mainCamera->GetUp().x << " " << "UpY : " << m_mainCamera->GetUp().y << " " << "UpZ : " << m_mainCamera->GetUp().z << " " << endl;
+		wss << "UpX : " << m_mulCam->GetUp().x << " " << "UpY : " << m_mulCam->GetUp().y << " " << "UpZ : " << m_mulCam->GetUp().z << " " << endl;
 		wss << "CamRot : " << m_plRot.x << " " << m_plRot.y << " " << m_plRot.z << " " << endl;
 
 		auto scene = app->GetScene<Scene>();

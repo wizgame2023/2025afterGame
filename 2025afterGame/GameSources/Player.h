@@ -95,31 +95,12 @@ namespace basecross{
 		// プレイヤーのブースト回復
 		void PlayerHealBust();
 
-		// プレイヤーの攻撃
-		void PlayerAttack();
-
 		// PlayerBustの入力判定を条件式の関数化
 		// ゲームパッドの入力状態
 		bool GetIsBoostInputActive() const;
 
 		// ゲージのクランプ処理
 		void ClampBustGauge();
-
-
-		// コントローラを持ってくるとき
-		CONTROLER_STATE GetFirstPad()
-		{
-			auto& app = App::GetApp();
-			auto& input = app->GetInputDevice();
-			auto& controllers = input.GetControlerVec();
-
-			if (controllers.empty())
-			{
-				return CONTROLER_STATE{};
-			}
-
-			return controllers[0];
-		}
 
 		Quat Slerp(const Quat& q1, const Quat& q2, float t)
 		{
