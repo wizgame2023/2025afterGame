@@ -53,7 +53,10 @@ namespace basecross
 		BYTE m_LeftTrigger;
 		BYTE m_RightTrigger;
 
-
+		CONTROLER_STATE m_pad;
+		bool m_padChange;
+		bool m_wasPressed;
+	
 	public:
 		/*!
 		@brief 入力マネージャーを作成

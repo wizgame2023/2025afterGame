@@ -24,21 +24,21 @@ namespace basecross {
 		testView.MaxDepth = 1.0f;
 
 		//ビューのカメラの設定
-		auto PtrCamera = ObjectFactory::Create<Camera>();
-		PtrView->AddView(testView, PtrCamera);
+		m_camera1 = ObjectFactory::Create<Camera>();
+		PtrView->AddView(testView, m_camera1);
 
 		testView.TopLeftX = 640.0f;
 		testView.TopLeftY = 0.0f;
 
 		// カメラ追加
-		auto PtrCameraSecond = ObjectFactory::Create<Camera>();
+		m_camera2 = ObjectFactory::Create<Camera>();
 
-		PtrView->AddView(testView, PtrCameraSecond);
+		PtrView->AddView(testView, m_camera2);
 
-		PtrCamera->SetEye(eye);
-		PtrCamera->SetAt(at);
-		PtrCameraSecond->SetEye(eye);
-		PtrCameraSecond->SetAt(at);
+		m_camera1->SetEye(eye);
+		m_camera1->SetAt(at);
+		m_camera2->SetEye(-eye);
+		m_camera2->SetAt(at);
 
 		//マルチライトの作成
 		auto PtrMultiLight = CreateLight<MultiLight>();
@@ -53,7 +53,17 @@ namespace basecross {
 			//ビューとライトの作成
 			CreateViewLight();
 			auto player = AddGameObject<Player>();
+			auto player2 = AddGameObject<Player>();
+			player2->GetComponent<Transform>()->SetPosition(Vec3(5.0f, 0.0f, -1.0f));
+
 			SetSharedGameObject(L"Player", player);
+			SetSharedGameObject(L"Player2", player2);
+
+			auto mainCamMana1 = AddGameObject<MainCameraManager>(player, m_camera1, L"Player");
+
+
+			auto mainCamMana2 = AddGameObject<MainCameraManager>(player2, m_camera2, L"Player2");
+
 		}
 		catch (...) {
 			throw;
