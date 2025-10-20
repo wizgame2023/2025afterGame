@@ -17,8 +17,8 @@ namespace basecross {
 		void CreateViewLight();
 	public:
 		//\’z‚Æ”jŠü
-		TitleStage() :Stage() {}
-		virtual ~TitleStage() {}
+		TitleStage();
+		virtual ~TitleStage();
 		//‰Šú‰»
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;

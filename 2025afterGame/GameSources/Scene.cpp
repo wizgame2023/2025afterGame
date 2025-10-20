@@ -41,7 +41,7 @@ namespace basecross{
 			SetClearColor(Col);
 			//自分自身にイベントを送る
 			//これにより各ステージやオブジェクトがCreate時にシーンにアクセスできる
-			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToGameStage");			
+			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");			
 			
 			CreateResource();
 
@@ -78,6 +78,15 @@ namespace basecross{
 		if (event->m_MsgStr == L"ToTitleStage") {
 			//タイトルステージのアクティブステージ設定
 			ResetActiveStage<TitleStage>();
+		}
+		if (event->m_MsgStr == L"ToSelectStage") {
+			//セレクトステージのアクティブステージ設定
+			ResetActiveStage<SelectStage>();
+		}
+		//デバッグ用ステージ
+		if (event->m_MsgStr == L"ToErionStage") {
+			//セレクトステージのアクティブステージ設定
+			ResetActiveStage<ErionStage>();
 		}
 	}
 

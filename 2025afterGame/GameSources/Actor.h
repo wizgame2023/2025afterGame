@@ -22,14 +22,18 @@ namespace basecross {
 
 		Quat m_qt;  // クォータニオン
 
-		float m_angleX; // 向いている方向X軸
-		float m_angleY; // 向いている方向Y軸
+		Col4 m_color; // オブジェクトの色
+
+		float m_angleX = 0.0f; // 向いている方向X軸
+		float m_angleY = 0.0f; // 向いている方向Y軸
 
 
 	private:
 
 	public:
 		Actor(const shared_ptr<Stage>& stagePtr);
+		Actor(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 rot, Vec3 scale, Col4 color = Col4(1.0f));
+		Actor(const shared_ptr<Stage>& stagePtr, Vec3 pos, Quat qt, Vec3 scale, Col4 color = Col4(1.0f));
 		~Actor();
 
 		virtual void OnCreate() override;
@@ -65,6 +69,22 @@ namespace basecross {
 		{
 			return m_attackCol;
 		}
+
+		// m_posのゲッタ
+		Vec3 GetPos();
+		// m_qtのゲッタ
+		Quat GetQt();
+		// m_rotのゲッタ
+		Vec3 GetRot();
+		// m_sclceのゲッタ
+		Vec3 GetSclce();
+		// m_colorのゲッタ
+		Col4 GetColor();
+
+		// 角度のゲッタ
+		// 第一引数　X軸かY軸どちらの軸の角度を取るか
+		float GetAngle(wstring XorY);
+
 	};
 }
 //end basecross

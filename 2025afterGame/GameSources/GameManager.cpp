@@ -58,11 +58,18 @@ namespace basecross {
 		InputManager::CreateInputManager();
 	}
 
+	// 更新
 	void GameManager::OnUpdate()
 	{
 		// デルタタイム取得
 		auto& app = App::GetApp();
 		m_deltaTime = app->GetElapsedTime();
+
+		// ゲーム経過時間を計測
+		if (m_gameStartFlag)
+		{
+			m_timeGamePlaying += m_deltaTime;
+		}
 
 		// 入力マネージャーの更新
 		InputManager::GetInputManager()->Update();
@@ -83,6 +90,41 @@ namespace basecross {
 	{
 		// 入力マネージャーの破棄
 		InputManager::DeleteInputManager();
+	}
+
+	// DeltaTimeのゲッタ
+	float GameManager::GetDeltaTime()
+	{
+		return m_deltaTime;
+	}
+
+	int GameManager::GetGameStageNow()
+	{
+		return m_gameStageNow;
+	}
+
+	void GameManager::SetGameStageNow(int gameStageNow)
+	{
+		m_gameStageNow = gameStageNow;
+	}
+
+	// m_gameStartFlagのゲッタ
+	bool GameManager::GetGameStartFlag()
+	{
+		return m_gameStartFlag;
+	}
+
+	// m_gameStartFlagのセッタ
+	// 第一引数 ゲームが開始しているかのフラグ
+	void GameManager::SetGameStartFlag(bool gameStartFlag)
+	{
+		m_gameStartFlag = gameStartFlag;
+	}
+
+	// timeGamePlayingのゲッタ
+	float GameManager::GetTimeGamePlaying()
+	{
+		return m_timeGamePlaying;
 	}
 
 }

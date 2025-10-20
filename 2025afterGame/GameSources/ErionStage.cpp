@@ -56,5 +56,16 @@ namespace basecross {
 		SetSharedGameObject(L"MainCameraManager", mainCamMana);
 	}
 
+	void ErionStage::OnUpdate()
+	{
+		auto& app = App::GetApp();
+
+		//デバッグ用文字
+		wstringstream wss(L"");
+		wss << "CurrentStage : ErionStage" << endl;
+
+		auto scene = app->GetScene<Scene>();
+		scene->SetDebugString(wss.str());
+	}
 }
 //end basecross

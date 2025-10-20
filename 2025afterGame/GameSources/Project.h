@@ -19,7 +19,8 @@
 #include "InputManager.h"
 #include "Background.h"
 #include "Plane.h"
-#include "TitleStage.h"
+#include "StateBase.h"
+#include "StateEnemy.h"
 
 // 殿堂入りMyGameObject本体
 #include "MyGameObject.h";
@@ -34,9 +35,12 @@
 ///////////////////////////////////////////////////
 
 // 親クラスがActor/////////////////////////////////
+#include "FighterAircraftBase.h"
 #include "Player.h";
 #include "Bullet.h";
 #include "Barrier.h";
+#include "DisableShield.h"
+#include "CheckPoint.h"
 ///////////////////////////////////////////////////
 
 // ステージ関係は一番下のブロックでインクルードしてください
@@ -46,6 +50,8 @@
 #include "KaitoStage.h"
 #include "TomokiStage.h"
 #include "YuutaStage.h"
+#include "TitleStage.h"
+#include "SelectStage.h"
 ///////////////////////////////////////////////////
 
 
