@@ -26,6 +26,9 @@ namespace basecross {
 		float m_deltaTime = 0.0f; // 次のフレームに移動するまでの時間
 		int m_gameStageNow = 0; // 現在のゲームステージの変数
 
+		bool m_gameStartFlag = false; // ゲームが開始しているかのフラグ
+		float m_timeGamePlaying = 0.0f; // ゲームの経過時間
+
 	public:
 		//構築と破棄
 		GameManager();
@@ -55,6 +58,14 @@ namespace basecross {
 		int GetGameStageNow();
 		// gameStageNowのセッタ
 		void SetGameStageNow(int gameStageNow);
+
+		// m_gameStartFlagのゲッタ
+		bool GetGameStartFlag();
+		// m_gameStartFlagのセッタ
+		void SetGameStartFlag(bool gameStartFlag);
+
+		// m_timeGamePlayingのゲッタ
+		float GetTimeGamePlaying();
 
 	};
 

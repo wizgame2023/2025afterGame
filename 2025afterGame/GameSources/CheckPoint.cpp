@@ -1,6 +1,6 @@
 /*!
 @file CheckPoint.cpp
-@brief ƒ`ƒFƒbƒNƒ|ƒCƒ“ƒg‚ÌŽÀ‘Ì
+@brief ï¿½`ï¿½Fï¿½bï¿½Nï¿½|ï¿½Cï¿½ï¿½ï¿½gï¿½ÌŽï¿½ï¿½ï¿½
 */
 
 #include "stdafx.h"
@@ -8,7 +8,10 @@
 
 namespace basecross{
 	CheckPoint::CheckPoint(const shared_ptr<Stage>& stageptr) :
-		Actor(stageptr)
+		Actor(stageptr),
+		m_raceTime(0.0f),
+		m_enemyCheckPointTime(0.0f),
+		m_nextCheckPoint(0.0f, 0.0f, 0.0f)
 	{
 
 	}
@@ -29,10 +32,30 @@ namespace basecross{
 
 	void CheckPoint::OnUpdate()
 	{
-
+		
 	}
 
-	// “–‚½‚è”»’è
+	float GetRaceTime(float racetime)
+	{
+		return racetime;
+	}
+
+	float SetEnemyCheckPointTime(float enemycheckpointtime)
+	{
+		return enemycheckpointtime;
+	}
+
+	float GetEnemyCheckPointTime(float enemycheckpointtime,float racetime)
+	{
+		enemycheckpointtime -= racetime;
+		return enemycheckpointtime;
+	}
+
+	Vec3 GetNextCheckPoint(Vec3 nextcheckpoint)
+	{
+		return nextcheckpoint;
+	}
+
 	void CheckPoint::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
 

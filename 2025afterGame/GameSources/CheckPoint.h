@@ -1,6 +1,6 @@
 /*!
 @file CheckPoint.h
-@brief ƒ`ƒFƒbƒNƒ|ƒCƒ“ƒg
+@brief ï¿½`ï¿½Fï¿½bï¿½Nï¿½|ï¿½Cï¿½ï¿½ï¿½g
 */
 
 #pragma once
@@ -23,6 +23,11 @@ namespace basecross{
 
 		void OnCreate()override;
 		void OnUpdate()override;
+
+		float GetRaceTime(float racetime);
+		float SetEnemyCheckPointTime(float enemycheckpointtime);
+		float GetEnemyCheckPointTime(float enemycheckpointtime,float racetime);
+		Vec3 GetNextCheckPoint(Vec3 nextcheckpoint);
 
 		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
 	};
