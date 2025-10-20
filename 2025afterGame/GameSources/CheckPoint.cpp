@@ -10,8 +10,7 @@ namespace basecross{
 	CheckPoint::CheckPoint(const shared_ptr<Stage>& stageptr) :
 		Actor(stageptr),
 		m_raceTime(0.0f),
-		m_previewTime(0.0f),
-		m_checkPointID(0)
+		m_previewTime(0.0f)
 	{
 
 	}
@@ -51,14 +50,7 @@ namespace basecross{
 			{
 				m_previewTime = m_raceTime;
 			}
-
-			SetNextCheckPoint(m_checkPointID);
 		}
-	}
-
-	void CheckPoint::SetCheckPointID(int checkpointid)
-	{
-		m_checkPointID = checkpointid;
 	}
 
 	float CheckPoint::SetDifferenceTime()

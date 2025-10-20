@@ -15,7 +15,6 @@ namespace basecross{
 	public :
 		float m_raceTime;
 		float m_previewTime;
-		int m_checkPointID;
 
 	public :
 		CheckPoint(const shared_ptr<Stage>& stagePtr);
@@ -23,8 +22,6 @@ namespace basecross{
 
 		void OnCreate()override;
 		void OnUpdate()override;
-
-		void SetCheckPointID(int checkpointid);
 
 		float SetDifferenceTime();
 
