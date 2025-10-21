@@ -12,6 +12,7 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	//	ゲームステージクラス
 	//--------------------------------------------------------------------------------------
+	class CheckPoint;
 	class GameManager
 	{
 	private:
@@ -40,6 +41,9 @@ namespace basecross {
 		// ゲームマネージャーを取得
 		static unique_ptr<GameManager, GameManagerDeleter>& GetGameManager();
 
+		// チェックポイントを管理するメンバ配列
+		vector<shared_ptr<CheckPoint>> m_checkPoints;
+
 		// 破棄処理
 		void DeleteGameManager();
 
@@ -66,6 +70,11 @@ namespace basecross {
 
 		// m_timeGamePlayingのゲッタ
 		float GetTimeGamePlaying();
+
+		// m_checkPointsのゲッタ
+		shared_ptr<CheckPoint> GetCheckPoint(int number);
+		// m_checkPointsの追加関数
+		void AddCheckPoint();// 後々、チェックポイントの位置とかを指定する引数入れたい
 
 	};
 
