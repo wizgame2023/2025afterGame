@@ -28,20 +28,22 @@ namespace basecross {
 		Actor::OnCreate();
 
 		// Trans処理追加
-		auto trans = GetComponent<Transform>();
-		trans->SetPosition(Vec3(0.5f, 0.0f, 1.0f));
-		trans->SetQuaternion(Quat(0.0f, 0.0f, 0.0f, 1.0f));
-		trans->SetScale(Vec3(1.0f,3.5f,1.0f));
+		m_trans = GetComponent<Transform>();
+		m_trans->SetPosition(Vec3(0.5f, 0.0f, 1.0f));
+		m_trans->SetQuaternion(Quat(0.0f, 0.0f, 0.0f, 1.0f));
+		m_trans->SetScale(Vec3(1.5f,1.0f,0.1f));
 
 		// コリジョン追加
-		auto ptrCol = AddComponent<CollisionSphere>();
+		auto ptrCol = AddComponent<CollisionObb>();
 		ptrCol->SetDrawActive(false);
 		ptrCol->SetAfterCollision(AfterCollision::None);
 
 		// ドロー処理
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
-		ptrDraw->SetMeshResource(L"DEFAULT_SPHERE");
-		ptrDraw->SetDiffuse(Col4(0.0f, 1.0f, 0.5f, 0.5f));
+		ptrDraw->SetMeshResource(L"DEFAULT_SQUARE");
+		ptrDraw->SetDiffuse(Col4(0.0f, 1.0f, 0.5f, 0.2f));
+		ptrDraw->SetEmissive(Col4(0.0f, 1.0f, 0.5f, 0.2f));
+		ptrDraw->SetTextureResource(L"TestTex");
 		SetAlphaActive(true);
 
 		// 所属を決める (味方 = true,敵 = false)
@@ -62,6 +64,18 @@ namespace basecross {
 			return;
 		}
 
+		// 使用状態でないなら見えないようにする
+		if (!m_use)
+		{
+			m_trans->SetScale(Vec3(0.0f));
+			SetDrawActive(false);
+		}
+		else if (m_use)
+		{
+			m_trans->SetScale(Vec3(Vec3(2.5f, 2.5f, 0.1f)));
+			SetDrawActive(true);
+		}
+
 		// 親クラス処理
 		Actor::OnUpdate();
 
@@ -71,8 +85,9 @@ namespace basecross {
 		EnergyConsumption();
 
 		// 位置更新
-		auto trans = GetComponent<Transform>();
-		trans->SetPosition(m_pos);
+		m_trans = GetComponent<Transform>();
+		m_trans->SetPosition(m_pos);
+		m_trans->SetQuaternion(m_qt);
 
 		m_use = true;
 	}
@@ -97,7 +112,13 @@ namespace basecross {
 	void Barrier::FollowMove()
 	{
 		Vec3 parentPos = m_parentLock->GetComponent<Transform>()->GetPosition();
-		m_pos = parentPos;
+		Vec3 parentUp = m_parentLock->GetComponent<Transform>()->GetUp();
+		Vec3 parentForward = m_parentLock->GetComponent<Transform>()->GetForward();
+
+		m_pos = parentPos - (m_barrierLenght * parentForward) + (parentUp * -0.2f);
+
+		Quat parentQt = m_parentLock->GetComponent<Transform>()->GetQuaternion();
+		m_qt = parentQt;
 	}
 
 	// バリアを使うことによって起きるエネルギーを消費する処理
