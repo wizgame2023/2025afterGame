@@ -20,6 +20,7 @@ namespace basecross {
 		virtual ~TomokiStage() {}
 		//‰Šú‰»
 		virtual void OnCreate()override;
+		virtual void OnUpdate()override;
 	};
 
 

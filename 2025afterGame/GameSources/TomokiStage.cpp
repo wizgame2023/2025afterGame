@@ -32,6 +32,7 @@ namespace basecross {
 		try {
 			auto& app = App::GetApp();
 			auto path = app->GetDataDirWString();
+			auto input = app->GetInputDevice();
 
 			auto backgroundPath = path + L"Backgrounds/";
 			for (const auto& keyName : Background::pairs) {
@@ -46,15 +47,13 @@ namespace basecross {
 
 			auto player = AddGameObject<Player>();
 			SetSharedGameObject(L"Player", player);
+			player->SetPadIndex(0);
+			
 
-			//for (int i = 0; i < 10; i++)
-			//{
-			//	float addPosX = 1.5f * i;
-			//	float addPosY = 1.5f * i;
-			//	auto test = AddGameObject<Test>();
-			//	auto pos = test->GetComponent<Transform>()->GetPosition();
-			//	test->GetComponent<Transform>()->SetPosition(pos.x + addPosX, pos.y + addPosY, pos.z);
-			//}
+			auto player2 = AddGameObject<Player>();
+			SetSharedGameObject(L"Player2", player2);
+			player2->SetPadIndex(1);
+			player2->GetComponent<Transform>()->SetPosition(Vec3(-2.5f,0.0f,0.0f));
 
 		}
 		catch (...) {
@@ -63,6 +62,20 @@ namespace basecross {
 
 		auto mainCamMana = AddGameObject<MainCameraManager>();
 		SetSharedGameObject(L"MainCameraManager", mainCamMana);
+	}
+
+	void TomokiStage::OnUpdate()
+	{
+		auto& app = App::GetApp();
+		auto input = app->GetInputDevice();
+		auto pads = input.GetControlerVec();
+
+		auto player = GetSharedGameObject<Player>(L"Player");
+		auto player1 = GetSharedGameObject<Player>(L"Player2");
+
+		player->SetPad(pads);
+		player1->SetPad(pads);
+
 	}
 
 }
