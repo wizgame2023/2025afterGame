@@ -53,8 +53,8 @@ namespace basecross {
 		}
 
 		// バリア妨害のテスト処理
-		auto testBullet = AddGameObject<Bullet>();
-		AddGameObject<DisableShield>(testBullet);
+		//auto testBullet = AddGameObject<Bullet>();
+		//AddGameObject<DisableShield>(testBullet);
 
 		// テストでバリア生成
 		auto testCube = AddGameObject<TestCube>(Vec3(+3.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.5f));
@@ -64,6 +64,17 @@ namespace basecross {
 
 		auto mainCamMana = AddGameObject<MainCameraManager>();
 		SetSharedGameObject(L"MainCameraManager", mainCamMana);
+	}
+
+	void YuutaStage::OnUpdate()
+	{
+		// テストのために弾を出す
+		auto bButton = InputManager::GetInputManager()->GetDownButton(L"B");
+		if (bButton)
+		{
+			AddGameObject<Bullet>(GetSharedGameObject<Player>(L"Player"));
+		}
+
 	}
 
 }
