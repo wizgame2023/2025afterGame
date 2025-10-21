@@ -37,6 +37,9 @@ namespace basecross{
 	public:
 		// コンストラクタ
 		MainCameraManager(const shared_ptr<Stage>& stagPtr);
+		// target : 対象 
+		// mulView : どのカメラなのか
+		// sharedName : 設定されたSharedGameObjectの名前
 		MainCameraManager(
 			const shared_ptr<Stage>& stagePtr, 
 			const shared_ptr<Actor>& target, 
