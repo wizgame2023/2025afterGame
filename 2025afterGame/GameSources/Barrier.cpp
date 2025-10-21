@@ -6,12 +6,10 @@
 
 #include "stdafx.h"
 #include "Project.h"
-#include "Barrier.h"
-#include "Bullet.h"
 
 namespace basecross {
-	Barrier::Barrier(const shared_ptr<Stage>& stagePtr,const shared_ptr<Actor>& parent) :
-		Actor(stagePtr),
+	Barrier::Barrier(const shared_ptr<Stage>& stagePtr,const shared_ptr<FighterAircraftBase>& parent) :
+		Actor(stagePtr,Vec3(0.5f, 0.0f, 1.0f),Quat(0.0f,0.0f,0.0f,1.0f),Vec3(1.8f,1.0f,0.1f)),
 		m_parent(parent)
 	{
 
@@ -29,9 +27,9 @@ namespace basecross {
 
 		// Trans処理追加
 		m_trans = GetComponent<Transform>();
-		m_trans->SetPosition(Vec3(0.5f, 0.0f, 1.0f));
-		m_trans->SetQuaternion(Quat(0.0f, 0.0f, 0.0f, 1.0f));
-		m_trans->SetScale(Vec3(1.5f,1.0f,0.1f));
+		m_trans->SetPosition(m_pos);
+		m_trans->SetQuaternion(m_qt);
+		m_trans->SetScale(Vec3(0.0f));
 
 		// コリジョン追加
 		auto ptrCol = AddComponent<CollisionObb>();
@@ -64,20 +62,14 @@ namespace basecross {
 			return;
 		}
 
-		// 使用状態でないなら見えないようにする
-		if (!m_use)
-		{
-			m_trans->SetScale(Vec3(0.0f));
-			SetDrawActive(false);
-		}
-		else if (m_use)
-		{
-			m_trans->SetScale(Vec3(Vec3(2.5f, 2.5f, 0.1f)));
-			SetDrawActive(true);
-		}
-
 		// 親クラス処理
 		Actor::OnUpdate();
+
+		// 使用状態が変わった時に変更する
+		CheckUse();
+
+		// 開始時の拡大処理
+		StartExpansion();
 
 		// 親オブジェクトについていく処理
 		FollowMove();
@@ -87,9 +79,52 @@ namespace basecross {
 		// 位置更新
 		m_trans = GetComponent<Transform>();
 		m_trans->SetPosition(m_pos);
+		m_trans->SetScale(m_scale * m_sizePercent);
 		m_trans->SetQuaternion(m_qt);
+	}
 
-		m_use = true;
+	// 開始時の拡大処理
+	void Barrier::StartExpansion()
+	{
+		if (m_StartExpansion)
+		{
+			m_sizePercent += m_delta;
+
+			// サイズが規定以上になったら拡大処理をやめる
+			if (m_sizePercent >= 1.0f)
+			{
+				m_sizePercent = 1.0f;
+				m_StartExpansion = false;
+			}
+		}
+	}
+
+	// 今の使用状態が前のフレームから変わったかを確認する処理
+	void Barrier::CheckUse()
+	{
+		// 使用状態が変わった時に変更する
+		if (m_useBefore != m_use)
+		{
+			// 使用状態でないなら見えないようにする
+			if (!m_use)
+			{
+				m_trans->SetScale(Vec3(0.0f));
+				SetDrawActive(false);
+
+				// 拡大フラグをオフにする
+				m_StartExpansion = false;
+			}
+			else if (m_use)
+			{
+				m_trans->SetScale(Vec3(Vec3(2.5f, 2.5f, 0.1f)));
+				SetDrawActive(true);
+
+				// 拡大フラグをオンにする
+				m_StartExpansion = true;
+			}
+
+			m_useBefore = m_use;
+		}
 	}
 
 	//親クラスによって所属を決める処理
@@ -115,7 +150,8 @@ namespace basecross {
 		Vec3 parentUp = m_parentLock->GetComponent<Transform>()->GetUp();
 		Vec3 parentForward = m_parentLock->GetComponent<Transform>()->GetForward();
 
-		m_pos = parentPos - (m_barrierLenght * parentForward) + (parentUp * -0.2f);
+		float pushHeight = 0.2f;
+		m_pos = parentPos - (m_barrierLenght * parentForward) + (parentUp * pushHeight);
 
 		Quat parentQt = m_parentLock->GetComponent<Transform>()->GetQuaternion();
 		m_qt = parentQt;
@@ -127,7 +163,9 @@ namespace basecross {
 		// 使用している時はエネルギ-を消費
 		if (m_use)
 		{
-			m_energyDebag -= m_energyEfficiency * m_delta;
+			// 親オブジェクトの現在エネルギーを取得して消費させる
+			auto parentEnergy = m_parentLock->GetEnergyCurrent();
+			m_parentLock->SetEnergyCurrent(parentEnergy - (m_energyEfficiency * m_delta));
 
 			// エネルギーが0以下なら使用できない
 			if (m_energyDebag < 0)
