@@ -40,11 +40,11 @@ namespace basecross{
 		static float time = 0;
 		time += delta;
 		// カメラとプレイヤーの距離
-		constexpr float camDis = 7.0f;
-		// カメラの高さ
-		float camHeight = 3.0f;
+		constexpr float camDis = 5.0f;
 		// カメラの追従速度
 		constexpr float followSpeed = 20.0f;
+		// カメラの高さ
+		constexpr float camHeight = 1.5f;
 
 		// プレイヤーの情報取得
 		m_plPos = m_plTrans.lock()->GetPosition();
@@ -61,6 +61,9 @@ namespace basecross{
 		// 目標カメラ位置
 		Vec3 desiredPos = m_plPos - m_plFwrd * camDis + m_plUp * camHeight;
 
+		// 注視点をプレイヤーより少し奥側にする
+		Vec3 atPos = m_plPos + m_plFwrd * 10.0f;
+
 		// 滑らかに補間
 		Vec3 newCamPos = Lerp(currentCamPos, desiredPos, delta * followSpeed);
 
@@ -71,7 +74,7 @@ namespace basecross{
 		m_mulCam->SetUp(Vec3(m_plUp));
 
 		// カメラの注視点
-		m_mulCam->SetAt(m_plPos + Vec3(0.0f, 0.0f, 0.0f));
+		m_mulCam->SetAt(atPos);
 
 		wstringstream wss(L"");
 		wss << "UpX : " << m_mulCam->GetUp().x << " " << "UpY : " << m_mulCam->GetUp().y << " " << "UpZ : " << m_mulCam->GetUp().z << " " << endl;

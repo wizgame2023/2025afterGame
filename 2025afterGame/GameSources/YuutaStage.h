@@ -20,6 +20,7 @@ namespace basecross {
 		virtual ~YuutaStage() {}
 		//‰Šú‰»
 		virtual void OnCreate()override;
+		virtual void OnUpdate()override;
 	};
 
 
