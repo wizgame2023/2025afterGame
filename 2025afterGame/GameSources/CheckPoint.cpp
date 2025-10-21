@@ -10,7 +10,8 @@ namespace basecross{
 	CheckPoint::CheckPoint(const shared_ptr<Stage>& stageptr) :
 		Actor(stageptr),
 		m_raceTime(0.0f),
-		m_previewTime(0.0f)
+		m_previewTime(0.0f),
+		m_checkPointID(0)
 	{
 
 	}
@@ -51,6 +52,8 @@ namespace basecross{
 				m_previewTime = m_raceTime;
 			}
 		}
+
+		SetNextCheckPoint();
 	}
 
 	float CheckPoint::SetDifferenceTime()
@@ -61,10 +64,17 @@ namespace basecross{
 		return differencetime;
 	}
 
-	Vec3 CheckPoint::SetNextCheckPoint(int checkpointid) 
+	void CheckPoint::SetCheckPointID(int id)
 	{
-		Vec3 nextcheckpoint;
-		return nextcheckpoint;
+		m_checkPointID = id;
+	}
+
+	Vec3 CheckPoint::SetNextCheckPoint() 
+	{
+		auto& game = GameManager::GetGameManager();
+		auto& checkpoint = game->GetCheckPoint(m_checkPointID + 1);
+		Vec3 newpoint = checkpoint->GetComponent<Transform>()->GetPosition();
+		return newpoint;
 	}
 }
 //end basecross

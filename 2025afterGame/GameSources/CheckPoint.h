@@ -15,6 +15,7 @@ namespace basecross{
 	public :
 		float m_raceTime;
 		float m_previewTime;
+		int m_checkPointID;
 
 	public :
 		CheckPoint(const shared_ptr<Stage>& stagePtr);
@@ -25,7 +26,9 @@ namespace basecross{
 
 		float SetDifferenceTime();
 
-		Vec3 SetNextCheckPoint(int checkpointid);
+		void SetCheckPointID(int id);
+
+		Vec3 SetNextCheckPoint();
 
 		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
 	};

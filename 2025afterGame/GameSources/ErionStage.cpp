@@ -51,6 +51,7 @@ namespace basecross {
 			{
 				auto checkpoint = AddGameObject<CheckPoint>();
 				checkpoint->GetComponent<Transform>()->SetPosition(0.0f, 0.0f, 10.0f + i * 10.0f);
+				checkpoint->SetCheckPointID(i);
 			}
 
 		}
