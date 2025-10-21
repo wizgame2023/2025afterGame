@@ -325,14 +325,6 @@ namespace basecross
 			m_LastButtons[L"X"] = m_pad.wLastButtons & XINPUT_GAMEPAD_X;
 			m_LastButtons[L"Y"] = m_pad.wLastButtons & XINPUT_GAMEPAD_Y;
 		}
-
-
-		wstringstream wss(L"");
-		wss << "m_padChange: " << (m_padChange ? 1 : 0);
-
-		auto scene = app->GetScene<Scene>();
-		scene->SetDebugString(wss.str());
-
 	}
 
 	// ”jŠü
