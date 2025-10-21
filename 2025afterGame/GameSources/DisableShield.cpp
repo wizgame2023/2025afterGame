@@ -57,8 +57,6 @@ namespace basecross {
 
 		Actor::OnUpdate();
 
-		auto delta = App::GetApp()->GetElapsedTime();
-
 		// 親オブジェクトについていく処理
 		FollowMove();
 		// 使用時処理
