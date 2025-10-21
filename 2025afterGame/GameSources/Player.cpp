@@ -9,32 +9,19 @@
 
 namespace basecross {
 	Player::Player(const shared_ptr<Stage>& ptrStage) :
-		Actor(ptrStage),
-		m_stickL(Vec3(0.0f)),
+		FighterAircraftBase(ptrStage),
+		m_speedCurrent(1.0f),
+		m_speedMax(2.5f),
 		m_velocity(Vec3(0.0f)),
-		m_yawvelocity(Vec3(0.0f)),
-		m_speed(NORMAL_SPEED),
-		m_targetSpeed(0.0f),
 		m_accleRation(3.0f),
 		m_deceleRation(2.0f),
-		m_maxSpeed(2.5f),
 		m_angleSpeed(1.0f),
-		m_bustGauge(MAX_GAUGE),
-		m_timeOfStartAttack(1.0f),
-		m_timeOfAttack(0.0f),
-		m_plusAttack(0),
-		m_attackCollisionFlag(false),
-		m_pitch(0.0f),
-		m_roll(0.0f),
-		m_autoYawSpeed(0.0f),
-		m_currentRollAngle(0.0f),
 		m_currentRoll(0.0f),
 		m_prevRoll(0.0f),
-		m_lastYaw(0.0f),
 		m_initialized(false),
 		m_hasInput(false),
 		m_returnToNeutral(false),
-		m_returnSpeed(0.0f)
+		m_fullEnergy(false)
 	{
 	}
 
@@ -50,9 +37,6 @@ namespace basecross {
 		auto ptrTrans = GetComponent<Transform>();
 		ptrTrans->SetPosition(Vec3(0.0f, 0.0f, -1.0f));
 
-		auto ptrCol = AddComponent<CollisionObb>();
-		ptrCol->SetDrawActive(true);
-
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
 		ptrDraw->SetMeshResource(L"Sentouki");
 		ptrDraw->SetTextureResource(L"diffuse_TX");
@@ -65,45 +49,25 @@ namespace basecross {
 			Vec3(0.0f, XM_PI, 0.0f),
 			Vec3(0.0f, -0.59f, 0.0f)
 		);
-		ptrDraw->SetMeshToTransformMatrix(spanMat);
-
-		//Quat ptrQuat = Quat(1.0f, 1.0f, 1.0f, 1.0f);
-		//ptrQuat.normalize();
-
-		//Quat qPitch, qYaw, qRoll;
-		//qPitch.rotationX(XMConvertToRadians(10.0f));
-		//qYaw.rotationY(XMConvertToRadians(180.0f));
-		//qRoll.rotationZ(XMConvertToRadians(0.0f));
-
-		//ptrQuat = qPitch * qYaw * qRoll;  // 回転順に注意
-		//ptrTrans->SetQuaternion(ptrQuat);
-		
+		ptrDraw->SetMeshToTransformMatrix(spanMat);		
 	}
 
 	void Player::OnUpdate()
 	{
 		auto& app = App::GetApp();
-		auto input = app->GetInputDevice();
-		auto pad = input.GetControlerVec()[0];
 		auto elapsed = app->GetElapsedTime();
 		auto nowPos = GetComponent<Transform>()->GetPosition();
-		auto nowRot = GetComponent<Transform>()->GetRotation();
-		auto nowQuaternion = GetComponent<Transform>()->GetQuaternion();
-		InputManager::CreateInputManager()->Update();
+
+		wstringstream wss(L"");
+		wss << "X : " << nowPos.x << " " << "Y : " << nowPos.y << " " << "Z : " << nowPos.z << " " << endl;
+		wss << m_speedCurrent << endl;
+		auto scene = app->GetScene<Scene>();
+		scene->SetDebugString(wss.str());
+
 
 		PlayerMove();
 		PlayerAngle();
-		PlayerHealBust();
-
-		//wstringstream wss(L"");
-		//wss << "X : " << nowPos.x << " " << "Y : " << nowPos.y << " " << "Z : " << nowPos.z << " " << endl;
-		//Vec3 euler = nowQuaternion.toRotVec(); // ← BaseCrossならこの関数があるか確認
-
-		//wss << "Yaw:" << XMConvertToDegrees(euler.y)
-		//	<< " Pitch:" << XMConvertToDegrees(euler.x)
-		//	<< " Roll:" << XMConvertToDegrees(euler.z) << endl;
-		//auto scene = app->GetScene<Scene>();
-		//scene->SetDebugString(wss.str());
+		CreateBarrier();
 	}
 
 	void Player::OnCollisionEnter(const shared_ptr<GameObject>& Other)
@@ -113,43 +77,44 @@ namespace basecross {
 
 	void Player::PlayerMove()
 	{
-		auto& app = App::GetApp();
 		auto& game = GameManager::GetGameManager();
 		auto& input = InputManager::GetInputManager();
 
 		auto ptrTrans = GetComponent<Transform>();
-		float elapsed = app->GetElapsedTime();
+		float deltaTime = game->GetDeltaTime();
 		Vec3 currentPos = ptrTrans->GetPosition();
 
 		Vec3 forward = ptrTrans->GetForward();
 		float damping = 0.9f;
 		auto Lstick = input->GetLStick();
-
+		
 		// Aボタンを押して加速
 		if (input->GetButton(L"A"))
 		{
-			m_speed += m_accleRation * elapsed;
-			if (m_speed > m_maxSpeed)
+			m_speedCurrent += m_accleRation * deltaTime;
+
+			if (m_speedCurrent > m_speedMax)
 			{
-				m_speed = m_maxSpeed;
+				m_speedCurrent = m_speedMax;
 			}
 		}
-		else
+		else if(m_speedCurrent < 0.0f)
 		{
 			// 押していないと減速
-			m_speed -= m_deceleRation * elapsed;
-			if (m_speed < 0.0f)
+			m_speedCurrent -= m_deceleRation * deltaTime;
+
+			if (m_speedCurrent <= 0.0f)
 			{
-				m_speed = 0.0f;
+				m_speedCurrent = 0.0f;
 			}
 		}
 
 		// 移動処理（減衰付き）
-		if (m_speed > 1.0f)
+		if (m_speedCurrent > 0.0f)
 		{
-			m_velocity = forward * m_speed;
+			m_velocity = forward * m_speedCurrent;
 			m_velocity *= damping;
-			currentPos += m_velocity * elapsed;
+			currentPos += m_velocity * deltaTime;
 		}
 
 		ptrTrans->SetPosition(currentPos);
@@ -157,12 +122,11 @@ namespace basecross {
 
 	void Player::PlayerAngle()
 	{
-		auto& app = App::GetApp();
 		auto& game = GameManager::GetGameManager();
 		auto& input = InputManager::GetInputManager();
 
 		auto ptrTrans = GetComponent<Transform>();
-		auto elapsed = app->GetElapsedTime();
+		float deltaTime = game->GetDeltaTime();
 		auto Lstick = input->GetLStick();
 
 		auto currentQuat = ptrTrans->GetQuaternion();  // 現在の回転
@@ -178,7 +142,7 @@ namespace basecross {
 		// 上下の角度調整
 		if (fabs(Lstick.y) > DEAD_ZONE)
 		{
-			float pitch = Lstick.y * m_angleSpeed * elapsed;
+			float pitch = Lstick.y * m_angleSpeed * deltaTime;
 			Quat pitchQuat;
 			pitchQuat.rotationX(pitch);
 			deltaQuat = deltaQuat * pitchQuat;
@@ -191,9 +155,9 @@ namespace basecross {
 			m_isReturning = false;
 
 			// ロール角を更新
-			m_currentRoll += -Lstick.x * m_angleSpeed * elapsed;
+			m_currentRoll += -Lstick.x * m_angleSpeed * deltaTime;
 
-			static constexpr float maxRoll = XMConvertToRadians(60.0f);
+			static float maxRoll = XMConvertToRadians(60.0f);
 			m_currentRoll = clamp(m_currentRoll, -maxRoll, maxRoll);
 		}
 		else
@@ -208,7 +172,7 @@ namespace basecross {
 			}
 
 			// 経過時間更新
-			m_startTime += elapsed;
+			m_startTime += deltaTime;
 
 			// Lerpで自然に戻す
 			m_currentRoll = Lerp::CalculateLerp(
@@ -250,6 +214,7 @@ namespace basecross {
 			m_returnToNeutral = true;
 		}
 
+		// なぜSlerpはどのクォータニオンの補間用
 		// 入力がされ続けていたら
 		if (m_hasInput)
 		{
@@ -260,7 +225,7 @@ namespace basecross {
 		else if (m_returnToNeutral)
 		{
 			// 少しずつ初期回転に戻す
-			float t = elapsed * 2.0f;
+			float t = deltaTime * 2.0f;
 			Quat resultQuat = Slerp(currentQuat, m_initialQuat, t);
 
 			m_returnToNeutral = false;
@@ -268,72 +233,6 @@ namespace basecross {
 			ptrTrans->SetQuaternion(resultQuat);
 		}
 	}
-
-	void Player::ClampBustGauge()
-	{
-		// bustGaugeの上限をMaxGaugeにすることが出来る
-		m_bustGauge = clamp(m_bustGauge, 0.0f, MAX_GAUGE);
-	}
-
-	void Player::PlayerBust()
-	{
-		auto& app = App::GetApp();
-		auto elapsed = app->GetElapsedTime();
-
-		bool isBoosting = GetIsBoostInputActive() && (m_bustGauge > 0.0f);
-
-		// 加速処理
-		if (isBoosting)
-		{
-			m_speed = MAX_SPEED;
-			m_bustGauge -= GAUGE_CONSUMPTION_RATE * elapsed;
-		}
-		else
-		{
-			m_speed = NORMAL_SPEED;
-		}
-	}
-
-	void Player::PlayerHealBust()
-	{
-		auto& app = App::GetApp();
-		auto elapsed = app->GetElapsedTime();
-
-		bool currentlyBoosting = GetIsBoostInputActive() && (m_bustGauge > 0.0f);
-
-		// ゲージ回復
-		if (currentlyBoosting)
-		{
-			m_bustGauge += GAUGE_RECOVERY_RATE * elapsed;
-		}
-
-		ClampBustGauge();
-	}
-
-	//void Player::PlayerAttack()
-	//{
-	//	auto& app = App::GetApp();
-	//	auto& game = GameManager::GetGameManager();
-	//	auto& input = InputManager::GetInputManager();
-
-	//	if (input->GetDownButton(L"A"))
-	//	{
-	//		m_attackCollisionFlag = true;
-	//	}
-
-	//	// 攻撃が有効になるタイミングに達したら、攻撃判定情報をセットする
-	//	if (m_attackCollisionFlag)
-	//	{
-	//		auto attack = GetAttackPtr();
-	//		auto& info = attack->GetHitInfo();
-	//		info.Damage = 10 + m_plusAttack;
-	//		info.HitOnce = true;
-
-	//		attack->ActivateCollision(0.2f);
-
-	//		m_attackCollisionFlag = false;
-	//	}
-	//}
 
 	bool Player::GetIsBoostInputActive() const
 	{
@@ -346,6 +245,84 @@ namespace basecross {
 
 		return (stickActive || shoulderActive) && triggerActive;
 	}
-}
+
+	void Player::CreateBarrier()
+	{
+		auto& app = App::GetApp();
+		auto stage = GetStage();
+		auto& input = InputManager::GetInputManager();
+
+		Vec3 pos = GetComponent<Transform>()->GetPosition();
+		float nowEnergy = GetEnergyCurrent();
+		float maxEnergy = GetEnergyMax();
+		float noEnergy = 0.0f;
+
+		if (!m_barrier)
+		{
+			m_barrier = stage->AddGameObject<Barrier>(GetThis<Player>());
+			m_barrier->GetComponent<Transform>()->SetScale(Vec3(0.0f));
+		}
+
+		if (!m_fullEnergy)
+		{
+			if (input->GetButton(L"B"))
+			{
+				auto barrierTrans = m_barrier->GetComponent<Transform>();
+				barrierTrans->SetScale(Vec3(1.0f, 3.5f, 1.0f));
+			}
+			else
+			{
+				auto barrierTrans = m_barrier->GetComponent<Transform>();
+				barrierTrans->SetScale(Vec3(0.0f));
+			}
+		}
+	}
+
+	Quat Player::Slerp(const Quat& q1, const Quat& q2, float t)
+	{
+		// ドット積（角度のcosθを求める）
+		float dot = q1.x * q2.x + q1.y * q2.y + q1.z * q2.z + q1.w * q2.w;
+
+		Quat q2b = q2;
+		if (dot < 0.0f)
+		{
+			dot = -dot;
+			q2b = Quat(-q2.x, -q2.y, -q2.z, -q2.w);
+		}
+
+		const float THRESHOLD = 0.9995f;
+		if (dot > THRESHOLD)
+		{
+			// 線形補間でOK
+			Quat result(
+				q1.x + t * (q2b.x - q1.x),
+				q1.y + t * (q2b.y - q1.y),
+				q1.z + t * (q2b.z - q1.z),
+				q1.w + t * (q2b.w - q1.w)
+			);
+			result.normalize();
+			return result;
+		}
+
+		// 角度計算
+		float theta_0 = acosf(dot);
+		float theta = theta_0 * t;
+		float sin_theta = sinf(theta);
+		float sin_theta_0 = sinf(theta_0);
+
+		float s0 = cosf(theta) - dot * sin_theta / sin_theta_0;
+		float s1 = sin_theta / sin_theta_0;
+
+		// 補間結果
+		Quat result(
+			(s0* q1.x) + (s1 * q2b.x),
+			(s0* q1.y) + (s1 * q2b.y),
+			(s0* q1.z) + (s1 * q2b.z),
+			(s0* q1.w) + (s1 * q2b.w)
+		);
+
+		result.normalize();
+		return result;
+	}}
 //end basecross
 
