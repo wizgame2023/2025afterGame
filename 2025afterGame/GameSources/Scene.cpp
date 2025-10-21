@@ -23,9 +23,13 @@ namespace basecross{
 		auto& app = App::GetApp();
 		wstring path = app->GetDataDirWString();
 		wstring modelPath = path + L"Models/";
+		wstring texPath = path + L"Textures/";
 
 		auto Modeltex = modelPath + L"diffuse.png";
 		App::GetApp()->RegisterTexture(L"diffuse_TX", Modeltex);
+
+		auto strTexture = texPath + L"TestTex.png";
+		App::GetApp()->RegisterTexture(L"TestTex", strTexture);
 
 		// Player
 		auto ModelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"Sentouki.bmf");
@@ -69,7 +73,7 @@ namespace basecross{
 	void Scene::OnEvent(const shared_ptr<Event>& event) {
 		if (event->m_MsgStr == L"ToGameStage") {
 			//最初のアクティブステージの設定
-			ResetActiveStage<GameStage>();
+			ResetActiveStage<YuutaStage>();
 		}
 		if (event->m_MsgStr == L"ToMultiViewStage") {
 			//マルチビューのアクティブステージ設定

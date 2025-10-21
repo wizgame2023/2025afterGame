@@ -69,9 +69,14 @@ namespace basecross {
 	// 親オブジェクトについていく処理
 	void DisableShield::FollowMove()
 	{
-		// 親オブジェクトについていく
-		auto parentPos = m_parentLock->GetPos();
-		m_trans->SetPosition(parentPos);
+		Vec3 parentPos = m_parentLock->GetComponent<Transform>()->GetPosition();
+
+		// 位置追従
+		m_pos = parentPos;
+
+		// 回転度追従
+		Quat parentQt = m_parentLock->GetComponent<Transform>()->GetQuaternion();
+		m_qt = parentQt;
 	}
 
 	// 使用時処理

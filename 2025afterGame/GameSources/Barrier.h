@@ -20,6 +20,8 @@ namespace basecross {
 		float m_energyEfficiency = 1.0f; // バリア使用時の燃費 高ければ高い程悪い
 		float m_energyLost = 10.0f;	// バリア使用時に弾が当たった時の消費エネルギー 高ければ高い程悪い
 
+		float m_barrierLenght = 2.0f; // Playerからのバリアの直線距離
+
 		weak_ptr<Actor> m_parent; // 発射元のポインタ
 		shared_ptr<Actor> m_parentLock; // 発射元のポインタをLockして受け取った変数
 

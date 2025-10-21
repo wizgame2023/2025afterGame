@@ -127,6 +127,34 @@ namespace basecross {
 		return m_timeGamePlaying;
 	}
 
+	// m_checkPointsのゲッタ
+	shared_ptr<CheckPoint> GameManager::GetCheckPoint(int number)
+	{
+		// もし、配列外を取得しようとしていたら間違っているとエラーを出す
+		if (number > m_checkPoints.size() - 1 || number < 0)
+		{
+			throw BaseException
+			(
+				L"配列外の物を指定しようとしています。",
+				L"if(number > m_checkPoints.size() - 1 || number < 0)",
+				L"GameManager::GetCheckPoint(int number)"
+			);
+		}
+
+		return m_checkPoints[number];
+	}
+
+	// m_checkPointsの追加関数
+	void GameManager::AddCheckPoint()
+	{
+		// ステージを取得してから生成する
+		auto stage = App::GetApp()->GetScene<Scene>()->GetActiveStage();
+		auto addCheckPointObj = stage->AddGameObject<CheckPoint>();
+
+		// チェックポイント管理配列に追加
+		m_checkPoints.push_back(addCheckPointObj);
+	}
+
 }
 
 //end basecross
