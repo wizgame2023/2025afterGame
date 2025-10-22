@@ -16,6 +16,7 @@ namespace basecross{
 		float m_raceTime;
 		float m_previewTime;
 		int m_checkPointID;
+		shared_ptr<Transform> m_trans;
 
 	public :
 		CheckPoint(const shared_ptr<Stage>& stagePtr);

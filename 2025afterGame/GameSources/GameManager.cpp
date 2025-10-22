@@ -149,6 +149,10 @@ namespace basecross {
 	{
 		// ステージを取得してから生成する
 		auto stage = App::GetApp()->GetScene<Scene>()->GetActiveStage();
+		if (!dynamic_pointer_cast<GameStage>(stage))
+		{
+			auto test = 0;
+		}
 		auto addCheckPointObj = stage->AddGameObject<CheckPoint>();
 
 		// チェックポイント管理配列に追加
