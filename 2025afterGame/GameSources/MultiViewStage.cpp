@@ -50,19 +50,32 @@ namespace basecross {
 
 	void MultiViewStage::OnCreate() {
 		try {
+			auto& app = App::GetApp();
+			auto path = app->GetDataDirWString();
+
+			wstring player1NumSharedName = L"Player";
+			wstring player2NumSharedName = L"Player2";
+
+			auto backgroundPath = path + L"Backgrounds/";
+			for (const auto& keyName : Background::pairs) {
+				app->RegisterTexture(keyName.first, backgroundPath + keyName.first + L".bmp");
+			}
+
+			//背景
+			AddGameObject<Background>();
+
 			//ビューとライトの作成
 			CreateViewLight();
-			auto player = AddGameObject<Player>();
+			auto player1 = AddGameObject<Player>();
 			auto player2 = AddGameObject<Player>();
 			player2->GetComponent<Transform>()->SetPosition(Vec3(5.0f, 0.0f, -1.0f));
 
-			SetSharedGameObject(L"Player", player);
-			SetSharedGameObject(L"Player2", player2);
+			SetSharedGameObject(player1NumSharedName, player1);
+			SetSharedGameObject(player2NumSharedName, player2);
 
-			auto mainCamMana1 = AddGameObject<MainCameraManager>(player, m_camera1, L"Player");
+			auto mainCamMana1 = AddGameObject<MainCameraManager>(player1, m_camera1, player1NumSharedName);
 
-
-			auto mainCamMana2 = AddGameObject<MainCameraManager>(player2, m_camera2, L"Player2");
+			auto mainCamMana2 = AddGameObject<MainCameraManager>(player2, m_camera2, player2NumSharedName);
 
 		}
 		catch (...) {
