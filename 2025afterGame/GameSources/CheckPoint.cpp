@@ -29,40 +29,51 @@ namespace basecross{
 		m_trans->SetQuaternion(m_qt);
 		m_trans->SetScale(m_scale);
 
+		//コリジョンの設定
 		auto ptrCol = AddComponent<CollisionSphere>();
 		ptrCol->SetDrawActive(true);
 		ptrCol->SetAfterCollision(AfterCollision::None);
 
+		//メッシュの描画
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 	}
 
 	void CheckPoint::OnUpdate()
 	{
+		//ゲームマネージャーを取得
 		auto& game = GameManager::GetGameManager();
+		//レース時間の取得
 		m_raceTime = game->GetTimeGamePlaying();
+		//位置を指定
 		m_trans->SetPosition(Vec3(m_pos.x, m_pos.y, 10.0f + m_checkPointID * m_pos.z));
 	}
 
+	//プレイヤ―の接触で実行
 	void CheckPoint::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
 		auto playermachine = dynamic_pointer_cast<Player>(obj);
-
+		//プレイヤーが接触した時のみ実行
 		if (playermachine)
 		{
+			//初めてこのチェックポイントに触れたか判定
 			if (m_previewTime > 0.0f)
 			{
+				//2機目からは先に通った機体との差分の時間を返す
 				playermachine->SetTimeCheckPointDifferece(GetDifferenceTime());
 			}
 			else
 			{
+				//1機目の場合基準タイムを設定する
+				playermachine->SetTimeCheckPointDifferece(0);
 				m_previewTime = m_raceTime;
 			}
+			//次のチェックポイントをプレイヤーに返す
+			playermachine->SetNextCheckPointPos(GetNextCheckPoint());
 		}
-
-		GetNextCheckPoint();
 	}
 
+	//差分の時間をプレイヤーに返すゲッター
 	float CheckPoint::GetDifferenceTime()
 	{
 		auto& game = GameManager::GetGameManager();
@@ -71,11 +82,13 @@ namespace basecross{
 		return differencetime;
 	}
 
+	//チェックポイントのIDを設定
 	void CheckPoint::SetCheckPointID(int id)
 	{
 		m_checkPointID = id;
 	}
 
+	//次のチェックポイントをプレイヤーに返すゲッター
 	Vec3 CheckPoint::GetNextCheckPoint() 
 	{
 		if (m_checkPointID != 3)
