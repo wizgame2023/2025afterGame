@@ -16,6 +16,7 @@ namespace basecross {
 		bool m_use = false; // バリアが発動しているか
 		bool m_useBefore = false; // ひとつ前のバリアが発動しているかのフラグ
 		bool m_StartExpansion = false; // 拡大処理をするかのフラグ
+		bool m_EndReduction = false; // 縮小処理をするかのフラグ
 		float m_sizePercent = 0.0f; // m_sizeを最大(1.0f)とした割合サイズ
 
 		// 仮でエネルギーの変数を作成、Player側に実装されたらそっちに移行 
@@ -37,6 +38,8 @@ namespace basecross {
 
 		// 開始時の拡大処理
 		void StartExpansion();
+		// 終了時の縮小処理
+		void EndReduction();
 
 		// 今の使用状態が前のフレームから変わったかを確認する処理
 		void CheckUse();

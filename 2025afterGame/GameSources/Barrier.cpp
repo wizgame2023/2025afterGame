@@ -70,6 +70,8 @@ namespace basecross {
 
 		// 開始時の拡大処理
 		StartExpansion();
+		// 終了時の縮小処理
+		EndReduction();
 
 		// 親オブジェクトについていく処理
 		FollowMove();
@@ -99,6 +101,24 @@ namespace basecross {
 		}
 	}
 
+	// 終了時の縮小処理
+	void Barrier::EndReduction()
+	{
+		if (m_EndReduction)
+		{
+			m_sizePercent -= m_delta;
+
+			// サイズが規定以下になったら縮小処理をやめる
+			if (m_sizePercent <= 0.0f)
+			{
+				m_sizePercent = 0.0f;
+				m_EndReduction = false;
+				// 見えないようにする
+				SetDrawActive(false);
+			}
+		}
+	}
+
 	// 今の使用状態が前のフレームから変わったかを確認する処理
 	void Barrier::CheckUse()
 	{
@@ -109,18 +129,20 @@ namespace basecross {
 			if (!m_use)
 			{
 				m_trans->SetScale(Vec3(0.0f));
-				SetDrawActive(false);
 
-				// 拡大フラグをオフにする
+				// 拡大、縮小フラグを変更する
 				m_StartExpansion = false;
+				m_EndReduction = true;
 			}
 			else if (m_use)
 			{
 				m_trans->SetScale(Vec3(Vec3(2.5f, 2.5f, 0.1f)));
+				// 見えるようにする
 				SetDrawActive(true);
 
-				// 拡大フラグをオンにする
+				// 拡大、縮小フラグを変更する
 				m_StartExpansion = true;
+				m_EndReduction = false;
 			}
 
 			m_useBefore = m_use;
@@ -164,11 +186,12 @@ namespace basecross {
 		if (m_use)
 		{
 			// 親オブジェクトの現在エネルギーを取得して消費させる
-			auto parentEnergy = m_parentLock->GetEnergyCurrent();
-			m_parentLock->SetEnergyCurrent(parentEnergy - (m_energyEfficiency * m_delta));
+			float parentEnergy = m_parentLock->GetEnergyCurrent();
+			float parentEnergyCurrent = parentEnergy - (m_energyEfficiency * m_delta);
+			m_parentLock->SetEnergyCurrent(parentEnergyCurrent);
 
 			// エネルギーが0以下なら使用できない
-			if (m_energyDebag < 0)
+			if (parentEnergyCurrent < 0)
 			{
 				m_use = false;
 			}

@@ -14,6 +14,7 @@ namespace basecross {
 	class YuutaStage : public Stage {
 		//ƒrƒ…[‚Ìì¬
 		void CreateViewLight();
+		function<void()> m_Func;
 	public:
 		//\’z‚Æ”jŠü
 		YuutaStage() :Stage() {}
