@@ -20,12 +20,37 @@ namespace basecross {
 
 	void FighterAircraftBase::OnCreate()
 	{
-		Actor::OnCreate();		
+		Actor::OnCreate();
+
+		auto stage = GetStage();
+
+		// バリア装備
+		m_barrier = stage->AddGameObject<Barrier>(GetThis<FighterAircraftBase>());
+		// バリア妨害装備
+		m_disableShield = stage->AddGameObject<DisableShield>(GetThis<FighterAircraftBase>());
 	}
 
 	void FighterAircraftBase::OnUpdate()
 	{
 
+	}
+
+	// バリア使用関数
+	void FighterAircraftBase::UseBarrier(bool use)
+	{
+		m_barrier->SetUse(use);
+	}
+
+	// バリア妨害使用関数
+	void FighterAircraftBase::UseDisableShield()
+	{
+		m_disableShield->SetUse(true);
+	}
+
+	// 弾発射関数
+	void FighterAircraftBase::UseBullet()
+	{
+		GetStage()->AddGameObject<Bullet>(GetThis<FighterAircraftBase>());
 	}
 
 	// 現在耐久値のゲッタ
