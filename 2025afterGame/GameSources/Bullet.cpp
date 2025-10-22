@@ -50,13 +50,9 @@ namespace basecross {
 		// 継承元ののUpdate更新
 		Actor::OnUpdate();
 
-		// 親オブジェクトの向いている方向に向かって移動する
-		m_pos = m_trans->GetPosition();
-		auto addPosVec = (m_speed * m_parentForward) * m_delta;
-		m_pos += addPosVec;
+		// 移動処理
+		Move();
 
-		// どのくらい移動したのかを記録する
-		m_limitLenghtCount += addPosVec.x + addPosVec.y + addPosVec.z;
 		// 射程範囲外にいるならこのオブジェクトは削除される
 		if (m_limitLenght < m_limitLenghtCount)
 		{
@@ -65,6 +61,18 @@ namespace basecross {
 		}
 
 		m_trans->SetPosition(m_pos);
+	}
+
+	// 移動用の関数
+	void Bullet::Move()
+	{
+		// 親オブジェクトの向いていた方向(OnCreate時)に向かって移動する
+		m_pos = m_trans->GetPosition();
+		auto addPosVec = (m_speed * m_parentForward) * m_delta;
+		m_pos += addPosVec;
+
+		// どのくらい移動したのかを記録する
+		m_limitLenghtCount += addPosVec.x + addPosVec.y + addPosVec.z;
 	}
 
 	// 当たり判定

@@ -58,7 +58,9 @@ namespace basecross {
 
 		// テストでバリア生成
 		auto testCube = AddGameObject<TestCube>(Vec3(+3.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.5f));
-		AddGameObject<Barrier>(GetSharedGameObject<Player>(L"Player"));
+		// Playerの親クラスがFighterAircraftBaseになっていないのでそれ待ちのコメントアウト
+		//auto barrier = AddGameObject<Barrier>(GetSharedGameObject<Player>(L"Player"));
+		//SetSharedGameObject(L"Barrier", barrier);
 
 
 
@@ -74,6 +76,14 @@ namespace basecross {
 		{
 			AddGameObject<Bullet>(GetSharedGameObject<Player>(L"Player"));
 		}
+
+		// テストのためにバリアをオンにする
+		auto yButton = InputManager::GetInputManager()->GetDownButton(L"Y");
+		if (yButton)
+		{
+			GetSharedGameObject<Barrier>(L"Barrier")->SetUse(true);
+		}
+
 
 	}
 
