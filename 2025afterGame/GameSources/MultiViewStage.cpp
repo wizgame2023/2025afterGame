@@ -32,11 +32,11 @@ namespace basecross {
 
 		// ƒJƒƒ‰’Ç‰Á
 		m_camera2 = ObjectFactory::Create<Camera>();
-
 		PtrView->AddView(testView, m_camera2);
 
 		m_camera1->SetEye(eye);
 		m_camera1->SetAt(at);
+
 		m_camera2->SetEye(-eye);
 		m_camera2->SetAt(at);
 
@@ -69,6 +69,9 @@ namespace basecross {
 			auto player1 = AddGameObject<Player>();
 			auto player2 = AddGameObject<Player>();
 			player2->GetComponent<Transform>()->SetPosition(Vec3(5.0f, 0.0f, -1.0f));
+
+			player1->SetPlayerIndex(0);
+			player2->SetPlayerIndex(1);
 
 			SetSharedGameObject(player1NumSharedName, player1);
 			SetSharedGameObject(player2NumSharedName, player2);

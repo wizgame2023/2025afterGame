@@ -30,13 +30,24 @@ namespace basecross{
 	void MainCameraManager::OnCreate()
 	{
 		m_stage = GetStage();
+		if (m_sharedName == L"Player")
+			dynamic_pointer_cast<MultiView>(GetStage()->GetView())->SetTargetIndex(0);
+		else
+			dynamic_pointer_cast<MultiView>(GetStage()->GetView())->SetTargetIndex(1);
+
 		m_mulCam = OnGetDrawCamera(); // カメラの取得
-		m_target = m_stage->GetSharedGameObject<Actor>(m_sharedName);
+		//m_target = m_stage->GetSharedGameObject<Actor>(m_sharedName);
 		m_plTrans = m_target->GetComponent<Transform>();
 	}
 
 	void MainCameraManager::OnUpdate()
 	{
+		if (m_sharedName == L"Player")
+			int a = 0;
+		else
+			int b = 0;
+
+		// プレイヤーのUpベクトル履歴更新
 
 		auto& app = App::GetApp();
 		float delta = app->GetElapsedTime();
@@ -89,6 +100,7 @@ namespace basecross{
 
 		wstringstream wss(L"");
 		wss << "Fov : " << m_mulCam->GetFovY() << "\n";
+		wss << "target : " << m_sharedName << "\n";
 
 		auto scene = app->GetScene<Scene>();
 		scene->SetDebugString(wss.str());
