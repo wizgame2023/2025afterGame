@@ -57,10 +57,12 @@ namespace basecross {
 		auto& app = App::GetApp();
 		auto elapsed = app->GetElapsedTime();
 		auto nowPos = GetComponent<Transform>()->GetPosition();
+		auto& input = InputManager::GetInputManager();
 
 		wstringstream wss(L"");
 		wss << "X : " << nowPos.x << " " << "Y : " << nowPos.y << " " << "Z : " << nowPos.z << " " << endl;
 		wss << m_speedCurrent << endl;
+		wss << m_playerIndex << endl; 
 		auto scene = app->GetScene<Scene>();
 		scene->SetDebugString(wss.str());
 
@@ -68,6 +70,8 @@ namespace basecross {
 		PlayerMove();
 		PlayerAngle();
 		CreateBarrier();
+
+		ChangController();
 	}
 
 	void Player::OnCollisionEnter(const shared_ptr<GameObject>& Other)
@@ -77,7 +81,9 @@ namespace basecross {
 
 	void Player::PlayerMove()
 	{
+		auto& app = App::GetApp();
 		auto& game = GameManager::GetGameManager();
+		auto pads = app->GetInputDevice();
 		auto& input = InputManager::GetInputManager();
 
 		auto ptrTrans = GetComponent<Transform>();
@@ -86,10 +92,29 @@ namespace basecross {
 
 		Vec3 forward = ptrTrans->GetForward();
 		float damping = 0.9f;
+
 		auto Lstick = input->GetLStick();
 		
+		if (m_playerIndex == 0)
+		{
+			Lstick = input->GetLStick();
+		}
+		else if (m_playerIndex == 1)
+		{
+			Lstick = input->GetLStick2();
+		}
+			
+		if (m_playerIndex == 0)
+		{
+			m_aButton = input->GetButton(L"A");
+		}
+		else if (m_playerIndex == 1)
+		{
+			m_aButton = input->GetButton2(L"A");
+		}
+
 		// Aボタンを押して加速
-		if (input->GetButton(L"A"))
+		if (m_aButton)
 		{
 			m_speedCurrent += m_accleRation * deltaTime;
 
@@ -124,12 +149,22 @@ namespace basecross {
 	{
 		auto& game = GameManager::GetGameManager();
 		auto& input = InputManager::GetInputManager();
+		float deltaTime = game->GetDeltaTime();
 
 		auto ptrTrans = GetComponent<Transform>();
-		float deltaTime = game->GetDeltaTime();
-		auto Lstick = input->GetLStick();
+		auto currentQuat = ptrTrans->GetQuaternion();
 
-		auto currentQuat = ptrTrans->GetQuaternion();  // 現在の回転
+		Vec2 Lstick;
+
+		// Playerのコントローラーで変わる
+		if (m_playerIndex == 0)
+		{
+			Lstick = input->GetLStick();
+		}
+		else if (m_playerIndex == 1)
+		{
+			Lstick = input->GetLStick2();
+		}
 
 		if (!m_initialized)
 		{
@@ -263,18 +298,15 @@ namespace basecross {
 			m_barrier->GetComponent<Transform>()->SetScale(Vec3(0.0f));
 		}
 
-		if (!m_fullEnergy)
+		if (input->GetButton(L"B"))
 		{
-			if (input->GetButton(L"B"))
-			{
-				auto barrierTrans = m_barrier->GetComponent<Transform>();
-				barrierTrans->SetScale(Vec3(1.0f, 3.5f, 1.0f));
-			}
-			else
-			{
-				auto barrierTrans = m_barrier->GetComponent<Transform>();
-				barrierTrans->SetScale(Vec3(0.0f));
-			}
+			auto barrierTrans = m_barrier->GetComponent<Transform>();
+			barrierTrans->SetScale(Vec3(1.0f, 3.5f, 1.0f));
+		}
+		else
+		{
+			auto barrierTrans = m_barrier->GetComponent<Transform>();
+			barrierTrans->SetScale(Vec3(0.0f));
 		}
 	}
 
