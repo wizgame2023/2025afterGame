@@ -34,6 +34,7 @@ namespace basecross{
 		float m_deceleRation;
 		float m_angleSpeed;
 		float m_prevRoll;
+		bool m_acceleration; // 加速しているか
 
 		// lerpの変数
 		float m_currentRoll;
@@ -49,6 +50,7 @@ namespace basecross{
 		bool m_isReturning;
 
 		bool m_fullEnergy;
+		int m_playerIndex;
 
 
 		// クラス全体で共有される定数
@@ -59,11 +61,8 @@ namespace basecross{
 		static constexpr float GAUGE_CONSUMPTION_RATE = 1.0f;
 		static constexpr float GAUGE_RECOVERY_RATE = 3.0f;
 		
-		int m_padIndex;
-		CONTROLER_STATE m_pad;
-		int padIndex = 0;
-		bool wasPressed = false;
-
+		bool m_aButton;
+		bool m_prevDDown;
 
 	public:
 		Player::Player(const shared_ptr<Stage>& ptrStage);
@@ -85,24 +84,44 @@ namespace basecross{
 
 		void CreateBarrier();
 
-		void SetPad(const std::vector<CONTROLER_STATE>& pads) {
-			if (padIndex >= pads.size()) return;
+		void ChangController()
+		{
+			auto& input = InputManager::GetInputManager();
 
-			const CONTROLER_STATE& myPad = pads[padIndex];
-			bool isPressed = myPad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN;
+			bool dDown = input->GetButton(L"DDown");
 
-			if (isPressed && !wasPressed) {
-				// 自分のコントローラーでボタンが押されたときの処理
-				// DoSomething();
+			// 「押した瞬間」を検出
+			if (dDown && !m_prevDDown)
+			{
+				if (m_playerIndex == 0)
+					m_playerIndex = 1;
+				else
+					m_playerIndex = 0;
 			}
 
-			wasPressed = isPressed;
+			// 次フレーム用に状態を保存
+			m_prevDDown = dDown;
 		}
 
-		void SetPadIndex(int index) { padIndex = index; }
-
-
 		Quat Slerp(const Quat& q1, const Quat& q2, float t);
+		
+		// プレイヤーのコントローラ番号をセッタ
+		void SetPlayerIndex(int index)
+		{
+			m_playerIndex = index;
+		}
+
+		// プレイヤーのコントローラ番号ゲッタ
+		int GetPlayerIndex() const
+		{
+			return m_playerIndex;
+		}
+
+		// 加速しているかのゲッタ
+		bool GetAcceleration()
+		{
+			return m_acceleration;
+		}
 
 	};
 }
