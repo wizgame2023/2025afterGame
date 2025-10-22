@@ -26,6 +26,9 @@ namespace basecross{
 
 		wstring m_sharedName = L"Player";
 
+		// 傾きの履歴
+		std::deque<Vec3> m_plUpHistory;
+
 		// 線形補間関数(滑らかに動かすためのやつ)
 		// 参考 : https://taketakeshi.hatenablog.jp/entry/2025/05/19/205447
 		// start : 開始地 end : 終了値 time : 補間係数(0.0f～1.0f)
@@ -34,9 +37,47 @@ namespace basecross{
 			return start + (end - start) * time;
 		}
 
+		// Upベクトルの履歴に追加し、最大値を超えたら削除
+		// up : 追加するUpベクトル 
+		// historyMax : 履歴の最大数
+		void UpdateUpHistory(const Vec3& up, const int historyMax) {
+			m_plUpHistory.push_back(up);
+			if (m_plUpHistory.size() > historyMax)
+				m_plUpHistory.pop_front();
+		}
+		
+		// 履歴に保存されたupベクトルの平均値を返す
+		// 戻り値 : 平均化されたUpベクトル
+		Vec3 CalcUpHistoryAverage() const {
+			if (m_plUpHistory.empty())
+				return Vec3(0.0f, 1.0f, 0.0f);
+
+			Vec3 sum(0.0f, 0.0f, 0.0f);
+			for (const auto& v : m_plUpHistory)
+				sum += v;
+
+			Vec3 avg = sum / static_cast<float>(m_plUpHistory.size());
+			if (avg.length() < 0.00001f)
+				avg = Vec3(0.0f, 1.0f, 0.0f);
+
+			return avg.normalize();
+		}
+
+		// 履歴追加と平均化を同時に行う
+		// currentUp : 現在のUpベクトル
+		// historyMax : 履歴の最大値
+		// 戻り値 : 平均化されたUpベクトル
+		Vec3 GetSmoothedUp(const Vec3& currentUp, const int historyMax) {
+			UpdateUpHistory(currentUp, historyMax);
+			return CalcUpHistoryAverage();
+		}
+
 	public:
 		// コンストラクタ
 		MainCameraManager(const shared_ptr<Stage>& stagPtr);
+		// target : 対象 
+		// mulView : どのカメラなのか
+		// sharedName : 設定されたSharedGameObjectの名前
 		MainCameraManager(
 			const shared_ptr<Stage>& stagePtr, 
 			const shared_ptr<Actor>& target, 
