@@ -73,8 +73,9 @@ namespace basecross
 	{
 		auto& app = App::GetApp();
 		auto input = app->GetInputDevice();
-		
+
 		m_pad = input.GetControlerVec()[0];
+		m_pad2 = input.GetControlerVec()[1];
 
 		m_LStick = Vec2(m_pad.fThumbLX, m_pad.fThumbLY);
 		m_RStick = Vec2(m_pad.fThumbRX, m_pad.fThumbRY);
@@ -191,6 +192,124 @@ namespace basecross
 			m_LastButtons[L"X"] = m_pad.wLastButtons & XINPUT_GAMEPAD_X;
 			m_LastButtons[L"Y"] = m_pad.wLastButtons & XINPUT_GAMEPAD_Y;
 		}
+
+		// 2P////////////////////
+
+		m_LStickP2 = Vec2(m_pad2.fThumbLX, m_pad2.fThumbLY);
+		m_RStickP2 = Vec2(m_pad2.fThumbRX, m_pad2.fThumbRY);
+
+		m_LeftTriggerP2 = m_pad2.bLeftTrigger;
+		m_RightTriggerP2 = m_pad2.bRightTrigger;
+
+		{
+			m_ButtonsP2[L"DUp"] = m_pad2.wButtons & XINPUT_GAMEPAD_DPAD_UP;
+			m_ButtonsP2[L"DDown"] = m_pad2.wButtons & XINPUT_GAMEPAD_DPAD_DOWN;
+			m_ButtonsP2[L"DLeft"] = m_pad2.wButtons & XINPUT_GAMEPAD_DPAD_LEFT;
+			m_ButtonsP2[L"DRight"] = m_pad2.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT;
+
+			m_ButtonsP2[L"Start"] = m_pad2.wButtons & XINPUT_GAMEPAD_START;
+			m_ButtonsP2[L"Back"] = m_pad2.wButtons & XINPUT_GAMEPAD_BACK;
+
+			m_ButtonsP2[L"LStick"] = m_pad2.wButtons & XINPUT_GAMEPAD_LEFT_THUMB;
+			m_ButtonsP2[L"RStick"] = m_pad2.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB;
+
+			m_ButtonsP2[L"L"] = m_pad2.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER;
+			m_ButtonsP2[L"R"] = m_pad2.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER;
+
+			m_ButtonsP2[L"A"] = m_pad2.wButtons & XINPUT_GAMEPAD_A;
+			m_ButtonsP2[L"B"] = m_pad2.wButtons & XINPUT_GAMEPAD_B;
+			m_ButtonsP2[L"X"] = m_pad2.wButtons & XINPUT_GAMEPAD_X;
+			m_ButtonsP2[L"Y"] = m_pad2.wButtons & XINPUT_GAMEPAD_Y;
+		}
+
+		// DownButton
+		{
+			m_DownButtonsP2[L"DUp"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_DPAD_UP;
+			m_DownButtonsP2[L"DDown"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_DPAD_DOWN;
+			m_DownButtonsP2[L"DLeft"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_DPAD_LEFT;
+			m_DownButtonsP2[L"DRight"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_DPAD_RIGHT;
+
+			m_DownButtonsP2[L"Start"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_START;
+			m_DownButtonsP2[L"Back"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_BACK;
+
+			m_DownButtonsP2[L"LStick"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_LEFT_THUMB;
+			m_DownButtonsP2[L"RStick"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_RIGHT_THUMB;
+
+			m_DownButtonsP2[L"L"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_LEFT_SHOULDER;
+			m_DownButtonsP2[L"R"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER;
+
+			m_DownButtonsP2[L"A"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_A;
+			m_DownButtonsP2[L"B"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_B;
+			m_DownButtonsP2[L"X"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_X;
+			m_DownButtonsP2[L"Y"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_Y;
+		}
+
+		// UpButton
+		{
+			m_UpButtonsP2[L"DUp"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_DPAD_UP;
+			m_UpButtonsP2[L"DDown"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_DPAD_DOWN;
+			m_UpButtonsP2[L"DLeft"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_DPAD_LEFT;
+			m_UpButtonsP2[L"DRight"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_DPAD_RIGHT;
+
+			m_UpButtonsP2[L"Start"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_START;
+			m_UpButtonsP2[L"Back"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_BACK;
+
+			m_UpButtonsP2[L"LStick"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_LEFT_THUMB;
+			m_UpButtonsP2[L"RStick"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_RIGHT_THUMB;
+
+			m_UpButtonsP2[L"L"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_LEFT_SHOULDER;
+			m_UpButtonsP2[L"R"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER;
+
+			m_UpButtonsP2[L"A"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_A;
+			m_UpButtonsP2[L"B"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_B;
+			m_UpButtonsP2[L"X"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_X;
+			m_UpButtonsP2[L"Y"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_Y;
+		}
+
+		// NowUpdateButton
+		{
+			m_NowUpdateButtonsP2[L"DUp"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_DPAD_UP;
+			m_NowUpdateButtonsP2[L"DDown"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_DPAD_DOWN;
+			m_NowUpdateButtonsP2[L"DLeft"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_DPAD_LEFT;
+			m_NowUpdateButtonsP2[L"DRight"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_DPAD_RIGHT;
+
+			m_NowUpdateButtonsP2[L"Start"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_START;
+			m_NowUpdateButtonsP2[L"Back"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_BACK;
+
+			m_NowUpdateButtonsP2[L"LStick"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_LEFT_THUMB;
+			m_NowUpdateButtonsP2[L"RStick"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_RIGHT_THUMB;
+
+			m_NowUpdateButtonsP2[L"L"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_LEFT_SHOULDER;
+			m_NowUpdateButtonsP2[L"R"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER;
+
+			m_NowUpdateButtonsP2[L"A"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_A;
+			m_NowUpdateButtonsP2[L"B"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_B;
+			m_NowUpdateButtonsP2[L"X"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_X;
+			m_NowUpdateButtonsP2[L"Y"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_Y;
+		}
+
+		// LastButton
+		{
+			m_LastButtonsP2[L"DUp"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_DPAD_UP;
+			m_LastButtonsP2[L"DDown"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_DPAD_DOWN;
+			m_LastButtonsP2[L"DLeft"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_DPAD_LEFT;
+			m_LastButtonsP2[L"DRight"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_DPAD_RIGHT;
+
+			m_LastButtonsP2[L"Start"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_START;
+			m_LastButtonsP2[L"Back"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_BACK;
+
+			m_LastButtonsP2[L"LStick"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_LEFT_THUMB;
+			m_LastButtonsP2[L"RStick"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_RIGHT_THUMB;
+
+			m_LastButtonsP2[L"L"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_LEFT_SHOULDER;
+			m_LastButtonsP2[L"R"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER;
+
+			m_LastButtonsP2[L"A"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_A;
+			m_LastButtonsP2[L"B"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_B;
+			m_LastButtonsP2[L"X"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_X;
+			m_LastButtonsP2[L"Y"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_Y;
+		}
+
 	}
 
 	// 更新
@@ -198,20 +317,9 @@ namespace basecross
 	{
 		auto& app = App::GetApp();
 		auto input = app->GetInputDevice();
-		
-		auto pads = input.GetControlerVec();
-		bool isPressed0 = pads[0].wButtons & XINPUT_GAMEPAD_DPAD_DOWN;
-		bool isPressed1 = pads[1].wButtons & XINPUT_GAMEPAD_DPAD_DOWN;
-		bool isPressed = isPressed0 || isPressed1;
 
-		if (isPressed && !m_wasPressed)
-		{
-			m_padChange = !m_padChange;
-		}
-
-		m_pad = pads[m_padChange ? 1 : 0];
-		// 前回の押下状態を更新
-		m_wasPressed = isPressed;
+		m_pad = input.GetControlerVec()[0];
+		m_pad2 = input.GetControlerVec()[1];
 
 		m_LStick = Vec2(m_pad.fThumbLX, m_pad.fThumbLY);
 		m_RStick = Vec2(m_pad.fThumbRX, m_pad.fThumbRY);
@@ -325,6 +433,122 @@ namespace basecross
 			m_LastButtons[L"X"] = m_pad.wLastButtons & XINPUT_GAMEPAD_X;
 			m_LastButtons[L"Y"] = m_pad.wLastButtons & XINPUT_GAMEPAD_Y;
 		}
+
+		//2P /////////
+		m_LStickP2 = Vec2(m_pad2.fThumbLX, m_pad2.fThumbLY);
+		m_RStickP2 = Vec2(m_pad2.fThumbRX, m_pad2.fThumbRY);
+
+		// Button
+		{
+			m_ButtonsP2[L"DUp"] = m_pad2.wButtons & XINPUT_GAMEPAD_DPAD_UP;
+			m_ButtonsP2[L"DDown"] = m_pad2.wButtons & XINPUT_GAMEPAD_DPAD_DOWN;
+			m_ButtonsP2[L"DLeft"] = m_pad2.wButtons & XINPUT_GAMEPAD_DPAD_LEFT;
+			m_ButtonsP2[L"DRight"] = m_pad2.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT;
+
+			m_ButtonsP2[L"Start"] = m_pad2.wButtons & XINPUT_GAMEPAD_START;
+			m_ButtonsP2[L"Back"] = m_pad2.wButtons & XINPUT_GAMEPAD_BACK;
+
+			m_ButtonsP2[L"LStick"] = m_pad2.wButtons & XINPUT_GAMEPAD_LEFT_THUMB;
+			m_ButtonsP2[L"RStick"] = m_pad2.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB;
+
+			m_ButtonsP2[L"L"] = m_pad2.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER;
+			m_ButtonsP2[L"R"] = m_pad2.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER;
+
+			m_ButtonsP2[L"A"] = m_pad2.wButtons & XINPUT_GAMEPAD_A;
+			m_ButtonsP2[L"B"] = m_pad2.wButtons & XINPUT_GAMEPAD_B;
+			m_ButtonsP2[L"X"] = m_pad2.wButtons & XINPUT_GAMEPAD_X;
+			m_ButtonsP2[L"Y"] = m_pad2.wButtons & XINPUT_GAMEPAD_Y;
+		}
+
+		// DownButton
+		{
+			m_DownButtonsP2[L"DUp"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_DPAD_UP;
+			m_DownButtonsP2[L"DDown"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_DPAD_DOWN;
+			m_DownButtonsP2[L"DLeft"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_DPAD_LEFT;
+			m_DownButtonsP2[L"DRight"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_DPAD_RIGHT;
+
+			m_DownButtonsP2[L"Start"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_START;
+			m_DownButtonsP2[L"Back"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_BACK;
+
+			m_DownButtonsP2[L"LStick"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_LEFT_THUMB;
+			m_DownButtonsP2[L"RStick"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_RIGHT_THUMB;
+
+			m_DownButtonsP2[L"L"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_LEFT_SHOULDER;
+			m_DownButtonsP2[L"R"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER;
+
+			m_DownButtonsP2[L"A"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_A;
+			m_DownButtonsP2[L"B"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_B;
+			m_DownButtonsP2[L"X"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_X;
+			m_DownButtonsP2[L"Y"] = m_pad2.wPressedButtons & XINPUT_GAMEPAD_Y;
+		}
+
+		// UpButton
+		{
+			m_UpButtonsP2[L"DUp"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_DPAD_UP;
+			m_UpButtonsP2[L"DDown"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_DPAD_DOWN;
+			m_UpButtonsP2[L"DLeft"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_DPAD_LEFT;
+			m_UpButtonsP2[L"DRight"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_DPAD_RIGHT;
+
+			m_UpButtonsP2[L"Start"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_START;
+			m_UpButtonsP2[L"Back"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_BACK;
+
+			m_UpButtonsP2[L"LStick"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_LEFT_THUMB;
+			m_UpButtonsP2[L"RStick"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_RIGHT_THUMB;
+
+			m_UpButtonsP2[L"L"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_LEFT_SHOULDER;
+			m_UpButtonsP2[L"R"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER;
+
+			m_UpButtonsP2[L"A"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_A;
+			m_UpButtonsP2[L"B"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_B;
+			m_UpButtonsP2[L"X"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_X;
+			m_UpButtonsP2[L"Y"] = m_pad2.wReleasedButtons & XINPUT_GAMEPAD_Y;
+		}
+
+		// NowUpdateButton
+		{
+			m_NowUpdateButtonsP2[L"DUp"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_DPAD_UP;
+			m_NowUpdateButtonsP2[L"DDown"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_DPAD_DOWN;
+			m_NowUpdateButtonsP2[L"DLeft"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_DPAD_LEFT;
+			m_NowUpdateButtonsP2[L"DRight"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_DPAD_RIGHT;
+
+			m_NowUpdateButtonsP2[L"Start"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_START;
+			m_NowUpdateButtonsP2[L"Back"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_BACK;
+
+			m_NowUpdateButtonsP2[L"LStick"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_LEFT_THUMB;
+			m_NowUpdateButtonsP2[L"RStick"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_RIGHT_THUMB;
+
+			m_NowUpdateButtonsP2[L"L"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_LEFT_SHOULDER;
+			m_NowUpdateButtonsP2[L"R"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER;
+
+			m_NowUpdateButtonsP2[L"A"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_A;
+			m_NowUpdateButtonsP2[L"B"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_B;
+			m_NowUpdateButtonsP2[L"X"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_X;
+			m_NowUpdateButtonsP2[L"Y"] = m_pad2.wNowUpdateButtons & XINPUT_GAMEPAD_Y;
+		}
+
+		// LastButton
+		{
+			m_LastButtonsP2[L"DUp"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_DPAD_UP;
+			m_LastButtonsP2[L"DDown"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_DPAD_DOWN;
+			m_LastButtonsP2[L"DLeft"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_DPAD_LEFT;
+			m_LastButtonsP2[L"DRight"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_DPAD_RIGHT;
+
+			m_LastButtonsP2[L"Start"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_START;
+			m_LastButtonsP2[L"Back"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_BACK;
+
+			m_LastButtonsP2[L"LStick"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_LEFT_THUMB;
+			m_LastButtonsP2[L"RStick"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_RIGHT_THUMB;
+
+			m_LastButtonsP2[L"L"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_LEFT_SHOULDER;
+			m_LastButtonsP2[L"R"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER;
+
+			m_LastButtonsP2[L"A"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_A;
+			m_LastButtonsP2[L"B"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_B;
+			m_LastButtonsP2[L"X"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_X;
+			m_LastButtonsP2[L"Y"] = m_pad2.wLastButtons & XINPUT_GAMEPAD_Y;
+		}
+
+
 	}
 
 	// 破棄

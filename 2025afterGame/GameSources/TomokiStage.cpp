@@ -46,14 +46,15 @@ namespace basecross {
 			AddGameObject<Background>();
 
 			auto player = AddGameObject<Player>();
+			player->SetPlayerIndex(0);
 			SetSharedGameObject(L"Player", player);
-			player->SetPadIndex(0);
 			
 
-			auto player2 = AddGameObject<Player>();
+			auto player2 = AddGameObject<Player>();		
+			player2->SetPlayerIndex(1);
 			SetSharedGameObject(L"Player2", player2);
-			player2->SetPadIndex(1);
-			player2->GetComponent<Transform>()->SetPosition(Vec3(-2.5f,0.0f,0.0f));
+			player2->GetComponent<Transform>()->SetPosition(Vec3(0.0f, 0.0f, 10.0f));
+
 
 		}
 		catch (...) {
@@ -66,16 +67,6 @@ namespace basecross {
 
 	void TomokiStage::OnUpdate()
 	{
-		auto& app = App::GetApp();
-		auto input = app->GetInputDevice();
-		auto pads = input.GetControlerVec();
-
-		auto player = GetSharedGameObject<Player>(L"Player");
-		auto player1 = GetSharedGameObject<Player>(L"Player2");
-
-		player->SetPad(pads);
-		player1->SetPad(pads);
-
 	}
 
 }

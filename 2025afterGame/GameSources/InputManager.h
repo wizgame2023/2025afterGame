@@ -54,9 +54,21 @@ namespace basecross
 		BYTE m_RightTrigger;
 
 		CONTROLER_STATE m_pad;
-		bool m_padChange;
-		bool m_wasPressed;
-	
+
+		Vec2 m_LStickP2;
+		Vec2 m_RStickP2;
+		map<wstring, bool> m_ButtonsP2;
+		map<wstring, bool> m_DownButtonsP2;
+		map<wstring, bool> m_UpButtonsP2;
+		map<wstring, bool> m_NowUpdateButtonsP2;
+		map<wstring, bool> m_LastButtonsP2;
+		BYTE m_LeftTriggerP2;
+		BYTE m_RightTriggerP2;
+
+		CONTROLER_STATE m_pad2;
+
+		int m_playerIndex;
+
 	public:
 		/*!
 		@brief 入力マネージャーを作成
@@ -200,6 +212,115 @@ namespace basecross
 		BYTE GetRightTrigger() const
 		{
 			return m_RightTrigger;
+		}
+
+		// 2P //////////////////////////////////
+		/*!
+		@brief Lスティックの傾きを取得
+		@return Lスティックの傾き
+		*/
+		Vec2 GetLStick2()
+		{
+			return m_LStickP2;
+		}
+
+		/*!
+		@brief Rスティックの傾きを取得
+		@return Rスティックの傾き
+		*/
+		Vec2 GetRStick2()
+		{
+			return m_RStickP2;
+		}
+
+		/*!
+		@brief ボタンの状態を取得
+		@param[in] button 取得したいボタンの名前
+		@return ボタンの状態
+		*/
+		bool GetButton2(wstring button)
+		{
+			auto it = m_ButtonsP2.find(button);
+			if (it != m_ButtonsP2.end())
+			{
+				return it->second;
+			}
+
+			return false;
+		}
+
+		/*!
+		@brief ボタンの押下状態を取得
+		@param[in] button 取得したいボタンの名前
+		@return ボタンの押下状態
+		*/
+		bool GetDownButton2(wstring button)
+		{
+			auto it = m_DownButtonsP2.find(button);
+			if (it != m_DownButtonsP2.end())
+			{
+				return it->second;
+			}
+
+			return false;
+		}
+
+		/*!
+		@brief ボタンの離脱状態を取得
+		@param[in] button 取得したいボタンの名前
+		@return ボタンの離脱状態
+		*/
+		bool GetUpButton2(wstring button)
+		{
+			auto it = m_UpButtonsP2.find(button);
+			if (it != m_UpButtonsP2.end())
+			{
+				return it->second;
+			}
+
+			return false;
+		}
+
+		/*!
+		@brief ボタンの変更状態を取得
+		@param[in] button 取得したいボタンの名前
+		@return ボタンの変更状態
+		*/
+		bool GetNowUpdateButton2(wstring button)
+		{
+			auto it = m_NowUpdateButtonsP2.find(button);
+			if (it != m_NowUpdateButtonsP2.end())
+			{
+				return it->second;
+			}
+
+			return false;
+		}
+
+		/*!
+		@brief 前フレームのボタンの状態を取得
+		@param[in] button 取得したいボタンの名前
+		@return 前フレームのボタンの状態
+		*/
+		bool GetLastButton2(wstring button)
+		{
+			auto it = m_LastButtonsP2.find(button);
+			if (it != m_LastButtonsP2.end())
+			{
+				return it->second;
+			}
+
+			return false;
+		}
+
+		BYTE GetLeftTrigger2() const
+		{
+			return m_LeftTriggerP2;
+		}
+
+		BYTE GetRightTrigger2() const
+		{
+			return m_RightTriggerP2;
 		}
 
 	private:
