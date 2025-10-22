@@ -52,7 +52,7 @@ namespace basecross{
 		{
 			if (m_previewTime > 0.0f)
 			{
-				SetDifferenceTime();
+				playermachine->SetTimeCheckPointDifferece(GetDifferenceTime());
 			}
 			else
 			{
@@ -60,10 +60,10 @@ namespace basecross{
 			}
 		}
 
-		SetNextCheckPoint();
+		GetNextCheckPoint();
 	}
 
-	float CheckPoint::SetDifferenceTime()
+	float CheckPoint::GetDifferenceTime()
 	{
 		auto& game = GameManager::GetGameManager();
 		float differencetime = m_previewTime - game->GetTimeGamePlaying();
@@ -76,7 +76,7 @@ namespace basecross{
 		m_checkPointID = id;
 	}
 
-	Vec3 CheckPoint::SetNextCheckPoint() 
+	Vec3 CheckPoint::GetNextCheckPoint() 
 	{
 		if (m_checkPointID != 3)
 		{
