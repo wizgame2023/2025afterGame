@@ -7,6 +7,8 @@
 #include "stdafx.h"
 #include "Project.h"
 #include<vector>
+#include<deque>
+#include<DirectXMathMatrix.inl>
 
 namespace basecross{
 	MainCameraManager::MainCameraManager(const shared_ptr<Stage>& stagPtr) :
@@ -35,10 +37,12 @@ namespace basecross{
 
 	void MainCameraManager::OnUpdate()
 	{
+
 		auto& app = App::GetApp();
 		float delta = app->GetElapsedTime();
 		static float time = 0;
 		time += delta;
+
 		// カメラとプレイヤーの距離
 		constexpr float camDis = 5.0f;
 		// カメラの追従速度
@@ -51,6 +55,12 @@ namespace basecross{
 		m_plRot = m_plTrans.lock()->GetRotation();
 		m_plFwrd = m_plTrans.lock()->GetForward();
 		m_plUp = m_plTrans.lock()->GetUp();
+
+		// 履歴の最大値(6で0.1秒のディレイがかかる)
+		static constexpr int historyMax = 15;
+
+		// ディレイをかけたカメラの傾き制御
+		Vec3 smoothUp = GetSmoothedUp(m_plUp, historyMax);
 
 		// カメラの現在の位置
 		Vec3 currentCamPos = m_mulCam->GetEye();
@@ -70,19 +80,20 @@ namespace basecross{
 		// 常にプレイヤーの後ろにカメラを設置する(プレイヤーの角度が変わっても正面が映らないような感じ)
 		m_mulCam->SetEye(newCamPos);
 
+
 		// プレイヤーの角度に合わせてカメラも傾く
-		m_mulCam->SetUp(Vec3(m_plUp));
+		m_mulCam->SetUp(Vec3(smoothUp));
 
 		// カメラの注視点
 		m_mulCam->SetAt(atPos);
 
 		wstringstream wss(L"");
-		wss << "UpX : " << m_mulCam->GetUp().x << " " << "UpY : " << m_mulCam->GetUp().y << " " << "UpZ : " << m_mulCam->GetUp().z << " " << endl;
-		wss << "CamRot : " << m_plRot.x << " " << m_plRot.y << " " << m_plRot.z << " " << endl;
+		wss << "Fov : " << m_mulCam->GetFovY() << "\n";
 
 		auto scene = app->GetScene<Scene>();
 		scene->SetDebugString(wss.str());
 
 	}
+
 }
 //end basecross
