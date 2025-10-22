@@ -16,14 +16,11 @@ namespace basecross {
 		void CreateViewLight();
 	public:
 		//\’z‚Æ”jŠü
-		ErionStage();
+		ErionStage() : Stage(){}
 		virtual ~ErionStage() {}
 		//‰Šú‰»
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
-
-		//¶¬ƒtƒ‰ƒO
-		bool m_setupFlug;
 	};
 
 

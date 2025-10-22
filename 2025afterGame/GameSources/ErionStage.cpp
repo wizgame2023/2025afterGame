@@ -7,12 +7,6 @@
 #include "Project.h"
 
 namespace basecross {
-	ErionStage::ErionStage() :
-		m_setupFlug(true)
-	{
-
-	}
-
 	//--------------------------------------------------------------------------------------
 	//	ゲームステージクラス実体
 	//--------------------------------------------------------------------------------------
@@ -52,6 +46,11 @@ namespace basecross {
 
 			auto player = AddGameObject<Player>();
 			SetSharedGameObject(L"Player", player);
+
+			for (int i = 0; i < 3; i++)
+			{
+				game->AddCheckPoint();
+			}
 		}
 		catch (...) {
 			throw;
@@ -71,16 +70,6 @@ namespace basecross {
 
 		auto scene = app->GetScene<Scene>();
 		scene->SetDebugString(wss.str());
-
-		if (m_setupFlug)
-		{
-			auto& game = GameManager::GetGameManager();
-			//for (int i = 0; i < 3; i++)
-			//{
-				game->AddCheckPoint();
-			//}
-			m_setupFlug = false;
-		}
 	}
 }
 //end basecross
