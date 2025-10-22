@@ -126,6 +126,12 @@ namespace basecross {
 		m_timeCheckPointDifferece = TimeCheckPointDifferece;
 	}
 
+	// 次のチェックポイントの位置のセッタ
+	void FighterAircraftBase::SetNextCheckPointPos(Vec3 nextCheckPointPos)
+	{
+		m_nextCheckPointPos = m_nextCheckPointPos;
+	}
+
 }
 //end basecross
 

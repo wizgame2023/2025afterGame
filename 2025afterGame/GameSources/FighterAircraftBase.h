@@ -39,7 +39,7 @@ namespace basecross{
 		// 今後,ストリップストリーム,DRSを実装予定
 
 		float m_timeCheckPointDifferece; // 自分が通ったチェックポイントのタイムと前の機体のタイムの差
-		
+		Vec3 m_nextCheckPointPos; // 次のチェックポイントの位置
 	public:
 		FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& ptrStage);
 		FighterAircraftBase::~FighterAircraftBase();
@@ -75,6 +75,8 @@ namespace basecross{
 		void SetEnergyCurrent(float energyCurrent);
 		// 自分が通ったチェックポイントのタイムと前の機体のタイムの差のセッタ
 		void SetTimeCheckPointDifferece(float timeCheckPointDifferece);
+		// 次のチェックポイントの位置のセッタ
+		void SetNextCheckPointPos(Vec3 nextCheckPointPos);
 	};
 }
 //end basecross
