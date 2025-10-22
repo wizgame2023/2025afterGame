@@ -16,7 +16,7 @@ namespace basecross {
 		void CreateViewLight();
 	public:
 		//\’z‚Æ”jŠü
-		ErionStage() :Stage() {}
+		ErionStage() : Stage(){}
 		virtual ~ErionStage() {}
 		//‰Šú‰»
 		virtual void OnCreate()override;
