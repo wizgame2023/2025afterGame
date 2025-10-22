@@ -120,6 +120,12 @@ namespace basecross {
 		m_energyCurrent = energyCurrent;
 	}
 
+	// 自分が通ったチェックポイントのタイムと前の機体のタイムの差のセッタ
+	void FighterAircraftBase::SetTimeCheckPointDifferece(float TimeCheckPointDifferece)
+	{
+		m_timeCheckPointDifferece = TimeCheckPointDifferece;
+	}
+
 }
 //end basecross
 
