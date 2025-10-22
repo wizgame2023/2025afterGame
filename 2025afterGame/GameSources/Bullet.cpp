@@ -1,6 +1,7 @@
 /*!
 @file Bullet.cpp
 @brief ’e‚ÌÀ‘Ì
+’S“–FO•r—T‘¾
 */
 
 #include "stdafx.h"
