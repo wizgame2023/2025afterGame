@@ -37,6 +37,8 @@ namespace basecross{
 		bool m_disableShieldFlag; // バリア無効化をしてよいかのフラグ 
 
 		// 今後,ストリップストリーム,DRSを実装予定
+
+		float m_timeCheckPointDifferece; // 自分が通ったチェックポイントのタイムと前の機体のタイムの差
 		
 	public:
 		FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& ptrStage);
@@ -71,6 +73,8 @@ namespace basecross{
 
 		// 現在のエネルギーセッタ
 		void SetEnergyCurrent(float energyCurrent);
+		// 自分が通ったチェックポイントのタイムと前の機体のタイムの差のセッタ
+		void SetTimeCheckPointDifferece(float timeCheckPointDifferece);
 	};
 }
 //end basecross
