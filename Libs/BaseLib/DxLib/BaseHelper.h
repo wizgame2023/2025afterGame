@@ -2016,6 +2016,14 @@ namespace basecross{
 			Ptr->SetCreated(true);
 			return Ptr;
 		}
+		template<typename T, typename... Ts>
+		static shared_ptr<T> CreateStage(Ts&&... params) {
+			shared_ptr<T> Ptr = shared_ptr<T>(new T(params...));
+			//仮想関数呼び出し
+			Ptr->OnPreCreate();
+			Ptr->SetCreated(true);
+			return Ptr;
+		}
 		//--------------------------------------------------------------------------------------
 		/*!
 		@brief オブジェクト作成（static関数）<br/>
