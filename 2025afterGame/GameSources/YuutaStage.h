@@ -14,12 +14,14 @@ namespace basecross {
 	class YuutaStage : public Stage {
 		//ƒrƒ…[‚Ìì¬
 		void CreateViewLight();
+		function<void()> m_Func;
 	public:
 		//\’z‚Æ”jŠü
 		YuutaStage() :Stage() {}
 		virtual ~YuutaStage() {}
 		//‰Šú‰»
 		virtual void OnCreate()override;
+		virtual void OnUpdate()override;
 	};
 
 

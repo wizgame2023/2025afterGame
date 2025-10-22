@@ -17,12 +17,22 @@ namespace basecross {
 
 		weak_ptr<Actor> m_parent; // 発射元のポインタ
 
+		Vec3 m_parentForward; // 親オブジェクトの向いている方向
+
+		float m_limitLenght = 30.0f; // 制限射程
+		float m_limitLenghtCount = 0.0f; // 制限射程
+
+		float m_speed = 15.0f; // 弾のスピード
+
 	public:
-		Bullet(const shared_ptr<Stage>& stagePtr);
+		Bullet(const shared_ptr<Stage>& stagePtr,const shared_ptr<Actor>& parent);
 		~Bullet();
 
 		void OnCreate()override;
 		void OnUpdate()override;
+
+		// 移動用の関数
+		void Move();
 
 		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
 	};

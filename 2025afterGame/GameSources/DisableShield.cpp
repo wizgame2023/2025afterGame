@@ -1,13 +1,14 @@
 /*!
 @file ProjectShader.cpp
 @brief バリアを妨害する空間の実体
+担当：三瓶裕太
 */
 
 #include "stdafx.h"
 #include "Project.h"
 
 namespace basecross {
-	DisableShield::DisableShield(const shared_ptr<Stage>& ptrStage,const shared_ptr<Actor>& parent,float sizeMax) :
+	DisableShield::DisableShield(const shared_ptr<Stage>& ptrStage,const shared_ptr<FighterAircraftBase>& parent,float sizeMax) :
 		Actor(ptrStage),
 		m_parent(parent),
 		m_sizeMax(sizeMax)
@@ -56,8 +57,6 @@ namespace basecross {
 		}
 
 		Actor::OnUpdate();
-
-		auto delta = App::GetApp()->GetElapsedTime();
 
 		// 親オブジェクトについていく処理
 		FollowMove();

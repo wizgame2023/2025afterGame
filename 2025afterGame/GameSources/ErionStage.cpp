@@ -7,7 +7,6 @@
 #include "Project.h"
 
 namespace basecross {
-
 	//--------------------------------------------------------------------------------------
 	//	ゲームステージクラス実体
 	//--------------------------------------------------------------------------------------
@@ -32,6 +31,7 @@ namespace basecross {
 		try {
 			auto& app = App::GetApp();
 			auto path = app->GetDataDirWString();
+			auto& game = GameManager::GetGameManager();
 
 			auto backgroundPath = path + L"Backgrounds/";
 			for (const auto& keyName : Background::pairs) {
@@ -47,6 +47,10 @@ namespace basecross {
 			auto player = AddGameObject<Player>();
 			SetSharedGameObject(L"Player", player);
 
+			for (int i = 0; i < 3; i++)
+			{
+				game->AddCheckPoint();
+			}
 		}
 		catch (...) {
 			throw;

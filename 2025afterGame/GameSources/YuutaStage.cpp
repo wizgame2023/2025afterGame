@@ -43,6 +43,7 @@ namespace basecross {
 
 			//背景
 			AddGameObject<Background>();
+			GameManager::GetGameManager()->AddCheckPoint();
 
 			auto player = AddGameObject<Player>();
 			SetSharedGameObject(L"Player", player);
@@ -53,17 +54,47 @@ namespace basecross {
 		}
 
 		// バリア妨害のテスト処理
-		auto testBullet = AddGameObject<Bullet>();
-		AddGameObject<DisableShield>(testBullet);
+		//auto testBullet = AddGameObject<Bullet>();
+		//AddGameObject<DisableShield>(testBullet);
 
 		// テストでバリア生成
 		auto testCube = AddGameObject<TestCube>(Vec3(+3.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.5f));
-		AddGameObject<Barrier>(GetSharedGameObject<Player>(L"Player"));
+		// Playerの親クラスがFighterAircraftBaseになっていないのでそれ待ちのコメントアウト
+		auto barrier = AddGameObject<Barrier>(GetSharedGameObject<Player>(L"Player"));
+		SetSharedGameObject(L"Barrier", barrier);
 
 
 
 		auto mainCamMana = AddGameObject<MainCameraManager>();
 		SetSharedGameObject(L"MainCameraManager", mainCamMana);
+	}
+
+	void YuutaStage::OnUpdate()
+	{
+		if (m_Func) {
+			m_Func();
+			m_Func = nullptr;
+		}
+		// テストのために弾を出す
+		auto bButton = InputManager::GetInputManager()->GetDownButton(L"B");
+		if (bButton)
+		{
+			AddGameObject<Bullet>(GetSharedGameObject<Player>(L"Player"));
+		}
+
+		// テストのためにバリアをオンにする
+		auto yButton = InputManager::GetInputManager()->GetDownButton(L"Y");
+		if (yButton)
+		{
+			GetSharedGameObject<Barrier>(L"Barrier")->SetUse(true);
+		}
+		auto xButton = InputManager::GetInputManager()->GetDownButton(L"X");
+		if (xButton)
+		{
+			GetSharedGameObject<Barrier>(L"Barrier")->SetUse(false);
+		}
+
+
 	}
 
 }
