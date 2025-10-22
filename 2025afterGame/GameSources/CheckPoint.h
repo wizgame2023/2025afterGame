@@ -25,11 +25,11 @@ namespace basecross{
 		void OnCreate()override;
 		void OnUpdate()override;
 
-		float SetDifferenceTime();
+		float GetDifferenceTime();
 
 		void SetCheckPointID(int id);
 
-		Vec3 SetNextCheckPoint();
+		Vec3 GetNextCheckPoint();
 
 		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
 	};
