@@ -1,6 +1,7 @@
 /*!
 @file DisableShield.h
 @brief シールドを破壊する処理
+担当：三瓶裕太
 */
 
 #pragma once

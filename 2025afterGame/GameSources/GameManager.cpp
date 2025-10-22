@@ -157,6 +157,9 @@ namespace basecross {
 
 		// チェックポイント管理配列に追加
 		m_checkPoints.push_back(addCheckPointObj);
+
+		// 生成したオブジェクトに自分の配列番号を渡す
+		addCheckPointObj->SetCheckPointID(m_checkPoints.size());
 	}
 
 }
