@@ -20,12 +20,50 @@ namespace basecross {
 
 	void FighterAircraftBase::OnCreate()
 	{
-		Actor::OnCreate();		
+		Actor::OnCreate();
+
+		auto stage = GetStage();
+
+		// バリア装備
+		m_barrier = stage->AddGameObject<Barrier>(GetThis<FighterAircraftBase>());
+		// バリア妨害装備
+		m_disableShield = stage->AddGameObject<DisableShield>(GetThis<FighterAircraftBase>());
 	}
 
 	void FighterAircraftBase::OnUpdate()
 	{
 
+	}
+
+	// バリア使用関数
+	void FighterAircraftBase::UseBarrier(bool use)
+	{
+		if (m_energyCurrent > 0.0f)
+		{
+			m_barrier->SetUse(use);
+		}
+	}
+
+	// バリア妨害使用関数
+	void FighterAircraftBase::UseDisableShield()
+	{
+		float energyLost = 30.0f; // エネルギーを消費する量
+		if (m_energyCurrent >= energyLost)
+		{
+			m_energyCurrent -= energyLost; // エネルギー消費		
+			m_disableShield->SetUse(true);
+		}
+	}
+
+	// 弾発射関数
+	void FighterAircraftBase::UseBullet()
+	{
+		float energyLost = 30.0f; // エネルギーを消費する量
+		if (m_energyCurrent >= energyLost)
+		{
+			m_energyCurrent -= energyLost; // エネルギー消費
+			GetStage()->AddGameObject<Bullet>(GetThis<FighterAircraftBase>());
+		}
 	}
 
 	// 現在耐久値のゲッタ
@@ -80,6 +118,12 @@ namespace basecross {
 	void FighterAircraftBase::SetEnergyCurrent(float energyCurrent)
 	{
 		m_energyCurrent = energyCurrent;
+	}
+
+	// 自分が通ったチェックポイントのタイムと前の機体のタイムの差のセッタ
+	void FighterAircraftBase::SetTimeCheckPointDifferece(float TimeCheckPointDifferece)
+	{
+		m_timeCheckPointDifferece = TimeCheckPointDifferece;
 	}
 
 }
