@@ -46,10 +46,12 @@ namespace basecross {
 
 			auto player = AddGameObject<Player>();
 			SetSharedGameObject(L"Player", player);
+			int max = 0;
 
 			for (int i = 0; i < 3; i++)
 			{
 				game->AddCheckPoint();
+				max++;
 			}
 		}
 		catch (...) {
