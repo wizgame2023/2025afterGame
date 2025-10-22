@@ -22,11 +22,11 @@ namespace basecross {
 		bool m_use = false; // 使用しているかのフラグ
 		bool m_reduction = false; // サイズ縮小フラグ
 
-		weak_ptr<Actor> m_parent; // 親オブジェクト
-		shared_ptr<Actor> m_parentLock; // lockをした親オブジェクト
+		weak_ptr<FighterAircraftBase> m_parent; // 親オブジェクト
+		shared_ptr<FighterAircraftBase> m_parentLock; // lockをした親オブジェクト
 
 	public:
-		DisableShield(const shared_ptr<Stage>& ptrStage, const shared_ptr<Actor>& parent, float sizeMax = 3.0f);
+		DisableShield(const shared_ptr<Stage>& ptrStage, const shared_ptr<FighterAircraftBase>& parent, float sizeMax = 3.0f);
 		~DisableShield();
 
 		void OnCreate()override;

@@ -7,7 +7,7 @@
 #include "Project.h"
 
 namespace basecross {
-	DisableShield::DisableShield(const shared_ptr<Stage>& ptrStage,const shared_ptr<Actor>& parent,float sizeMax) :
+	DisableShield::DisableShield(const shared_ptr<Stage>& ptrStage,const shared_ptr<FighterAircraftBase>& parent,float sizeMax) :
 		Actor(ptrStage),
 		m_parent(parent),
 		m_sizeMax(sizeMax)
