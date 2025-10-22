@@ -8,6 +8,7 @@
 #include "stdafx.h"
 #include "Actor.h"
 #include "Barrier.h"
+#include "Bullet.h"
 
 namespace basecross{
 
@@ -24,6 +25,7 @@ namespace basecross{
 	{
 		// 参照するもの
 		shared_ptr<Barrier> m_barrier;
+		shared_ptr<Bullet> m_bullet;
 
 		Vec3 m_velocity;
 
@@ -82,46 +84,26 @@ namespace basecross{
 		// ゲームパッドの入力状態
 		bool GetIsBoostInputActive() const;
 
+		// プレイヤーの装備
+		// プレイヤーバリア
 		void CreateBarrier();
+		// プレイヤーの銃撃
+		void CreateBullet();
 
-		void ChangController()
-		{
-			auto& input = InputManager::GetInputManager();
-
-			bool dDown = input->GetButton(L"DDown");
-
-			// 「押した瞬間」を検出
-			if (dDown && !m_prevDDown)
-			{
-				if (m_playerIndex == 0)
-					m_playerIndex = 1;
-				else
-					m_playerIndex = 0;
-			}
-
-			// 次フレーム用に状態を保存
-			m_prevDDown = dDown;
-		}
+		void ChangController();
 
 		Quat Slerp(const Quat& q1, const Quat& q2, float t);
 		
+		float AngleBetWeen(const Quat& a, const Quat& b);
+
 		// プレイヤーのコントローラ番号をセッタ
-		void SetPlayerIndex(int index)
-		{
-			m_playerIndex = index;
-		}
+		void SetPlayerIndex(int index);
 
 		// プレイヤーのコントローラ番号ゲッタ
-		int GetPlayerIndex() const
-		{
-			return m_playerIndex;
-		}
+		int GetPlayerIndex() const;
 
 		// 加速しているかのゲッタ
-		bool GetAcceleration()
-		{
-			return m_acceleration;
-		}
+		bool GetAcceleration();
 
 	};
 }
