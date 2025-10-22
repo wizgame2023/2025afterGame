@@ -38,19 +38,32 @@ namespace basecross {
 	// バリア使用関数
 	void FighterAircraftBase::UseBarrier(bool use)
 	{
-		m_barrier->SetUse(use);
+		if (m_energyCurrent > 0.0f)
+		{
+			m_barrier->SetUse(use);
+		}
 	}
 
 	// バリア妨害使用関数
 	void FighterAircraftBase::UseDisableShield()
 	{
-		m_disableShield->SetUse(true);
+		float energyLost = 30.0f; // エネルギーを消費する量
+		if (m_energyCurrent >= energyLost)
+		{
+			m_energyCurrent -= energyLost; // エネルギー消費		
+			m_disableShield->SetUse(true);
+		}
 	}
 
 	// 弾発射関数
 	void FighterAircraftBase::UseBullet()
 	{
-		GetStage()->AddGameObject<Bullet>(GetThis<FighterAircraftBase>());
+		float energyLost = 30.0f; // エネルギーを消費する量
+		if (m_energyCurrent >= energyLost)
+		{
+			m_energyCurrent -= energyLost; // エネルギー消費
+			GetStage()->AddGameObject<Bullet>(GetThis<FighterAircraftBase>());
+		}
 	}
 
 	// 現在耐久値のゲッタ
