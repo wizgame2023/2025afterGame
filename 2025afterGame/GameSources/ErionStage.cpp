@@ -53,6 +53,8 @@ namespace basecross {
 				game->AddCheckPoint();
 				max++;
 			}
+
+			auto wall = AddGameObject<StageWall>();
 		}
 		catch (...) {
 			throw;
