@@ -40,6 +40,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)KaitoStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Scene.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SelectStage.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)StageWall.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StateBase.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StateEnemy.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TitleStage.h" />
@@ -71,6 +72,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectShader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Scene.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SelectStage.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)StageWall.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StateBase.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StateEnemy.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TitleStage.cpp" />
