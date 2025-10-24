@@ -53,7 +53,7 @@ namespace basecross {
 			auto& app = App::GetApp();
 			auto path = app->GetDataDirWString();
 
-			wstring player1NumSharedName = L"Player";
+			wstring player1NumSharedName = L"Player1";
 			wstring player2NumSharedName = L"Player2";
 
 			auto backgroundPath = path + L"Backgrounds/";
