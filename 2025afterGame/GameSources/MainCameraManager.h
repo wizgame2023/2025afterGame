@@ -33,7 +33,11 @@ namespace basecross{
 		// 参考 : https://taketakeshi.hatenablog.jp/entry/2025/05/19/205447
 		// start : 開始地 end : 終了値 time : 補間係数(0.0f～1.0f)
 		// 戻り値 : 補間後の値
-		Vec3 Lerp(const Vec3& start, const Vec3& end, float time) {
+		Vec3 LerpV3(const Vec3& start, const Vec3& end, float time) {
+			return start + (end - start) * time;
+		}
+
+		float LerpFlt(const float start, const float end, float time) {
 			return start + (end - start) * time;
 		}
 
@@ -72,9 +76,14 @@ namespace basecross{
 			return CalcUpHistoryAverage();
 		}
 
+		// 視野角調整
+		void AdjustFov(bool isAccel);
+		// マルチビューかどうか
+		void IsMultiView(const wstring& sharedName);
 	public:
 		// コンストラクタ
-		MainCameraManager(const shared_ptr<Stage>& stagPtr);
+		MainCameraManager(const shared_ptr<Stage>& stagePtr);
+
 		// target : 対象 
 		// mulView : どのカメラなのか
 		// sharedName : 設定されたSharedGameObjectの名前
