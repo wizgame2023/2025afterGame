@@ -43,9 +43,9 @@ namespace basecross {
 		BaseState();
 		~BaseState();
 
-		void OnEnter(); // 開始処理
-		void OnUpdate(); // 継続処理
-		void OnExit(); // 終了処理
+		virtual void OnEnter(); // 開始処理
+		virtual void OnUpdate(); // 継続処理
+		virtual void OnExit(); // 終了処理
 	};
 
 }
