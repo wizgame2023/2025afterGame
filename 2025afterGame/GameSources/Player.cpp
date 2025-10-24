@@ -41,6 +41,9 @@ namespace basecross {
 		ptrDraw->SetMeshResource(L"Sentouki");
 		ptrDraw->SetTextureResource(L"diffuse_TX");
 
+		auto ptrCol = AddComponent<CollisionObb>();
+		ptrCol->SetDrawActive(true);
+
 		// モデルとトランスフォーム間の差分行列
 		Mat4x4 spanMat;
 		spanMat.affineTransformation(
@@ -66,11 +69,15 @@ namespace basecross {
 		auto scene = app->GetScene<Scene>();
 		scene->SetDebugString(wss.str());
 
-
+		// プレイヤーの挙動
 		PlayerMove();
 		PlayerAngle();
-		CreateBarrier();
 
+		// プレイヤーの装備
+		CreateBarrier();
+		CreateBullet();
+		
+		// dpadでコントローラーを変える
 		ChangController();
 	}
 
@@ -156,7 +163,7 @@ namespace basecross {
 
 		Vec2 Lstick;
 
-		// Playerのコントローラーで変わる
+		// Playerのコントローラー番号で変わる
 		if (m_playerIndex == 0)
 		{
 			Lstick = input->GetLStick();
@@ -166,6 +173,7 @@ namespace basecross {
 			Lstick = input->GetLStick2();
 		}
 
+		// 最初の初期姿勢の保存
 		if (!m_initialized)
 		{
 			m_initialQuat = currentQuat;
@@ -269,6 +277,59 @@ namespace basecross {
 		}
 	}
 
+	void Player::CreateBarrier()
+	{
+		auto stage = GetStage();
+		auto& input = InputManager::GetInputManager();
+
+		Vec3 pos = GetComponent<Transform>()->GetPosition();
+
+		if (!m_barrier)
+		{
+			m_barrier = stage->AddGameObject<Barrier>(GetThis<Player>());
+		}
+
+		auto useflag = m_barrier->GetUse();
+
+		if (input->GetButton(L"X"))
+		{
+			if (!useflag)
+			{
+				m_barrier->SetUse(true);
+			}
+		}
+	}
+
+	void Player::CreateBullet()
+	{
+		auto stage = GetStage();
+		auto& input = InputManager::GetInputManager();
+
+		if (input->GetDownButton(L"B"))
+		{
+			m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
+		}
+	}
+
+	// フラグのゲッタ、セッタ
+	// プレイヤーのコントローラ番号をセッタ
+	void Player::SetPlayerIndex(int index)
+	{
+		m_playerIndex = index;
+	}
+
+	// プレイヤーのコントローラ番号ゲッタ
+	int Player::GetPlayerIndex() const
+	{
+		return m_playerIndex;
+	}
+
+	// 加速しているかのゲッタ
+	bool Player::GetAcceleration()
+	{
+		return m_acceleration;
+	}
+
 	bool Player::GetIsBoostInputActive() const
 	{
 		auto& game = GameManager::GetGameManager();
@@ -281,33 +342,36 @@ namespace basecross {
 		return (stickActive || shoulderActive) && triggerActive;
 	}
 
-	void Player::CreateBarrier()
+	void Player::ChangController()
 	{
-		auto& app = App::GetApp();
-		auto stage = GetStage();
 		auto& input = InputManager::GetInputManager();
 
-		Vec3 pos = GetComponent<Transform>()->GetPosition();
-		float nowEnergy = GetEnergyCurrent();
-		float maxEnergy = GetEnergyMax();
-		float noEnergy = 0.0f;
+		bool dDown = input->GetButton(L"DDown");
 
-		if (!m_barrier)
+		// 「押した瞬間」を検出
+		if (dDown && !m_prevDDown)
 		{
-			m_barrier = stage->AddGameObject<Barrier>(GetThis<Player>());
-			m_barrier->GetComponent<Transform>()->SetScale(Vec3(0.0f));
+			if (m_playerIndex == 0)
+			{
+				m_playerIndex = 1;
+			}				
+			else
+			{
+				m_playerIndex = 0;
+			}
 		}
 
-		if (input->GetButton(L"B"))
-		{
-			auto barrierTrans = m_barrier->GetComponent<Transform>();
-			barrierTrans->SetScale(Vec3(1.0f, 3.5f, 1.0f));
-		}
-		else
-		{
-			auto barrierTrans = m_barrier->GetComponent<Transform>();
-			barrierTrans->SetScale(Vec3(0.0f));
-		}
+		// 次フレーム用に状態を保存
+		m_prevDDown = dDown;
+	}
+
+	float Player::AngleBetWeen(const Quat& a, const Quat& b)
+	{
+		float dot = fabs(a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w);
+
+		dot = clamp(dot, -1.0f, 1.0f);
+
+		return acosf(dot) * 2.0f;
 	}
 
 	Quat Player::Slerp(const Quat& q1, const Quat& q2, float t)

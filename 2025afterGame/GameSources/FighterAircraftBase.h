@@ -9,9 +9,14 @@
 #include "Actor.h"
 
 namespace basecross{
+	class Barrier;
+	class DisableShield;
 	class FighterAircraftBase : public Actor
 	{
 	protected:
+		shared_ptr<Barrier> m_barrier = nullptr; // バリアのポインタ
+		shared_ptr<DisableShield> m_disableShield = nullptr; // バリア妨害のポインタ
+
 		// パラメーター
 		int m_hpCurrent;	   // 耐久値
 		int m_hpMax;		   // 最大耐久値
@@ -32,13 +37,22 @@ namespace basecross{
 		bool m_disableShieldFlag; // バリア無効化をしてよいかのフラグ 
 
 		// 今後,ストリップストリーム,DRSを実装予定
-		
+
+		float m_timeCheckPointDifferece; // 自分が通ったチェックポイントのタイムと前の機体のタイムの差
+		Vec3 m_nextCheckPointPos; // 次のチェックポイントの位置
 	public:
 		FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& ptrStage);
 		FighterAircraftBase::~FighterAircraftBase();
 
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
+
+		// バリア使用関数
+		void UseBarrier(bool use);
+		// バリア妨害使用関数
+		void UseDisableShield();
+		// 弾発射関数
+		void UseBullet();
 
 		// 現在耐久値のゲッタ
 		int GetHpCurrent();
@@ -59,6 +73,10 @@ namespace basecross{
 
 		// 現在のエネルギーセッタ
 		void SetEnergyCurrent(float energyCurrent);
+		// 自分が通ったチェックポイントのタイムと前の機体のタイムの差のセッタ
+		void SetTimeCheckPointDifferece(float timeCheckPointDifferece);
+		// 次のチェックポイントの位置のセッタ
+		void SetNextCheckPointPos(Vec3 nextCheckPointPos);
 	};
 }
 //end basecross

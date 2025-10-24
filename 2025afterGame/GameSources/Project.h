@@ -41,6 +41,7 @@
 #include "Barrier.h";
 #include "DisableShield.h"
 #include "CheckPoint.h"
+#include "StageWall.h"
 ///////////////////////////////////////////////////
 
 // ステージ関係は一番下のブロックでインクルードしてください
@@ -56,3 +57,4 @@
 
 
 
+#include "StateBarrier.h"
