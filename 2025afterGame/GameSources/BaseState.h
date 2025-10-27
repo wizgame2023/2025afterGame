@@ -25,7 +25,7 @@ namespace basecross {
 
 	public:
 
-		StateMachineBase(shared_ptr<MyGameObject> parent);
+		StateMachineBase(const shared_ptr<MyGameObject>& parent);
 		~StateMachineBase();
 
 		// ステート変更用の関数
@@ -37,10 +37,11 @@ namespace basecross {
 
 	class BaseState
 	{
-	private:
+	protected:
+		weak_ptr<MyGameObject> m_parentObj;
 
 	public:
-		BaseState();
+		BaseState(const shared_ptr<MyGameObject>& parentObj);
 		~BaseState();
 
 		virtual void OnEnter(); // 開始処理

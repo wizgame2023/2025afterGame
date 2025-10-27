@@ -9,7 +9,8 @@
 #include "BaseState.h"
 
 namespace basecross {
-	BaseState::BaseState()
+	BaseState::BaseState(const shared_ptr<MyGameObject>& parentObj):
+		m_parentObj(parentObj)
 	{
 	}
 
@@ -25,6 +26,7 @@ namespace basecross {
 	void BaseState::OnUpdate()
 	{
 		auto deltaTime = GameManager::GetGameManager()->GetDeltaTime();
+		
 	}
 
 	void BaseState::OnExit()
@@ -35,7 +37,7 @@ namespace basecross {
 
 
 	// ステートマシンのコンストラクタ
-	StateMachineBase::StateMachineBase(shared_ptr<MyGameObject> parentObj):
+	StateMachineBase::StateMachineBase(const shared_ptr<MyGameObject>& parentObj):
 		m_parentObj(parentObj)
 	{
 		
@@ -78,6 +80,9 @@ namespace basecross {
 	// 引数1 移行したいステートの名前
 	void StateMachineBase::ChangeState(wstring stateName)
 	{
+		// フラグとしてステート変更ができているかをチェックする変数を作る
+		bool changeStateFlag = false;
+		
 		// ステート管理配列内に同じ名前のステートがあるか探索
 		for (auto it : m_stateTypes)
 		{
@@ -95,15 +100,21 @@ namespace basecross {
 				m_stateBefor = m_stateCurrent;
 				m_stateCurrent = m_stateTypes[stateName];
 				m_stateCurrent->OnEnter(); // ステートの初期化処理をする
+				changeStateFlag = true; // ステート変更できているフラグにする
 			}
+			
 		}
 
-		throw BaseException
-		(
-			L"指定している名前のステートは存在しません",
-			L"if (it.first == stateName)",
-			L"StateMachineBase::ChangeState(wstring stateName)"
-		);
+		// ステート変更できていなかったらエラー文を出るようにする
+		if (!changeStateFlag)
+		{
+			throw BaseException
+			(
+				L"指定している名前のステートは存在しません",
+				L"if (it.first == stateName)",
+				L"StateMachineBase::ChangeState(wstring stateName)"
+			);
+		}
 	}
 
 	// 更新
