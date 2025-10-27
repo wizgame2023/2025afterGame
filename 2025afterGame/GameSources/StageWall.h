@@ -10,7 +10,7 @@ namespace basecross {
 	class StageWall :public Actor
 	{
 	public:
-		StageWall();
+		StageWall(const shared_ptr<Stage>& stagePtr);
 		~StageWall();
 
 		void OnCreate()override;
