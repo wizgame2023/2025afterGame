@@ -8,7 +8,7 @@
 
 namespace basecross{
 	StageWall::StageWall(const shared_ptr<Stage>& stagePtr) :
-		Actor(stagePtr, Vec3(0.0f, 0.0f, 30.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(100.0f, 100.0f, 10.0f))
+		Actor(stagePtr, Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(100.0f, 100.0f, 10.0f))
 	{
 
 	}
@@ -35,9 +35,9 @@ namespace basecross{
 		ptrCol->SetAfterCollision(AfterCollision::Auto);
 
 		// ÉhÉçÅ[èàóù
-		auto ptrDraw = AddComponent<PNTStaticDraw>();
-		ptrDraw->SetMeshResource(L"DEFAULT_SQUARE");
-		SetAlphaActive(true);
+		//auto ptrDraw = AddComponent<PNTStaticDraw>();
+		//ptrDraw->SetMeshResource(L"DEFAULT_SQUARE");
+		//SetAlphaActive(false);
 	}
 
 	void StageWall::OnUpdate()
