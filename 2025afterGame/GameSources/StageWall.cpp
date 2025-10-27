@@ -31,6 +31,7 @@ namespace basecross{
 
 		// ƒRƒŠƒWƒ‡ƒ“’Ç‰Á
 		auto ptrCol = AddComponent<CollisionObb>();
+		ptrCol->SetFixed(true);
 		ptrCol->SetDrawActive(true);
 		ptrCol->SetAfterCollision(AfterCollision::Auto);
 
