@@ -9,6 +9,7 @@
 #include "stdafx.h"
 
 namespace basecross {
+	class StateBarrierMachine;
 	class Barrier :public Actor
 	{
 	private:
@@ -28,6 +29,9 @@ namespace basecross {
 
 		weak_ptr<FighterAircraftBase> m_parent; // 発射元のポインタ
 		shared_ptr<FighterAircraftBase> m_parentLock; // 発射元のポインタをLockして受け取った変数
+
+		// ステートマシン
+		unique_ptr<StateBarrierMachine> m_stateMachine;
 
 	public:
 		Barrier(const shared_ptr<Stage>& stagePtr,const shared_ptr<FighterAircraftBase>& parent);
@@ -49,16 +53,23 @@ namespace basecross {
 		// 親オブジェクトについていく処理
 		void FollowMove();
 		// バリアを使うことによって起きるエネルギーを消費する処理
-		void EnergyConsumption();
+		void EnergyConsumption();	
+		
+		// ステートの変更処理
+		void ChangeState(wstring stateName);
+
 
 		// 当たり判定処理
 		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
 
 
-
-
+		// 使用状態のセッタとゲッタ
 		void SetUse(bool use);
 		bool GetUse();
+
+		// サイズの倍率のゲッタとセッタ
+		float GetSizePercent();
+		void SetSizePercent(float sizeParcent);
 	};
 }
 //end basecross

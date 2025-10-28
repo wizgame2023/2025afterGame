@@ -47,6 +47,9 @@ namespace basecross {
 		// 所属を決める (味方 = true,敵 = false)
 		DecideAffiliation();
 
+		m_stateMachine = unique_ptr<StateBarrierMachine>(new StateBarrierMachine(GetThis<MyGameObject>()));
+		m_stateMachine->ChangeState(L"Start");
+
 		// バリアタグ追加
 		AddTag(L"Barrier");
 	}
@@ -68,10 +71,13 @@ namespace basecross {
 		// 使用状態が変わった時に変更する
 		CheckUse();
 
-		// 開始時の拡大処理
-		StartExpansion();
-		// 終了時の縮小処理
-		EndReduction();
+		// ステートマシン
+		m_stateMachine->Update();
+
+		//// 開始時の拡大処理
+		//StartExpansion();
+		//// 終了時の縮小処理
+		//EndReduction();
 
 		// 親オブジェクトについていく処理
 		FollowMove();
@@ -198,6 +204,12 @@ namespace basecross {
 		}
 	}
 
+	// ステートの変更処理
+	void Barrier::ChangeState(wstring stateName)
+	{
+		m_stateMachine->ChangeState(stateName);
+	}
+
 	// 当たり判定
 	void Barrier::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
@@ -221,6 +233,18 @@ namespace basecross {
 	bool Barrier::GetUse()
 	{
 		return m_use;
+	}
+
+	// サイズの倍率のゲッタ
+	float Barrier::GetSizePercent()
+	{
+		return m_sizePercent;
+	}
+
+	// サイズの倍率のセッタ
+	void Barrier::SetSizePercent(float sizeParcent)
+	{
+		m_sizePercent = sizeParcent;
 	}
 
 	// m_useのセッタ
