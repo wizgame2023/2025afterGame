@@ -1,5 +1,5 @@
 /*!
-@file BaseState.cpp
+@file StateBase.cpp
 @brief 基盤ステートのクラス
 担当：三瓶裕太
 */
@@ -9,27 +9,26 @@
 #include "BaseState.h"
 
 namespace basecross {
-	BaseState::BaseState(const shared_ptr<MyGameObject>& parentObj):
+	StateBase::StateBase(const shared_ptr<MyGameObject>& parentObj):
 		m_parentObj(parentObj)
 	{
 	}
 
-	BaseState::~BaseState()
+	StateBase::~StateBase()
 	{
 	}
 
-	void BaseState::OnEnter()
+	void StateBase::OnEnter()
 	{
-
+		m_deltaTime = GameManager::GetGameManager()->GetDeltaTime();
 	}
 
-	void BaseState::OnUpdate()
+	void StateBase::OnUpdate()
 	{
-		auto deltaTime = GameManager::GetGameManager()->GetDeltaTime();
-		
+		m_deltaTime = GameManager::GetGameManager()->GetDeltaTime();
 	}
 
-	void BaseState::OnExit()
+	void StateBase::OnExit()
 	{
 
 	}
@@ -49,7 +48,7 @@ namespace basecross {
 	}
 
 	// ステートの追加処理
-	void StateMachineBase::AddState(wstring stateName, const shared_ptr<BaseState>& state)
+	void StateMachineBase::AddState(wstring stateName, const shared_ptr<StateBase>& state)
 	{
 		// 入れたいステートが同じ名前や型ならエラーを起こす
 		for (auto it : m_stateTypes)
@@ -60,7 +59,7 @@ namespace basecross {
 				{
 					L"重複しているステートの名前があります",
 					L"if (it.first == stateName)",
-					L"void StateMachineBase::AddState(wstring stateName, const shared_ptr<BaseState>& state)"
+					L"void StateMachineBase::AddState(wstring stateName, const shared_ptr<StateBase>& state)"
 				};
 			}
 			if (it.second == state)
@@ -69,7 +68,7 @@ namespace basecross {
 				{
 					L"重複しているステートの型があります",
 					L"if (it.second == state)",
-					L"void StateMachineBase::AddState(wstring stateName, const shared_ptr<BaseState>& state)"
+					L"void StateMachineBase::AddState(wstring stateName, const shared_ptr<StateBase>& state)"
 				};
 			}
 		}
