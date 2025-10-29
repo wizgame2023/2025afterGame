@@ -53,6 +53,28 @@ namespace basecross {
 				game->AddCheckPoint();
 				max++;
 			}
+
+			auto wall1 = AddGameObject<StageWall>();
+			wall1->GetComponent<Transform>()->SetPosition(0.0f, 0.0f, 55.0f);
+
+			auto wall2 = AddGameObject<StageWall>();
+			wall2->GetComponent<Transform>()->SetPosition(0.0f, 0.0f, -55.0f);
+
+			auto wall3 = AddGameObject<StageWall>();
+			wall3->GetComponent<Transform>()->SetPosition(0.0f, 55.0f, 0.0f);
+			wall3->GetComponent<Transform>()->SetRotation(XMConvertToRadians(90.0f), 0.0f, 0.0f);
+
+			auto wall4 = AddGameObject<StageWall>();
+			wall4->GetComponent<Transform>()->SetPosition(0.0f, -55.0f, 0.0f);
+			wall4->GetComponent<Transform>()->SetRotation(XMConvertToRadians(90.0f), 0.0f, 0.0f);
+
+			auto wall5 = AddGameObject<StageWall>();
+			wall5->GetComponent<Transform>()->SetPosition(55.0f, 0.0f, 0.0f);
+			wall5->GetComponent<Transform>()->SetRotation(0.0f, XMConvertToRadians(90.0f), 0.0f);
+
+			auto wall6 = AddGameObject<StageWall>();
+			wall6->GetComponent<Transform>()->SetPosition(-55.0f, 0.0f, 0.0f);
+			wall6->GetComponent<Transform>()->SetRotation(0.0f, XMConvertToRadians(90.0f), 0.0f);
 		}
 		catch (...) {
 			throw;
