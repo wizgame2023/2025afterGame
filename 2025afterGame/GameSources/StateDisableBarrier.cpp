@@ -1,0 +1,12 @@
+/*!
+@file StateDisableBarrier.cpp
+@brief ƒoƒŠƒA–³Œø‰»ŽÀ‘Ì
+*/
+
+#include "stdafx.h"
+#include "Project.h"
+
+namespace basecross {
+
+}
+//end basecross

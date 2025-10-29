@@ -57,3 +57,4 @@
 #include "StateBase.h";
 
 #include "StateBarrier.h"
+#include "StateDisableBarrier.h"
