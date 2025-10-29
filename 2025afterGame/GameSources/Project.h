@@ -54,6 +54,6 @@
 ///////////////////////////////////////////////////
 
 // ステートインクルード
-#include "BaseState.h";
+#include "StateBase.h";
 
 #include "StateBarrier.h"
