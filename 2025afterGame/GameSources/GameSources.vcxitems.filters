@@ -13,16 +13,13 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Barrier.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)BaseState.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Bullet.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)DisableShield.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)DisableBarrier.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)GameManager.cpp">
@@ -97,6 +94,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)StateBarrier.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)StateDisableBarrier.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Actor.h">
@@ -111,9 +111,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Barrier.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)BaseState.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Bullet.h">
       <Filter>Headers</Filter>
     </ClInclude>
@@ -123,7 +120,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Camera.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)DisableShield.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)DisableBarrier.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)GameManager.h">
@@ -196,6 +193,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)StateBarrier.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)StateDisableBarrier.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
