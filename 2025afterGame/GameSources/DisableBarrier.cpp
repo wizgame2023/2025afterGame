@@ -8,7 +8,7 @@
 #include "Project.h"
 
 namespace basecross {
-	DisableShield::DisableShield(const shared_ptr<Stage>& ptrStage,const shared_ptr<FighterAircraftBase>& parent,float sizeMax) :
+	DisableBarrier::DisableBarrier(const shared_ptr<Stage>& ptrStage,const shared_ptr<FighterAircraftBase>& parent,float sizeMax) :
 		Actor(ptrStage),
 		m_parent(parent),
 		m_sizeMax(sizeMax)
@@ -16,12 +16,12 @@ namespace basecross {
 		
 	}
 
-	DisableShield::~DisableShield()
+	DisableBarrier::~DisableBarrier()
 	{
 
 	}
 
-	void DisableShield::OnCreate()
+	void DisableBarrier::OnCreate()
 	{
 		m_color = Col4(1.0f, 0.0f, 0.0f, 0.5f);
 
@@ -39,20 +39,20 @@ namespace basecross {
 		ptrDraw->SetDiffuse(m_color);
 		SetAlphaActive(true);
 
-		AddTag(L"DisableShield");
+		AddTag(L"DisableBarrier");
 
 		m_use = true;//デバック用
 
 	}
 
-	void DisableShield::OnUpdate()
+	void DisableBarrier::OnUpdate()
 	{
 		m_parentLock = m_parent.lock();
 
 		// 親オブジェクトが消えたら自分も消える
 		if (!m_parentLock)
 		{
-			GetStage()->RemoveGameObject<DisableShield>(GetThis<DisableShield>());
+			GetStage()->RemoveGameObject<DisableBarrier>(GetThis<DisableBarrier>());
 			return;
 		}
 
@@ -66,7 +66,7 @@ namespace basecross {
 	}
 
 	// 親オブジェクトについていく処理
-	void DisableShield::FollowMove()
+	void DisableBarrier::FollowMove()
 	{
 		Vec3 parentPos = m_parentLock->GetComponent<Transform>()->GetPosition();
 
@@ -79,7 +79,7 @@ namespace basecross {
 	}
 
 	// 使用時処理
-	void DisableShield::UseProcess()
+	void DisableBarrier::UseProcess()
 	{
 		// 使用状態になったら効果範囲を広くなって最大になったら小さくなる
 		if (m_use)
@@ -120,7 +120,7 @@ namespace basecross {
 	}
 
 
-	void DisableShield::OnCollisionEnter(shared_ptr<GameObject>& obj)
+	void DisableBarrier::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
 		auto player = dynamic_pointer_cast<Player>(obj);
 
@@ -137,13 +137,13 @@ namespace basecross {
 	}
 
 	// m_useのゲッタ
-	bool DisableShield::GetUse()
+	bool DisableBarrier::GetUse()
 	{
 		return m_use;
 	}
 
 	// m_useのセッタ
-	void DisableShield::SetUse(bool use)
+	void DisableBarrier::SetUse(bool use)
 	{
 		m_use = use;
 	}

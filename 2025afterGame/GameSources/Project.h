@@ -37,7 +37,7 @@
 #include "Player.h";
 #include "Bullet.h";
 #include "Barrier.h";
-#include "DisableShield.h"
+#include "DisableBarrier.h"
 #include "CheckPoint.h"
 #include "StageWall.h"
 ///////////////////////////////////////////////////
@@ -57,3 +57,4 @@
 #include "StateBase.h";
 
 #include "StateBarrier.h"
+#include "StateDisableBarrier.h"

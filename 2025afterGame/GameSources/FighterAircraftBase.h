@@ -10,12 +10,12 @@
 
 namespace basecross{
 	class Barrier;
-	class DisableShield;
+	class DisableBarrier;
 	class FighterAircraftBase : public Actor
 	{
 	protected:
 		shared_ptr<Barrier> m_barrier = nullptr; // バリアのポインタ
-		shared_ptr<DisableShield> m_disableShield = nullptr; // バリア妨害のポインタ
+		shared_ptr<DisableBarrier> m_disableShield = nullptr; // バリア妨害のポインタ
 
 		// パラメーター
 		int m_hpCurrent;	   // 耐久値
