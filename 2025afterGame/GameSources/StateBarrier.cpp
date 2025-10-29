@@ -23,13 +23,11 @@ namespace basecross {
 	void StateBarrierBase::OnEnter()
 	{
 		StateBase::OnEnter();
-		m_deltaTime = GameManager::GetGameManager()->GetDeltaTime();
 		m_barrierLock = m_barrier.lock();
 	}
 	// XVˆ—
 	void StateBarrierBase::OnUpdate()
 	{
-		m_deltaTime = GameManager::GetGameManager()->GetDeltaTime();
 		m_barrierLock = m_barrier.lock();
 	}
 	//----------------------------------------------------------------------------------------------------------->
