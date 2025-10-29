@@ -49,8 +49,8 @@ namespace basecross{
 
 		// 加速しているか
 		//bool isAccel = m_player->GetAcceleration();
-		bool test1 = input->GetButton(L"A");
-		bool test2 = input->GetButton(L"Y");
+		bool isAButton = input->GetButton(L"A");
+		bool isYButton = input->GetButton(L"Y");
 
 		// プレイヤーの情報取得
 		m_plPos = m_plTrans.lock()->GetPosition();
@@ -65,22 +65,29 @@ namespace basecross{
 		// カメラの現在の位置
 		Vec3 currentCamPos = m_mulCam->GetEye();
 
+		// Yボタンを押した瞬間と離した瞬間を取る
+		bool isYButtonDownUp = input->GetNowUpdateButton(L"Y");
+
 		// カメラが前方か後方か(目標カメラ位置)
-		Vec3 behindNormalCamPos = test2 ? m_plPos + m_plFwrd * m_camDis + m_plUp * m_camHeight
-										: m_plPos - m_plFwrd * m_camDis + m_plUp * m_camHeight;
+		Vec3 behindNormalCamPos = isYButton 
+			? m_plPos + m_plFwrd * m_camDis + m_plUp * m_camHeight
+			: m_plPos - m_plFwrd * m_camDis + m_plUp * m_camHeight;
 
 		// 注視点が前方か後方か(注視点をプレイヤーより奥側にする)
-		Vec3 behindNormalAtPos = test2 ? m_plPos - m_plFwrd * m_atOffset
-									   : m_plPos + m_plFwrd * m_atOffset;
+		Vec3 behindNormalAtPos = isYButton 
+			? m_plPos - m_plFwrd * m_atOffset
+			: m_plPos + m_plFwrd * m_atOffset;
 
 		// 滑らかに補間
-		Vec3 newCamPos = LerpV3(currentCamPos, behindNormalCamPos, m_delta * m_followSpeed);
+		Vec3 newCamPos = isYButtonDownUp ?
+			behindNormalCamPos :
+			LerpV3(currentCamPos, behindNormalCamPos, m_delta * m_followSpeed);
 
 		// 常にプレイヤーの後ろにカメラを設置する(プレイヤーの角度が変わっても正面が映らないような感じ)
 		m_mulCam->SetEye(newCamPos);
 
 		// 加速に合わせて視野角を広げる
-		AdjustFov(test1);
+		AdjustFov(isAButton);
 
 		// プレイヤーの角度に合わせてカメラも傾く
 		m_mulCam->SetUp(Vec3(smoothUp));
@@ -91,7 +98,6 @@ namespace basecross{
 		DebugLog(L"CameraPosX:", m_mulCam->GetEye().x);
 		DebugLog(L"CameraPosY:", m_mulCam->GetEye().y);
 		DebugLog(L"CameraPosZ:", m_mulCam->GetEye().z);
-		DebugLog(L"test1:", test1);
 		FlushDebugLog();
 	}
 
