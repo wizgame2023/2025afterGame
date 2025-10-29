@@ -58,10 +58,10 @@ namespace basecross {
 		//AddGameObject<DisableShield>(testBullet);
 
 		// テストでバリア生成
-		auto testCube = AddGameObject<TestCube>(Vec3(+3.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.5f));
-		// Playerの親クラスがFighterAircraftBaseになっていないのでそれ待ちのコメントアウト
-		auto barrier = AddGameObject<Barrier>(GetSharedGameObject<Player>(L"Player"));
-		SetSharedGameObject(L"Barrier", barrier);
+		//auto testCube = AddGameObject<TestCube>(Vec3(+3.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.5f));
+		//// Playerの親クラスがFighterAircraftBaseになっていないのでそれ待ちのコメントアウト
+		//auto barrier = AddGameObject<Barrier>(GetSharedGameObject<Player>(L"Player"));
+		//SetSharedGameObject(L"Barrier", barrier);
 
 
 
@@ -83,16 +83,16 @@ namespace basecross {
 		}
 
 		// テストのためにバリアをオンにする
-		auto yButton = InputManager::GetInputManager()->GetDownButton(L"Y");
-		if (yButton)
-		{
-			GetSharedGameObject<Barrier>(L"Barrier")->SetUse(true);
-		}
-		auto xButton = InputManager::GetInputManager()->GetDownButton(L"X");
-		if (xButton)
-		{
-			GetSharedGameObject<Barrier>(L"Barrier")->SetUse(false);
-		}
+		//auto yButton = InputManager::GetInputManager()->GetDownButton(L"X");
+		//if (yButton)
+		//{
+		//	GetSharedGameObject<Barrier>(L"Barrier")->SetUse(true);
+		//}
+		//auto yButton = InputManager::GetInputManager()->GetDownButton(L"Y");
+		//if (yButton)
+		//{
+		//	GetSharedGameObject<Barrier>(L"Barrier")->SetUse(false);
+		//}
 
 
 	}

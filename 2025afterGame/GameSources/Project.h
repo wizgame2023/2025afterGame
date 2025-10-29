@@ -19,7 +19,6 @@
 #include "InputManager.h"
 #include "Background.h"
 #include "Plane.h"
-#include "StateBase.h"
 #include "StateEnemy.h"
 
 // 殿堂入りMyGameObject本体
@@ -29,7 +28,6 @@
 // 親クラスがMyGameObject//////////////////////////
 #include "Actor.h";
 #include "AttackCollision.h"
-#include "BaseState.h";
 #include "MainCameraManager.h"
 #include "GameManager.h"
 ///////////////////////////////////////////////////
@@ -55,6 +53,7 @@
 #include "SelectStage.h"
 ///////////////////////////////////////////////////
 
-
+// ステートインクルード
+#include "StateBase.h";
 
 #include "StateBarrier.h"
