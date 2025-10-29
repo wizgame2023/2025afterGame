@@ -6,7 +6,6 @@
 
 #pragma once
 #include "stdafx.h"
-#include "MyGameObject.h"
 
 namespace basecross {
 	class StateBase
