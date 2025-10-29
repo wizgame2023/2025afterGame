@@ -55,7 +55,7 @@ namespace basecross {
 
 		// バリア妨害のテスト処理
 		//auto testBullet = AddGameObject<Bullet>();
-		//AddGameObject<DisableShield>(testBullet);
+		//AddGameObject<DisableBarrier>(testBullet);
 
 		// テストでバリア生成
 		//auto testCube = AddGameObject<TestCube>(Vec3(+3.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.5f));

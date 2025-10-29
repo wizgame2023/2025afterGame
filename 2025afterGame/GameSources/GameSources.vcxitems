@@ -22,7 +22,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Camera.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Character.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)CheckPoint.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)DisableShield.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DisableBarrier.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ErionStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FighterAircraftBase.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameManager.h" />
@@ -55,7 +55,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Bullet.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)CheckPoint.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)DisableShield.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)DisableBarrier.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ErionStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FighterAircraftBase.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameManager.cpp" />
