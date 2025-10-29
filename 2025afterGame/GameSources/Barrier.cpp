@@ -48,7 +48,7 @@ namespace basecross {
 		DecideAffiliation();
 
 		m_stateMachine = unique_ptr<StateBarrierMachine>(new StateBarrierMachine(GetThis<MyGameObject>()));
-		m_stateMachine->ChangeState(L"Start");
+		m_stateMachine->ChangeState(L"Default");
 
 		// バリアタグ追加
 		AddTag(L"Barrier");
@@ -64,6 +64,9 @@ namespace basecross {
 			GetStage()->RemoveGameObject<Barrier>(GetThis<Barrier>());
 			return;
 		}
+		//// バリア使用時のエネルギ-を消費処理
+		//EnergyConsumption();
+
 
 		// 親クラス処理
 		Actor::OnUpdate();
@@ -74,55 +77,14 @@ namespace basecross {
 		// ステートマシン
 		m_stateMachine->Update();
 
-		//// 開始時の拡大処理
-		//StartExpansion();
-		//// 終了時の縮小処理
-		//EndReduction();
-
 		// 親オブジェクトについていく処理
 		FollowMove();
-		// バリア使用時のエネルギ-を消費処理
-		EnergyConsumption();
 
 		// 位置更新
 		m_trans = GetComponent<Transform>();
 		m_trans->SetPosition(m_pos);
 		m_trans->SetScale(m_scale * m_sizePercent);
 		m_trans->SetQuaternion(m_qt);
-	}
-
-	// 開始時の拡大処理
-	void Barrier::StartExpansion()
-	{
-		if (m_StartExpansion)
-		{
-			m_sizePercent += m_delta;
-
-			// サイズが規定以上になったら拡大処理をやめる
-			if (m_sizePercent >= 1.0f)
-			{
-				m_sizePercent = 1.0f;
-				m_StartExpansion = false;
-			}
-		}
-	}
-
-	// 終了時の縮小処理
-	void Barrier::EndReduction()
-	{
-		if (m_EndReduction)
-		{
-			m_sizePercent -= m_delta;
-
-			// サイズが規定以下になったら縮小処理をやめる
-			if (m_sizePercent <= 0.0f)
-			{
-				m_sizePercent = 0.0f;
-				m_EndReduction = false;
-				// 見えないようにする
-				SetDrawActive(false);
-			}
-		}
 	}
 
 	// 今の使用状態が前のフレームから変わったかを確認する処理
@@ -137,8 +99,7 @@ namespace basecross {
 				m_trans->SetScale(Vec3(0.0f));
 
 				// 拡大、縮小フラグを変更する
-				m_StartExpansion = false;
-				m_EndReduction = true;
+				m_stateMachine->ChangeState(L"End");
 			}
 			else if (m_use)
 			{
@@ -147,8 +108,7 @@ namespace basecross {
 				SetDrawActive(true);
 
 				// 拡大、縮小フラグを変更する
-				m_StartExpansion = true;
-				m_EndReduction = false;
+				m_stateMachine->ChangeState(L"Start");
 			}
 
 			m_useBefore = m_use;
@@ -199,7 +159,7 @@ namespace basecross {
 			// エネルギーが0以下なら使用できない
 			if (parentEnergyCurrent < 0)
 			{
-				m_use = false;
+				//m_use = false;
 			}
 		}
 	}
@@ -230,7 +190,7 @@ namespace basecross {
 	}
 
 	// m_useのゲッタ
-	bool Barrier::GetUse()
+	const bool Barrier::GetUse()const
 	{
 		return m_use;
 	}

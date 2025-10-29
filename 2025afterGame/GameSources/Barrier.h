@@ -15,7 +15,7 @@ namespace basecross {
 	private:
 		bool m_affiliation; // 自分の所属(敵か味方か)
 		bool m_use = false; // バリアが発動しているか
-		bool m_useBefore = false; // ひとつ前のバリアが発動しているかのフラグ
+		bool m_useBefore; // ひとつ前のバリアが発動しているかのフラグ
 		bool m_StartExpansion = false; // 拡大処理をするかのフラグ
 		bool m_EndReduction = false; // 縮小処理をするかのフラグ
 		float m_sizePercent = 0.0f; // m_sizeを最大(1.0f)とした割合サイズ
@@ -40,10 +40,10 @@ namespace basecross {
 		void OnCreate()override;
 		void OnUpdate()override;
 
-		// 開始時の拡大処理
-		void StartExpansion();
-		// 終了時の縮小処理
-		void EndReduction();
+		//// 開始時の拡大処理
+		//void StartExpansion();
+		//// 終了時の縮小処理
+		//void EndReduction();
 
 		// 今の使用状態が前のフレームから変わったかを確認する処理
 		void CheckUse();
@@ -65,7 +65,7 @@ namespace basecross {
 
 		// 使用状態のセッタとゲッタ
 		void SetUse(bool use);
-		bool GetUse();
+		const bool GetUse()const;
 
 		// サイズの倍率のゲッタとセッタ
 		float GetSizePercent();
