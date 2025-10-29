@@ -89,7 +89,7 @@ namespace basecross {
 		auto& app = App::GetApp();
 		auto& inputMgr = InputManager::GetInputManager();
 
-		//Aボタンを押すとシーン遷移
+		//十字キー下を押すとシーン遷移
 		if (inputMgr->GetDownButton(L"DDown"))
 		{
 			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
