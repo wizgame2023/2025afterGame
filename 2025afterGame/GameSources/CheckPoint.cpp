@@ -8,7 +8,7 @@
 
 namespace basecross{
 	CheckPoint::CheckPoint(const shared_ptr<Stage>& stageptr) :
-		Actor(stageptr,Vec3(-100.0f, -100.0f, -100.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(1.0f, 1.0f, 1.0f)),
+		Actor(stageptr,Vec3(-50.0f, -50.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(1.0f, 1.0f, 1.0f)),
 		m_raceTime(0.0f),
 		m_previewTime(0.0f),
 		m_checkPointID(0)
@@ -26,9 +26,9 @@ namespace basecross{
 		//初期位置設定
 		m_trans = GetComponent<Transform>();
 		m_trans->SetPosition(m_pos);
-		m_pos.x += rand() % 200;
-		m_pos.y += rand() % 200;
-		m_pos.z += rand() % 200;
+		m_pos.x += rand() % 100;
+		m_pos.y += rand() % 100;
+		m_pos.z += rand() % 100;
 		m_trans->SetQuaternion(m_qt);
 		m_trans->SetScale(m_scale);
 
