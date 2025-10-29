@@ -24,7 +24,18 @@ namespace basecross{
 		Vec3 m_plUp;
 		Vec3 m_plFwrd;
 
+		
+		static constexpr float m_camDis = 5.0f; // カメラとプレイヤーの距離
+		static constexpr float m_followSpeed = 20.0f; // カメラの追従速度
+		static constexpr float m_camHeight = 1.5f; // カメラの高さ
+		static constexpr float m_atOffset = 10.0f;
+
+		// 履歴の最大値(6で0.1秒のディレイがかかる)
+		static constexpr int historyMax = 15;
+
 		wstring m_sharedName = L"Player";
+
+		wstringstream m_debugWss;
 
 		// 傾きの履歴
 		std::deque<Vec3> m_plUpHistory;
@@ -33,53 +44,47 @@ namespace basecross{
 		// 参考 : https://taketakeshi.hatenablog.jp/entry/2025/05/19/205447
 		// start : 開始地 end : 終了値 time : 補間係数(0.0f～1.0f)
 		// 戻り値 : 補間後の値
-		Vec3 LerpV3(const Vec3& start, const Vec3& end, float time) {
+		static Vec3 LerpV3(const Vec3& start, const Vec3& end, float time) {
 			return start + (end - start) * time;
 		}
 
-		float LerpFlt(const float start, const float end, float time) {
+		static float LerpFlt(const float start, const float end, float time) {
 			return start + (end - start) * time;
 		}
+
+		// 視野角調整
+		void AdjustFov(bool isAccel);
+
+		// マルチビューかどうか
+		void IsMultiView(const wstring& sharedName);
+
+
 
 		// Upベクトルの履歴に追加し、最大値を超えたら削除
 		// up : 追加するUpベクトル 
 		// historyMax : 履歴の最大数
-		void UpdateUpHistory(const Vec3& up, const int historyMax) {
-			m_plUpHistory.push_back(up);
-			if (m_plUpHistory.size() > historyMax)
-				m_plUpHistory.pop_front();
-		}
+		void UpdateUpHistory(const Vec3& up, const int historyMax);
 		
 		// 履歴に保存されたupベクトルの平均値を返す
 		// 戻り値 : 平均化されたUpベクトル
-		Vec3 CalcUpHistoryAverage() const {
-			if (m_plUpHistory.empty())
-				return Vec3(0.0f, 1.0f, 0.0f);
-
-			Vec3 sum(0.0f, 0.0f, 0.0f);
-			for (const auto& v : m_plUpHistory)
-				sum += v;
-
-			Vec3 avg = sum / static_cast<float>(m_plUpHistory.size());
-			if (avg.length() < 0.00001f)
-				avg = Vec3(0.0f, 1.0f, 0.0f);
-
-			return avg.normalize();
-		}
+		Vec3 CalcUpHistoryAverage() const;
 
 		// 履歴追加と平均化を同時に行う
 		// currentUp : 現在のUpベクトル
 		// historyMax : 履歴の最大値
 		// 戻り値 : 平均化されたUpベクトル
-		Vec3 GetSmoothedUp(const Vec3& currentUp, const int historyMax) {
-			UpdateUpHistory(currentUp, historyMax);
-			return CalcUpHistoryAverage();
-		}
+		Vec3 GetSmoothedUp(const Vec3& currentUp, const int historyMax);
 
-		// 視野角調整
-		void AdjustFov(bool isAccel);
-		// マルチビューかどうか
-		void IsMultiView(const wstring& sharedName);
+		// デバッグログ　
+		// 使う場合は必ずFlushDebugLogも呼び出すこと
+		// name : ログの名前
+		// debug : ログに出力する値
+		template <typename T>
+		void DebugLog(const wstring& name, T debug);
+
+		// デバッグログを使う場合はフレームの最後に呼び出す
+		// そうしないと画面にログが生成され続けます
+		void FlushDebugLog();
 	public:
 		// コンストラクタ
 		MainCameraManager(const shared_ptr<Stage>& stagePtr);

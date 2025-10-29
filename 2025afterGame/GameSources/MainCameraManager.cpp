@@ -29,6 +29,9 @@ namespace basecross{
 	
 	void MainCameraManager::OnCreate()
 	{
+		// 必要だったらMyGameObjectのOnCreateを呼ぶ
+		//MyGameObject::OnCreate();
+
 		m_stage = GetStage();
 
 		// マルチビューかどうか
@@ -40,25 +43,14 @@ namespace basecross{
 
 	void MainCameraManager::OnUpdate()
 	{
-		// プレイヤーのUpベクトル履歴更新
+		MyGameObject::OnUpdate();
 
-		auto& app = App::GetApp();
-		float delta = app->GetElapsedTime();
-		static float time = 0;
-		time += delta;
 		auto& input = InputManager::GetInputManager();
 
 		// 加速しているか
 		//bool isAccel = m_player->GetAcceleration();
-
-		bool test = input->GetButton(L"X");
-
-		// カメラとプレイヤーの距離
-		constexpr float camDis = 5.0f;
-		// カメラの追従速度
-		constexpr float followSpeed = 20.0f;
-		// カメラの高さ
-		constexpr float camHeight = 1.5f;
+		bool test1 = input->GetButton(L"A");
+		bool test2 = input->GetButton(L"Y");
 
 		// プレイヤーの情報取得
 		m_plPos = m_plTrans.lock()->GetPosition();
@@ -66,8 +58,6 @@ namespace basecross{
 		m_plFwrd = m_plTrans.lock()->GetForward();
 		m_plUp = m_plTrans.lock()->GetUp();
 
-		// 履歴の最大値(6で0.1秒のディレイがかかる)
-		static constexpr int historyMax = 15;
 
 		// ディレイをかけたカメラの傾き制御
 		Vec3 smoothUp = GetSmoothedUp(m_plUp, historyMax);
@@ -75,51 +65,61 @@ namespace basecross{
 		// カメラの現在の位置
 		Vec3 currentCamPos = m_mulCam->GetEye();
 
-		// カメラの位置の調整
-		Vec3 camPosOffset = Vec3(0.0f,0.0f,0.0f);
+		// カメラが前方か後方か(目標カメラ位置)
+		Vec3 behindNormalCamPos = test2 ? m_plPos + m_plFwrd * m_camDis + m_plUp * m_camHeight
+										: m_plPos - m_plFwrd * m_camDis + m_plUp * m_camHeight;
 
-		// 目標カメラ位置
-		Vec3 desiredPos = m_plPos - m_plFwrd * camDis + m_plUp * camHeight;
-
-		// 注視点をプレイヤーより少し奥側にする
-		Vec3 atPos = m_plPos + m_plFwrd * 10.0f;
+		// 注視点が前方か後方か(注視点をプレイヤーより奥側にする)
+		Vec3 behindNormalAtPos = test2 ? m_plPos - m_plFwrd * m_atOffset
+									   : m_plPos + m_plFwrd * m_atOffset;
 
 		// 滑らかに補間
-		Vec3 newCamPos = LerpV3(currentCamPos, desiredPos, delta * followSpeed);
+		Vec3 newCamPos = LerpV3(currentCamPos, behindNormalCamPos, m_delta * m_followSpeed);
 
 		// 常にプレイヤーの後ろにカメラを設置する(プレイヤーの角度が変わっても正面が映らないような感じ)
 		m_mulCam->SetEye(newCamPos);
 
 		// 加速に合わせて視野角を広げる
-		AdjustFov(test);
+		AdjustFov(test1);
 
 		// プレイヤーの角度に合わせてカメラも傾く
 		m_mulCam->SetUp(Vec3(smoothUp));
 
 		// カメラの注視点
-		m_mulCam->SetAt(atPos);
+		m_mulCam->SetAt(behindNormalAtPos);
 
-		// デバッグログ
-		wstringstream wss(L"");
-		wss << "Fov : " << m_mulCam->GetFovY() << "\n";
-		wss << "target : " << m_sharedName << "\n";
+		DebugLog(L"CameraPosX:", m_mulCam->GetEye().x);
+		DebugLog(L"CameraPosY:", m_mulCam->GetEye().y);
+		DebugLog(L"CameraPosZ:", m_mulCam->GetEye().z);
+		DebugLog(L"test1:", test1);
+		FlushDebugLog();
+	}
 
+	template<typename T>
+	void MainCameraManager::DebugLog(const wstring& name, T debug)
+	{
+		m_debugWss << name << debug << "\n";
+	}
+
+	void MainCameraManager::FlushDebugLog()
+	{
+		auto& app = App::GetApp();
 		auto scene = app->GetScene<Scene>();
-		scene->SetDebugString(wss.str());
-
+		scene->SetDebugString(m_debugWss.str());
+		m_debugWss.str(L""); // ログをクリア
+		m_debugWss.clear();
 	}
 
 	void MainCameraManager::AdjustFov(bool isAccel)
 	{
 		static constexpr float normalFov = 0.8f;
 		static constexpr float accelFov = 1.0f;
-		
-		static float time = 0;
-		float delta = App::GetApp()->GetElapsedTime();
-		
 		static constexpr float lerpSpeed = 0.03f;
+		
+		
+		//static float time = 0;
 
-		// 一定時間で
+		// 一定時間で視野角を戻す(念のため残す)
 		//if (isAccel && time > 1.5f)
 		//{
 		//	float fov = LerpFlt(m_mulCam->GetFovY(), normalFov, 0.01f);
@@ -127,16 +127,16 @@ namespace basecross{
 		//	return;
 		//}
 
-		// 加速中なら
+		// 加速中なら広げる
 		if (isAccel)
 		{
-			time += delta;
+			//time += m_delta;
 			float fov = LerpFlt(m_mulCam->GetFovY(), accelFov, lerpSpeed);
 			m_mulCam->SetFovY(fov);
 		}
 		else
 		{
-			time = 0;
+			//time = 0;
 			float fov = LerpFlt(m_mulCam->GetFovY(), normalFov, lerpSpeed);
 			m_mulCam->SetFovY(fov);
 		}
@@ -151,6 +151,32 @@ namespace basecross{
 			dynamic_pointer_cast<MultiView>(GetStage()->GetView())->SetTargetIndex(1);
 		else
 			m_target = m_stage->GetSharedGameObject<Actor>(sharedName);
+	}
+
+	void MainCameraManager::UpdateUpHistory(const Vec3& up, const int historyMax) {
+		m_plUpHistory.push_back(up);
+		if (m_plUpHistory.size() > historyMax)
+			m_plUpHistory.pop_front();
+	}
+
+	Vec3 MainCameraManager::CalcUpHistoryAverage() const {
+		if (m_plUpHistory.empty())
+			return Vec3(0.0f, 1.0f, 0.0f);
+
+		Vec3 sum(0.0f, 0.0f, 0.0f);
+		for (const auto& v : m_plUpHistory)
+			sum += v;
+
+		Vec3 avg = sum / static_cast<float>(m_plUpHistory.size());
+		if (avg.length() < 0.00001f)
+			avg = Vec3(0.0f, 1.0f, 0.0f);
+
+		return avg.normalize();
+	}
+
+	Vec3 MainCameraManager::GetSmoothedUp(const Vec3& currentUp, const int historyMax) {
+		UpdateUpHistory(currentUp, historyMax);
+		return CalcUpHistoryAverage();
 	}
 }
 //end basecross
