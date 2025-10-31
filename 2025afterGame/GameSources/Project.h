@@ -34,12 +34,16 @@
 
 // 親クラスがActor/////////////////////////////////
 #include "FighterAircraftBase.h"
-#include "Player.h";
-#include "Bullet.h";
-#include "Barrier.h";
+#include "Bullet.h"
+#include "Barrier.h"
 #include "DisableBarrier.h"
 #include "CheckPoint.h"
 #include "StageWall.h"
+///////////////////////////////////////////////////
+
+//親クラスがFighterAircraftBase////////////////////
+#include "Player.h"
+#include "Enemy.h"
 ///////////////////////////////////////////////////
 
 // ステージ関係は一番下のブロックでインクルードしてください
