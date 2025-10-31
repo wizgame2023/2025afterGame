@@ -96,7 +96,7 @@ namespace basecross{
 		// カメラの注視点
 		m_mulCam->SetAt(behindNormalAtPos);
 
-		IsObstructed(m_plPos, m_mulCam->GetEye());
+		//IsObstructed(m_plPos, m_mulCam->GetEye());
 
 		// デバッグログ
 		DebugLog(L"CameraPosX:", m_mulCam->GetEye().x);
