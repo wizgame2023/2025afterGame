@@ -12,8 +12,8 @@ namespace basecross {
 	//	ゲームステージクラス実体
 	//--------------------------------------------------------------------------------------
 	void YuutaStage::CreateViewLight() {
-		const Vec3 eye(0.0f, 5.0f, -5.0f);
-		const Vec3 at(0.0f);
+		const Vec3 eye(0.0f, 5.0f, -30.0f);
+		const Vec3 at(0.0f,0.0f,10.0f);
 		auto PtrView = CreateView<SingleView>();
 		//ビューのカメラの設定
 		auto PtrCamera = ObjectFactory::Create<Camera>();
@@ -43,7 +43,7 @@ namespace basecross {
 
 			//背景
 			AddGameObject<Background>();
-			GameManager::GetGameManager()->AddCheckPoint();
+			//GameManager::GetGameManager()->AddCheckPoint();
 
 			auto player = AddGameObject<Player>();
 			SetSharedGameObject(L"Player", player);
@@ -52,6 +52,9 @@ namespace basecross {
 		catch (...) {
 			throw;
 		}
+
+		// 敵が出ているかテスト処理
+		auto enemy = AddGameObject<Enemy>(Vec3(0.0f,0.0f,0.0f),Quat(0.0f,0.0f,0.0f,1.0f),Vec3(0.5f));
 
 		// バリア妨害のテスト処理
 		//auto testBullet = AddGameObject<Bullet>();
@@ -65,8 +68,8 @@ namespace basecross {
 
 
 
-		auto mainCamMana = AddGameObject<MainCameraManager>();
-		SetSharedGameObject(L"MainCameraManager", mainCamMana);
+		//auto mainCamMana = AddGameObject<MainCameraManager>();
+		//SetSharedGameObject(L"MainCameraManager", mainCamMana);
 	}
 
 	void YuutaStage::OnUpdate()
