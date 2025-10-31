@@ -1,5 +1,5 @@
 /*!
-@file FighterAircraftBaseBase.h
+@file FighterAircraftBase.h
 @brief プレイヤーなど
 担当：吉田 智貴
 */
@@ -10,38 +10,40 @@
 
 namespace basecross{
 	class Barrier;
-	class DisableShield;
+	class DisableBarrier;
 	class FighterAircraftBase : public Actor
 	{
 	protected:
 		shared_ptr<Barrier> m_barrier = nullptr; // バリアのポインタ
-		shared_ptr<DisableShield> m_disableShield = nullptr; // バリア妨害のポインタ
+		shared_ptr<DisableBarrier> m_disableShield = nullptr; // バリア妨害のポインタ
 
 		// パラメーター
-		int m_hpCurrent;	   // 耐久値
-		int m_hpMax;		   // 最大耐久値
-		float m_speedAdd;	   // スピードの加速度
-		float m_speedCurrent;  // スピード
-		float m_speedMax;	   // 最大スピード
+		int m_hpCurrent = 0;			// 耐久値
+		int m_hpMax = 0;				// 最大耐久値
+		float m_speedAdd = 0.0f;		// スピードの加速度
+		float m_speedCurrent = 0.0f;	// スピード
+		float m_speedMax = 0.0f;		// 最大スピード
 
 		//エネルギー
-		float m_energyCurrent; // 現在のエネルギー
-		float m_energyMax; // 最大のエネルギー値
-		float m_energyCharging; // エネルギー回復
-		float m_recastEnergyChargingCurrent; // 回復に移行する必要時間を計測する変数
-		float m_recastEnergyChargingMax;	 // 回復に移行するまでの必要経過時間
+		float m_energyCurrent = 0.0f;				// 現在のエネルギー
+		float m_energyMax = 0.0f;					// 最大のエネルギー値
+		float m_energyCharging = 0.0f;				// エネルギー回復
+		float m_recastEnergyChargingCurrent = 0.0f; // 回復に移行する必要時間を計測する変数
+		float m_recastEnergyChargingMax = 0.0f;		// 回復に移行するまでの必要経過時間
 
-		bool m_outEnergyFlag; // エネルギー切れになったかのフラグ(そうなったらMaxになるまで使えない)
-		bool m_barrierUseFlag;    // バリア使用してよいかのフラグ
-		bool m_gunUseFlag;		  // 弾を発射してよいかのフラグ
-		bool m_disableShieldFlag; // バリア無効化をしてよいかのフラグ 
+		bool m_outEnergyFlag = false;		// エネルギー切れになったかのフラグ(そうなったらMaxになるまで使えない)
+		bool m_barrierUseFlag = false;		// バリア使用してよいかのフラグ
+		bool m_gunUseFlag = true;			// 弾を発射してよいかのフラグ
+		bool m_disableShieldFlag = true;	// バリア無効化をしてよいかのフラグ 
 
 		// 今後,ストリップストリーム,DRSを実装予定
 
-		float m_timeCheckPointDifferece; // 自分が通ったチェックポイントのタイムと前の機体のタイムの差
-		Vec3 m_nextCheckPointPos; // 次のチェックポイントの位置
+		float m_timeCheckPointDifferece = 0.0f; // 自分が通ったチェックポイントのタイムと前の機体のタイムの差
+		Vec3 m_nextCheckPointPos = Vec3(0.0f);  // 次のチェックポイントの位置
 	public:
 		FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& ptrStage);
+		FighterAircraftBase(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 rot, Vec3 scale, Col4 color = Col4(1.0f));
+		FighterAircraftBase(const shared_ptr<Stage>& stagePtr, Vec3 pos, Quat qt, Vec3 scale, Col4 color = Col4(1.0f));
 		FighterAircraftBase::~FighterAircraftBase();
 
 		virtual void OnCreate() override;

@@ -1,7 +1,7 @@
-/*!
+ï»¿/*!
 @file Player.cpp
-@brief ƒvƒŒƒCƒ„[‚È‚ÇÀ‘Ì
-’S“–F‹g“c ’q‹M
+@brief ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãªã©å®Ÿä½“
+æ‹…å½“ï¼šå‰ç”° æ™ºè²´
 */
 
 #include "stdafx.h"
@@ -16,12 +16,15 @@ namespace basecross {
 		m_accleRation(3.0f),
 		m_deceleRation(2.0f),
 		m_angleSpeed(1.0f),
+		m_rollSpeed(1.0f),
 		m_currentRoll(0.0f),
 		m_prevRoll(0.0f),
 		m_initialized(false),
 		m_hasInput(false),
 		m_returnToNeutral(false),
-		m_fullEnergy(false)
+		m_fullEnergy(false),
+		m_actionMode(ActionMode::None),
+		m_turnStrength(1.0f)
 	{
 	}
 
@@ -34,8 +37,10 @@ namespace basecross {
 	{
 		Actor::OnCreate();
 
+
 		auto ptrTrans = GetComponent<Transform>();
 		ptrTrans->SetPosition(Vec3(0.0f, 0.0f, -1.0f));
+		m_initialQuat = ptrTrans->GetQuaternion();
 
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
 		ptrDraw->SetMeshResource(L"Sentouki");
@@ -44,7 +49,7 @@ namespace basecross {
 		auto ptrCol = AddComponent<CollisionObb>();
 		ptrCol->SetDrawActive(true);
 
-		// ƒ‚ƒfƒ‹‚Æƒgƒ‰ƒ“ƒXƒtƒH[ƒ€ŠÔ‚Ì·•ªs—ñ
+		// ãƒ¢ãƒ‡ãƒ«ã¨ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ é–“ã®å·®åˆ†è¡Œåˆ—
 		Mat4x4 spanMat;
 		spanMat.affineTransformation(
 			Vec3(0.2f),
@@ -52,6 +57,7 @@ namespace basecross {
 			Vec3(0.0f, XM_PI, 0.0f),
 			Vec3(0.0f, -0.59f, 0.0f)
 		);
+
 		ptrDraw->SetMeshToTransformMatrix(spanMat);		
 	}
 
@@ -62,23 +68,25 @@ namespace basecross {
 		auto nowPos = GetComponent<Transform>()->GetPosition();
 		auto& input = InputManager::GetInputManager();
 
-		wstringstream wss(L"");
-		wss << "X : " << nowPos.x << " " << "Y : " << nowPos.y << " " << "Z : " << nowPos.z << " " << endl;
-		wss << m_speedCurrent << endl;
-		wss << m_playerIndex << endl; 
-		auto scene = app->GetScene<Scene>();
-		scene->SetDebugString(wss.str());
-
-		// ƒvƒŒƒCƒ„[‚Ì‹““®
+		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æŒ™å‹•
 		PlayerMove();
 		PlayerAngle();
 
-		// ƒvƒŒƒCƒ„[‚Ì‘•”õ
+		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®è£…å‚™
 		CreateBarrier();
 		CreateBullet();
 		
-		// dpad‚ÅƒRƒ“ƒgƒ[ƒ‰[‚ğ•Ï‚¦‚é
+		// dpadã§ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã‚’å¤‰ãˆã‚‹
 		ChangController();
+
+		wstringstream wss;
+
+		wss << "NowPos X : " << nowPos.x
+			<< "\nNowPos Y : " << nowPos.y
+			<< "\nNowPos Z : " << nowPos.z;
+
+		auto scene = app->GetScene<Scene>();
+		scene->SetDebugString(wss.str());
 	}
 
 	void Player::OnCollisionEnter(const shared_ptr<GameObject>& Other)
@@ -120,34 +128,38 @@ namespace basecross {
 			m_aButton = input->GetButton2(L"A");
 		}
 
-		// Aƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚Ä‰Á‘¬
+		// Aãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ã¦åŠ é€Ÿ
 		if (m_aButton)
 		{
-			m_speedCurrent += m_accleRation * deltaTime;
-
-			if (m_speedCurrent > m_speedMax)
-			{
-				m_speedCurrent = m_speedMax;
-			}
-		}
-		else if(m_speedCurrent < 0.0f)
-		{
-			// ‰Ÿ‚µ‚Ä‚¢‚È‚¢‚ÆŒ¸‘¬
-			m_speedCurrent -= m_deceleRation * deltaTime;
-
-			if (m_speedCurrent <= 0.0f)
-			{
-				m_speedCurrent = 0.0f;
-			}
-		}
-
-		// ˆÚ“®ˆ—iŒ¸Š•t‚«j
-		if (m_speedCurrent > 0.0f)
-		{
 			m_velocity = forward * m_speedCurrent;
-			m_velocity *= damping;
 			currentPos += m_velocity * deltaTime;
 		}
+
+		//	m_speedCurrent += m_accleRation * deltaTime;
+
+		//	if (m_speedCurrent > m_speedMax)
+		//	{
+		//		m_speedCurrent = m_speedMax;
+		//	}
+		//}
+		//else if(m_speedCurrent < 0.0f)
+		//{
+		//	// æŠ¼ã—ã¦ã„ãªã„ã¨æ¸›é€Ÿ
+		//	m_speedCurrent -= m_deceleRation * deltaTime;
+
+		//	if (m_speedCurrent <= 0.0f)
+		//	{
+		//		m_speedCurrent = 0.0f;
+		//	}
+		//}
+
+		//// ç§»å‹•å‡¦ç†ï¼ˆæ¸›è¡°ä»˜ãï¼‰
+		//if (m_speedCurrent > 0.0f)
+		//{
+		//	m_velocity = forward * m_speedCurrent;
+		//	m_velocity *= damping;
+		//	currentPos += m_velocity * deltaTime;
+		//}
 
 		ptrTrans->SetPosition(currentPos);
 	}
@@ -160,120 +172,136 @@ namespace basecross {
 
 		auto ptrTrans = GetComponent<Transform>();
 		auto currentQuat = ptrTrans->GetQuaternion();
+		Vec3 forward = ptrTrans->GetForward();
 
-		Vec2 Lstick;
+		Vec2 lstick;
 
-		// Player‚ÌƒRƒ“ƒgƒ[ƒ‰[”Ô†‚Å•Ï‚í‚é
+		// Playerã®ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ç•ªå·ã§å¤‰ã‚ã‚‹
 		if (m_playerIndex == 0)
 		{
-			Lstick = input->GetLStick();
+			lstick = input->GetLStick();
 		}
 		else if (m_playerIndex == 1)
 		{
-			Lstick = input->GetLStick2();
+			lstick = input->GetLStick2();
 		}
 
-		// Å‰‚Ì‰Šúp¨‚Ì•Û‘¶
-		if (!m_initialized)
+		// å…¥åŠ›ãŒã»ã¨ã‚“ã©ç„¡ã„å ´åˆã¯è‡ªå‹•çš„ã«æ°´å¹³å¾©å¸°
+		if (fabs(lstick.x) < DEAD_ZONE && fabs(lstick.y) < DEAD_ZONE)
 		{
-			m_initialQuat = currentQuat;
-			m_initialized = true;
+			//AutoUpright(deltaTime);
+			return;
 		}
 
-		Quat deltaQuat;
+		// å§¿å‹¢ã®æ›´æ–°
+		Quat pitchQuat = PlayerPitch(lstick.y, deltaTime);
+		Quat rollQuat = PlayerRoll(lstick.x, deltaTime);
+		Quat deltaQuat = pitchQuat * rollQuat;
+		Quat resultQuat = deltaQuat * currentQuat;
+		resultQuat.normalize();
+		ptrTrans->SetQuaternion(resultQuat);
 
-		// ã‰º‚ÌŠp“x’²®
-		if (fabs(Lstick.y) > DEAD_ZONE)
-		{
-			float pitch = Lstick.y * m_angleSpeed * deltaTime;
-			Quat pitchQuat;
-			pitchQuat.rotationX(pitch);
-			deltaQuat = deltaQuat * pitchQuat;
-			m_hasInput = true;
-		}
+		// ãƒãƒ³ã‚¯æ—‹å›
+		Vec3 euler = QuaternionToEuler(resultQuat);
+		float rollAngle = euler.z;
+		Vec3 right = ptrTrans->GetRight();
+		Vec3 turnForce = right * sin(rollAngle) * m_turnStrength * deltaTime;
 
-		// ‰¡Šp“x‚Ì§ŒÀ60“xˆÈã‚És‚©‚È‚¢‚æ‚¤‚É‚µ‚Ä‚¢‚é
-		if (fabs(Lstick.x) > DEAD_ZONE)
-		{
-			m_isReturning = false;
+		//// ========= ãƒ‡ãƒãƒƒã‚°å‡ºåŠ› =========
+		//auto& app = App::GetApp();
 
-			// ƒ[ƒ‹Šp‚ğXV
-			m_currentRoll += -Lstick.x * m_angleSpeed * deltaTime;
+		//// ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ â†’ ã‚ªã‚¤ãƒ©ãƒ¼è§’ï¼ˆãƒ©ã‚¸ã‚¢ãƒ³ â†’ åº¦ï¼‰
+		//Vec3 euler;
+		//{
+		//	float ysqr = resultQuat.y * resultQuat.y;
 
-			static float maxRoll = XMConvertToRadians(60.0f);
-			m_currentRoll = clamp(m_currentRoll, -maxRoll, maxRoll);
-		}
-		else
-		{
-			// “ü—Í‚ª‚È‚¢‚ÍAŠÔŒo‰ß‚Å…•½i0‹j‚Ö–ß‚·
-			if (!m_isReturning)
-			{
-				m_startRoll = m_currentRoll;
-				m_startTime = 0.0f;
-				m_endTime = 0.5f;
-				m_isReturning = true;
-			}
+		//	// pitch (X)
+		//	float t0 = +2.0f * (resultQuat.w * resultQuat.x + resultQuat.y * resultQuat.z);
+		//	float t1 = +1.0f - 2.0f * (resultQuat.x * resultQuat.x + ysqr);
+		//	euler.x = atan2f(t0, t1);
 
-			// Œo‰ßŠÔXV
-			m_startTime += deltaTime;
+		//	// yaw (Y)
+		//	float t2 = +2.0f * (resultQuat.w * resultQuat.y - resultQuat.z * resultQuat.x);
+		//	t2 = t2 > 1.0f ? 1.0f : (t2 < -1.0f ? -1.0f : t2);
+		//	euler.y = asinf(t2);
 
-			// Lerp‚Å©‘R‚É–ß‚·
-			m_currentRoll = Lerp::CalculateLerp(
-				m_startRoll,
-				0.0f,
-				0.0f,
-				m_endTime,
-				m_startTime,
-				Lerp::Cos
-			);
+		//	// roll (Z)
+		//	float t3 = +2.0f * (resultQuat.w * resultQuat.z + resultQuat.x * resultQuat.y);
+		//	float t4 = +1.0f - 2.0f * (ysqr + resultQuat.z * resultQuat.z);
+		//	euler.z = atan2f(t3, t4);
 
-			// I—¹”»’è
-			if (fabs(m_currentRoll) < 0.001f)
-			{
-				m_currentRoll = 0.0f;
-				m_isReturning = false;
-			}
-		}
+		//	// ãƒ©ã‚¸ã‚¢ãƒ³ â†’ åº¦
+		//	euler.x = XMConvertToDegrees(euler.x);
+		//	euler.y = XMConvertToDegrees(euler.y);
+		//	euler.z = XMConvertToDegrees(euler.z);
+		//}
 
-		// ·•ª‰ñ“]‚ğ“K—p
-		float deltaRoll = m_currentRoll - m_prevRoll;
+		//wstringstream wss(L"");
+		//wss << L"Eulerè§’ï¼ˆåº¦ï¼‰:"
+		//	<< L"\n Pitch(X): " << euler.x
+		//	<< L"\n Yaw(Y):   " << euler.y
+		//	<< L"\n Roll(Z):  " << euler.z
+		//	<< L"\n\nQuat:"
+		//	<< L"\n X: " << resultQuat.x
+		//	<< L"\n Y: " << resultQuat.y
+		//	<< L"\n Z: " << resultQuat.z
+		//	<< L"\n W: " << resultQuat.w
+		//	<< endl;
 
+		//auto scene = app->GetScene<Scene>();
+		//scene->SetDebugString(wss.str());
+	}
+	
+
+	Quat Player::PlayerPitch(const float stickY, float deltaTime)
+	{
+		float pitch = stickY * m_angleSpeed * deltaTime;
+		Quat pitchQuat;
+		pitchQuat.rotationX(pitch);
+		return pitchQuat;
+	}
+
+	Quat Player::PlayerYawWorld(const float stickX, float deltaTime)
+	{
+		float yawAngle = stickX * m_yawSpeed * deltaTime;
+		return FromAxisAngle(Vec3(0, 1, 0), yawAngle);
+	}
+
+	Quat Player::PlayerRoll(float stickX, float deltaTime)
+	{
+		float roll = -stickX * m_rollSpeed * deltaTime;
 		Quat rollQuat;
-		rollQuat.rotationZ(deltaRoll);
-		deltaQuat = deltaQuat * rollQuat;
+		rollQuat.rotationZ(roll); // ãƒ­ãƒ¼ã‚«ãƒ«Zè»¸
+		return rollQuat;
+	}
 
-		// Ÿ‰ñ‚Ì‚½‚ß‚É•Û‘¶
-		m_prevRoll = m_currentRoll;
+	Quat Player::PlayerYaw(const float stickX, float deltaTime)
+	{
+		float yawAmout = stickX * m_angleSpeed * deltaTime;
+		Quat yawQuat;
+		yawQuat.rotationY(yawAmout);
+		return yawQuat;
+	}
 
-		// “ü—Í‚ª‚È‚­‚È‚Á‚½‚ç
-		if (m_hasInput && fabs(Lstick.x) < DEAD_ZONE && fabs(Lstick.y) < DEAD_ZONE)
+	void Player::AutoUpright(float deltaTime)
+	{
+		auto ptrTrans = GetComponent<Transform>();
+		Quat currentQuat = ptrTrans->GetQuaternion();
+		Quat target = m_initialQuat;
+
+		// æ™‚é–“ã‚’ç´¯ç©
+		m_uprightTime += deltaTime;
+		float duration = 1.0f; // 1ç§’ã§æ°´å¹³ã«æˆ»ã™
+		float t = clamp(m_uprightTime / duration, 0.0f, 1.0f);
+
+		Quat result = Slerp(currentQuat, target, t);
+		result.normalize();
+		ptrTrans->SetQuaternion(result);
+
+		// çµ‚äº†ã—ãŸã‚‰ã‚¿ã‚¤ãƒãƒ¼ã‚’ãƒªã‚»ãƒƒãƒˆ
+		if (t >= 1.0f)
 		{
-			m_hasInput = false;
-		}
-
-		// “ü—Í‚ª‚È‚­‚È‚Á‚½‚çu–ß‚·ƒ‚[ƒhv‚É
-		if (!m_hasInput && !m_returnToNeutral)
-		{
-			m_returnToNeutral = true;
-		}
-
-		// ‚È‚ºSlerp‚Í‚Ç‚ÌƒNƒH[ƒ^ƒjƒIƒ“‚Ì•âŠÔ—p
-		// “ü—Í‚ª‚³‚ê‘±‚¯‚Ä‚¢‚½‚ç
-		if (m_hasInput)
-		{
-			Quat targetQuat = deltaQuat * currentQuat;
-			Quat resultQuat = Slerp(currentQuat, targetQuat, 1.0f);
-			ptrTrans->SetQuaternion(resultQuat);
-		}
-		else if (m_returnToNeutral)
-		{
-			// ­‚µ‚¸‚Â‰Šú‰ñ“]‚É–ß‚·
-			float t = deltaTime * 2.0f;
-			Quat resultQuat = Slerp(currentQuat, m_initialQuat, t);
-
-			m_returnToNeutral = false;
-
-			ptrTrans->SetQuaternion(resultQuat);
+			m_uprightTime = 0.0f;
 		}
 	}
 
@@ -311,20 +339,20 @@ namespace basecross {
 		}
 	}
 
-	// ƒtƒ‰ƒO‚ÌƒQƒbƒ^AƒZƒbƒ^
-	// ƒvƒŒƒCƒ„[‚ÌƒRƒ“ƒgƒ[ƒ‰”Ô†‚ğƒZƒbƒ^
+	// ãƒ•ãƒ©ã‚°ã®ã‚²ãƒƒã‚¿ã€ã‚»ãƒƒã‚¿
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ç•ªå·ã‚’ã‚»ãƒƒã‚¿
 	void Player::SetPlayerIndex(int index)
 	{
 		m_playerIndex = index;
 	}
 
-	// ƒvƒŒƒCƒ„[‚ÌƒRƒ“ƒgƒ[ƒ‰”Ô†ƒQƒbƒ^
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ç•ªå·ã‚²ãƒƒã‚¿
 	int Player::GetPlayerIndex() const
 	{
 		return m_playerIndex;
 	}
 
-	// ‰Á‘¬‚µ‚Ä‚¢‚é‚©‚ÌƒQƒbƒ^
+	// åŠ é€Ÿã—ã¦ã„ã‚‹ã‹ã®ã‚²ãƒƒã‚¿
 	bool Player::GetAcceleration()
 	{
 		return m_acceleration;
@@ -348,7 +376,7 @@ namespace basecross {
 
 		bool dDown = input->GetButton(L"DDown");
 
-		// u‰Ÿ‚µ‚½uŠÔv‚ğŒŸo
+		// ã€ŒæŠ¼ã—ãŸç¬é–“ã€ã‚’æ¤œå‡º
 		if (dDown && !m_prevDDown)
 		{
 			if (m_playerIndex == 0)
@@ -361,7 +389,7 @@ namespace basecross {
 			}
 		}
 
-		// ŸƒtƒŒ[ƒ€—p‚Éó‘Ô‚ğ•Û‘¶
+		// æ¬¡ãƒ•ãƒ¬ãƒ¼ãƒ ç”¨ã«çŠ¶æ…‹ã‚’ä¿å­˜
 		m_prevDDown = dDown;
 	}
 
@@ -376,7 +404,7 @@ namespace basecross {
 
 	Quat Player::Slerp(const Quat& q1, const Quat& q2, float t)
 	{
-		// ƒhƒbƒgÏiŠp“x‚ÌcosƒÆ‚ğ‹‚ß‚éj
+		// ãƒ‰ãƒƒãƒˆç©ï¼ˆè§’åº¦ã®cosÎ¸ã‚’æ±‚ã‚ã‚‹ï¼‰
 		float dot = q1.x * q2.x + q1.y * q2.y + q1.z * q2.z + q1.w * q2.w;
 
 		Quat q2b = q2;
@@ -389,7 +417,7 @@ namespace basecross {
 		const float THRESHOLD = 0.9995f;
 		if (dot > THRESHOLD)
 		{
-			// üŒ`•âŠÔ‚ÅOK
+			// ç·šå½¢è£œé–“ã§OK
 			Quat result(
 				q1.x + t * (q2b.x - q1.x),
 				q1.y + t * (q2b.y - q1.y),
@@ -400,7 +428,7 @@ namespace basecross {
 			return result;
 		}
 
-		// Šp“xŒvZ
+		// è§’åº¦è¨ˆç®—
 		float theta_0 = acosf(dot);
 		float theta = theta_0 * t;
 		float sin_theta = sinf(theta);
@@ -409,7 +437,7 @@ namespace basecross {
 		float s0 = cosf(theta) - dot * sin_theta / sin_theta_0;
 		float s1 = sin_theta / sin_theta_0;
 
-		// •âŠÔŒ‹‰Ê
+		// è£œé–“çµæœ
 		Quat result(
 			(s0* q1.x) + (s1 * q2b.x),
 			(s0* q1.y) + (s1 * q2b.y),
@@ -419,6 +447,21 @@ namespace basecross {
 
 		result.normalize();
 		return result;
-	}}
+	}
+
+	Quat Player::FromAxisAngle(const Vec3& axis, float angleRad)
+	{
+		Vec3 normAxis = axis;
+		normAxis.normalize();
+		float halfAngle = angleRad * 0.5f;
+		float s = sinf(halfAngle);
+
+		return Quat(cosf(halfAngle),
+			normAxis.x * s,
+			normAxis.y * s,
+			normAxis.z * s);
+	}
+	
+}
 //end basecross
 

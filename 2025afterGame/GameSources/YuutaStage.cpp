@@ -12,8 +12,8 @@ namespace basecross {
 	//	ゲームステージクラス実体
 	//--------------------------------------------------------------------------------------
 	void YuutaStage::CreateViewLight() {
-		const Vec3 eye(0.0f, 5.0f, -5.0f);
-		const Vec3 at(0.0f);
+		const Vec3 eye(0.0f, 5.0f, -30.0f);
+		const Vec3 at(0.0f,0.0f,10.0f);
 		auto PtrView = CreateView<SingleView>();
 		//ビューのカメラの設定
 		auto PtrCamera = ObjectFactory::Create<Camera>();
@@ -43,7 +43,7 @@ namespace basecross {
 
 			//背景
 			AddGameObject<Background>();
-			GameManager::GetGameManager()->AddCheckPoint();
+			//GameManager::GetGameManager()->AddCheckPoint();
 
 			auto player = AddGameObject<Player>();
 			SetSharedGameObject(L"Player", player);
@@ -53,20 +53,23 @@ namespace basecross {
 			throw;
 		}
 
+		// 敵が出ているかテスト処理
+		auto enemy = AddGameObject<Enemy>(Vec3(0.0f,0.0f,0.0f),Quat(0.0f,0.0f,0.0f,1.0f),Vec3(0.5f));
+
 		// バリア妨害のテスト処理
 		//auto testBullet = AddGameObject<Bullet>();
-		//AddGameObject<DisableShield>(testBullet);
+		//AddGameObject<DisableBarrier>(testBullet);
 
 		// テストでバリア生成
-		auto testCube = AddGameObject<TestCube>(Vec3(+3.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.5f));
-		// Playerの親クラスがFighterAircraftBaseになっていないのでそれ待ちのコメントアウト
-		auto barrier = AddGameObject<Barrier>(GetSharedGameObject<Player>(L"Player"));
-		SetSharedGameObject(L"Barrier", barrier);
+		//auto testCube = AddGameObject<TestCube>(Vec3(+3.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.5f));
+		//// Playerの親クラスがFighterAircraftBaseになっていないのでそれ待ちのコメントアウト
+		//auto barrier = AddGameObject<Barrier>(GetSharedGameObject<Player>(L"Player"));
+		//SetSharedGameObject(L"Barrier", barrier);
 
 
 
-		auto mainCamMana = AddGameObject<MainCameraManager>();
-		SetSharedGameObject(L"MainCameraManager", mainCamMana);
+		//auto mainCamMana = AddGameObject<MainCameraManager>();
+		//SetSharedGameObject(L"MainCameraManager", mainCamMana);
 	}
 
 	void YuutaStage::OnUpdate()
@@ -83,16 +86,16 @@ namespace basecross {
 		}
 
 		// テストのためにバリアをオンにする
-		auto yButton = InputManager::GetInputManager()->GetDownButton(L"Y");
-		if (yButton)
-		{
-			GetSharedGameObject<Barrier>(L"Barrier")->SetUse(true);
-		}
-		auto xButton = InputManager::GetInputManager()->GetDownButton(L"X");
-		if (xButton)
-		{
-			GetSharedGameObject<Barrier>(L"Barrier")->SetUse(false);
-		}
+		//auto yButton = InputManager::GetInputManager()->GetDownButton(L"X");
+		//if (yButton)
+		//{
+		//	GetSharedGameObject<Barrier>(L"Barrier")->SetUse(true);
+		//}
+		//auto yButton = InputManager::GetInputManager()->GetDownButton(L"Y");
+		//if (yButton)
+		//{
+		//	GetSharedGameObject<Barrier>(L"Barrier")->SetUse(false);
+		//}
 
 
 	}

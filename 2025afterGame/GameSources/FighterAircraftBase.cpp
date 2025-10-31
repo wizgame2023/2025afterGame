@@ -13,6 +13,18 @@ namespace basecross {
 	{
 	}
 
+	FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& ptrStage, Vec3 pos, Vec3 rot, Vec3 scale, Col4 color):
+		Actor(ptrStage,pos,rot,scale,color)
+	{
+
+	}
+
+	FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& ptrStage, Vec3 pos, Quat qt, Vec3 scale, Col4 color):
+		Actor(ptrStage,pos,qt,scale,color)
+	{
+
+	}
+
 	FighterAircraftBase::~FighterAircraftBase()
 	{
 
@@ -27,12 +39,12 @@ namespace basecross {
 		// バリア装備
 		m_barrier = stage->AddGameObject<Barrier>(GetThis<FighterAircraftBase>());
 		// バリア妨害装備
-		m_disableShield = stage->AddGameObject<DisableShield>(GetThis<FighterAircraftBase>());
+		m_disableShield = stage->AddGameObject<DisableBarrier>(GetThis<FighterAircraftBase>());
 	}
 
 	void FighterAircraftBase::OnUpdate()
 	{
-
+		Actor::OnUpdate();
 	}
 
 	// バリア使用関数

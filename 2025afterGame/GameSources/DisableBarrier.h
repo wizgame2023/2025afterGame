@@ -1,5 +1,5 @@
 /*!
-@file DisableShield.h
+@file DisableBarrier.h
 @brief シールドを破壊する処理
 担当：三瓶裕太
 */
@@ -9,7 +9,7 @@
 
 namespace basecross {
 	
-	class DisableShield :public Actor
+	class DisableBarrier :public Actor
 	{
 	private:
 		float m_sizeMax = 0.0f;      // シールド破壊の最大範囲
@@ -27,8 +27,8 @@ namespace basecross {
 		shared_ptr<FighterAircraftBase> m_parentLock; // lockをした親オブジェクト
 
 	public:
-		DisableShield(const shared_ptr<Stage>& ptrStage, const shared_ptr<FighterAircraftBase>& parent, float sizeMax = 3.0f);
-		~DisableShield();
+		DisableBarrier(const shared_ptr<Stage>& ptrStage, const shared_ptr<FighterAircraftBase>& parent, float sizeMax = 3.0f);
+		~DisableBarrier();
 
 		void OnCreate()override;
 		void OnUpdate()override;
