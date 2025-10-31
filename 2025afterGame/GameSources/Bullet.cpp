@@ -38,6 +38,7 @@ namespace basecross {
 
 		auto ptrCol = AddComponent<CollisionSphere>();
 		ptrCol->SetDrawActive(true);
+		ptrCol->SetAfterCollision(AfterCollision::None); // ï®óùîªíËñ≥Çµ
 
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
 		ptrDraw->SetMeshResource(L"DEFAULT_SPHERE");

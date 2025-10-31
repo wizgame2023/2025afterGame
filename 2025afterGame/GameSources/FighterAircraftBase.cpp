@@ -27,7 +27,7 @@ namespace basecross {
 		// ƒoƒŠƒA‘•”õ
 		m_barrier = stage->AddGameObject<Barrier>(GetThis<FighterAircraftBase>());
 		// ƒoƒŠƒA–WŠQ‘•”õ
-		m_disableShield = stage->AddGameObject<DisableShield>(GetThis<FighterAircraftBase>());
+		m_disableShield = stage->AddGameObject<DisableBarrier>(GetThis<FighterAircraftBase>());
 	}
 
 	void FighterAircraftBase::OnUpdate()
