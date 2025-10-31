@@ -39,6 +39,7 @@ namespace basecross{
 
 		m_mulCam = OnGetDrawCamera(); // カメラの取得
 		m_plTrans = m_target->GetComponent<Transform>();
+		
 	}
 
 	void MainCameraManager::OnUpdate()
@@ -95,6 +96,9 @@ namespace basecross{
 		// カメラの注視点
 		m_mulCam->SetAt(behindNormalAtPos);
 
+		IsObstructed(m_plPos, m_mulCam->GetEye());
+
+		// デバッグログ
 		DebugLog(L"CameraPosX:", m_mulCam->GetEye().x);
 		DebugLog(L"CameraPosY:", m_mulCam->GetEye().y);
 		DebugLog(L"CameraPosZ:", m_mulCam->GetEye().z);
@@ -183,6 +187,28 @@ namespace basecross{
 	Vec3 MainCameraManager::GetSmoothedUp(const Vec3& currentUp, const int historyMax) {
 		UpdateUpHistory(currentUp, historyMax);
 		return CalcUpHistoryAverage();
+	}
+
+	bool MainCameraManager::IsObstructed(const Vec3& from, const Vec3& to)
+	{
+		Vec3 hitPos;		// レイの衝突した地点
+		TRIANGLE triangle;	// 衝突したポリゴン
+		size_t triangleNum;	// 衝突したポリゴンの番号
+
+		// ゲームオブジェクトの配列
+		auto objVec = m_stage->GetGameObjectVec();
+
+		for (auto obj : objVec)
+		{
+			auto obstacles = dynamic_pointer_cast<GameObject>(obj);
+			
+			if (obstacles)
+			{
+				auto ptrDraw = obstacles->GetComponent<SmBaseDraw>();
+				ptrDraw->HitTestStaticMeshSegmentTriangles(from, to, hitPos, triangle, triangleNum);
+				return false;
+			}
+		}
 	}
 }
 //end basecross
