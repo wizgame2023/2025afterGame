@@ -78,16 +78,6 @@ namespace basecross{
 		// 戻り値 : 平均化されたUpベクトル
 		Vec3 GetSmoothedUp(const Vec3& currentUp, const int historyMax);
 
-		// デバッグログ　複数
-		// 使う場合は必ずFlushDebugLogも呼び出すこと
-		// name : ログの名前
-		// debug : ログに出力する値
-		template <typename T>
-		void DebugLog(const wstring& name, T debug);
-
-		// デバッグログを使う場合はフレームの最後(OnUpdateの末尾)に呼び出す
-		// そうしないと画面に表示されません
-		void FlushDebugLog();
 
 		// プレイヤーとカメラの間に障害物があるか
 		// from : プレイヤーの位置
@@ -112,6 +102,17 @@ namespace basecross{
 
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
+
+		// デバッグログ　
+		// 複数使う場合は必ずFlushDebugLogも呼び出すこと
+		// name : ログの名前
+		// debug : ログに出力する値
+		template <typename T>
+		void DebugLog(const wstring& name, T debug);
+
+		// デバッグログを使う場合はフレームの最後(OnUpdateの末尾)に呼び出す
+		// そうしないと画面に表示されません
+		void FlushDebugLog();
 
 	};
 }
