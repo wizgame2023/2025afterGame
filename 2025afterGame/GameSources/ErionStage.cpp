@@ -87,6 +87,13 @@ namespace basecross {
 	void ErionStage::OnUpdate()
 	{
 		auto& app = App::GetApp();
+		auto& inputMgr = InputManager::GetInputManager();
+
+		//十字キー下を押すとシーン遷移
+		if (inputMgr->GetDownButton(L"DDown"))
+		{
+			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
+		}
 
 		//デバッグ用文字
 		wstringstream wss(L"");
