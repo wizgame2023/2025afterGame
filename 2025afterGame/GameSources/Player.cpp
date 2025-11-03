@@ -11,20 +11,9 @@ namespace basecross {
 	Player::Player(const shared_ptr<Stage>& ptrStage) :
 		FighterAircraftBase(ptrStage),
 		m_speedCurrent(1.0f),
-		m_speedMax(2.5f),
 		m_velocity(Vec3(0.0f)),
-		m_accleRation(3.0f),
-		m_deceleRation(2.0f),
 		m_angleSpeed(1.0f),
-		m_rollSpeed(1.0f),
-		m_currentRoll(0.0f),
-		m_prevRoll(0.0f),
-		m_initialized(false),
-		m_hasInput(false),
-		m_returnToNeutral(false),
-		m_fullEnergy(false),
-		m_actionMode(ActionMode::None),
-		m_turnStrength(1.0f)
+		m_rollSpeed(1.0f)
 	{
 	}
 
@@ -58,7 +47,7 @@ namespace basecross {
 			Vec3(0.0f, -0.59f, 0.0f)
 		);
 
-		ptrDraw->SetMeshToTransformMatrix(spanMat);		
+		ptrDraw->SetMeshToTransformMatrix(spanMat);	
 	}
 
 	void Player::OnUpdate()
@@ -66,6 +55,7 @@ namespace basecross {
 		auto& app = App::GetApp();
 		auto elapsed = app->GetElapsedTime();
 		auto nowPos = GetComponent<Transform>()->GetPosition();
+		auto nowRot = GetComponent<Transform>()->GetRotation();
 		auto& input = InputManager::GetInputManager();
 
 		// プレイヤーの挙動
@@ -79,14 +69,6 @@ namespace basecross {
 		// dpadでコントローラーを変える
 		ChangController();
 
-		wstringstream wss;
-
-		wss << "NowPos X : " << nowPos.x
-			<< "\nNowPos Y : " << nowPos.y
-			<< "\nNowPos Z : " << nowPos.z;
-
-		auto scene = app->GetScene<Scene>();
-		scene->SetDebugString(wss.str());
 	}
 
 	void Player::OnCollisionEnter(const shared_ptr<GameObject>& Other)
@@ -108,17 +90,17 @@ namespace basecross {
 		Vec3 forward = ptrTrans->GetForward();
 		float damping = 0.9f;
 
-		auto Lstick = input->GetLStick();
-		
+		Vec2 lstick = input->GetLStick();
+
 		if (m_playerIndex == 0)
 		{
-			Lstick = input->GetLStick();
+			lstick = input->GetLStick();
 		}
 		else if (m_playerIndex == 1)
 		{
-			Lstick = input->GetLStick2();
+			lstick = input->GetLStick2();
 		}
-			
+
 		if (m_playerIndex == 0)
 		{
 			m_aButton = input->GetButton(L"A");
@@ -169,140 +151,128 @@ namespace basecross {
 		auto& game = GameManager::GetGameManager();
 		auto& input = InputManager::GetInputManager();
 		float deltaTime = game->GetDeltaTime();
-
 		auto ptrTrans = GetComponent<Transform>();
-		auto currentQuat = ptrTrans->GetQuaternion();
-		Vec3 forward = ptrTrans->GetForward();
 
 		Vec2 lstick;
 
-		// Playerのコントローラー番号で変わる
 		if (m_playerIndex == 0)
 		{
 			lstick = input->GetLStick();
 		}
-		else if (m_playerIndex == 1)
+		else
 		{
 			lstick = input->GetLStick2();
 		}
 
-		// 入力がほとんど無い場合は自動的に水平復帰
-		if (fabs(lstick.x) < DEAD_ZONE && fabs(lstick.y) < DEAD_ZONE)
+		auto currentQuat = GetComponent<Transform>()->GetQuaternion();
+
+		//----------------------------------------
+		// Pitch（上下方向）
+		//----------------------------------------
+		float pitchInput = lstick.y;
+		float pitchDelta = pitchInput * m_angleSpeed * deltaTime;
+
+		// ピッチ回転をX軸に適用
+		Quat pitchQuat;
+		pitchQuat.rotationX(pitchDelta);
+
+		//----------------------------------------
+		// Roll（左右傾き）
+		//----------------------------------------
+		float rollInput = lstick.x;
+		float rollDelta = -rollInput * m_rollSpeed * deltaTime;
+
+		Vec3 up = ptrTrans->GetUp();
+		Vec3 forward = ptrTrans->GetForward();
+		Vec3 worldUp = Vec3(0, 1, 0);
+
+		// 現在の傾き角（上方向と世界上方向のなす角）
+		float dotUp = dot(up, worldUp);
+		dotUp = clamp(dotUp, -1.0f, 1.0f);
+		float tiltAngle = acosf(dotUp);
+
+		// 傾き方向（右 or 左）を判定
+		float rollDir = dot(cross(forward, up), worldUp);
+
+		// 最大傾き制限
+		constexpr float maxRoll = XMConvertToRadians(60.0f);
+		if ((tiltAngle > maxRoll) &&
+			((rollDir > 0.0f && rollDelta < 0.0f) || (rollDir < 0.0f && rollDelta > 0.0f)))
 		{
-			//AutoUpright(deltaTime);
-			return;
+			rollDelta = 0.0f;
 		}
 
-		// 姿勢の更新
-		Quat pitchQuat = PlayerPitch(lstick.y, deltaTime);
-		Quat rollQuat = PlayerRoll(lstick.x, deltaTime);
-		Quat deltaQuat = pitchQuat * rollQuat;
+		// Roll回転をローカル前方軸で適用
+		Vec3 rollAxis = ptrTrans->GetForward();
+		rollAxis.normalize();
+		Quat rollQuat = rotationAxis(rollAxis, rollDelta);
+		rollQuat.normalize();
+
+		//----------------------------------------
+		// ★ 入力がないときは水平復帰（AutoUpright）
+		//----------------------------------------
+		if (fabs(lstick.x) < 0.05f) // スティックを離したら
+		{
+			auto ptrTrans = GetComponent<Transform>();
+			Quat currentQuat = ptrTrans->GetQuaternion();
+
+			// 現在の軸ベクトルを取得
+			Vec3 up = ptrTrans->GetUp();
+			Vec3 right = ptrTrans->GetRight();
+			Vec3 forward = ptrTrans->GetForward();
+
+			// 世界の上方向
+			Vec3 worldUp = Vec3(0, 1, 0);
+
+			// 現在の上ベクトルを世界上方向へ近づけるための回転を求める
+			Vec3 correctionAxis = cross(up, worldUp);
+			float correctionAngle = acosf(clamp(dot(up, worldUp), -1.0f, 1.0f));
+
+			// 傾きがほぼ水平ならスキップ
+			if (correctionAngle > XMConvertToRadians(0.5f))
+			{
+				// Rollだけ戻す（前方向は維持）
+				Quat correctionQuat = rotationAxis(forward, correctionAngle * 0.1f); // 戻るスピード調整
+				Quat resultQuat = Slerp(currentQuat, correctionQuat * currentQuat, deltaTime * 4.0f);
+				resultQuat.normalize();
+				ptrTrans->SetQuaternion(resultQuat);
+			}
+		}
+
+		//----------------------------------------
+		// 合成：Roll → Pitch（順序重要）
+		//----------------------------------------
+		Quat deltaQuat = rollQuat * pitchQuat;
+
+		//----------------------------------------
+		// 結果反映
+		//----------------------------------------
 		Quat resultQuat = deltaQuat * currentQuat;
 		resultQuat.normalize();
+
 		ptrTrans->SetQuaternion(resultQuat);
 
-		// バンク旋回
-		Vec3 euler = QuaternionToEuler(resultQuat);
-		float rollAngle = euler.z;
-		Vec3 right = ptrTrans->GetRight();
-		Vec3 turnForce = right * sin(rollAngle) * m_turnStrength * deltaTime;
+		auto scene = App::GetApp()->GetScene<Scene>();
+		std::wstringstream wss;
 
-		//// ========= デバッグ出力 =========
-		//auto& app = App::GetApp();
+		//// Pitch / Roll 入力値
+		//wss << L"PitchInput: " << pitchInput
+		//	<< L"\nRollInput : " << rollInput
+		//	<< L"\nPitchDelta: " << pitchDelta
+		//	<< L"\nRollDelta : " << rollDelta;
 
-		//// クォータニオン → オイラー角（ラジアン → 度）
-		//Vec3 euler;
-		//{
-		//	float ysqr = resultQuat.y * resultQuat.y;
+		//// クォータニオン要素
+		//wss << L"\nPitchQuat: (" << pitchQuat.x << L"," << pitchQuat.y << L"," << pitchQuat.z << L"," << pitchQuat.w << L")";
+		//wss << L"\nRollQuat : (" << rollQuat.x << L"," << rollQuat.y << L"," << rollQuat.z << L"," << rollQuat.w << L")";
 
-		//	// pitch (X)
-		//	float t0 = +2.0f * (resultQuat.w * resultQuat.x + resultQuat.y * resultQuat.z);
-		//	float t1 = +1.0f - 2.0f * (resultQuat.x * resultQuat.x + ysqr);
-		//	euler.x = atan2f(t0, t1);
+		//// 傾き角度と方向
+		//wss << L"\nTiltAngle(deg): " << XMConvertToDegrees(tiltAngle)
+		//	<< L"\nRollDir: " << rollDir;
 
-		//	// yaw (Y)
-		//	float t2 = +2.0f * (resultQuat.w * resultQuat.y - resultQuat.z * resultQuat.x);
-		//	t2 = t2 > 1.0f ? 1.0f : (t2 < -1.0f ? -1.0f : t2);
-		//	euler.y = asinf(t2);
+		//wss << L"\nResultQuat: (" << resultQuat.x << L"," << resultQuat.y << L"," << resultQuat.z << L"," << resultQuat.w << L")";
 
-		//	// roll (Z)
-		//	float t3 = +2.0f * (resultQuat.w * resultQuat.z + resultQuat.x * resultQuat.y);
-		//	float t4 = +1.0f - 2.0f * (ysqr + resultQuat.z * resultQuat.z);
-		//	euler.z = atan2f(t3, t4);
-
-		//	// ラジアン → 度
-		//	euler.x = XMConvertToDegrees(euler.x);
-		//	euler.y = XMConvertToDegrees(euler.y);
-		//	euler.z = XMConvertToDegrees(euler.z);
-		//}
-
-		//wstringstream wss(L"");
-		//wss << L"Euler角（度）:"
-		//	<< L"\n Pitch(X): " << euler.x
-		//	<< L"\n Yaw(Y):   " << euler.y
-		//	<< L"\n Roll(Z):  " << euler.z
-		//	<< L"\n\nQuat:"
-		//	<< L"\n X: " << resultQuat.x
-		//	<< L"\n Y: " << resultQuat.y
-		//	<< L"\n Z: " << resultQuat.z
-		//	<< L"\n W: " << resultQuat.w
-		//	<< endl;
-
-		//auto scene = app->GetScene<Scene>();
+		//// シーンに表示
 		//scene->SetDebugString(wss.str());
-	}
-	
-
-	Quat Player::PlayerPitch(const float stickY, float deltaTime)
-	{
-		float pitch = stickY * m_angleSpeed * deltaTime;
-		Quat pitchQuat;
-		pitchQuat.rotationX(pitch);
-		return pitchQuat;
-	}
-
-	Quat Player::PlayerYawWorld(const float stickX, float deltaTime)
-	{
-		float yawAngle = stickX * m_yawSpeed * deltaTime;
-		return FromAxisAngle(Vec3(0, 1, 0), yawAngle);
-	}
-
-	Quat Player::PlayerRoll(float stickX, float deltaTime)
-	{
-		float roll = -stickX * m_rollSpeed * deltaTime;
-		Quat rollQuat;
-		rollQuat.rotationZ(roll); // ローカルZ軸
-		return rollQuat;
-	}
-
-	Quat Player::PlayerYaw(const float stickX, float deltaTime)
-	{
-		float yawAmout = stickX * m_angleSpeed * deltaTime;
-		Quat yawQuat;
-		yawQuat.rotationY(yawAmout);
-		return yawQuat;
-	}
-
-	void Player::AutoUpright(float deltaTime)
-	{
-		auto ptrTrans = GetComponent<Transform>();
-		Quat currentQuat = ptrTrans->GetQuaternion();
-		Quat target = m_initialQuat;
-
-		// 時間を累積
-		m_uprightTime += deltaTime;
-		float duration = 1.0f; // 1秒で水平に戻す
-		float t = clamp(m_uprightTime / duration, 0.0f, 1.0f);
-
-		Quat result = Slerp(currentQuat, target, t);
-		result.normalize();
-		ptrTrans->SetQuaternion(result);
-
-		// 終了したらタイマーをリセット
-		if (t >= 1.0f)
-		{
-			m_uprightTime = 0.0f;
-		}
 	}
 
 	void Player::CreateBarrier()
@@ -393,15 +363,6 @@ namespace basecross {
 		m_prevDDown = dDown;
 	}
 
-	float Player::AngleBetWeen(const Quat& a, const Quat& b)
-	{
-		float dot = fabs(a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w);
-
-		dot = clamp(dot, -1.0f, 1.0f);
-
-		return acosf(dot) * 2.0f;
-	}
-
 	Quat Player::Slerp(const Quat& q1, const Quat& q2, float t)
 	{
 		// ドット積（角度のcosθを求める）
@@ -439,10 +400,10 @@ namespace basecross {
 
 		// 補間結果
 		Quat result(
-			(s0* q1.x) + (s1 * q2b.x),
-			(s0* q1.y) + (s1 * q2b.y),
-			(s0* q1.z) + (s1 * q2b.z),
-			(s0* q1.w) + (s1 * q2b.w)
+			(s0 * q1.x) + (s1 * q2b.x),
+			(s0 * q1.y) + (s1 * q2b.y),
+			(s0 * q1.z) + (s1 * q2b.z),
+			(s0 * q1.w) + (s1 * q2b.w)
 		);
 
 		result.normalize();
@@ -462,6 +423,58 @@ namespace basecross {
 			normAxis.z * s);
 	}
 	
+	Vec3 Player::QuaternionToEuler(const Quat& q)
+	{
+		Vec3 euler;
+
+		// Pitch（X軸回転）
+		float sinp = 2.0f * (q.w * q.x + q.y * q.z);
+		float cosp = 1.0f - 2.0f * (q.x * q.x + q.y * q.y);
+		euler.x = atan2(sinp, cosp);
+
+		// Yaw（Y軸回転）
+		float siny = 2.0f * (q.w * q.y - q.z * q.x);
+		siny = clamp(siny, -1.0f, 1.0f); // 安定化
+		euler.y = asin(siny);
+
+		// Roll（Z軸回転）
+		float sinr = 2.0f * (q.w * q.z + q.x * q.y);
+		float cosr = 1.0f - 2.0f * (q.y * q.y + q.z * q.z);
+		euler.z = atan2(sinr, cosr);
+
+		return euler; // ラジアン単位
+	}
+
+	Vec3 Player::RotateVectorByQuat(const Vec3& v, const Quat& q)
+	{
+		// クォータニオンをベクトル部分とスカラー部分に分解
+		Vec3 qv(q.x, q.y, q.z);
+		float qw = q.w;
+
+		// まず、q と v（をクォータニオンとして扱ったもの）を掛ける
+		Vec3 t = 2.0f * cross(qv, v);
+		Vec3 rotated = v + qw * t + cross(qv, t);
+
+		return rotated;
+	}
+
+	float Player::AngleBetWeen(const Quat& a, const Quat& b)
+	{
+		float dot = fabs(a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w);
+
+		dot = clamp(dot, -1.0f, 1.0f);
+
+		return acosf(dot) * 2.0f;
+	}
+
+	Quat Player::rotationAxis(const Vec3& axis, float angle)
+	{
+		Vec3 n = axis;
+		n.normalize();
+		float s = sinf(angle * 0.5f);
+		float c = cosf(angle * 0.5f);
+		return Quat(n.x * s, n.y * s, n.z * s, c);
+	}
 }
 //end basecross
 
