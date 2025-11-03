@@ -1,7 +1,7 @@
-/*!
+﻿/*!
 @file Player.h
-@brief �v���C���[�Ȃ�
-�S���F�g�c �q�M
+@brief プレイヤーなど
+担当：吉田 智貴
 */
 
 #pragma once
@@ -12,7 +12,7 @@
 
 namespace basecross{
 
-	// clamp�e���v���[�g�֐�
+	// clampテンプレート関数
 	template <typename T>
 	T clamp(T value, T minValue, T maxValue)
 	{
@@ -32,53 +32,28 @@ namespace basecross{
 	class Player : public FighterAircraftBase
 	{
 	private:
-		// �Q�Ƃ������
 		shared_ptr<Barrier> m_barrier;
 		shared_ptr<Bullet> m_bullet;
 
 		Vec3 m_velocity;
 
-		// �����E����
 		float m_speedCurrent;
-		float m_speedMax;
-		float m_accleRation;
-		float m_deceleRation;
 		float m_angleSpeed;
 		float m_rollSpeed;
-		float m_prevRoll;
-		bool m_acceleration; // �������Ă��邩
+		bool m_acceleration;
 
-		// lerp �p�ϐ�
-		float m_currentRoll;
-		float m_startRoll;
-		float m_startTime;
-		float m_endTime;
-		
-		// Slerp �p�ϐ�
 		Quat m_initialQuat;
-		bool m_initialized;
-		bool m_hasInput;
-		bool m_returnToNeutral;
-		bool m_isReturning;
 
-		// ���̑��̏��
-		bool m_fullEnergy;
-		int m_playerIndex;
-		ActionMode m_actionMode;
-
-		// ���͏��
-		bool m_aButton;
 		bool m_prevDDown;
-		bool m_uprightTime;
+		int  m_playerIndex;
+		bool m_aButton;
 
-		float m_yawAmount;
-		float m_initialRoll;
 		float m_yawSpeed;
-		Vec3 m_rotation;
-		float m_turnStrength;
+		Quat  m_targetQuat;
 
-		// �N���X�S�̂ŋ��L�����萔
-		// ���x���֐����Ń��[�J���ϐ��œǂނ͈̂����Ȃ̂ł����ŏ������A�R���p�C�����ɒl������
+		// クラス全体
+		// で共有される定数
+		// 何度も関数内でローカル変数で読むのは悪いなのでここで初期化、コンパイル時に値を決定
 		static constexpr float DEAD_ZONE = 0.1f;
 		static constexpr float DEAD_ZONE_PITCH = 0.4f;
 		static constexpr float MAX_SPEED = 7.0f;
@@ -95,67 +70,119 @@ namespace basecross{
 		void OnUpdate() override;
 		void OnCollisionEnter(const shared_ptr<GameObject>& Other);
 
-		// �v���C���[�̈ړ�����
-		void PlayerMove();
-		
-		// �v���C���[�̊p�x����
-		void PlayerAngle();
-		Quat PlayerPitch(const float stickY, float deltaTime);
-		Quat PlayerRoll(const float stickY, float deltaTime);
-		Quat PlayerYawWorld(const float stickY, float deltaTime);
-		Quat PlayerYaw(const float stickY, float deltaTime);
+		//----------------------------------------
+		// プレイヤーの移動・回転・入力関連
+		//----------------------------------------
 
-		// PlayerBust�̓��͔�����������̊֐���
-		// �Q�[���p�b�h�̓��͏��
+		/*
+		@brief プレイヤーの移動処理
+		@details 左スティック入力や加速ボタンに応じて、機体を前進させる。
+		@return なし
+		*/
+		void PlayerMove();
+
+		/*
+		@brief プレイヤーの角度処理
+		@details Pitch（上下）・Roll（傾き）を入力に応じて制御し、
+		          スティックを離した際には自動的に傾きを水平に戻す。
+		@return なし
+		*/
+		void PlayerAngle();
+
+		/*
+		@brief ブースト入力の状態取得
+		@details スティック、ショルダー、トリガー入力のいずれかが有効な場合に true を返す。
+		@return ブースト入力がアクティブなら true
+		*/
 		bool GetIsBoostInputActive() const;
 
-		// �v���C���[�̑���
-		// �v���C���[�o���A
+		/*
+		@brief プレイヤーのバリア生成処理
+		@details Xボタン入力時にバリアオブジェクトを生成・有効化する。
+		@return なし
+		*/
 		void CreateBarrier();
-		// �v���C���[�̏e��
+
+		/*
+		@brief プレイヤーの弾丸生成処理
+		@details Bボタン入力時に弾丸（Bullet）を生成する。
+		@return なし
+		*/
 		void CreateBullet();
 
+		/*
+		@brief コントローラ切り替え処理
+		@details DPadの下入力により、プレイヤーインデックスを切り替える。
+		@return なし
+		*/
 		void ChangController();
 
-		Quat Slerp(const Quat& q1, const Quat& q2, float t);
-
-		Quat FromAxisAngle(const Vec3& axis, float angleRad);
-
-		Vec3 QuaternionToEuler(const Quat& q)
-		{
-			Vec3 euler;
-
-			// Pitch�iX����]�j
-			float sinp = 2.0f * (q.w * q.x + q.y * q.z);
-			float cosp = 1.0f - 2.0f * (q.x * q.x + q.y * q.y);
-			euler.x = atan2(sinp, cosp);
-
-			// Yaw�iY����]�j
-			float siny = 2.0f * (q.w * q.y - q.z * q.x);
-			siny = clamp(siny, -1.0f, 1.0f); // ���艻
-			euler.y = asin(siny);
-
-			// Roll�iZ����]�j
-			float sinr = 2.0f * (q.w * q.z + q.x * q.y);
-			float cosr = 1.0f - 2.0f * (q.y * q.y + q.z * q.z);
-			euler.z = atan2(sinr, cosr);
-
-			return euler; // ���W�A���P��
-		}
-
-
-		float AngleBetWeen(const Quat& a, const Quat& b);
-
-		void AutoUpright(float deltaTime);
-
-		// �v���C���[�̃R���g���[���ԍ����Z�b�^
+		/*
+		@brief プレイヤーのコントローラ番号を設定する
+		@param index コントローラ番号（0または1）
+		@return なし
+		*/
 		void SetPlayerIndex(int index);
 
-		// �v���C���[�̃R���g���[���ԍ��Q�b�^
+		/*
+		@brief プレイヤーのコントローラ番号を取得する
+		@return 現在のコントローラ番号
+		*/
 		int GetPlayerIndex() const;
 
-		// �������Ă��邩�̃Q�b�^
+		/*
+		@brief プレイヤーが加速しているかを取得する
+		@return 加速中なら true、そうでなければ false
+		*/
 		bool GetAcceleration();
+
+		/*
+		@brief クォータニオン補間（Slerp）
+		@param q1 開始クォータニオン
+		@param q2 終了クォータニオン
+		@param t 補間係数（0〜1）
+		@return 補間後のクォータニオン
+		*/
+		Quat Slerp(const Quat& q1, const Quat& q2, float t);
+
+		/*
+		@brief 軸と角度からクォータニオンを生成
+		@param axis 回転軸ベクトル
+		@param angleRad 回転角（ラジアン）
+		@return 生成されたクォータニオン
+		*/
+		Quat FromAxisAngle(const Vec3& axis, float angleRad);
+
+		/*
+		@brief クォータニオンをオイラー角（Pitch, Yaw, Roll）に変換
+		@param q クォータニオン
+		@return オイラー角（ラジアン単位）
+		*/
+		Vec3 QuaternionToEuler(const Quat& q);
+
+		/*
+		@brief クォータニオンでベクトルを回転
+		@param v 回転させたいベクトル
+		@param q 回転に使用するクォータニオン
+		@return 回転後のベクトル
+		*/
+		Vec3 RotateVectorByQuat(const Vec3& v, const Quat& q);
+
+		/*
+		@brief 2つのクォータニオン間の角度差を取得
+		@param a クォータニオンA
+		@param b クォータニオンB
+		@return 2つのクォータニオン間の角度（ラジアン）
+		*/
+		float AngleBetWeen(const Quat& a, const Quat& b);
+
+		/*
+		@brief 指定軸まわりに回転するクォータニオンを生成
+		@param axis 回転軸ベクトル
+		@param angle 回転角（ラジアン）
+		@return 回転クォータニオン
+		*/
+		inline Quat rotationAxis(const Vec3& axis, float angle);
 
 	};
 }
