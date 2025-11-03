@@ -46,7 +46,8 @@ namespace basecross {
 
 		// 所属を決める (味方 = true,敵 = false)
 		DecideAffiliation();
-
+		
+		// ステートマシン作成
 		m_stateMachine = unique_ptr<StateBarrierMachine>(new StateBarrierMachine(GetThis<MyGameObject>()));
 		m_stateMachine->ChangeState(L"Default");
 

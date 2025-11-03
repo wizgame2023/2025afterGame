@@ -13,6 +13,18 @@ namespace basecross {
 	{
 	}
 
+	FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& ptrStage, Vec3 pos, Vec3 rot, Vec3 scale, Col4 color):
+		Actor(ptrStage,pos,rot,scale,color)
+	{
+
+	}
+
+	FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& ptrStage, Vec3 pos, Quat qt, Vec3 scale, Col4 color):
+		Actor(ptrStage,pos,qt,scale,color)
+	{
+
+	}
+
 	FighterAircraftBase::~FighterAircraftBase()
 	{
 
@@ -32,7 +44,7 @@ namespace basecross {
 
 	void FighterAircraftBase::OnUpdate()
 	{
-
+		Actor::OnUpdate();
 	}
 
 	// バリア使用関数
