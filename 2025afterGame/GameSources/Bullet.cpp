@@ -32,7 +32,7 @@ namespace basecross {
 
 
 		m_trans = GetComponent<Transform>();
-		m_trans->SetPosition(parentPos);
+		m_trans->SetPosition(parentPos + (m_parentForward * 1.6f));
 		m_trans->SetQuaternion(Quat(0.0f,0.0f,0.0f,-1.0f));
 		m_trans->SetScale(Vec3(0.2f));
 
