@@ -12,33 +12,47 @@ namespace basecross{
 	
 	class MainCameraManager : public MyGameObject
 	{
+		// ===============================メンバ変数===================================
+
+		// スマートポインタ関係
 		weak_ptr<Transform> m_plTrans;
-		shared_ptr<Player> m_player;
 		shared_ptr<Stage> m_stage;
-		shared_ptr<Camera> m_mainCamera;
 		shared_ptr<Actor> m_target;
 		shared_ptr<Camera> m_mulCam;
 		
+		// デバッグ用文字列ストリーム
+		wstringstream m_debugWss;
+
+		// SharedGameObjectの名前
+		wstring m_sharedName = L"Player";
+
+		// 傾きの履歴
+		deque<Vec3> m_plUpHistory;
+
+		// ターゲットの情報
 		Vec3 m_plPos;
 		Vec3 m_plRot;
 		Vec3 m_plUp;
 		Vec3 m_plFwrd;
 
-		
+		// カメラ関係の変数
+		Vec3 m_camPos;
+		Vec3 m_atPos;
+
+		// ===============================メンバ変数===================================
+
+		// ===============================メンバ定数===================================
+
 		static constexpr float m_camDis = 5.0f; // カメラとプレイヤーの距離
 		static constexpr float m_followSpeed = 20.0f; // カメラの追従速度
 		static constexpr float m_camHeight = 1.5f; // カメラの高さ
-		static constexpr float m_atOffset = 10.0f;
+		static constexpr float m_atOffset = 10.0f; // 注視点のオフセット距離
+		
+		static constexpr int historyMax = 15;// 履歴の最大値(6で0.1秒のディレイがかかる)
 
-		// 履歴の最大値(6で0.1秒のディレイがかかる)
-		static constexpr int historyMax = 15;
+		// ===============================メンバ定数===================================
 
-		wstring m_sharedName = L"Player";
-
-		wstringstream m_debugWss;
-
-		// 傾きの履歴
-		std::deque<Vec3> m_plUpHistory;
+		// ===============================関数=================================
 
 		// 線形補間関数(Vec3用)
 		// 参考 : https://taketakeshi.hatenablog.jp/entry/2025/05/19/205447
@@ -61,7 +75,9 @@ namespace basecross{
 		// マルチビューかどうか
 		void IsMultiView(const wstring& sharedName);
 
-
+		// カメラが前方を映すか後方を映すか
+		// isButton : 押されたボタンの真偽
+		void SetCameraNormalBehindMode(bool isButton);
 
 		// Upベクトルの履歴に追加し、最大値を超えたら削除
 		// up : 追加するUpベクトル 
@@ -84,6 +100,8 @@ namespace basecross{
 		// to : カメラの位置
 		bool IsObstructed(const Vec3& from, const Vec3& to);
 
+		// ===============================関数=================================
+
 	public:
 		// コンストラクタ
 		MainCameraManager(const shared_ptr<Stage>& stagePtr);
@@ -104,7 +122,7 @@ namespace basecross{
 		virtual void OnUpdate()override;
 
 		// デバッグログ　
-		// 複数使う場合は必ずFlushDebugLogも呼び出すこと
+		// 使う場合は必ずFlushDebugLogも呼び出すこと
 		// name : ログの名前
 		// debug : ログに出力する値
 		template <typename T>
