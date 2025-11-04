@@ -31,19 +31,20 @@ namespace basecross{
 		float m_recastEnergyChargingCurrent = 0.0f; // 回復に移行する必要時間を計測する変数
 		float m_recastEnergyChargingMax = 0.0f;		// 回復に移行するまでの必要経過時間
 
-		bool m_outEnergyFlag = false;		// エネルギー切れになったかのフラグ(そうなったらMaxになるまで使えない)
-		bool m_barrierUseFlag = false;		// バリア使用してよいかのフラグ
-		bool m_gunUseFlag = true;			// 弾を発射してよいかのフラグ
-		bool m_disableShieldFlag = true;	// バリア無効化をしてよいかのフラグ 
+		bool m_outEnergyFlag = false;			// エネルギー切れになったかのフラグ(そうなったらMaxになるまで使えない)
+		bool m_barrierUseFlag = false;			// バリア使用してよいかのフラグ
+		bool m_gunUseFlag = true;				// 弾を発射してよいかのフラグ
+		bool m_disableShieldFlag = true;		// バリア無効化をしてよいかのフラグ 
 
 		// 今後,ストリップストリーム,DRSを実装予定
 
+		weak_ptr<CheckPoint> m_nextCheckPoint; // 次のチェックポイントのポインタ
 		float m_timeCheckPointDifferece = 0.0f; // 自分が通ったチェックポイントのタイムと前の機体のタイムの差
 		Vec3 m_nextCheckPointPos = Vec3(0.0f);  // 次のチェックポイントの位置
 	public:
 		FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& ptrStage);
-		FighterAircraftBase(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 rot, Vec3 scale, Col4 color = Col4(1.0f));
-		FighterAircraftBase(const shared_ptr<Stage>& stagePtr, Vec3 pos, Quat qt, Vec3 scale, Col4 color = Col4(1.0f));
+		FighterAircraftBase(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 rot, Vec3 scale,const shared_ptr<CheckPoint>& startCheckPoint, Col4 color = Col4(1.0f));
+		FighterAircraftBase(const shared_ptr<Stage>& stagePtr, Vec3 pos, Quat qt, Vec3 scale,const shared_ptr<CheckPoint>& startCheckPoint, Col4 color = Col4(1.0f));
 		FighterAircraftBase::~FighterAircraftBase();
 
 		virtual void OnCreate() override;
@@ -55,6 +56,9 @@ namespace basecross{
 		void UseDisableShield();
 		// 弾発射関数
 		void UseBullet();
+
+		// 当たり判定(当たった時)
+		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
 
 		// 現在耐久値のゲッタ
 		int GetHpCurrent();
@@ -72,6 +76,9 @@ namespace basecross{
 		bool GetGunUseFlag();
 		// バリア無効化をして以下のフラグゲッタ
 		bool GetDisableShieldFlag();
+
+		// 次のチェックポインタを入れるセッタ
+		void SetCheckPoint(const shared_ptr<CheckPoint>& nextChackPoint);
 
 		// 現在のエネルギーセッタ
 		void SetEnergyCurrent(float energyCurrent);
