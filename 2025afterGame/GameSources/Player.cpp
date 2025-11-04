@@ -68,16 +68,6 @@ namespace basecross {
 		
 		// dpadでコントローラーを変える
 		ChangController();
-
-		wstringstream wss;
-
-		wss << m_respawnPos.x << endl;
-		wss << m_respawnPos.y << endl;
-		wss << m_respawnPos.z << endl;
-
-		auto scene = App::GetApp()->GetScene<Scene>();
-		scene->SetDebugString(wss.str());
-
 	}
 
 	void Player::OnCollisionEnter(shared_ptr<GameObject>& obj)
