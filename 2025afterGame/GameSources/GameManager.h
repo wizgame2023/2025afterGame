@@ -76,6 +76,9 @@ namespace basecross {
 		// m_checkPointsの追加関数
 		void AddCheckPoint();// 後々、チェックポイントの位置とかを指定する引数入れたい
 
+		// m_chackPointsのサイズ取得
+		int GetChackPointsSize();
+
 	};
 
 
