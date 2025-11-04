@@ -45,6 +45,14 @@ namespace basecross {
 	void FighterAircraftBase::OnUpdate()
 	{
 		Actor::OnUpdate();
+
+		// 次のチェックポイントを通り過ぎていないかの処理
+		if (m_pos.z >= m_nextCheckPointPos.z)
+		{
+			// もし、チェックポイントに触れて通り過ぎていなかったらスピード軽減
+			m_speedCurrent -= 20.0f;
+		}
+
 	}
 
 	// バリア使用関数
@@ -76,6 +84,13 @@ namespace basecross {
 			m_energyCurrent -= energyLost; // エネルギー消費
 			GetStage()->AddGameObject<Bullet>(GetThis<FighterAircraftBase>());
 		}
+	}
+
+	// 当たり判定(当たった時)
+	// 引数１ ぶつかったオブジェクト
+	void FighterAircraftBase::OnCollisionEnter(shared_ptr<GameObject>& obj)
+	{
+
 	}
 
 	// 現在耐久値のゲッタ
@@ -124,6 +139,16 @@ namespace basecross {
 	bool FighterAircraftBase::GetDisableShieldFlag()
 	{
 		return m_disableShieldFlag;
+	}
+
+	// 次のチェックポインタを入れるセッタ
+	void FighterAircraftBase::SetCheckPoint(const shared_ptr<CheckPoint>& nextCheckPoint)
+	{
+		m_nextCheckPoint = nextCheckPoint;
+		auto checkPointLock = m_nextCheckPoint.lock();
+
+		// 次のチェックポイント位置取得
+		m_nextCheckPointPos = checkPointLock->GetPos();
 	}
 
 	// 現在のエネルギーセッタ
