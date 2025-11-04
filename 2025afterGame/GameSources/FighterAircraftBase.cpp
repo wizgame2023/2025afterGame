@@ -13,16 +13,18 @@ namespace basecross {
 	{
 	}
 
-	FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& ptrStage, Vec3 pos, Vec3 rot, Vec3 scale, Col4 color):
-		Actor(ptrStage,pos,rot,scale,color)
+	FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& ptrStage, Vec3 pos, Vec3 rot, Vec3 scale,const shared_ptr<CheckPoint>& startCheckPoint, Col4 color) :
+		Actor(ptrStage, pos, rot, scale, color)
 	{
-
+		// 次のチェックポイントの設定
+		SetCheckPoint(startCheckPoint);
 	}
 
-	FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& ptrStage, Vec3 pos, Quat qt, Vec3 scale, Col4 color):
+	FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& ptrStage, Vec3 pos, Quat qt, Vec3 scale,const shared_ptr<CheckPoint>& startCheckPoint, Col4 color):
 		Actor(ptrStage,pos,qt,scale,color)
 	{
-
+		// 次のチェックポイントの設定
+		SetCheckPoint(startCheckPoint);
 	}
 
 	FighterAircraftBase::~FighterAircraftBase()
