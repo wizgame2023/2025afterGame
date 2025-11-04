@@ -26,7 +26,9 @@ namespace basecross{
 		m_mulCam(mulCam),
 		m_sharedName(sharedName)
 	{}
-	
+
+	// ==================================生成==================================
+
 	void MainCameraManager::OnCreate()
 	{
 		// 必要だったらMyGameObjectのOnCreateを呼ぶ
@@ -41,6 +43,9 @@ namespace basecross{
 		m_plTrans = m_target->GetComponent<Transform>();
 		
 	}
+	// ==================================生成==================================
+
+	// ==================================更新==================================
 
 	void MainCameraManager::OnUpdate()
 	{
@@ -52,6 +57,8 @@ namespace basecross{
 		//bool isAccel = m_player->GetAcceleration();
 		bool isAButton = input->GetButton(L"A");
 		bool isYButton = input->GetButton(L"Y");
+		// Yボタンを押した瞬間と離した瞬間を取る
+		bool isYButtonDownUp = input->GetNowUpdateButton(L"Y");
 
 		// プレイヤーの情報取得
 		m_plPos = m_plTrans.lock()->GetPosition();
@@ -66,37 +73,23 @@ namespace basecross{
 		// カメラの現在の位置
 		Vec3 currentCamPos = m_mulCam->GetEye();
 
-		// Yボタンを押した瞬間と離した瞬間を取る
-		bool isYButtonDownUp = input->GetNowUpdateButton(L"Y");
+		// カメラが前方を映すか後方を映すか
+		SetCameraNormalBehindMode(isYButton);
 
-		// カメラが前方か後方か(目標カメラ位置)
-		Vec3 behindNormalCamPos = isYButton 
-			? m_plPos + m_plFwrd * m_camDis + m_plUp * m_camHeight
-			: m_plPos - m_plFwrd * m_camDis + m_plUp * m_camHeight;
-
-		// 注視点が前方か後方か(注視点をプレイヤーより奥側にする)
-		Vec3 behindNormalAtPos = isYButton 
-			? m_plPos - m_plFwrd * m_atOffset
-			: m_plPos + m_plFwrd * m_atOffset;
-
-		// 滑らかに補間
+		// 滑らかに補間		Yボタンを押した(カメラを後ろに向かせた)瞬間は補間OFF
 		Vec3 newCamPos = isYButtonDownUp ?
-			behindNormalCamPos :
-			LerpV3(currentCamPos, behindNormalCamPos, m_delta * m_followSpeed);
-
-		// 常にプレイヤーの後ろにカメラを設置する(プレイヤーの角度が変わっても正面が映らないような感じ)
-		m_mulCam->SetEye(newCamPos);
+			m_camPos :
+			LerpV3(currentCamPos, m_camPos, m_delta * m_followSpeed);
 
 		// 加速に合わせて視野角を広げる
 		AdjustFov(isAButton);
 
-		// プレイヤーの角度に合わせてカメラも傾く
-		m_mulCam->SetUp(Vec3(smoothUp));
-
-		// カメラの注視点
-		m_mulCam->SetAt(behindNormalAtPos);
-
 		//IsObstructed(m_plPos, m_mulCam->GetEye());
+		
+		// カメラの最終的な設定
+		m_mulCam->SetUp(Vec3(smoothUp));// プレイヤーの角度に合わせてカメラも傾く
+		m_mulCam->SetEye(newCamPos);// 常にプレイヤーの後ろにカメラを設置する
+		m_mulCam->SetAt(m_atPos);// カメラの注視点の設定
 
 		// デバッグログ
 		DebugLog(L"CameraPosX:", m_mulCam->GetEye().x);
@@ -104,6 +97,9 @@ namespace basecross{
 		DebugLog(L"CameraPosZ:", m_mulCam->GetEye().z);
 		FlushDebugLog();
 	}
+	// ==================================更新==================================
+
+	// ==================================関数==================================
 
 	template<typename T>
 	void MainCameraManager::DebugLog(const wstring& name, T debug)
@@ -125,7 +121,6 @@ namespace basecross{
 		static constexpr float normalFov = 0.8f;
 		static constexpr float accelFov = 1.0f;
 		static constexpr float lerpSpeed = 0.03f;
-		
 		
 		//static float time = 0;
 
@@ -210,5 +205,23 @@ namespace basecross{
 			}
 		}
 	}
+
+	void MainCameraManager::SetCameraNormalBehindMode(bool isButton)
+	{
+		// カメラ位置と注視点の計算
+		if (isButton)
+		{
+			m_camPos = m_plPos + m_plFwrd * m_camDis + m_plUp * m_camHeight;
+			m_atPos = m_plPos - m_plFwrd * m_atOffset;
+		}
+		else
+		{
+			m_camPos = m_plPos - m_plFwrd * m_camDis + m_plUp * m_camHeight;
+			m_atPos =  m_plPos + m_plFwrd * m_atOffset;
+		}
+	}
+
+	// ==================================関数==================================
+
 }
 //end basecross

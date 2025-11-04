@@ -13,7 +13,7 @@ namespace basecross {
 	private:
 
 	public:
-		Enemy(const shared_ptr<Stage>& obj,const Vec3& pos,const Quat& qt,const Vec3& scale);
+		Enemy(const shared_ptr<Stage>& obj,const Vec3& pos,const Quat& qt,const Vec3& scale, const shared_ptr<CheckPoint>& startCheckPoint);
 		~Enemy();
 
 		void OnCreate()override;

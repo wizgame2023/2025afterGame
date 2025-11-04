@@ -9,8 +9,8 @@
 #include "Enemy.h"
 
 namespace basecross {
-	Enemy::Enemy(const shared_ptr<Stage>& obj,const Vec3& pos,const Quat& qt,const Vec3& scale):
-		FighterAircraftBase(obj,pos,qt,scale)
+	Enemy::Enemy(const shared_ptr<Stage>& obj,const Vec3& pos,const Quat& qt,const Vec3& scale,const shared_ptr<CheckPoint>& startCheckPoint):
+		FighterAircraftBase(obj,pos,qt,scale,startCheckPoint)
 	{
 
 	}
