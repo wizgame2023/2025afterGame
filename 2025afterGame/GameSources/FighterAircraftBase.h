@@ -21,7 +21,7 @@ namespace basecross{
 		int m_hpCurrent = 0;			// 耐久値
 		int m_hpMax = 0;				// 最大耐久値
 		float m_speedAdd = 0.0f;		// スピードの加速度
-		float m_speedCurrent = 0.0f;	// スピード
+		float m_speedCurrent = 3.0f;	// スピード
 		float m_speedMax = 0.0f;		// 最大スピード
 
 		//エネルギー
