@@ -179,80 +179,19 @@ namespace basecross {
 		}
 
 		auto currentQuat = GetComponent<Transform>()->GetQuaternion();
-
+		
+		Quat yawQuat = FromAxisAngle(Vec3(0, 1, 0), 6.0f);
+		
 		//----------------------------------------
 		// Pitch（上下方向）
 		//----------------------------------------
-		float pitchInput = lstick.y;
-		float pitchDelta = pitchInput * m_angleSpeed * deltaTime;
-
-		// ピッチ回転をX軸に適用
-		Quat pitchQuat;
-		pitchQuat.rotationX(pitchDelta);
+		Quat pitchQuat = PlayerPitch(lstick.y, deltaTime);
 
 		//----------------------------------------
 		// Roll（左右傾き）
 		//----------------------------------------
-		float rollInput = lstick.x;
-		float rollDelta = -rollInput * m_rollSpeed * deltaTime;
-
-		Vec3 up = ptrTrans->GetUp();
-		Vec3 forward = ptrTrans->GetForward();
-		Vec3 worldUp = Vec3(0, 1, 0);
-
-		// 現在の傾き角（上方向と世界上方向のなす角）
-		float dotUp = dot(up, worldUp);
-		dotUp = clamp(dotUp, -1.0f, 1.0f);
-		float tiltAngle = acosf(dotUp);
-
-		// 傾き方向（右 or 左）を判定
-		float rollDir = dot(cross(forward, up), worldUp);
-
-		// 最大傾き制限
-		constexpr float maxRoll = XMConvertToRadians(60.0f);
-		if ((tiltAngle > maxRoll) &&
-			((rollDir > 0.0f && rollDelta < 0.0f) || (rollDir < 0.0f && rollDelta > 0.0f)))
-		{
-			rollDelta = 0.0f;
-		}
-
-		// Roll回転をローカル前方軸で適用
-		Vec3 rollAxis = ptrTrans->GetForward();
-		rollAxis.normalize();
-		Quat rollQuat = rotationAxis(rollAxis, rollDelta);
-		rollQuat.normalize();
-
-		//----------------------------------------
-		// ★ 入力がないときは水平復帰（AutoUpright）
-		//----------------------------------------
-		if (fabs(lstick.x) < 0.05f) // スティックを離したら
-		{
-			auto ptrTrans = GetComponent<Transform>();
-			Quat currentQuat = ptrTrans->GetQuaternion();
-
-			// 現在の軸ベクトルを取得
-			Vec3 up = ptrTrans->GetUp();
-			Vec3 right = ptrTrans->GetRight();
-			Vec3 forward = ptrTrans->GetForward();
-
-			// 世界の上方向
-			Vec3 worldUp = Vec3(0, 1, 0);
-
-			// 現在の上ベクトルを世界上方向へ近づけるための回転を求める
-			Vec3 correctionAxis = cross(up, worldUp);
-			float correctionAngle = acosf(clamp(dot(up, worldUp), -1.0f, 1.0f));
-
-			// 傾きがほぼ水平ならスキップ
-			if (correctionAngle > XMConvertToRadians(0.5f))
-			{
-				// Rollだけ戻す（前方向は維持）
-				Quat correctionQuat = rotationAxis(forward, correctionAngle * 0.1f); // 戻るスピード調整
-				Quat resultQuat = Slerp(currentQuat, correctionQuat * currentQuat, deltaTime * 4.0f);
-				resultQuat.normalize();
-				ptrTrans->SetQuaternion(resultQuat);
-			}
-		}
-
+		Quat rollQuat = PlayerRoll(lstick.x, deltaTime);
+		
 		//----------------------------------------
 		// 合成：Roll → Pitch（順序重要）
 		//----------------------------------------
@@ -263,10 +202,25 @@ namespace basecross {
 		//----------------------------------------
 		Quat resultQuat = deltaQuat * currentQuat;
 		resultQuat.normalize();
-
 		ptrTrans->SetQuaternion(resultQuat);
 
 		auto scene = App::GetApp()->GetScene<Scene>();
+	}
+
+	Quat Player::PlayerPitch(const float stickY, float deltaTime)
+	{
+		float pitch = stickY * m_angleSpeed * deltaTime;
+		Quat pitchQuat;
+		pitchQuat.rotationX(pitch);
+		return pitchQuat; 
+	}
+
+	Quat Player::PlayerRoll(const float stickX, float deltaTime)
+	{
+		float roll = -stickX * m_angleSpeed * deltaTime;
+		Quat rollQuat;
+		rollQuat.rotationZ(roll);
+		return rollQuat;
 	}
 
 	void Player::CreateBarrier()

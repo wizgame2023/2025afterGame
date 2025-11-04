@@ -93,6 +93,10 @@ namespace basecross{
 		*/
 		void PlayerAngle();
 
+		Quat PlayerPitch(const float stickY, float deltaTime);
+
+		Quat PlayerRoll(const float stickX, float deltaTime);
+
 		/*
 		@brief ブースト入力の状態取得
 		@details スティック、ショルダー、トリガー入力のいずれかが有効な場合に true を返す。
