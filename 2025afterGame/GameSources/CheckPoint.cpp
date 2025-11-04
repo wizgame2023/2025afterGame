@@ -1,6 +1,6 @@
 /*!
 @file CheckPoint.cpp
-@brief �`�F�b�N�|�C���g�̎���
+@brief チェックポイント本体
 */
 
 #include "stdafx.h"
@@ -8,7 +8,7 @@
 
 namespace basecross{
 	CheckPoint::CheckPoint(const shared_ptr<Stage>& stageptr) :
-		Actor(stageptr,Vec3(-50.0f, -50.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(1.0f, 1.0f, 1.0f)),
+		Actor(stageptr,Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(1.0f, 1.0f, 1.0f)),
 		m_raceTime(0.0f),
 		m_previewTime(0.0f),
 		m_checkPointID(0)
@@ -26,9 +26,12 @@ namespace basecross{
 		//初期位置設定
 		m_trans = GetComponent<Transform>();
 		m_trans->SetPosition(m_pos);
-		m_pos.x += rand() % 100;
+
+		//ここでチェックポイントの座標をランダムに指定
+		/*m_pos.x += rand() % 100;
 		m_pos.y += rand() % 100;
-		m_pos.z += rand() % 100;
+		m_pos.z += rand() % 100;*/
+
 		m_trans->SetQuaternion(m_qt);
 		m_trans->SetScale(m_scale);
 
@@ -48,6 +51,10 @@ namespace basecross{
 		auto& game = GameManager::GetGameManager();
 		//レース時間の取得
 		m_raceTime = game->GetTimeGamePlaying();
+
+		//仮チェックポイントの指定
+		m_pos.z = 10.0f + m_checkPointID * 10.0f;
+
 		//位置を指定
 		m_trans->SetPosition(Vec3(m_pos.x, m_pos.y, m_pos.z));
 	}
@@ -56,11 +63,13 @@ namespace basecross{
 	void CheckPoint::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
 		auto playermachine = dynamic_pointer_cast<Player>(obj);
+		auto& game = GameManager::GetGameManager();
+
 		//プレイヤーが接触した時のみ実行
 		if (playermachine)
 		{
 			//初めてこのチェックポイントに触れたか判定
-			if (m_previewTime > 0.0f)
+			/*if (m_previewTime > 0.0f)
 			{
 				//2機目からは先に通った機体との差分の時間を返す
 				playermachine->SetTimeCheckPointDifferece(GetDifferenceTime());
@@ -70,7 +79,14 @@ namespace basecross{
 				//1機目の場合基準タイムを設定する
 				playermachine->SetTimeCheckPointDifferece(0);
 				m_previewTime = m_raceTime;
+			}*/
+			
+			//もし最後のチェックポイントならタイトル画面に戻る(仮)
+			if (m_checkPointID == game->GetChackPointsSize())
+			{
+				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
 			}
+			
 			//次のチェックポイントをプレイヤーに返す
 			playermachine->SetNextCheckPointPos(GetNextCheckPoint());
 		}
@@ -94,7 +110,11 @@ namespace basecross{
 	//次のチェックポイントをプレイヤーに返すゲッター
 	Vec3 CheckPoint::GetNextCheckPoint() 
 	{
-		if (m_checkPointID != 3)
+		//ゲームマネージャーを取得
+		auto& game = GameManager::GetGameManager();
+
+		//次のチェックポイントがない場合実行しない
+		if (m_checkPointID < game->GetChackPointsSize())
 		{
 			auto& game = GameManager::GetGameManager();
 			auto& checkPoint = game->GetCheckPoint(m_checkPointID);
