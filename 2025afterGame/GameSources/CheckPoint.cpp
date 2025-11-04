@@ -1,6 +1,6 @@
 /*!
 @file CheckPoint.cpp
-@brief �`�F�b�N�|�C���g�̎���
+@brief チェックポイント本体
 */
 
 #include "stdafx.h"
@@ -63,21 +63,30 @@ namespace basecross{
 	void CheckPoint::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
 		auto playermachine = dynamic_pointer_cast<Player>(obj);
+		auto& game = GameManager::GetGameManager();
+
 		//プレイヤーが接触した時のみ実行
 		if (playermachine)
 		{
-			////初めてこのチェックポイントに触れたか判定
-			//if (m_previewTime > 0.0f)
-			//{
-			//	//2機目からは先に通った機体との差分の時間を返す
-			//	playermachine->SetTimeCheckPointDifferece(GetDifferenceTime());
-			//}
-			//else
-			//{
-			//	//1機目の場合基準タイムを設定する
-			//	playermachine->SetTimeCheckPointDifferece(0);
-			//	m_previewTime = m_raceTime;
-			//}
+			//初めてこのチェックポイントに触れたか判定
+			/*if (m_previewTime > 0.0f)
+			{
+				//2機目からは先に通った機体との差分の時間を返す
+				playermachine->SetTimeCheckPointDifferece(GetDifferenceTime());
+			}
+			else
+			{
+				//1機目の場合基準タイムを設定する
+				playermachine->SetTimeCheckPointDifferece(0);
+				m_previewTime = m_raceTime;
+			}*/
+			
+			//もし最後のチェックポイントならタイトル画面に戻る(仮)
+			if (m_checkPointID == game->GetChackPointsSize())
+			{
+				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
+			}
+			
 			//次のチェックポイントをプレイヤーに返す
 			playermachine->SetNextCheckPointPos(GetNextCheckPoint());
 		}
@@ -104,6 +113,7 @@ namespace basecross{
 		//ゲームマネージャーを取得
 		auto& game = GameManager::GetGameManager();
 
+		//次のチェックポイントがない場合実行しない
 		if (m_checkPointID < game->GetChackPointsSize())
 		{
 			auto& game = GameManager::GetGameManager();
