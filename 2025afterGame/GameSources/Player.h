@@ -40,7 +40,6 @@ namespace basecross{
 		Vec3 m_velocity;
 		Vec3 m_checkPointPos;
 
-		float m_speedCurrent;
 		float m_angleSpeed;
 		float m_rollSpeed;
 		bool m_acceleration;
@@ -53,6 +52,8 @@ namespace basecross{
 
 		float m_yawSpeed;
 		Quat  m_targetQuat;
+
+		Vec3 m_respawnPos;
 
 		// クラス全体
 		// で共有される定数
@@ -192,8 +193,6 @@ namespace basecross{
 		{
 			return m_checkPointPos;
 		}
-
-		void CheckPointClear();
 	};
 }
 //end basecross

@@ -10,7 +10,6 @@
 namespace basecross {
 	Player::Player(const shared_ptr<Stage>& ptrStage) :
 		FighterAircraftBase(ptrStage),
-		m_speedCurrent(5.0f),
 		m_velocity(Vec3(0.0f)),
 		m_angleSpeed(1.0f),
 		m_rollSpeed(1.0f)
@@ -51,6 +50,8 @@ namespace basecross {
 
 	void Player::OnUpdate()
 	{
+		FighterAircraftBase::OnUpdate();
+
 		auto& app = App::GetApp();
 		auto elapsed = app->GetElapsedTime();
 		auto nowPos = GetComponent<Transform>()->GetPosition();
@@ -68,13 +69,20 @@ namespace basecross {
 		// dpadでコントローラーを変える
 		ChangController();
 
-		CheckPointClear();
+		wstringstream wss;
+
+		wss << m_respawnPos.x << endl;
+		wss << m_respawnPos.y << endl;
+		wss << m_respawnPos.z << endl;
+
+		auto scene = App::GetApp()->GetScene<Scene>();
+		scene->SetDebugString(wss.str());
 
 	}
 
 	void Player::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
-		// FighterAircraftBase::OnCollisionEnter(obj);
+		FighterAircraftBase::OnCollisionEnter(obj);
 		
 		auto checkPoint = dynamic_pointer_cast<CheckPoint>(obj);
 		auto bullet = dynamic_pointer_cast<Bullet>(obj);
@@ -82,28 +90,13 @@ namespace basecross {
 		if (bullet)
 		{
 			auto trans = GetComponent<Transform>();
-
-			Vec3 respawnPos = Vec3(0.0f, 0.0f, 0.0f);
-
-			/*if (m_currentCheckPoint)
-			{
-				respawnPos = m_currentCheckPoint->GetComponent<Transform>()->GetPosition();
-			}*/
-
-			trans->SetPosition(respawnPos);
+			trans->SetPosition(m_respawnPos);
 		}
-	}
 
-
-	void Player::CheckPointClear()
-	{
-		//auto currentPos = GetComponent<Transform>()->GetPosition();
-		//auto nextPos = m_checkPoint->GetNextCheckPoint();
-
-		//if (currentPos.z >= nextPos.z)
-		//{
-		//	m_speedCurrent = 3.0f;
-		//}
+		if (checkPoint)
+		{
+			m_respawnPos = checkPoint->GetComponent<Transform>()->GetPosition();
+		}
 	}
 
 	void Player::PlayerMove()
@@ -147,6 +140,8 @@ namespace basecross {
 			currentPos += m_velocity * deltaTime;
 		}
 
+		ptrTrans->SetPosition(currentPos);
+
 		//	m_speedCurrent += m_accleRation * deltaTime;
 
 		//	if (m_speedCurrent > m_speedMax)
@@ -173,7 +168,6 @@ namespace basecross {
 		//	currentPos += m_velocity * deltaTime;
 		//}
 
-		ptrTrans->SetPosition(currentPos);
 	}
 
 	void Player::PlayerAngle()
