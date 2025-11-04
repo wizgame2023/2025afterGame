@@ -92,14 +92,31 @@ namespace basecross {
 		m_pos.z += sin(goalAngle) * speed * m_delta;
 
 		// Qt回転
-		m_qt = Quat(0.0f, 0.0f, (sin(goalAngleZY / 2.0f)), cos((goalAngle / 2.0f))) *
-			Quat(0.0f, (sin(goalAngle / 2.0f)), 0.0f, cos((goalAngle / 2.0f)));
+		//m_qt = Quat(0.0f, 0.0f, (sin(goalAngleZY / 2.0f)), cos((goalAngle / 2.0f))) *
+		//	Quat(0.0f, (sin(goalAngle / 2.0f)), 0.0f, cos((goalAngle / 2.0f)));
+		m_qt = Quat(0.0f, 0.0f, (sin(goalAngleZY / 2.0f)), cos((goalAngleZY / 2.0f)));
+
+		//auto cameraManager = GetStage()->GetSharedGameObject<MainCameraManager>(L"MainCameraManager");
+		//cameraManager->DebugLog(L"goalAngle : ", XMConvertToDegrees(goalAngle));
+		//cameraManager->DebugLog(L"goalAngleZY : ",XMConvertToDegrees(goalAngleZY));
 
 		//m_qt = Quat(0.0f, 0.0f, (sin(goalAngleZY / 2.0f)), cos((goalAngle / 2.0f)));
 		m_trans->SetQuaternion(m_qt);
 		//m_trans->SetRotation(0.0f, -goalAngle, 0.0f);
 
 		m_trans->SetPosition(m_pos);
+
+		////デバック用
+		wstringstream wss(L"");
+		auto scene = App::GetApp()->GetScene<Scene>();
+
+		wss /* << L"デバッグ用文字列 "*/
+			<< L"\ngoalAngle : " << XMConvertToDegrees(goalAngle)
+			<< L"\ngoalAngleZY : " << XMConvertToDegrees(goalAngleZY)
+			<< endl;
+
+		scene->SetDebugString(wss.str());
+
 	}
 
 }
