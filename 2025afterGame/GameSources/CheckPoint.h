@@ -1,6 +1,6 @@
 /*!
 @file CheckPoint.h
-@brief �`�F�b�N�|�C���g
+@brief チェックポイント本体のヘッダー
 */
 
 #pragma once
@@ -10,9 +10,8 @@
 namespace basecross{
 	class CheckPoint: public Actor
 	{
-	private :
-
 	public :
+		//チェックポイント等のメンバ変数
 		float m_raceTime;
 		float m_previewTime;
 		int m_checkPointID;
@@ -25,12 +24,16 @@ namespace basecross{
 		void OnCreate()override;
 		void OnUpdate()override;
 
+		//差分の時間を取得
 		float GetDifferenceTime();
 
+		//チェックポイントIDの取得
 		void SetCheckPointID(int id);
 
+		//次のチェックポイントの取得
 		Vec3 GetNextCheckPoint();
 
+		//接触した場合の処理
 		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
 	};
 }
