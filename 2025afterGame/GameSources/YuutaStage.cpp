@@ -43,7 +43,6 @@ namespace basecross {
 
 			//背景
 			AddGameObject<Background>();
-			//GameManager::GetGameManager()->AddCheckPoint();
 
 			auto player = AddGameObject<Player>();
 			SetSharedGameObject(L"Player", player);
@@ -53,8 +52,13 @@ namespace basecross {
 			throw;
 		}
 
+		auto& gameManager = GameManager::GetGameManager();
+		gameManager->AddCheckPoint();
+		gameManager->AddCheckPoint();
+
+		auto startCheckPoint = gameManager->GetCheckPoint(0);
 		// 敵が出ているかテスト処理
-		auto enemy = AddGameObject<Enemy>(Vec3(0.0f,0.0f,0.0f),Quat(0.0f,0.0f,0.0f,1.0f),Vec3(0.5f));
+		//auto enemy = AddGameObject<Enemy>(Vec3(0.0f,0.0f,0.0f),Quat(0.0f,0.0f,0.0f,1.0f),Vec3(0.5f), startCheckPoint);
 
 		// バリア妨害のテスト処理
 		//auto testBullet = AddGameObject<Bullet>();
@@ -68,8 +72,8 @@ namespace basecross {
 
 
 
-		//auto mainCamMana = AddGameObject<MainCameraManager>();
-		//SetSharedGameObject(L"MainCameraManager", mainCamMana);
+		auto mainCamMana = AddGameObject<MainCameraManager>();
+		SetSharedGameObject(L"MainCameraManager", mainCamMana);
 	}
 
 	void YuutaStage::OnUpdate()

@@ -54,6 +54,7 @@ namespace basecross {
 				max++;
 			}
 
+			//ï«ÇÃâºê∂ê¨
 			auto wall1 = AddGameObject<StageWall>();
 			wall1->GetComponent<Transform>()->SetPosition(0.0f, 0.0f, 55.0f);
 
