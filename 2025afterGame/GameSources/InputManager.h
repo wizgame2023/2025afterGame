@@ -67,8 +67,6 @@ namespace basecross
 
 		CONTROLER_STATE m_pad2;
 
-		int m_playerIndex;
-
 	public:
 		/*!
 		@brief 入力マネージャーを作成
@@ -321,6 +319,29 @@ namespace basecross
 		BYTE GetRightTrigger2() const
 		{
 			return m_RightTriggerP2;
+		}
+
+		CONTROLER_STATE GetGamePad() const
+		{
+			return m_pad;
+		}
+
+		CONTROLER_STATE GetGamePad2() const
+		{
+			return m_pad2;
+		}
+
+		bool InputManager::GetDownButton(const wstring& key, int playerIndex)
+		{
+			if (playerIndex == 0)
+			{
+				return m_DownButtons[key];
+			}
+			else if (playerIndex == 1)
+			{
+				return m_DownButtonsP2[key];
+			}
+			return false;
 		}
 
 	private:

@@ -33,6 +33,7 @@ namespace basecross {
 			auto& app = App::GetApp();
 			auto path = app->GetDataDirWString();
 			auto input = app->GetInputDevice();
+			auto& game = GameManager::GetGameManager();
 
 			auto backgroundPath = path + L"Backgrounds/";
 			for (const auto& keyName : Background::pairs) {
@@ -45,6 +46,16 @@ namespace basecross {
 			//îwåi
 			AddGameObject<Background>();
 
+			int max = 0;
+			
+
+			for (int i = 0; i < 3; i++)
+			{
+				game->AddCheckPoint();
+
+				max++;
+			}
+
 			auto player = AddGameObject<Player>();
 			player->SetPlayerIndex(0);
 			SetSharedGameObject(L"Player", player);
@@ -53,7 +64,7 @@ namespace basecross {
 			auto player2 = AddGameObject<Player>();		
 			player2->SetPlayerIndex(1);
 			SetSharedGameObject(L"Player2", player2);
-			player2->GetComponent<Transform>()->SetPosition(Vec3(0.0f, 0.0f, 10.0f));
+			player2->GetComponent<Transform>()->SetPosition(Vec3(0.0f, 0.0f, 15.0f));
 
 
 		}
