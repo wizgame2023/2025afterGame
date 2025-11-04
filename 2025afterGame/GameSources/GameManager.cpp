@@ -5,6 +5,7 @@
 
 #include "stdafx.h"
 #include "Project.h"
+#include "GameManager.h"
 
 
 namespace basecross {
@@ -128,6 +129,7 @@ namespace basecross {
 	}
 
 	// m_checkPointsのゲッタ
+	// 第一引数 何番目のチェックポイントを受け取るかの番号
 	shared_ptr<CheckPoint> GameManager::GetCheckPoint(int number)
 	{
 		// もし、配列外を取得しようとしていたら間違っているとエラーを出す
@@ -160,6 +162,12 @@ namespace basecross {
 
 		// 生成したオブジェクトに自分の配列番号を渡す
 		addCheckPointObj->SetCheckPointID(m_checkPoints.size());
+	}
+
+	// m_chackPointsのサイズ取得
+	int GameManager::GetChackPointsSize()
+	{
+		return m_checkPoints.size();
 	}
 
 }
