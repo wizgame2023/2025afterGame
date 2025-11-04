@@ -59,18 +59,18 @@ namespace basecross{
 		//プレイヤーが接触した時のみ実行
 		if (playermachine)
 		{
-			//初めてこのチェックポイントに触れたか判定
-			if (m_previewTime > 0.0f)
-			{
-				//2機目からは先に通った機体との差分の時間を返す
-				playermachine->SetTimeCheckPointDifferece(GetDifferenceTime());
-			}
-			else
-			{
-				//1機目の場合基準タイムを設定する
-				playermachine->SetTimeCheckPointDifferece(0);
-				m_previewTime = m_raceTime;
-			}
+			////初めてこのチェックポイントに触れたか判定
+			//if (m_previewTime > 0.0f)
+			//{
+			//	//2機目からは先に通った機体との差分の時間を返す
+			//	playermachine->SetTimeCheckPointDifferece(GetDifferenceTime());
+			//}
+			//else
+			//{
+			//	//1機目の場合基準タイムを設定する
+			//	playermachine->SetTimeCheckPointDifferece(0);
+			//	m_previewTime = m_raceTime;
+			//}
 			//次のチェックポイントをプレイヤーに返す
 			playermachine->SetNextCheckPointPos(GetNextCheckPoint());
 		}
