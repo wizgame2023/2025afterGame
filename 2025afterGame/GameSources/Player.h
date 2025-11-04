@@ -9,6 +9,7 @@
 #include "Actor.h"
 #include "Barrier.h"
 #include "Bullet.h"
+#include "CheckPoint.h"
 
 namespace basecross{
 
@@ -34,8 +35,10 @@ namespace basecross{
 	private:
 		shared_ptr<Barrier> m_barrier;
 		shared_ptr<Bullet> m_bullet;
+		shared_ptr<CheckPoint> m_checkPoint;
 
 		Vec3 m_velocity;
+		Vec3 m_checkPointPos;
 
 		float m_speedCurrent;
 		float m_angleSpeed;
@@ -68,7 +71,7 @@ namespace basecross{
 
 		void OnCreate() override;
 		void OnUpdate() override;
-		void OnCollisionEnter(const shared_ptr<GameObject>& Other);
+		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
 
 		//----------------------------------------
 		// プレイヤーの移動・回転・入力関連
@@ -184,6 +187,13 @@ namespace basecross{
 		*/
 		inline Quat rotationAxis(const Vec3& axis, float angle);
 
+
+		Vec3 GetCheckPointPos() const 
+		{
+			return m_checkPointPos;
+		}
+
+		void CheckPointClear();
 	};
 }
 //end basecross

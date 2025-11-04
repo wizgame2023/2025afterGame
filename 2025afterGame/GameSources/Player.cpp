@@ -10,7 +10,7 @@
 namespace basecross {
 	Player::Player(const shared_ptr<Stage>& ptrStage) :
 		FighterAircraftBase(ptrStage),
-		m_speedCurrent(1.0f),
+		m_speedCurrent(5.0f),
 		m_velocity(Vec3(0.0f)),
 		m_angleSpeed(1.0f),
 		m_rollSpeed(1.0f)
@@ -25,7 +25,6 @@ namespace basecross {
 	void Player::OnCreate()
 	{
 		Actor::OnCreate();
-
 
 		auto ptrTrans = GetComponent<Transform>();
 		ptrTrans->SetPosition(Vec3(0.0f, 0.0f, -1.0f));
@@ -69,11 +68,42 @@ namespace basecross {
 		// dpadでコントローラーを変える
 		ChangController();
 
+		CheckPointClear();
+
 	}
 
-	void Player::OnCollisionEnter(const shared_ptr<GameObject>& Other)
+	void Player::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
+		// FighterAircraftBase::OnCollisionEnter(obj);
+		
+		auto checkPoint = dynamic_pointer_cast<CheckPoint>(obj);
+		auto bullet = dynamic_pointer_cast<Bullet>(obj);
 
+		if (bullet)
+		{
+			auto trans = GetComponent<Transform>();
+
+			Vec3 respawnPos = Vec3(0.0f, 0.0f, 0.0f);
+
+			/*if (m_currentCheckPoint)
+			{
+				respawnPos = m_currentCheckPoint->GetComponent<Transform>()->GetPosition();
+			}*/
+
+			trans->SetPosition(respawnPos);
+		}
+	}
+
+
+	void Player::CheckPointClear()
+	{
+		//auto currentPos = GetComponent<Transform>()->GetPosition();
+		//auto nextPos = m_checkPoint->GetNextCheckPoint();
+
+		//if (currentPos.z >= nextPos.z)
+		//{
+		//	m_speedCurrent = 3.0f;
+		//}
 	}
 
 	void Player::PlayerMove()
@@ -253,26 +283,6 @@ namespace basecross {
 		ptrTrans->SetQuaternion(resultQuat);
 
 		auto scene = App::GetApp()->GetScene<Scene>();
-		std::wstringstream wss;
-
-		//// Pitch / Roll 入力値
-		//wss << L"PitchInput: " << pitchInput
-		//	<< L"\nRollInput : " << rollInput
-		//	<< L"\nPitchDelta: " << pitchDelta
-		//	<< L"\nRollDelta : " << rollDelta;
-
-		//// クォータニオン要素
-		//wss << L"\nPitchQuat: (" << pitchQuat.x << L"," << pitchQuat.y << L"," << pitchQuat.z << L"," << pitchQuat.w << L")";
-		//wss << L"\nRollQuat : (" << rollQuat.x << L"," << rollQuat.y << L"," << rollQuat.z << L"," << rollQuat.w << L")";
-
-		//// 傾き角度と方向
-		//wss << L"\nTiltAngle(deg): " << XMConvertToDegrees(tiltAngle)
-		//	<< L"\nRollDir: " << rollDir;
-
-		//wss << L"\nResultQuat: (" << resultQuat.x << L"," << resultQuat.y << L"," << resultQuat.z << L"," << resultQuat.w << L")";
-
-		//// シーンに表示
-		//scene->SetDebugString(wss.str());
 	}
 
 	void Player::CreateBarrier()
@@ -289,11 +299,15 @@ namespace basecross {
 
 		auto useflag = m_barrier->GetUse();
 
-		if (input->GetButton(L"X"))
+		if (input->GetDownButton(L"X", m_playerIndex))
 		{
 			if (!useflag)
 			{
 				m_barrier->SetUse(true);
+			}
+			else
+			{
+				m_barrier->SetUse(false);
 			}
 		}
 	}
@@ -303,7 +317,7 @@ namespace basecross {
 		auto stage = GetStage();
 		auto& input = InputManager::GetInputManager();
 
-		if (input->GetDownButton(L"B"))
+		if (input->GetDownButton(L"B", m_playerIndex))
 		{
 			m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
 		}
