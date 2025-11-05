@@ -15,7 +15,7 @@ namespace basecross {
 
 	FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& ptrStage, Vec3 pos, Vec3 rot, Vec3 scale,const shared_ptr<CheckPoint>& startCheckPoint, Col4 color) :
 		Actor(ptrStage, pos, rot, scale, color),
-		m_nextCheckPointPos(Vec3(0.0f, 0.0f, 10.0f))
+		m_nextCheckPointPos(Vec3(0.0f, 0.0f, 20.0f))
 	{
 		// 次のチェックポイントの設定
 		//SetCheckPoint(startCheckPoint);
@@ -24,7 +24,7 @@ namespace basecross {
 
 	FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& ptrStage, Vec3 pos, Quat qt, Vec3 scale,const shared_ptr<CheckPoint>& startCheckPoint, Col4 color):
 		Actor(ptrStage,pos,qt,scale,color),
-		m_nextCheckPointPos(Vec3(0.0f, 0.0f, 10.0f))
+		m_nextCheckPointPos(Vec3(0.0f, 0.0f, 20.0f))
 	{
 		// 次のチェックポイントの設定
 		//SetCheckPoint(startCheckPoint);
@@ -46,6 +46,7 @@ namespace basecross {
 		m_barrier = stage->AddGameObject<Barrier>(GetThis<FighterAircraftBase>());
 		// バリア妨害装備
 		m_disableShield = stage->AddGameObject<DisableBarrier>(GetThis<FighterAircraftBase>());
+		m_nextCheckPointPos = Vec3(0.0f, 0.0f, 20.0f);
 	}
 
 	void FighterAircraftBase::OnUpdate()
