@@ -80,7 +80,6 @@ namespace basecross {
 			{
 				m_nextStage = NextStage(m_stageSelect, m_nextStage);
 				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), m_nextStage);
-				m_deltaTime = 0.0f;
 				return;
 			}
 
@@ -108,6 +107,11 @@ namespace basecross {
 		{
 		case 0:
 			gotostage = L"ToGameStage";
+			m_deltaTime = 0.0f;
+			break;
+
+		case 1:
+			gotostage = L"ToMultiViewStage";
 			m_deltaTime = 0.0f;
 			break;
 
