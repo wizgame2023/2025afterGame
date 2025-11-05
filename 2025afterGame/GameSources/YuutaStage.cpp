@@ -55,6 +55,7 @@ namespace basecross {
 		auto& gameManager = GameManager::GetGameManager();
 		gameManager->AddCheckPoint();
 		gameManager->AddCheckPoint();
+		gameManager->AddCheckPoint();
 
 		auto startCheckPoint = gameManager->GetCheckPoint(0);
 		// 敵が出ているかテスト処理
