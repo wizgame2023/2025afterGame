@@ -37,10 +37,11 @@ namespace basecross{
 		bool m_disableShieldFlag = true;		// バリア無効化をしてよいかのフラグ 
 
 		// 今後,ストリップストリーム,DRSを実装予定
-
-		weak_ptr<CheckPoint> m_nextCheckPoint; // 次のチェックポイントのポインタ
-		float m_timeCheckPointDifferece = 0.0f; // 自分が通ったチェックポイントのタイムと前の機体のタイムの差
-		Vec3 m_nextCheckPointPos = Vec3(0.0f);  // 次のチェックポイントの位置
+		int m_nextCheckPointID = 0;
+		int m_CurrentCheckPointID = 0;
+		weak_ptr<CheckPoint> m_nextCheckPoint;	  // 次のチェックポイントのポインタ
+		float m_timeCheckPointDifferece = 0.0f;	  // 自分が通ったチェックポイントのタイムと前の機体のタイムの差
+		Vec3 m_nextCheckPointPos = Vec3(0.0f);	  // 次のチェックポイントの位置
 	public:
 		FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& ptrStage);
 		FighterAircraftBase(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 rot, Vec3 scale,const shared_ptr<CheckPoint>& startCheckPoint, Col4 color = Col4(1.0f));
