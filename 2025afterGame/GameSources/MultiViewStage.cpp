@@ -52,6 +52,8 @@ namespace basecross {
 		try {
 			auto& app = App::GetApp();
 			auto path = app->GetDataDirWString();
+			auto& game = GameManager::GetGameManager();
+			game->ResetCheckPoint();
 
 			wstring player1NumSharedName = L"Player1";
 			wstring player2NumSharedName = L"Player2";
