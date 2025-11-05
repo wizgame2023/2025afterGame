@@ -74,7 +74,7 @@ namespace basecross {
 		m_pos += addPosVec;
 
 		// ‚Ç‚Ì‚­‚ç‚¢ˆÚ“®‚µ‚½‚Ì‚©‚ð‹L˜^‚·‚é
-		m_limitLenghtCount += addPosVec.x + addPosVec.y + addPosVec.z;
+		m_limitLenghtCount += abs(addPosVec.x) + abs(addPosVec.y) + abs(addPosVec.z);
 	}
 
 	// “–‚½‚è”»’è
