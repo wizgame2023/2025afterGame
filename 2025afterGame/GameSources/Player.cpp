@@ -34,7 +34,7 @@ namespace basecross {
 		ptrDraw->SetTextureResource(L"diffuse_TX");
 
 		auto ptrCol = AddComponent<CollisionObb>();
-		ptrCol->SetDrawActive(true);
+		ptrCol->SetDrawActive(false);
 
 		// モデルとトランスフォーム間の差分行列
 		Mat4x4 spanMat;

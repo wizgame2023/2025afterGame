@@ -170,6 +170,12 @@ namespace basecross {
 		return m_checkPoints.size();
 	}
 
+	// チェックポイント配列の初期化
+	void GameManager::ResetCheckPoint()
+	{
+		m_checkPoints.clear();
+	}
+
 }
 
 //end basecross

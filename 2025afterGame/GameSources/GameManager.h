@@ -79,6 +79,9 @@ namespace basecross {
 		// m_chackPointsのサイズ取得
 		int GetChackPointsSize();
 
+		// チェックポイント配列の初期化
+		void ResetCheckPoint();
+
 	};
 
 
