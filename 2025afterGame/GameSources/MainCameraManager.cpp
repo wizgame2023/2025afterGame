@@ -94,10 +94,10 @@ namespace basecross{
 		m_mulCam->SetAt(m_atPos);// カメラの注視点の設定
 
 		// デバッグログ
-		DebugLog(L"CameraPosX:", m_mulCam->GetEye().x);
-		DebugLog(L"CameraPosY:", m_mulCam->GetEye().y);
-		DebugLog(L"CameraPosZ:", m_mulCam->GetEye().z);
-		FlushDebugLog();
+		//DebugLog(L"CameraPosX:", m_mulCam->GetEye().x);
+		//DebugLog(L"CameraPosY:", m_mulCam->GetEye().y);
+		//DebugLog(L"CameraPosZ:", m_mulCam->GetEye().z);
+		//FlushDebugLog();
 	}
 	// ■■■■■■■■■■■■■■■■■更新■■■■■■■■■■■■■■■■■
 	
