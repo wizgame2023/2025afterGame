@@ -94,6 +94,7 @@ namespace basecross {
 		if (inputMgr->GetDownButton(L"DDown"))
 		{
 			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
+			return;
 		}
 
 		//デバッグ用文字
