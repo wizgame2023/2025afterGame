@@ -85,6 +85,7 @@ namespace basecross{
 			if (m_checkPointID == game->GetChackPointsSize())
 			{
 				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
+				return;
 			}
 			
 			//次のチェックポイントをプレイヤーに返す

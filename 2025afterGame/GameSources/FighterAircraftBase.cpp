@@ -14,17 +14,21 @@ namespace basecross {
 	}
 
 	FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& ptrStage, Vec3 pos, Vec3 rot, Vec3 scale,const shared_ptr<CheckPoint>& startCheckPoint, Col4 color) :
-		Actor(ptrStage, pos, rot, scale, color)
+		Actor(ptrStage, pos, rot, scale, color),
+		m_nextCheckPointPos(Vec3(0.0f, 0.0f, 10.0f))
 	{
 		// 次のチェックポイントの設定
-		SetCheckPoint(startCheckPoint);
+		//SetCheckPoint(startCheckPoint);
+		//SetNextCheckPointPos(Vec3(0.0f, 0.0f, 10.0f));
 	}
 
 	FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& ptrStage, Vec3 pos, Quat qt, Vec3 scale,const shared_ptr<CheckPoint>& startCheckPoint, Col4 color):
-		Actor(ptrStage,pos,qt,scale,color)
+		Actor(ptrStage,pos,qt,scale,color),
+		m_nextCheckPointPos(Vec3(0.0f, 0.0f, 10.0f))
 	{
 		// 次のチェックポイントの設定
-		SetCheckPoint(startCheckPoint);
+		//SetCheckPoint(startCheckPoint);
+		//SetNextCheckPointPos(Vec3(0.0f, 0.0f, 10.0f));
 	}
 
 	FighterAircraftBase::~FighterAircraftBase()
@@ -47,12 +51,27 @@ namespace basecross {
 	void FighterAircraftBase::OnUpdate()
 	{
 		Actor::OnUpdate();
-
+		m_pos = GetComponent<Transform>()->GetPosition();
 		// 次のチェックポイントを通り過ぎていないかの処理
-		if (m_pos.z >= m_nextCheckPointPos.z)
+		if (m_pos.z > m_nextCheckPointPos.z)
 		{
 			// もし、チェックポイントに触れて通り過ぎていなかったらスピード軽減
-			m_speedCurrent -= 20.0f;
+			// 通り過ぎたのがゴールだったら前のチェックポイントの位置に戻る
+			auto& gameManager = GameManager::GetGameManager();
+			int checkPointSize = gameManager->GetChackPointsSize();
+
+			if (checkPointSize > m_nextCheckPointID + 1)
+			{
+				m_speedCurrent -= 1.0f;
+				auto nextCheckPoint = gameManager->GetCheckPoint(m_nextCheckPointID + 1);
+				SetCheckPoint(nextCheckPoint);
+			}
+			else if(checkPointSize <= m_nextCheckPointID + 1)
+			{
+				auto currentCheckPoint = gameManager->GetCheckPoint(m_CurrentCheckPointID);
+				auto currentCheckPointPos = currentCheckPoint->GetPos();
+				GetComponent<Transform>()->SetPosition(currentCheckPointPos);
+			}
 		}
 
 	}
@@ -148,6 +167,7 @@ namespace basecross {
 	{
 		m_nextCheckPoint = nextCheckPoint;
 		auto checkPointLock = m_nextCheckPoint.lock();
+		m_nextCheckPointID++;
 
 		// 次のチェックポイント位置取得
 		m_nextCheckPointPos = checkPointLock->GetPos();
@@ -168,7 +188,8 @@ namespace basecross {
 	// 次のチェックポイントの位置のセッタ
 	void FighterAircraftBase::SetNextCheckPointPos(Vec3 nextCheckPointPos)
 	{
-		m_nextCheckPointPos = m_nextCheckPointPos;
+		m_nextCheckPointPos = nextCheckPointPos;
+		m_nextCheckPointID++;
 	}
 
 }
