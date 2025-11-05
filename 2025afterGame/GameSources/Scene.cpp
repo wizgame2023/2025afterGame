@@ -92,6 +92,11 @@ namespace basecross{
 			//セレクトステージのアクティブステージ設定
 			ResetActiveStage<ErionStage>();
 		}
+		//デバッグ用ステージ
+		if (event->m_MsgStr == L"ToTomokiStage") {
+			//セレクトステージのアクティブステージ設定
+			ResetActiveStage<TomokiStage>();
+		}
 	}
 
 }

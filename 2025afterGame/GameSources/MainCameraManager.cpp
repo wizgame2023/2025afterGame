@@ -27,7 +27,7 @@ namespace basecross{
 		m_sharedName(sharedName)
 	{}
 
-	// ==================================生成==================================
+	// ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼生成▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
 
 	void MainCameraManager::OnCreate()
 	{
@@ -43,32 +43,34 @@ namespace basecross{
 		m_plTrans = m_target->GetComponent<Transform>();
 		
 	}
-	// ==================================生成==================================
+	// ■■■■■■■■■■■■■■■■■生成■■■■■■■■■■■■■■■■■
 
-	// ==================================更新==================================
+	// ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼更新▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
 
 	void MainCameraManager::OnUpdate()
 	{
 		MyGameObject::OnUpdate();
 
+		// コントローラーの取得
 		auto& input = InputManager::GetInputManager();
 
 		// 加速しているか
 		//bool isAccel = m_player->GetAcceleration();
-		bool isAButton = input->GetButton(L"A");
-		bool isYButton = input->GetButton(L"Y");
-		// Yボタンを押した瞬間と離した瞬間を取る
-		bool isYButtonDownUp = input->GetNowUpdateButton(L"Y");
+
+		// ボタンの状態の取得(デバッグ用になると思われる)
+		bool isAButton = input->GetButton(L"A"); // Aボタンの状態
+		bool isYButton = input->GetButton(L"Y"); // Yボタンの状態
+		bool isYButtonDownUp = input->GetNowUpdateButton(L"Y");// Yボタンを押した瞬間と離した瞬間を取る
 
 		// プレイヤーの情報取得
-		m_plPos = m_plTrans.lock()->GetPosition();
-		m_plRot = m_plTrans.lock()->GetRotation();
-		m_plFwrd = m_plTrans.lock()->GetForward();
-		m_plUp = m_plTrans.lock()->GetUp();
+		m_plInfo.pos = m_plTrans.lock()->GetPosition();
+		m_plInfo.rot = m_plTrans.lock()->GetRotation();
+		m_plInfo.fwrd = m_plTrans.lock()->GetForward();
+		m_plInfo.up = m_plTrans.lock()->GetUp();
 
 
 		// ディレイをかけたカメラの傾き制御
-		Vec3 smoothUp = GetSmoothedUp(m_plUp, historyMax);
+		Vec3 smoothUp = GetSmoothedUp(m_plInfo.up, historyMax);
 
 		// カメラの現在の位置
 		Vec3 currentCamPos = m_mulCam->GetEye();
@@ -97,9 +99,9 @@ namespace basecross{
 		DebugLog(L"CameraPosZ:", m_mulCam->GetEye().z);
 		FlushDebugLog();
 	}
-	// ==================================更新==================================
-
-	// ==================================関数==================================
+	// ■■■■■■■■■■■■■■■■■更新■■■■■■■■■■■■■■■■■
+	
+	// ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼関数▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
 
 	template<typename T>
 	void MainCameraManager::DebugLog(const wstring& name, T debug)
@@ -211,17 +213,17 @@ namespace basecross{
 		// カメラ位置と注視点の計算
 		if (isButton)
 		{
-			m_camPos = m_plPos + m_plFwrd * m_camDis + m_plUp * m_camHeight;
-			m_atPos = m_plPos - m_plFwrd * m_atOffset;
+			m_camPos = m_plInfo.pos + m_plInfo.fwrd * m_camDis + m_plInfo.up * m_camHeight;
+			m_atPos = m_plInfo.pos - m_plInfo.fwrd * m_atOffset;
 		}
 		else
 		{
-			m_camPos = m_plPos - m_plFwrd * m_camDis + m_plUp * m_camHeight;
-			m_atPos =  m_plPos + m_plFwrd * m_atOffset;
+			m_camPos = m_plInfo.pos - m_plInfo.fwrd * m_camDis + m_plInfo.up * m_camHeight;
+			m_atPos =  m_plInfo.pos + m_plInfo.fwrd * m_atOffset;
 		}
 	}
 
-	// ==================================関数==================================
+	// ■■■■■■■■■■■■■■■■■関数■■■■■■■■■■■■■■■■■
 
 }
 //end basecross
