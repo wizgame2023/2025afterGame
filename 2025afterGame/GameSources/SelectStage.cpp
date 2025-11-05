@@ -80,6 +80,8 @@ namespace basecross {
 			{
 				m_nextStage = NextStage(m_stageSelect, m_nextStage);
 				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), m_nextStage);
+				m_deltaTime = 0.0f;
+				return;
 			}
 
 			//デバッグ用コマンド
@@ -87,6 +89,7 @@ namespace basecross {
 			{
 				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToErionStage");
 				m_deltaTime = 0.0f;
+				return;
 			}
 		}
 
