@@ -7,12 +7,20 @@
 #pragma once
 #include "stdafx.h"
 
-namespace basecross{
-	class Player;
-	
+namespace basecross{	
 	class MainCameraManager : public MyGameObject
 	{
-		// ===============================メンバ変数===================================
+		// ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼メンバ変数▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+		// ターゲットの情報(構造体)
+		struct PlayerInfo {
+			Vec3 pos;
+			Vec3 rot;
+			Vec3 up;
+			Vec3 fwrd;
+		};
+
+		PlayerInfo m_plInfo;
 
 		// スマートポインタ関係
 		weak_ptr<Transform> m_plTrans;
@@ -29,19 +37,13 @@ namespace basecross{
 		// 傾きの履歴
 		deque<Vec3> m_plUpHistory;
 
-		// ターゲットの情報
-		Vec3 m_plPos;
-		Vec3 m_plRot;
-		Vec3 m_plUp;
-		Vec3 m_plFwrd;
-
 		// カメラ関係の変数
 		Vec3 m_camPos;
 		Vec3 m_atPos;
 
-		// ===============================メンバ変数===================================
+		// ■■■■■■■■■■■■■■■■■メンバ変数■■■■■■■■■■■■■■■■■
 
-		// ===============================メンバ定数===================================
+		// ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼メンバ定数▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
 
 		static constexpr float m_camDis = 5.0f; // カメラとプレイヤーの距離
 		static constexpr float m_followSpeed = 20.0f; // カメラの追従速度
@@ -50,9 +52,9 @@ namespace basecross{
 		
 		static constexpr int historyMax = 15;// 履歴の最大値(6で0.1秒のディレイがかかる)
 
-		// ===============================メンバ定数===================================
+		// ■■■■■■■■■■■■■■■■■メンバ定数■■■■■■■■■■■■■■■■■
 
-		// ===============================関数=================================
+		// ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼関数▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
 
 		// 線形補間関数(Vec3用)
 		// 参考 : https://taketakeshi.hatenablog.jp/entry/2025/05/19/205447
@@ -100,7 +102,7 @@ namespace basecross{
 		// to : カメラの位置
 		bool IsObstructed(const Vec3& from, const Vec3& to);
 
-		// ===============================関数=================================
+		// ■■■■■■■■■■■■■■■■■関数■■■■■■■■■■■■■■■■■
 
 	public:
 		// コンストラクタ
