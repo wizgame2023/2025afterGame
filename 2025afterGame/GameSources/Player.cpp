@@ -23,7 +23,7 @@ namespace basecross {
 
 	void Player::OnCreate()
 	{
-		Actor::OnCreate();
+		FighterAircraftBase::OnCreate();
 
 		auto ptrTrans = GetComponent<Transform>();
 		ptrTrans->SetPosition(Vec3(0.0f, 0.0f, -1.0f));
