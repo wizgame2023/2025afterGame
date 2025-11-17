@@ -44,7 +44,12 @@ namespace basecross {
 			//背景
 			AddGameObject<Background>();
 
-			auto player = AddGameObject<Player>();
+			// 正式のプレイヤー	
+			//auto player = AddGameObject<Player>();
+			//SetSharedGameObject(L"Player", player);
+
+			// デバック用のプレイヤー作成
+			auto player = AddGameObject<DebagPlayer>();
 			SetSharedGameObject(L"Player", player);
 
 		}
@@ -71,6 +76,10 @@ namespace basecross {
 		//auto barrier = AddGameObject<Barrier>(GetSharedGameObject<Player>(L"Player"));
 		//SetSharedGameObject(L"Barrier", barrier);
 
+
+		AddGameObject<TestCube>(Vec3(10.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(1.0f, 1.0f, 1.0f));
+		AddGameObject<TestCube>(Vec3(-10.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(1.0f, 1.0f, 1.0f));
+		AddGameObject<TestCube>(Vec3(0.0f, 0.0f, -10.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(1.0f, 1.0f, 1.0f));
 
 
 		auto mainCamMana = AddGameObject<MainCameraManager>();
