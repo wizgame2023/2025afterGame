@@ -42,10 +42,6 @@ namespace basecross {
 	private:
 		bool m_affiliation; // ’e‚ÌŠ‘®(“G‚©–¡•û‚©)
 
-		Vec3 m_pos;
-		Vec3 m_Scale;
-		Quat m_Qt;
-
 	public:
 		TestCube(const shared_ptr<Stage>& stagePtr, Vec3 pos, Quat qt, Vec3 scale);
 		~TestCube();
