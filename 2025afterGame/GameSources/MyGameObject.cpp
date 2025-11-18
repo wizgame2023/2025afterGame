@@ -29,5 +29,16 @@ namespace basecross {
 		//デルタタイム取得
 		m_delta = App::GetApp()->GetElapsedTime();
 	}
+
+
+	void MyGameObject::FlushDebugLog()
+	{
+		auto& app = App::GetApp();
+		auto scene = app->GetScene<Scene>();
+		scene->SetDebugString(m_debugWss.str());
+		m_debugWss.str(L""); // ログをクリア
+		m_debugWss.clear();
+	}
+
 }
 //end basecross
