@@ -97,6 +97,8 @@ namespace basecross {
 
 	void TestCube::OnCreate()
 	{
+		Actor::OnCreate();
+
 		auto trans = GetComponent<Transform>();
 		trans->SetPosition(m_pos);
 		trans->SetQuaternion(m_qt);

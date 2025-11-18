@@ -45,7 +45,7 @@ namespace basecross {
 		// バリア装備
 		m_barrier = stage->AddGameObject<Barrier>(GetThis<FighterAircraftBase>());
 		// バリア妨害装備
-		m_disableShield = stage->AddGameObject<DisableBarrier>(GetThis<FighterAircraftBase>());
+		//m_disableShield = stage->AddGameObject<DisableBarrier>(GetThis<FighterAircraftBase>());
 		m_nextCheckPointPos = Vec3(0.0f, 0.0f, 20.0f);
 	}
 
@@ -70,8 +70,7 @@ namespace basecross {
 			else if(checkPointSize <= m_nextCheckPointID + 1)
 			{
 				auto currentCheckPoint = gameManager->GetCheckPoint(m_CurrentCheckPointID);
-				auto currentCheckPointPos = currentCheckPoint->GetPos();
-				GetComponent<Transform>()->SetPosition(currentCheckPointPos);
+				GetComponent<Transform>()->SetPosition(m_currentCheckPointPos);
 			}
 		}
 
@@ -189,6 +188,7 @@ namespace basecross {
 	// 次のチェックポイントの位置のセッタ
 	void FighterAircraftBase::SetNextCheckPointPos(Vec3 nextCheckPointPos)
 	{
+		m_currentCheckPointPos = m_nextCheckPointPos;
 		m_nextCheckPointPos = nextCheckPointPos;
 		m_nextCheckPointID++;
 	}

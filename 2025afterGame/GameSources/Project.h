@@ -44,6 +44,7 @@
 
 //親クラスがFighterAircraftBase////////////////////
 #include "Player.h"
+#include "DebagPlayer.h"
 #include "Enemy.h"
 ///////////////////////////////////////////////////
 
