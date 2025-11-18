@@ -47,6 +47,8 @@ namespace basecross {
 			auto player = AddGameObject<Player>();
 			SetSharedGameObject(L"Player", player);
 
+			AddGameObject<TestCubeKaito>(Vec3(0.0f, 0.0f, 10.0f), Vec3(10.0f,10.0f,1.0f));
+
 		}
 		catch (...) {
 			throw;
@@ -56,5 +58,32 @@ namespace basecross {
 		SetSharedGameObject(L"MainCameraManager", mainCamMana);
 	}
 
+	// ==============================================================================
+	// kaitostage––”ö
+	// ==============================================================================
+
+	TestCubeKaito::TestCubeKaito(
+		const shared_ptr<Stage>& stagePtr,
+		Vec3 pos, Vec3 scale) :
+		Actor(stagePtr, pos, Vec3(0.0f), scale, Col4(1.0f, 0.0f, 0.0f, 1.0f))
+	{}
+
+	TestCubeKaito::~TestCubeKaito()
+	{}
+
+	void TestCubeKaito::OnCreate()
+	{
+		auto trans = GetComponent<Transform>();
+		trans->SetPosition(m_pos);
+		trans->SetScale(m_scale);
+
+		auto ptrCol = AddComponent<CollisionSphere>();
+		ptrCol->SetDrawActive(true);
+
+		auto ptrDraw = AddComponent<PNTStaticDraw>();
+		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+		
+		AddTag(L"CameraObstruction");
+	}
 }
 //end basecross
