@@ -36,9 +36,9 @@ namespace basecross{
 		ptrCol->SetAfterCollision(AfterCollision::Auto);
 
 		// ƒhƒ[ˆ—
-		//auto ptrDraw = AddComponent<PNTStaticDraw>();
-		//ptrDraw->SetMeshResource(L"DEFAULT_SQUARE");
-		//SetAlphaActive(false);
+		auto ptrDraw = AddComponent<PNTStaticDraw>();
+		ptrDraw->SetMeshResource(L"DEFAULT_SQUARE");
+		SetAlphaActive(false);
 	}
 
 	void StageWall::OnUpdate()
