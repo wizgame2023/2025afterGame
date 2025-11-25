@@ -89,7 +89,7 @@ namespace basecross{
 			}
 			
 			//次のチェックポイントをプレイヤーに返す
-			playermachine->SetNextCheckPointPos(GetNextCheckPoint());
+			//playermachine->SetNextCheckPointPos(GetNextCheckPoint());
 		}
 	}
 
@@ -109,7 +109,7 @@ namespace basecross{
 	}
 
 	//次のチェックポイントをプレイヤーに返すゲッター
-	Vec3 CheckPoint::GetNextCheckPoint() 
+	/*Vec3 CheckPoint::GetNextCheckPoint()
 	{
 		//ゲームマネージャーを取得
 		auto& game = GameManager::GetGameManager();
@@ -122,6 +122,6 @@ namespace basecross{
 			Vec3 newPoint = checkPoint->GetComponent<Transform>()->GetPosition();
 			return newPoint;
 		}
-	}
+	}*/
 }
 //end basecross
