@@ -14,8 +14,8 @@ namespace basecross {
 	}
 
 	FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 rot, Vec3 scale,const shared_ptr<CheckPoint>& startCheckPoint, Col4 color) :
-		Actor(stagePtr, pos, rot, scale, color),
-		m_nextCheckPointPos(Vec3(0.0f, 0.0f, 20.0f))
+		Actor(stagePtr, pos, rot, scale, color)
+		//m_nextCheckPointPos(Vec3(0.0f, 0.0f, 20.0f))
 	{
 		// 次のチェックポイントの設定
 		//SetCheckPoint(startCheckPoint);
@@ -24,14 +24,14 @@ namespace basecross {
 
 	FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& stagePtr, wstring name, Vec3 pos, Vec3 rot, Vec3 scale, const shared_ptr<CheckPoint>& startCheckPoint, Col4 color):
 		Actor(stagePtr, pos, rot, scale, color),
-		m_name(name),
-		m_nextCheckPointPos(Vec3(0.0f, 0.0f, 20.0f))
+		m_name(name)
+		//m_nextCheckPointPos(Vec3(0.0f, 0.0f, 20.0f))
 	{
 	}
 
 	FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& stagePtr, Vec3 pos, Quat qt, Vec3 scale,const shared_ptr<CheckPoint>& startCheckPoint, Col4 color):
-		Actor(stagePtr,pos,qt,scale,color),
-		m_nextCheckPointPos(Vec3(0.0f, 0.0f, 20.0f))
+		Actor(stagePtr,pos,qt,scale,color)
+		//m_nextCheckPointPos(Vec3(0.0f, 0.0f, 20.0f))
 	{
 		// 次のチェックポイントの設定
 		//SetCheckPoint(startCheckPoint);
@@ -53,7 +53,7 @@ namespace basecross {
 		m_barrier = stage->AddGameObject<Barrier>(GetThis<FighterAircraftBase>());
 		// バリア妨害装備
 		//m_disableShield = stage->AddGameObject<DisableBarrier>(GetThis<FighterAircraftBase>());
-		m_nextCheckPointPos = Vec3(0.0f, 0.0f, 20.0f);
+		//m_nextCheckPointPos = Vec3(0.0f, 0.0f, 20.0f);
 
 		// 自分の名前をタグとして追加
 		//AddTag(m_name);
@@ -90,32 +90,20 @@ namespace basecross {
 	// バリア使用関数
 	void FighterAircraftBase::UseBarrier(bool use)
 	{
-		if (m_energyCurrent > 0.0f)
-		{
-			m_barrier->SetUse(use);
-		}
+		m_barrier->SetUse(use);
 	}
 
 	// バリア妨害使用関数
 	void FighterAircraftBase::UseDisableShield()
 	{
-		float energyLost = 30.0f; // エネルギーを消費する量
-		if (m_energyCurrent >= energyLost)
-		{
-			m_energyCurrent -= energyLost; // エネルギー消費		
-			m_disableShield->SetUse(true);
-		}
+		m_disableShield->SetUse(true);
 	}
 
 	// 弾発射関数
 	void FighterAircraftBase::UseBullet()
 	{
-		float energyLost = 30.0f; // エネルギーを消費する量
-		if (m_energyCurrent >= energyLost)
-		{
-			m_energyCurrent -= energyLost; // エネルギー消費
-			GetStage()->AddGameObject<Bullet>(GetThis<FighterAircraftBase>());
-		}
+		// 弾発射
+		GetStage()->AddGameObject<Bullet>(GetThis<FighterAircraftBase>());
 	}
 
 	// 当たり判定(当たった時)
@@ -137,23 +125,23 @@ namespace basecross {
 		return m_hpMax;
 	}
 
-	// 現在のエネルギーのゲッタ
-	float FighterAircraftBase::GetEnergyCurrent()
-	{
-		return m_energyCurrent;
-	}
+	//// 現在のエネルギーのゲッタ
+	//float FighterAircraftBase::GetEnergyCurrent()
+	//{
+	//	return m_energyCurrent;
+	//}
 
-	// 最大のエネルギー値のゲッタ
-	float FighterAircraftBase::GetEnergyMax()
-	{
-		return m_energyMax;
-	}
+	//// 最大のエネルギー値のゲッタ
+	//float FighterAircraftBase::GetEnergyMax()
+	//{
+	//	return m_energyMax;
+	//}
 
-	// エネルギー切れになったかのフラグゲッタ
-	bool FighterAircraftBase::GetOutEnergyFlag()
-	{
-		return m_outEnergyFlag;
-	}
+	//// エネルギー切れになったかのフラグゲッタ
+	//bool FighterAircraftBase::GetOutEnergyFlag()
+	//{
+	//	return m_outEnergyFlag;
+	//}
 
 	// バリア使用していいかのフラグゲッタ
 	bool FighterAircraftBase::GetBarrierUseFlag()
@@ -173,36 +161,36 @@ namespace basecross {
 		return m_disableShieldFlag;
 	}
 
-	// 次のチェックポインタを入れるセッタ
-	void FighterAircraftBase::SetCheckPoint(const shared_ptr<CheckPoint>& nextCheckPoint)
-	{
-		m_nextCheckPoint = nextCheckPoint;
-		auto checkPointLock = m_nextCheckPoint.lock();
-		m_nextCheckPointID++;
+	//// 次のチェックポインタを入れるセッタ
+	//void FighterAircraftBase::SetCheckPoint(const shared_ptr<CheckPoint>& nextCheckPoint)
+	//{
+	//	m_nextCheckPoint = nextCheckPoint;
+	//	auto checkPointLock = m_nextCheckPoint.lock();
+	//	m_nextCheckPointID++;
 
-		// 次のチェックポイント位置取得
-		m_nextCheckPointPos = checkPointLock->GetPos();
-	}
+	//	// 次のチェックポイント位置取得
+	//	m_nextCheckPointPos = checkPointLock->GetPos();
+	//}
 
-	// 現在のエネルギーセッタ
-	void FighterAircraftBase::SetEnergyCurrent(float energyCurrent)
-	{
-		m_energyCurrent = energyCurrent;
-	}
+	//// 現在のエネルギーセッタ
+	//void FighterAircraftBase::SetEnergyCurrent(float energyCurrent)
+	//{
+	//	m_energyCurrent = energyCurrent;
+	//}
 
-	// 自分が通ったチェックポイントのタイムと前の機体のタイムの差のセッタ
-	void FighterAircraftBase::SetTimeCheckPointDifferece(float TimeCheckPointDifferece)
-	{
-		m_timeCheckPointDifferece = TimeCheckPointDifferece;
-	}
+	//// 自分が通ったチェックポイントのタイムと前の機体のタイムの差のセッタ
+	//void FighterAircraftBase::SetTimeCheckPointDifferece(float TimeCheckPointDifferece)
+	//{
+	//	m_timeCheckPointDifferece = TimeCheckPointDifferece;
+	//}
 
-	// 次のチェックポイントの位置のセッタ
-	void FighterAircraftBase::SetNextCheckPointPos(Vec3 nextCheckPointPos)
-	{
-		m_currentCheckPointPos = m_nextCheckPointPos;
-		m_nextCheckPointPos = nextCheckPointPos;
-		m_nextCheckPointID++;
-	}
+	//// 次のチェックポイントの位置のセッタ
+	//void FighterAircraftBase::SetNextCheckPointPos(Vec3 nextCheckPointPos)
+	//{
+	//	m_currentCheckPointPos = m_nextCheckPointPos;
+	//	m_nextCheckPointPos = nextCheckPointPos;
+	//	m_nextCheckPointID++;
+	//}
 
 }
 //end basecross
