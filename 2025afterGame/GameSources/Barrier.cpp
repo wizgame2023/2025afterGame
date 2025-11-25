@@ -146,22 +146,22 @@ namespace basecross {
 		m_qt = parentQt;
 	}
 
-	// バリアを使うことによって起きるエネルギーを消費する処理
+	// バリアを使うことによって起きるエネルギーを消費する処理 現在使用していない
 	void Barrier::EnergyConsumption()
 	{
 		// 使用している時はエネルギ-を消費
 		if (m_use)
 		{
 			// 親オブジェクトの現在エネルギーを取得して消費させる
-			float parentEnergy = m_parentLock->GetEnergyCurrent();
-			float parentEnergyCurrent = parentEnergy - (m_energyEfficiency * m_delta);
-			m_parentLock->SetEnergyCurrent(parentEnergyCurrent);
+			//float parentEnergy = m_parentLock->GetEnergyCurrent();
+			//float parentEnergyCurrent = parentEnergy - (m_energyEfficiency * m_delta);
+			//m_parentLock->SetEnergyCurrent(parentEnergyCurrent);
 
-			// エネルギーが0以下なら使用できない
-			if (parentEnergyCurrent < 0)
-			{
-				//m_use = false;
-			}
+			//// エネルギーが0以下なら使用できない
+			//if (parentEnergyCurrent < 0)
+			//{
+			//	//m_use = false;
+			//}
 		}
 	}
 
