@@ -56,7 +56,7 @@ namespace basecross {
 		m_nextCheckPointPos = Vec3(0.0f, 0.0f, 20.0f);
 
 		// Ž©•ª‚Ì–¼‘O‚ðƒ^ƒO‚Æ‚µ‚Ä’Ç‰Á
-		AddTag(m_name);
+		//AddTag(m_name);
 
 	}
 
