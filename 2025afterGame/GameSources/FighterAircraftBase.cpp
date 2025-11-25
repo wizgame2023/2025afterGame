@@ -13,8 +13,8 @@ namespace basecross {
 	{
 	}
 
-	FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& ptrStage, Vec3 pos, Vec3 rot, Vec3 scale,const shared_ptr<CheckPoint>& startCheckPoint, Col4 color) :
-		Actor(ptrStage, pos, rot, scale, color),
+	FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 rot, Vec3 scale,const shared_ptr<CheckPoint>& startCheckPoint, Col4 color) :
+		Actor(stagePtr, pos, rot, scale, color),
 		m_nextCheckPointPos(Vec3(0.0f, 0.0f, 20.0f))
 	{
 		// 次のチェックポイントの設定
@@ -22,8 +22,15 @@ namespace basecross {
 		//SetNextCheckPointPos(Vec3(0.0f, 0.0f, 10.0f));
 	}
 
-	FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& ptrStage, Vec3 pos, Quat qt, Vec3 scale,const shared_ptr<CheckPoint>& startCheckPoint, Col4 color):
-		Actor(ptrStage,pos,qt,scale,color),
+	FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& stagePtr, wstring name, Vec3 pos, Vec3 rot, Vec3 scale, const shared_ptr<CheckPoint>& startCheckPoint, Col4 color):
+		Actor(stagePtr, pos, rot, scale, color),
+		m_name(name),
+		m_nextCheckPointPos(Vec3(0.0f, 0.0f, 20.0f))
+	{
+	}
+
+	FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& stagePtr, Vec3 pos, Quat qt, Vec3 scale,const shared_ptr<CheckPoint>& startCheckPoint, Col4 color):
+		Actor(stagePtr,pos,qt,scale,color),
 		m_nextCheckPointPos(Vec3(0.0f, 0.0f, 20.0f))
 	{
 		// 次のチェックポイントの設定
@@ -47,32 +54,36 @@ namespace basecross {
 		// バリア妨害装備
 		//m_disableShield = stage->AddGameObject<DisableBarrier>(GetThis<FighterAircraftBase>());
 		m_nextCheckPointPos = Vec3(0.0f, 0.0f, 20.0f);
+
+		// 自分の名前をタグとして追加
+		//AddTag(m_name);
+
 	}
 
 	void FighterAircraftBase::OnUpdate()
 	{
 		Actor::OnUpdate();
 		m_pos = GetComponent<Transform>()->GetPosition();
-		// 次のチェックポイントを通り過ぎていないかの処理
-		if (m_pos.z > m_nextCheckPointPos.z)
-		{
-			// もし、チェックポイントに触れて通り過ぎていなかったらスピード軽減
-			// 通り過ぎたのがゴールだったら前のチェックポイントの位置に戻る
-			auto& gameManager = GameManager::GetGameManager();
-			int checkPointSize = gameManager->GetChackPointsSize();
+		//// 次のチェックポイントを通り過ぎていないかの処理
+		//if (m_pos.z > m_nextCheckPointPos.z)
+		//{
+		//	// もし、チェックポイントに触れて通り過ぎていなかったらスピード軽減
+		//	// 通り過ぎたのがゴールだったら前のチェックポイントの位置に戻る
+		//	auto& gameManager = GameManager::GetGameManager();
+		//	int checkPointSize = gameManager->GetChackPointsSize();
 
-			if (checkPointSize > m_nextCheckPointID + 1)
-			{
-				m_speedCurrent -= 1.0f;
-				auto nextCheckPoint = gameManager->GetCheckPoint(m_nextCheckPointID + 1);
-				SetCheckPoint(nextCheckPoint);
-			}
-			else if(checkPointSize <= m_nextCheckPointID + 1)
-			{
-				auto currentCheckPoint = gameManager->GetCheckPoint(m_CurrentCheckPointID);
-				GetComponent<Transform>()->SetPosition(m_currentCheckPointPos);
-			}
-		}
+		//	if (checkPointSize > m_nextCheckPointID + 1)
+		//	{
+		//		m_speedCurrent -= 1.0f;
+		//		auto nextCheckPoint = gameManager->GetCheckPoint(m_nextCheckPointID + 1);
+		//		SetCheckPoint(nextCheckPoint);
+		//	}
+		//	else if(checkPointSize <= m_nextCheckPointID + 1)
+		//	{
+		//		auto currentCheckPoint = gameManager->GetCheckPoint(m_CurrentCheckPointID);
+		//		GetComponent<Transform>()->SetPosition(m_currentCheckPointPos);
+		//	}
+		//}
 
 	}
 
