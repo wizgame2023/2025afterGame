@@ -46,6 +46,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)StateBase.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StateDisableBarrier.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StateEnemy.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TestCsv.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TitleStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TomokiStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)YuutaStage.h" />
@@ -81,6 +82,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)StateBase.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StateDisableBarrier.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StateEnemy.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)TestCsv.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TitleStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TomokiStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WinMain.cpp" />

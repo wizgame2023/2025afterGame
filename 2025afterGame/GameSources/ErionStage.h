@@ -17,7 +17,7 @@ namespace basecross {
 
 		CsvFile m_objectFile;
 		//オブジェクトのテスト作成
-		void SetTestObject();
+		void CreateTestObject();
 
 	public:
 		//構築と破棄

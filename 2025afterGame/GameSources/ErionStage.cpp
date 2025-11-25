@@ -60,7 +60,7 @@ namespace basecross {
 			m_objectFile.SetFileName(DataDir + L"positions.csv");
 			m_objectFile.ReadCsv();
 
-			CreateTestObject();
+			//CreateTestObject();
 
 			//ï«ÇÃâºê∂ê¨
 			auto wall1 = AddGameObject<StageWall>();
@@ -142,7 +142,9 @@ namespace basecross {
 				(float)_wtof(Tokens[9].c_str())
 			);
 
+			//wstring tag = Tokens[10];
 
+			AddGameObject<TestCsv>(Siz, Rot, Pos);
 		}
 	}
 }
