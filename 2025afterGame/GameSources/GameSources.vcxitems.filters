@@ -101,6 +101,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Sprite.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)TestCsv.cpp">
     <ClCompile Include="$(MSBuildThisFileDirectory)DebagPlayer.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
@@ -209,6 +210,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Sprite.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)TestCsv.h">
     <ClInclude Include="$(MSBuildThisFileDirectory)DebagPlayer.h">
       <Filter>Headers</Filter>
     </ClInclude>
