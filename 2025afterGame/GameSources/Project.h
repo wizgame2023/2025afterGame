@@ -40,6 +40,7 @@
 #include "DisableBarrier.h"
 #include "CheckPoint.h"
 #include "StageWall.h"
+#include "TestCsv.h"
 ///////////////////////////////////////////////////
 
 //親クラスがFighterAircraftBase////////////////////

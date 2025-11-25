@@ -14,6 +14,11 @@ namespace basecross {
 	class ErionStage : public Stage {
 		//ビューの作成
 		void CreateViewLight();
+
+		CsvFile m_objectFile;
+		//オブジェクトのテスト作成
+		void CreateTestObject();
+
 	public:
 		//構築と破棄
 		ErionStage() : Stage(){}
