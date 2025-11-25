@@ -11,10 +11,16 @@
 #include<DirectXMathMatrix.inl>
 
 namespace basecross{
+	// ==============================================================================
+	// MainCameraManagerクラス
+	// ==============================================================================
+
+	// コンストラクタ1(ソロのみ)
 	MainCameraManager::MainCameraManager(const shared_ptr<Stage>& stagePtr) :
 		MyGameObject(stagePtr)
 	{}
 
+	// コンストラクタ2(マルチ対応)
 	MainCameraManager::MainCameraManager(
 		const shared_ptr<Stage>& stagePtr, 
 		const shared_ptr<Actor>& target, 
@@ -27,7 +33,9 @@ namespace basecross{
 		m_sharedName(sharedName)
 	{}
 
-	// ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼生成▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+	// ==============================================================================
+	// 生成
+	// ==============================================================================
 
 	void MainCameraManager::OnCreate()
 	{
@@ -37,15 +45,16 @@ namespace basecross{
 		m_stage = GetStage();
 
 		// マルチビューかどうか
-		IsMultiView(m_sharedName);
+		CheckMultiView(m_sharedName);
 
 		m_mulCam = OnGetDrawCamera(); // カメラの取得
 		m_plTrans = m_target->GetComponent<Transform>();
 		
 	}
-	// ■■■■■■■■■■■■■■■■■生成■■■■■■■■■■■■■■■■■
 
-	// ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼更新▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+	// ==============================================================================
+	// 更新
+	// ==============================================================================
 
 	void MainCameraManager::OnUpdate()
 	{
@@ -78,15 +87,17 @@ namespace basecross{
 		// カメラが前方を映すか後方を映すか
 		SetCameraNormalBehindMode(isYButton);
 
-		// 滑らかに補間		Yボタンを押した(カメラを後ろに向かせた)瞬間は補間OFF
-		Vec3 newCamPos = isYButtonDownUp ?
-			m_camPos :
-			LerpV3(currentCamPos, m_camPos, m_delta * m_followSpeed);
 
 		// 加速に合わせて視野角を広げる
 		AdjustFov(isAButton);
 
-		//IsObstructed(m_plPos, m_mulCam->GetEye());
+		// 障害物がカメラの機能を邪魔していないかを見る
+		UpdateCameraObstruction();
+
+		// 滑らかに補間		Yボタンを押した(カメラを後ろに向かせた)瞬間は補間OFF
+		Vec3 newCamPos = isYButtonDownUp ?
+			m_camPos :
+			LerpV3(currentCamPos, m_camPos, m_delta * m_followSpeed);
 		
 		// カメラの最終的な設定
 		m_mulCam->SetUp(Vec3(smoothUp));// プレイヤーの角度に合わせてカメラも傾く
@@ -99,24 +110,10 @@ namespace basecross{
 		//DebugLog(L"CameraPosZ:", m_mulCam->GetEye().z);
 		//FlushDebugLog();
 	}
-	// ■■■■■■■■■■■■■■■■■更新■■■■■■■■■■■■■■■■■
-	
-	// ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼関数▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
 
-	template<typename T>
-	void MainCameraManager::DebugLog(const wstring& name, T debug)
-	{
-		m_debugWss << name << debug << "\n";
-	}
-
-	void MainCameraManager::FlushDebugLog()
-	{
-		auto& app = App::GetApp();
-		auto scene = app->GetScene<Scene>();
-		scene->SetDebugString(m_debugWss.str());
-		m_debugWss.str(L""); // ログをクリア
-		m_debugWss.clear();
-	}
+	// ==============================================================================
+	// 関数
+	// ==============================================================================
 
 	void MainCameraManager::AdjustFov(bool isAccel)
 	{
@@ -150,7 +147,9 @@ namespace basecross{
 
 	}
 
-	void MainCameraManager::IsMultiView(const wstring& sharedName)
+	// ==============================================================================
+
+	void MainCameraManager::CheckMultiView(const wstring& sharedName)
 	{
 		if (sharedName == L"Player1")
 			dynamic_pointer_cast<MultiView>(GetStage()->GetView())->SetTargetIndex(0);
@@ -181,32 +180,67 @@ namespace basecross{
 		return avg.normalize();
 	}
 
+	// ==============================================================================
+
 	Vec3 MainCameraManager::GetSmoothedUp(const Vec3& currentUp, const int historyMax) {
 		UpdateUpHistory(currentUp, historyMax);
 		return CalcUpHistoryAverage();
 	}
 
-	bool MainCameraManager::IsObstructed(const Vec3& from, const Vec3& to)
-	{
-		Vec3 hitPos;		// レイの衝突した地点
-		TRIANGLE triangle;	// 衝突したポリゴン
-		size_t triangleNum;	// 衝突したポリゴンの番号
+	// ==============================================================================
 
-		// ゲームオブジェクトの配列
+	void MainCameraManager::UpdateCameraObstruction()
+	{
+		float min = 9999999.9f;
+		Vec3 bestHitPos = m_camPos;
+
 		auto objVec = m_stage->GetGameObjectVec();
 
 		for (auto obj : objVec)
 		{
-			auto obstacles = dynamic_pointer_cast<GameObject>(obj);
-			
-			if (obstacles)
+			auto result = TestCameraObstruction(m_plInfo.pos, m_camPos, obj);
+			if (result.hit && result.hitLength < min)
 			{
-				auto ptrDraw = obstacles->GetComponent<SmBaseDraw>();
-				ptrDraw->HitTestStaticMeshSegmentTriangles(from, to, hitPos, triangle, triangleNum);
-				return false;
+				min = result.hitLength;
+				bestHitPos = result.hitPos;
 			}
 		}
+
+		if (min < 9999999.9f)
+		{
+			m_camPos = bestHitPos;
+		}
 	}
+
+	// ==============================================================================
+
+	MainCameraManager::ObstructionHitResult MainCameraManager::TestCameraObstruction(const Vec3& from, const Vec3& to, const shared_ptr<GameObject>& obj)
+	{
+		ObstructionHitResult result;
+		result.hitPos = Vec3(0.0f);
+		result.hitLength = 9999999.9f;
+		result.hit = false;
+
+		auto obstacles = dynamic_pointer_cast<GameObject>(obj);
+		if (!obstacles || !obstacles->FindTag(L"CameraObstruction"))
+			return result;
+
+		auto ptrDraw = obstacles->GetComponent<SmBaseDraw>();
+		TRIANGLE triangle;
+		size_t triangleNum;
+		ptrDraw->HitTestStaticMeshSegmentTriangles(from, to, result.hitPos, triangle, triangleNum); 
+
+		if (result.hitPos != Vec3(0.0f))
+		{
+			Vec3 playerToHit = result.hitPos - from;
+			result.hitLength = abs(playerToHit.x) + abs(playerToHit.y) + abs(playerToHit.z);
+			result.hit = true;
+		}
+
+		return result;
+	}
+
+	// ==============================================================================
 
 	void MainCameraManager::SetCameraNormalBehindMode(bool isButton)
 	{
@@ -223,7 +257,10 @@ namespace basecross{
 		}
 	}
 
-	// ■■■■■■■■■■■■■■■■■関数■■■■■■■■■■■■■■■■■
+	// ==============================================================================
 
+	// ==============================================================================
+	// MainCameraManagerクラス末尾
+	// ==============================================================================
 }
 //end basecross

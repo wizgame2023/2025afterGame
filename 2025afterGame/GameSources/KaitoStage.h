@@ -22,6 +22,19 @@ namespace basecross {
 		virtual void OnCreate()override;
 	};
 
+	class TestCubeKaito : public Actor
+	{
+		Vec3 m_startPos;
+		Vec3 m_startScl;
+		
+	public:
+		TestCubeKaito(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 scale);
+		~TestCubeKaito();
+		virtual void OnCreate() override;
+		//virtual void OnUpdate() override;
+		// “–‚½‚è”»’è
+		//virtual void OnCollisionEnter(shared_ptr<GameObject>& obj) override;
+	};
 
 }
 //end basecross
