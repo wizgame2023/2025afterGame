@@ -17,6 +17,9 @@ namespace basecross{
 		shared_ptr<Barrier> m_barrier = nullptr; // バリアのポインタ
 		shared_ptr<DisableBarrier> m_disableShield = nullptr; // バリア妨害のポインタ
 
+		// 名前
+		wstring m_name;
+
 		// パラメーター
 		int m_hpCurrent = 0;			// 耐久値
 		int m_hpMax = 0;				// 最大耐久値
@@ -45,7 +48,8 @@ namespace basecross{
 		Vec3 m_currentCheckPointPos = Vec3(0.0f);	  // 次のチェックポイントの位置
 	public:
 		FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& ptrStage);
-		FighterAircraftBase(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 rot, Vec3 scale,const shared_ptr<CheckPoint>& startCheckPoint, Col4 color = Col4(1.0f));
+		FighterAircraftBase(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 rot, Vec3 scale, const shared_ptr<CheckPoint>& startCheckPoint, Col4 color = Col4(1.0f));
+		FighterAircraftBase(const shared_ptr<Stage>& stagePtr, wstring name,Vec3 pos, Vec3 rot, Vec3 scale, const shared_ptr<CheckPoint>& startCheckPoint, Col4 color = Col4(1.0f));
 		FighterAircraftBase(const shared_ptr<Stage>& stagePtr, Vec3 pos, Quat qt, Vec3 scale,const shared_ptr<CheckPoint>& startCheckPoint, Col4 color = Col4(1.0f));
 		FighterAircraftBase::~FighterAircraftBase();
 
