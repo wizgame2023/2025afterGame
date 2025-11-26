@@ -59,12 +59,12 @@ namespace basecross {
 
 		auto& gameManager = GameManager::GetGameManager();
 		gameManager->AddCheckPoint();
-		gameManager->AddCheckPoint();
-		gameManager->AddCheckPoint();
+		//gameManager->AddCheckPoint();
+		//gameManager->AddCheckPoint();
 
 		auto startCheckPoint = gameManager->GetCheckPoint(0);
 		// 敵が出ているかテスト処理
-		//auto enemy = AddGameObject<Enemy>(Vec3(0.0f,0.0f,0.0f),Quat(0.0f,0.0f,0.0f,1.0f),Vec3(0.5f), startCheckPoint);
+		auto enemy = AddGameObject<Enemy>(Vec3(0.0f,0.0f,0.0f),Quat(0.0f,0.0f,0.0f,1.0f),Vec3(0.5f), startCheckPoint);
 
 		// バリア妨害のテスト処理
 		//auto testBullet = AddGameObject<Bullet>();
@@ -80,10 +80,11 @@ namespace basecross {
 		AddGameObject<TestCube>(Vec3(10.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(1.0f, 1.0f, 1.0f));
 		AddGameObject<TestCube>(Vec3(-10.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(1.0f, 1.0f, 1.0f));
 		AddGameObject<TestCube>(Vec3(0.0f, 0.0f, -10.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(1.0f, 1.0f, 1.0f));
+		AddGameObject<TestCube>(Vec3(0.0f, 0.0f, 10.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(1.0f, 1.0f, 1.0f));
 
 
-		auto mainCamMana = AddGameObject<MainCameraManager>();
-		SetSharedGameObject(L"MainCameraManager", mainCamMana);
+		//auto mainCamMana = AddGameObject<MainCameraManager>();
+		//SetSharedGameObject(L"MainCameraManager", mainCamMana);
 	}
 
 	void YuutaStage::OnUpdate()

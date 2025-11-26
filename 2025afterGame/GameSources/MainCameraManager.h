@@ -8,16 +8,28 @@
 #include "stdafx.h"
 
 namespace basecross{	
+	// ==============================================================================
+	// MainCameraManagerクラス
+	// ==============================================================================
+
 	class MainCameraManager : public MyGameObject
 	{
-		// ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼メンバ変数▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+		// ==============================================================================
+		// メンバ変数
+		// ==============================================================================
 
 		// ターゲットの情報(構造体)
 		struct PlayerInfo {
-			Vec3 pos;
-			Vec3 rot;
-			Vec3 up;
-			Vec3 fwrd;
+			Vec3 pos;	// 位置
+			Vec3 rot;	// 回転
+			Vec3 up;	// 上方向ベクトル
+			Vec3 fwrd;	// 前方向ベクトル
+		};
+
+		struct ObstructionHitResult{
+			Vec3 hitPos;
+			float hitLength;
+			bool hit;
 		};
 
 		PlayerInfo m_plInfo;
@@ -28,9 +40,6 @@ namespace basecross{
 		shared_ptr<Actor> m_target;
 		shared_ptr<Camera> m_mulCam;
 		
-		// デバッグ用文字列ストリーム
-		wstringstream m_debugWss;
-
 		// SharedGameObjectの名前
 		wstring m_sharedName = L"Player";
 
@@ -41,10 +50,10 @@ namespace basecross{
 		Vec3 m_camPos;
 		Vec3 m_atPos;
 
-		// ■■■■■■■■■■■■■■■■■メンバ変数■■■■■■■■■■■■■■■■■
-
-		// ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼メンバ定数▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
-
+		// ==============================================================================
+		// メンバ定数
+		// ==============================================================================
+		
 		static constexpr float m_camDis = 5.0f; // カメラとプレイヤーの距離
 		static constexpr float m_followSpeed = 20.0f; // カメラの追従速度
 		static constexpr float m_camHeight = 1.5f; // カメラの高さ
@@ -52,9 +61,9 @@ namespace basecross{
 		
 		static constexpr int historyMax = 15;// 履歴の最大値(6で0.1秒のディレイがかかる)
 
-		// ■■■■■■■■■■■■■■■■■メンバ定数■■■■■■■■■■■■■■■■■
-
-		// ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼関数▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+		// ==============================================================================
+		// 関数
+		// ==============================================================================
 
 		// 線形補間関数(Vec3用)
 		// 参考 : https://taketakeshi.hatenablog.jp/entry/2025/05/19/205447
@@ -75,7 +84,7 @@ namespace basecross{
 		void AdjustFov(bool isAccel);
 
 		// マルチビューかどうか
-		void IsMultiView(const wstring& sharedName);
+		void CheckMultiView(const wstring& sharedName);
 
 		// カメラが前方を映すか後方を映すか
 		// isButton : 押されたボタンの真偽
@@ -96,13 +105,19 @@ namespace basecross{
 		// 戻り値 : 平均化されたUpベクトル
 		Vec3 GetSmoothedUp(const Vec3& currentUp, const int historyMax);
 
+		// 障害物がカメラの機能を邪魔していないかを見る
+		void UpdateCameraObstruction();
 
 		// プレイヤーとカメラの間に障害物があるか
 		// from : プレイヤーの位置
 		// to : カメラの位置
-		bool IsObstructed(const Vec3& from, const Vec3& to);
+		ObstructionHitResult TestCameraObstruction(const Vec3& from, const Vec3& to, const shared_ptr<GameObject>& obj);
 
-		// ■■■■■■■■■■■■■■■■■関数■■■■■■■■■■■■■■■■■
+		//// 障害物の走査と収集
+		//vector<ObstructionHitResult> CollectObstructionHits(const Vec3& from, const Vec3& to);
+
+		//// 障害物に当たっているときのカメラ位置の更新
+		//void UpdateCameraPositionObstruction(const ObstructionHitResult& result);
 
 	public:
 		// コンストラクタ
@@ -123,17 +138,35 @@ namespace basecross{
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
 
-		// デバッグログ　
-		// 使う場合は必ずFlushDebugLogも呼び出すこと
-		// name : ログの名前
-		// debug : ログに出力する値
-		template <typename T>
-		void DebugLog(const wstring& name, T debug);
-
-		// デバッグログを使う場合はフレームの最後(OnUpdateの末尾)に呼び出す
-		// そうしないと画面に表示されません
-		void FlushDebugLog();
-
 	};
+	// ==============================================================================
+	// MainCameraManagerクラス末尾
+	// ==============================================================================
+
+
+	// ==============================================================================
+	// WindEffectImageAnimationクラス
+	// ==============================================================================
+
+	//class WindEffectImageAnimation : public MyGameObject
+	//{
+
+	//public:
+	//	WindEffectImageAnimation(const shared_ptr<Stage>& stagePtr) :
+	//		MyGameObject(stagePtr)
+	//	{}
+
+	//	~WindEffectImageAnimation()
+	//	{}
+
+	//	virtual void OnCreate() override;
+	//	virtual void OnUpdate() override;
+
+	//};
+
+	// ==============================================================================
+	// WindEffectImageAnimationクラス末尾
+	// ==============================================================================
+
 }
 //end basecross

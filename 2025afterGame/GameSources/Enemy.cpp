@@ -75,7 +75,7 @@ namespace basecross {
 	{
 		// xz方面の距離の差を求める 次はzy方面の距離の差を求める
 		FighterAircraftBase::OnUpdate();
-		auto goal = GetStage()->GetSharedGameObject<Player>(L"Player");
+		auto goal = GetStage()->GetSharedGameObject<DebagPlayer>(L"Player"); // いったんゴールの位置をプレイヤーにする
 		auto goalPos = goal->GetComponent<Transform>()->GetPosition();
 		auto posPlayerDifference = m_pos - goalPos; // ゴールと敵の位置の差を求める
 		posPlayerDifference.normalize();
@@ -92,9 +92,9 @@ namespace basecross {
 		m_pos.z += sin(goalAngle) * speed * m_delta;
 
 		// Qt回転
-		//m_qt = Quat(0.0f, 0.0f, (sin(goalAngleZY / 2.0f)), cos((goalAngle / 2.0f))) *
-		//	Quat(0.0f, (sin(goalAngle / 2.0f)), 0.0f, cos((goalAngle / 2.0f)));
-		m_qt = Quat(0.0f, 0.0f, (sin(goalAngleZY / 2.0f)), cos((goalAngleZY / 2.0f)));
+		m_qt = Quat(0.0f, 0.0f, (sin(goalAngleZY / 2.0f)), cos((goalAngle / 2.0f))) *
+			Quat(0.0f, (sin(goalAngle / 2.0f)), 0.0f, cos((goalAngle / 2.0f)));
+		//m_qt = Quat(0.0f, 0.0f, (sin(goalAngleZY / 2.0f)), cos((goalAngleZY / 2.0f)));
 
 		//auto cameraManager = GetStage()->GetSharedGameObject<MainCameraManager>(L"MainCameraManager");
 		//cameraManager->DebugLog(L"goalAngle : ", XMConvertToDegrees(goalAngle));
@@ -105,6 +105,9 @@ namespace basecross {
 		//m_trans->SetRotation(0.0f, -goalAngle, 0.0f);
 
 		m_trans->SetPosition(m_pos);
+		
+		// goalAngleを-180~0の間になるように変更
+
 
 		////デバック用
 		wstringstream wss(L"");
