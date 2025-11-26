@@ -30,6 +30,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)FighterAircraftBase.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameStage.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)HpSprite.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)InputManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MainCameraManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MultiViewStage.h" />
@@ -69,6 +70,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)FighterAircraftBase.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameStage.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)HpSprite.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)InputManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)KaitoStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MainCameraManager.cpp" />
