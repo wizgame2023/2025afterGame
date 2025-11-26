@@ -38,9 +38,9 @@ namespace basecross {
 		PtrTrans->SetRotation(m_rot);
 		PtrTrans->SetPosition(m_pos);
 
+		//ƒƒbƒVƒ…‚Ì•`‰æ
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
-		ptrDraw->SetMeshResource(L"DEFAULT_SQUARE");
-		SetAlphaActive(false);
+		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 	}
 }
 //end basecross

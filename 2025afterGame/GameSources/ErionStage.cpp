@@ -56,11 +56,12 @@ namespace basecross {
 
 			wstring DataDir;
 			App::GetApp()->GetDataDirectory(DataDir);
+			DataDir += L"Stage/";
 			////CSVÉtÉ@ÉCÉãÇÃì«Ç›çûÇ›
 			m_objectFile.SetFileName(DataDir + L"positions.csv");
 			m_objectFile.ReadCsv();
 
-			//CreateTestObject();
+			CreateTestObject();
 
 			//ï«ÇÃâºê∂ê¨
 			auto wall1 = AddGameObject<StageWall>();
@@ -144,7 +145,7 @@ namespace basecross {
 
 			//wstring tag = Tokens[10];
 
-			AddGameObject<TestCsv>(Siz, Rot, Pos);
+			AddGameObject<TestCsv>(Pos, Rot, Siz);
 		}
 	}
 }
