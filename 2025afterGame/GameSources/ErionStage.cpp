@@ -54,6 +54,15 @@ namespace basecross {
 				max++;
 			}
 
+			wstring DataDir;
+			App::GetApp()->GetDataDirectory(DataDir);
+			DataDir += L"Stage/";
+			////CSVファイルの読み込み
+			m_objectFile.SetFileName(DataDir + L"positions.csv");
+			m_objectFile.ReadCsv();
+
+			CreateTestObject();
+
 			//壁の仮生成
 			auto wall1 = AddGameObject<StageWall>();
 			wall1->GetComponent<Transform>()->SetPosition(0.0f, 0.0f, 55.0f);
@@ -103,6 +112,41 @@ namespace basecross {
 
 		auto scene = app->GetScene<Scene>();
 		scene->SetDebugString(wss.str());
+	}
+
+	void ErionStage::CreateTestObject()
+	{
+		//オブジェクトの配列
+		vector<wstring> ObjectLine;
+		//抜き出し
+		m_objectFile.GetSelect(ObjectLine, 0, L"Object");
+		for (auto& v : ObjectLine)
+		{
+			//オブジェクトの作成
+			vector<wstring> Tokens;
+			Util::WStrToTokenVector(Tokens, v, L',');
+			Vec3 Pos(
+				(float)_wtof(Tokens[1].c_str()),
+				(float)_wtof(Tokens[2].c_str()),
+				(float)_wtof(Tokens[3].c_str())
+			);
+
+
+			Vec3 Rot;
+			Rot.x = (Tokens[4] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[4].c_str());
+			Rot.y = (Tokens[5] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[5].c_str());
+			Rot.z = (Tokens[6] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[6].c_str());
+
+			Vec3 Siz(
+				(float)_wtof(Tokens[7].c_str()),
+				(float)_wtof(Tokens[8].c_str()),
+				(float)_wtof(Tokens[9].c_str())
+			);
+
+			//wstring tag = Tokens[10];
+
+			AddGameObject<TestCsv>(Pos, Rot, Siz);
+		}
 	}
 }
 //end basecross

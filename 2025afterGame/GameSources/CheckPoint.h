@@ -31,7 +31,7 @@ namespace basecross{
 		void SetCheckPointID(int id);
 
 		//次のチェックポイントの取得
-		Vec3 GetNextCheckPoint();
+		//Vec3 GetNextCheckPoint();
 
 		//接触した場合の処理
 		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;

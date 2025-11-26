@@ -22,38 +22,38 @@ namespace basecross{
 		return value;
 	}
 
-	enum class ActionMode
+	template <typename T>
+	constexpr T lerp(T a, T b, T t) noexcept
 	{
-		None,
-		Barrier,
-		Bullet,
-		jama
-	};
+		return a + (b - a) * t;
+	}
 
 	class Player : public FighterAircraftBase
 	{
 	private:
 		shared_ptr<Barrier> m_barrier;
 		shared_ptr<Bullet> m_bullet;
-		shared_ptr<CheckPoint> m_checkPoint;
 
+		// 速度ベクトル
 		Vec3 m_velocity;
-		Vec3 m_checkPointPos;
-
-		float m_angleSpeed;
-		float m_rollSpeed;
-		bool m_acceleration;
-
-		Quat m_initialQuat;
-
-		bool m_prevDDown;
-		int  m_playerIndex;
-		bool m_aButton;
-
-		float m_yawSpeed;
-		Quat  m_targetQuat;
-
+		// 弾が当たった時の位置
 		Vec3 m_respawnPos;
+		// 傾きのスピード
+		float m_angleSpeed;
+		// 十字キーの下が押されたら
+		bool m_prevDDown;
+		// Aボタンが押されたら
+		bool m_aButton;
+		// プレイヤーを識別するID
+		int  m_playerIndex;
+		// 現在の回転
+		Quat m_currentQuat; 
+		// 見た目の傾き
+		float m_visualRoll;
+		// 旋回の計算で使う
+		float m_bankRoll;
+		// 傾きから生じる旋回パワー
+		float m_turnPower;
 
 		// クラス全体
 		// で共有される定数
@@ -87,29 +87,17 @@ namespace basecross{
 
 		/*
 		@brief プレイヤーの角度処理
-		@details Pitch（上下）・Roll（傾き）を入力に応じて制御し、
-		          スティックを離した際には自動的に傾きを水平に戻す。
+		@details Pitch（上下）・Roll（傾き）を入力に応じて制御し、 スティックを離した際には自動的に傾きを水平に戻す。
 		@return なし
 		*/
-		void PlayerAngle();
-
-		Quat PlayerPitch(const float stickY, float deltaTime);
-
-		Quat PlayerRoll(const float stickX, float deltaTime);
-
-		/*
-		@brief ブースト入力の状態取得
-		@details スティック、ショルダー、トリガー入力のいずれかが有効な場合に true を返す。
-		@return ブースト入力がアクティブなら true
-		*/
-		bool GetIsBoostInputActive() const;
+		void TurnUpdate(float deltaTime);
 
 		/*
 		@brief プレイヤーのバリア生成処理
 		@details Xボタン入力時にバリアオブジェクトを生成・有効化する。
 		@return なし
 		*/
-		void CreateBarrier();
+		//void CreateBarrier();
 
 		/*
 		@brief プレイヤーの弾丸生成処理
@@ -119,13 +107,6 @@ namespace basecross{
 		void CreateBullet();
 
 		/*
-		@brief コントローラ切り替え処理
-		@details DPadの下入力により、プレイヤーインデックスを切り替える。
-		@return なし
-		*/
-		void ChangController();
-
-		/*
 		@brief プレイヤーのコントローラ番号を設定する
 		@param index コントローラ番号（0または1）
 		@return なし
@@ -133,70 +114,16 @@ namespace basecross{
 		void SetPlayerIndex(int index);
 
 		/*
-		@brief プレイヤーのコントローラ番号を取得する
-		@return 現在のコントローラ番号
+		@brief コントローラ切り替え処理
+		@details DPadの下入力により、プレイヤーインデックスを切り替える。
+		@return なし
 		*/
-		int GetPlayerIndex() const;
+		void ChangController();
 
 		/*
-		@brief プレイヤーが加速しているかを取得する
-		@return 加速中なら true、そうでなければ false
+		@brief プレイヤーの切り替え
 		*/
-		bool GetAcceleration();
-
-		/*
-		@brief クォータニオン補間（Slerp）
-		@param q1 開始クォータニオン
-		@param q2 終了クォータニオン
-		@param t 補間係数（0〜1）
-		@return 補間後のクォータニオン
-		*/
-		Quat Slerp(const Quat& q1, const Quat& q2, float t);
-
-		/*
-		@brief 軸と角度からクォータニオンを生成
-		@param axis 回転軸ベクトル
-		@param angleRad 回転角（ラジアン）
-		@return 生成されたクォータニオン
-		*/
-		Quat FromAxisAngle(const Vec3& axis, float angleRad);
-
-		/*
-		@brief クォータニオンをオイラー角（Pitch, Yaw, Roll）に変換
-		@param q クォータニオン
-		@return オイラー角（ラジアン単位）
-		*/
-		Vec3 QuaternionToEuler(const Quat& q);
-
-		/*
-		@brief クォータニオンでベクトルを回転
-		@param v 回転させたいベクトル
-		@param q 回転に使用するクォータニオン
-		@return 回転後のベクトル
-		*/
-		Vec3 RotateVectorByQuat(const Vec3& v, const Quat& q);
-
-		/*
-		@brief 2つのクォータニオン間の角度差を取得
-		@param a クォータニオンA
-		@param b クォータニオンB
-		@return 2つのクォータニオン間の角度（ラジアン）
-		*/
-		float AngleBetWeen(const Quat& a, const Quat& b);
-
-		/*
-		@brief 指定軸まわりに回転するクォータニオンを生成
-		@param axis 回転軸ベクトル
-		@param angle 回転角（ラジアン）
-		@return 回転クォータニオン
-		*/
-		inline Quat rotationAxis(const Vec3& axis, float angle);
-
-
-		Vec3 GetCheckPointPos() const 
-		{
-			return m_checkPointPos;
-		}
+		void ChangePlayer(Vec2 lstick);
 	};
 }
 //end basecross

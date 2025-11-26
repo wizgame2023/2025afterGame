@@ -125,6 +125,8 @@ namespace basecross
 			m_DownButtons[L"B"] = m_pad.wPressedButtons & XINPUT_GAMEPAD_B;
 			m_DownButtons[L"X"] = m_pad.wPressedButtons & XINPUT_GAMEPAD_X;
 			m_DownButtons[L"Y"] = m_pad.wPressedButtons & XINPUT_GAMEPAD_Y;
+
+
 		}
 
 		// UpButton
@@ -323,6 +325,9 @@ namespace basecross
 
 		m_LStick = Vec2(m_pad.fThumbLX, m_pad.fThumbLY);
 		m_RStick = Vec2(m_pad.fThumbRX, m_pad.fThumbRY);
+
+		m_LeftTrigger = m_pad.bLeftTrigger;
+		m_RightTrigger = m_pad.bRightTrigger;
 
 		// Button
 		{

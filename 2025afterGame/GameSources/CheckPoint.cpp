@@ -82,14 +82,14 @@ namespace basecross{
 			}*/
 			
 			//もし最後のチェックポイントならタイトル画面に戻る(仮)
-			if (m_checkPointID == game->GetChackPointsSize())
-			{
-				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
-				return;
-			}
+			//if (m_checkPointID == game->GetChackPointsSize())
+			//{
+			//	PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
+			//	return;
+			//}
 			
 			//次のチェックポイントをプレイヤーに返す
-			playermachine->SetNextCheckPointPos(GetNextCheckPoint());
+			//playermachine->SetNextCheckPointPos(GetNextCheckPoint());
 		}
 	}
 
@@ -109,7 +109,7 @@ namespace basecross{
 	}
 
 	//次のチェックポイントをプレイヤーに返すゲッター
-	Vec3 CheckPoint::GetNextCheckPoint() 
+	/*Vec3 CheckPoint::GetNextCheckPoint()
 	{
 		//ゲームマネージャーを取得
 		auto& game = GameManager::GetGameManager();
@@ -122,6 +122,6 @@ namespace basecross{
 			Vec3 newPoint = checkPoint->GetComponent<Transform>()->GetPosition();
 			return newPoint;
 		}
-	}
+	}*/
 }
 //end basecross

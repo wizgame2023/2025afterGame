@@ -61,10 +61,10 @@ namespace basecross {
 			SetSharedGameObject(L"Player", player);
 			
 
-			auto player2 = AddGameObject<Player>();		
-			player2->SetPlayerIndex(1);
-			SetSharedGameObject(L"Player2", player2);
-			player2->GetComponent<Transform>()->SetPosition(Vec3(0.0f, 0.0f, 15.0f));
+			//auto player2 = AddGameObject<Player>();		
+			//player2->SetPlayerIndex(1);
+			//SetSharedGameObject(L"Player2", player2);
+			//player2->GetComponent<Transform>()->SetPosition(Vec3(0.0f, 0.0f, 15.0f));
 
 
 		}
