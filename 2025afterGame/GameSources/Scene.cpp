@@ -24,7 +24,7 @@ namespace basecross{
 		wstring path = app->GetDataDirWString();
 		wstring modelPath = path + L"Models/";
 		wstring texPath = path + L"Textures/";
-		wstring uiPath = path + L"UI/";
+		wstring uiPath = path + L"UI/Player/";
 
 		//Textures //////////////////////////////////////////////
 		auto modelTex = modelPath + L"diffuse.png";
