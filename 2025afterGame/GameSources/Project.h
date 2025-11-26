@@ -20,6 +20,9 @@
 #include "Background.h"
 #include "Plane.h"
 #include "StateEnemy.h"
+#include "StageWall.h"
+#include "TestCsv.h"
+#include "DashRing.h"
 
 // 殿堂入りMyGameObject本体
 #include "MyGameObject.h";
@@ -30,6 +33,7 @@
 #include "AttackCollision.h"
 #include "MainCameraManager.h"
 #include "GameManager.h"
+//#include "StageCreateManager.h"
 #include "Sprite.h"
 #include "UIManager.h"
 ///////////////////////////////////////////////////
@@ -40,8 +44,6 @@
 #include "Barrier.h"
 #include "DisableBarrier.h"
 #include "CheckPoint.h"
-#include "StageWall.h"
-#include "TestCsv.h"
 ///////////////////////////////////////////////////
 
 //親クラスがFighterAircraftBase////////////////////
