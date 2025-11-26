@@ -11,6 +11,7 @@ namespace basecross {
 		Vec3 m_pos;
 		Vec3 m_rot;
 		Vec3 m_siz;
+		float m_speed;
 
 	public:
 		DashRing(const shared_ptr<Stage>& StagePtr,
