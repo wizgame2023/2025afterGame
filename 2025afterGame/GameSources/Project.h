@@ -41,6 +41,7 @@
 #include "CheckPoint.h"
 #include "StageWall.h"
 #include "TestCsv.h"
+#include "DashRing.h"
 ///////////////////////////////////////////////////
 
 //親クラスがFighterAircraftBase////////////////////

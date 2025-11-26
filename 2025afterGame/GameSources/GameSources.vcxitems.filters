@@ -109,6 +109,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)ErionStage.cpp">
       <Filter>Sources\PrivateStage</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)DashRing.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Actor.h">
@@ -221,6 +224,9 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)KaitoStage.h">
       <Filter>Header\PrivateStage</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)DashRing.h">
+      <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
