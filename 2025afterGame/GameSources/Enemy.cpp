@@ -33,7 +33,7 @@ namespace basecross {
 		spanMat.affineTransformation(
 			Vec3(1.0f, 1.0f, 1.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, XMConvertToRadians(-90.0f), 0.0f),
+			Vec3(0.0f, XMConvertToRadians(180.0f), 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f)
 		);
 
@@ -73,16 +73,48 @@ namespace basecross {
 
 	void Enemy::OnUpdate()
 	{
-		// xz方面の距離の差を求める 次はzy方面の距離の差を求める
 		FighterAircraftBase::OnUpdate();
+
+		// デバック用に弾を出す
+		m_countDebagBulletTime += m_delta;
+		if (m_countDebagBulletTime >= 0.5f)
+		{
+			GetStage()->AddGameObject<Bullet>(GetThis<Actor>());
+			m_countDebagBulletTime = 0.0f;
+		}
+
+		// xz方面の距離の差を求める 次はzy方面の距離の差を求める
 		auto goal = GetStage()->GetSharedGameObject<DebagPlayer>(L"Player"); // いったんゴールの位置をプレイヤーにする
 		auto goalPos = goal->GetComponent<Transform>()->GetPosition();
-		auto posPlayerDifference = m_pos - goalPos; // ゴールと敵の位置の差を求める
-		posPlayerDifference.normalize();
+		auto posPlayerDifference = goalPos - m_pos; // ゴールと敵の位置の差を求める
+		Vec2 differenceYZ = Vec2(posPlayerDifference.y, abs(posPlayerDifference.z));
+		differenceYZ.normalize();
+		posPlayerDifference.normalize(); // 正規化
 
 		// 目的地の角度を取得
-		float goalAngle = atan2f(posPlayerDifference.z, -posPlayerDifference.x);
-		float goalAngleZY = atan2f(-posPlayerDifference.y, -posPlayerDifference.z);
+		float goalAngle = atan2f(posPlayerDifference.x, posPlayerDifference.z);
+		float goalAngleZY = atan2f(posPlayerDifference.y, abs(posPlayerDifference.z));
+		float goalAngleYX = atan2f(posPlayerDifference.y, -posPlayerDifference.x);
+
+
+		// 角度がマイナスつかないように変更
+		goalAngle = AdjustmentAngle(goalAngle);
+		goalAngleZY = -AdjustmentAngle(goalAngleZY);
+		goalAngleYX = AdjustmentAngle(goalAngleYX);
+
+		// デバック用のロール回転
+		static float debugYX = 0.0f;
+		auto& input = InputManager::GetInputManager();
+		if (input->GetButton(L"DLeft"))
+		{
+			debugYX -= m_delta * 3.0f;
+		}
+		if (input->GetButton(L"DRight"))
+		{
+			debugYX += m_delta * 3.0f;
+		}
+		goalAngleYX = debugYX;
+		//
 
 		float speed = 0.0f;
 		float testAngle = XMConvertToRadians(45.0f);
@@ -92,21 +124,33 @@ namespace basecross {
 		m_pos.z += sin(goalAngle) * speed * m_delta;
 
 		// Qt回転
-		m_qt = Quat(0.0f, 0.0f, (sin(goalAngleZY / 2.0f)), cos((goalAngle / 2.0f))) *
-			Quat(0.0f, (sin(goalAngle / 2.0f)), 0.0f, cos((goalAngle / 2.0f)));
-		//m_qt = Quat(0.0f, 0.0f, (sin(goalAngleZY / 2.0f)), cos((goalAngleZY / 2.0f)));
+		//m_qt = Quat(0.0f, 0.0f, (sin(goalAngleYX / 2.0f)), cos((goalAngle / 2.0f))) *
+		//	Quat(0.0f, (sin(goalAngle / 2.0f)), 0.0f, cos((goalAngle / 2.0f)));
+		 
+		Vec3 axisYX = cross(Vec3(posPlayerDifference.x, 0, posPlayerDifference.z), Vec3(0, 1, 0));
+		// 個別の軸ずつ回転計算をしています
+		m_qt = Quat(0.0f, 0.0f, (sin(goalAngleYX / 2.0f)), cos((goalAngleZY / 2.0f))); // Z軸回転
+		m_qt *= Quat((sin(goalAngleZY / 2.0f)), 0.0f, 0.0f, cos((goalAngleZY / 2.0f))); // X軸回転
+		m_qt *= Quat(0.0f, sin(sin(goalAngle / 2.0f)), 0.0f, cos((goalAngle / 2.0f))); // Y軸回転
+		//m_qt *= Quat(0.0f, 0.0f, (sin(goalAngleYX / 2.0f)), cos((goalAngleYX / 2.0f))); // Z軸回転
+		XMQuaternionRotationRollPitchYaw(goalAngleYX, goalAngle, goalAngleZY);
 
-		//auto cameraManager = GetStage()->GetSharedGameObject<MainCameraManager>(L"MainCameraManager");
-		//cameraManager->DebugLog(L"goalAngle : ", XMConvertToDegrees(goalAngle));
-		//cameraManager->DebugLog(L"goalAngleZY : ",XMConvertToDegrees(goalAngleZY));
+		//auto rot = XMMatrixRotationAxis(axisYX, goalAngleYX);
+		//auto world = m_trans->GetWorldMatrix();
+		//world.rotation((Quat)XMQuaternionRotationMatrix(rot));
+		//m_qt = world.quatInMatrix();
+
+		// 個別に変換するだけの場所
+		//m_qt = Quat(0.0f, sin(sin(goalAngle / 2.0f)), 0.0f, cos((goalAngle / 2.0f))); // Y軸回転
+		//m_qt = Quat(0.0f, 0.0f, (sin(goalAngleYX / 2.0f)), cos((goalAngleYX / 2.0f))); // Z軸回転
+
 
 		//m_qt = Quat(0.0f, 0.0f, (sin(goalAngleZY / 2.0f)), cos((goalAngle / 2.0f)));
-		m_trans->SetQuaternion(m_qt);
-		//m_trans->SetRotation(0.0f, -goalAngle, 0.0f);
+		m_trans->SetQuaternion(m_qt); // qt反映
+		//m_trans->SetRotation(m_rot);
 
-		m_trans->SetPosition(m_pos);
+		m_trans->SetPosition(m_pos); // pos反映
 		
-		// goalAngleを-180~0の間になるように変更
 
 
 		////デバック用
@@ -115,12 +159,29 @@ namespace basecross {
 
 		wss /* << L"デバッグ用文字列 "*/
 			<< L"\ngoalAngle : " << XMConvertToDegrees(goalAngle)
-			<< L"\ngoalAngleZY : " << XMConvertToDegrees(goalAngleZY)
+			<< L"\ngoalAngleZY : " << XMConvertToDegrees(goalAngleYX)
 			<< endl;
 
 		scene->SetDebugString(wss.str());
 
 	}
+
+
+	//角度の調整0~360度までしか出ないようにする
+	float Enemy::AdjustmentAngle(float angle)
+	{
+		if (angle >= XMConvertToRadians(360.0f))
+		{
+			angle -= XMConvertToRadians(360.0f);
+		}
+		else if (angle < XMConvertToRadians(0.0f))
+		{
+			angle += XMConvertToRadians(360.0f);
+		}
+
+		return angle;
+	}
+
 
 }
 //end basecross
