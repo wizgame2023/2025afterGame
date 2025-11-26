@@ -1271,6 +1271,76 @@ namespace bsm {
 	}
 
 
+	inline void Quat::rotationAxisAngle(const Flt3& axis, float angle)
+	{
+		// 軸の正規化
+		Flt3 n = axis;
+		n.normalize();
+
+		// 回転角θをそのまま入れると壊れるなので半分にする
+		float half = angle * 0.5f;
+
+		// クォータニオンの回転はsin()cos()なのでこの中にhalfを入れる
+		float s = sinf(half);
+		float c = cosf(half);
+
+		// クォータニオンの形に変換して保存している
+		x = n.x * s;
+		y = n.y * s;
+		z = n.z * s;
+		w = c;
+	}
+
+	inline Quat Quat::Slerp(const Quat& q1, const Quat& q2, float t)
+	{
+		// tのクランプ（0～1に制限）
+		if (t <= 0.0f) return q1;
+		if (t >= 1.0f) return q2;
+
+		// 内積で2つのクォータニオンの向きを確認
+		float dot = q1.x * q2.x + q1.y * q2.y + q1.z * q2.z + q1.w * q2.w;
+
+		// クォータニオンが逆向きなら片方を反転（最短経路に補間するため）
+		Quat q2b = q2;
+		if (dot < 0.0f)
+		{
+			dot = -dot;
+			q2b.x = -q2b.x;
+			q2b.y = -q2b.y;
+			q2b.z = -q2b.z;
+			q2b.w = -q2b.w;
+		}
+
+		// ほぼ同じ回転の場合、Lerpで処理
+		if (dot > 0.9995f)
+		{
+			return Quat(
+				q1.x + (q2b.x - q1.x) * t,
+				q1.y + (q2b.y - q1.y) * t,
+				q1.z + (q2b.z - q1.z) * t,
+				q1.w + (q2b.w - q1.w) * t
+			).normalize();
+		}
+
+		// 角度を求める
+		float theta = acosf(dot);
+		float sinTheta = sinf(theta);
+
+		// Slerp補間係数
+		float s1 = sinf((1 - t) * theta) / sinTheta;
+		float s2 = sinf(t * theta) / sinTheta;
+
+		// 補間計算
+		Quat result(
+			q1.x * s1 + q2b.x * s2,
+			q1.y * s1 + q2b.y * s2,
+			q1.z * s1 + q2b.z * s2,
+			q1.w * s1 + q2b.w * s2
+		);
+
+		return result.normalize(); // 正規化して返す
+	}
+
 
 	//--------------------------------------------------------------------------------------
 	///	Mat3x3インライン関数
