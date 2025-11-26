@@ -23,13 +23,17 @@ namespace basecross{
 		auto& app = App::GetApp();
 		wstring path = app->GetDataDirWString();
 		wstring modelPath = path + L"Models/";
+		wstring texPath = path + L"Textures/";
 
-		auto Modeltex = modelPath + L"P_TX.png";
-		App::GetApp()->RegisterTexture(L"P_TX", Modeltex);
+		auto Modeltex = modelPath + L"diffuse.png";
+		App::GetApp()->RegisterTexture(L"diffuse_TX", Modeltex);
+
+		auto strTexture = texPath + L"TestTex.png";
+		App::GetApp()->RegisterTexture(L"TestTex", strTexture);
 
 		// Player
-		auto ModelMesh = MeshResource::CreateBoneModelMesh(modelPath, L"Player.bmf");
-		app->RegisterResource(L"Player", ModelMesh);
+		auto ModelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"Sentouki.bmf");
+		app->RegisterResource(L"Sentouki", ModelMesh);
 
 	}
 	
@@ -41,15 +45,27 @@ namespace basecross{
 			SetClearColor(Col);
 			//自分自身にイベントを送る
 			//これにより各ステージやオブジェクトがCreate時にシーンにアクセスできる
-			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToGameStage");			
+			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");			
 			
 			CreateResource();
+
+			// ゲームマネージャー作成
+			GameManager::CreateGameManager();
 
 
 		}
 		catch (...) {
 			throw;
 		}
+	}
+
+	void Scene::OnUpdate()
+	{
+		SceneBase::OnUpdate();
+
+		// ゲームマネージャー更新
+		GameManager::GetGameManager()->OnUpdate();
+
 	}
 
 
@@ -60,8 +76,26 @@ namespace basecross{
 			ResetActiveStage<GameStage>();
 		}
 		if (event->m_MsgStr == L"ToMultiViewStage") {
-			//最初のアクティブステージの設定
+			//マルチビューのアクティブステージ設定
 			ResetActiveStage<MultiViewStage>();
+		}
+		if (event->m_MsgStr == L"ToTitleStage") {
+			//タイトルステージのアクティブステージ設定
+			ResetActiveStage<TitleStage>();
+		}
+		if (event->m_MsgStr == L"ToSelectStage") {
+			//セレクトステージのアクティブステージ設定
+			ResetActiveStage<SelectStage>();
+		}
+		//デバッグ用ステージ
+		if (event->m_MsgStr == L"ToErionStage") {
+			//セレクトステージのアクティブステージ設定
+			ResetActiveStage<ErionStage>();
+		}
+		//デバッグ用ステージ
+		if (event->m_MsgStr == L"ToTomokiStage") {
+			//セレクトステージのアクティブステージ設定
+			ResetActiveStage<TomokiStage>();
 		}
 	}
 

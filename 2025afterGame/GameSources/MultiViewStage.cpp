@@ -24,21 +24,21 @@ namespace basecross {
 		testView.MaxDepth = 1.0f;
 
 		//ビューのカメラの設定
-		auto PtrCamera = ObjectFactory::Create<Camera>();
-		PtrView->AddView(testView, PtrCamera);
+		m_camera1 = ObjectFactory::Create<Camera>();
+		PtrView->AddView(testView, m_camera1);
 
 		testView.TopLeftX = 640.0f;
 		testView.TopLeftY = 0.0f;
 
 		// カメラ追加
-		auto PtrCameraSecond = ObjectFactory::Create<Camera>();
+		m_camera2 = ObjectFactory::Create<Camera>();
+		PtrView->AddView(testView, m_camera2);
 
-		PtrView->AddView(testView, PtrCameraSecond);
+		m_camera1->SetEye(eye);
+		m_camera1->SetAt(at);
 
-		PtrCamera->SetEye(eye);
-		PtrCamera->SetAt(at);
-		PtrCameraSecond->SetEye(eye);
-		PtrCameraSecond->SetAt(at);
+		m_camera2->SetEye(-eye);
+		m_camera2->SetAt(at);
 
 		//マルチライトの作成
 		auto PtrMultiLight = CreateLight<MultiLight>();
@@ -50,10 +50,38 @@ namespace basecross {
 
 	void MultiViewStage::OnCreate() {
 		try {
+			auto& app = App::GetApp();
+			auto path = app->GetDataDirWString();
+			auto& game = GameManager::GetGameManager();
+			game->ResetCheckPoint();
+
+			wstring player1NumSharedName = L"Player1";
+			wstring player2NumSharedName = L"Player2";
+
+			auto backgroundPath = path + L"Backgrounds/";
+			for (const auto& keyName : Background::pairs) {
+				app->RegisterTexture(keyName.first, backgroundPath + keyName.first + L".bmp");
+			}
+
+			//背景
+			AddGameObject<Background>();
+
 			//ビューとライトの作成
 			CreateViewLight();
-			auto player = AddGameObject<Player>();
-			SetSharedGameObject(L"Player", player);
+			auto player1 = AddGameObject<Player>();
+			auto player2 = AddGameObject<Player>();
+			player2->GetComponent<Transform>()->SetPosition(Vec3(5.0f, 0.0f, -1.0f));
+
+			player1->SetPlayerIndex(0);
+			player2->SetPlayerIndex(1);
+
+			SetSharedGameObject(player1NumSharedName, player1);
+			SetSharedGameObject(player2NumSharedName, player2);
+
+			auto mainCamMana1 = AddGameObject<MainCameraManager>(player1, m_camera1, player1NumSharedName);
+
+			auto mainCamMana2 = AddGameObject<MainCameraManager>(player2, m_camera2, player2NumSharedName);
+
 		}
 		catch (...) {
 			throw;

@@ -2092,7 +2092,7 @@ namespace basecross {
 				//破棄を伝える
 				ActStagePtr->DestroyStage();
 			}
-			auto Ptr = ObjectFactory::Create<T>(params...);
+			auto Ptr = ObjectFactory::CreateStage<T>(params...);
 			auto StagePtr = dynamic_pointer_cast<Stage>(Ptr);
 			if (!StagePtr) {
 				throw BaseException(
@@ -2102,6 +2102,7 @@ namespace basecross {
 				);
 			}
 			SetActiveStage(StagePtr);
+			StagePtr->OnCreate();
 			//デバッグ用文字列
 			auto dbgPtr = StagePtr->AddGameObject<DebugString>();
 			StagePtr->SetSharedGameObject(L"DebugString", dbgPtr);

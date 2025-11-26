@@ -9,12 +9,39 @@
 
 namespace basecross {
 	class MyGameObject :public GameObject
-	{
+	{	
+	private:
+
+	protected:
+		float m_delta = 0.0f;
+
+		// =======================↓海斗作成↓========================== //
+
+		// デバッグ用文字列ストリーム
+		wstringstream m_debugWss;
+
+		// デバッグログ　
+		// 使う場合は必ずFlushDebugLogも呼び出すこと
+		// name : ログの名前
+		// debug : ログに出力する値
+		template<typename T>
+		void DebugLog(const wstring& name, T debug)
+		{
+			m_debugWss << name << debug << "\n";
+		}
+
+		// デバッグログを使う場合はフレームの最後(OnUpdateの末尾)に呼び出す
+		// そうしないと画面に表示されません
+		void FlushDebugLog();
+
+		// =======================↑海斗作成↑========================== //
+
 	public:
 		MyGameObject(const shared_ptr<Stage>& stagePtr);
 		~MyGameObject();
 
-	private:
+		virtual void OnCreate()override;
+		virtual void OnUpdate()override;
 
 	};
 }

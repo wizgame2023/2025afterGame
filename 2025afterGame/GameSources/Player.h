@@ -1,16 +1,19 @@
-/*!
+ï»¿/*!
 @file Player.h
-@brief ƒvƒŒƒCƒ„[‚È‚Ç
-’S“–F‹g“c ’q‹M
+@brief ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãªã©
+æ‹…å½“ï¼šå‰ç”° æ™ºè²´
 */
 
 #pragma once
 #include "stdafx.h"
 #include "Actor.h"
+#include "Barrier.h"
+#include "Bullet.h"
+#include "CheckPoint.h"
 
 namespace basecross{
 
-	// clampƒeƒ“ƒvƒŒ[ƒgŠÖ”
+	// clampãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆé–¢æ•°
 	template <typename T>
 	T clamp(T value, T minValue, T maxValue)
 	{
@@ -19,131 +22,105 @@ namespace basecross{
 		return value;
 	}
 
-	class Player : public Actor
+	template <typename T>
+	constexpr T lerp(T a, T b, T t) noexcept
 	{
-		Vec3 m_stickL;
+		return a + (b - a) * t;
+	}
+
+	class Player : public FighterAircraftBase
+	{
+	private:
+		shared_ptr<Barrier> m_barrier;
+		shared_ptr<Bullet> m_bullet;
+
+		// é€Ÿåº¦ãƒ™ã‚¯ãƒˆãƒ«
 		Vec3 m_velocity;
-
-		// ƒXƒs[ƒhŠÖ˜A
-		float m_speed;
-		float m_targetSpeed;
-		float m_accleRation;
-		float m_deceleRation;
-		float m_maxSpeed;
+		// å¼¾ãŒå½“ãŸã£ãŸæ™‚ã®ä½ç½®
+		Vec3 m_respawnPos;
+		// å‚¾ãã®ã‚¹ãƒ”ãƒ¼ãƒ‰
 		float m_angleSpeed;
+		// åå­—ã‚­ãƒ¼ã®ä¸‹ãŒæŠ¼ã•ã‚ŒãŸã‚‰
+		bool m_prevDDown;
+		// Aãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã‚‰
+		bool m_aButton;
+		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’è­˜åˆ¥ã™ã‚‹ID
+		int  m_playerIndex;
+		// ç¾åœ¨ã®å›è»¢
+		Quat m_currentQuat; 
+		// è¦‹ãŸç›®ã®å‚¾ã
+		float m_visualRoll;
+		// æ—‹å›ã®è¨ˆç®—ã§ä½¿ã†
+		float m_bankRoll;
+		// å‚¾ãã‹ã‚‰ç”Ÿã˜ã‚‹æ—‹å›ãƒ‘ãƒ¯ãƒ¼
+		float m_turnPower;
 
-		float m_bustGauge;
-
-		// UŒ‚”­¶ŠÔ
-		float m_timeOfStartAttack;
-		
-		// UŒ‚ŠÔŒv‘ª
-		float m_timeOfAttack;
-
-		// ƒvƒ‰ƒX‚·‚éUŒ‚—Í
-		int m_plusAttack;
-
-		// UŒ‚”»’èoŒ»ƒtƒ‰ƒO
-		bool m_attackCollisionFlag;
-
-		float m_pitchAngle; // Œ»İ‚Ìƒsƒbƒ`Šp (ƒ‰ƒWƒAƒ“)
-		float m_rollAngle;  // Œ»İ‚Ìƒ[ƒ‹Šp (ƒ‰ƒWƒAƒ“)
-
-		// ƒsƒbƒ`‚Æƒ[ƒ‹‚ÌÅ‘å§ŒÀŠp“x (ƒ‰ƒWƒAƒ“)
-		static constexpr float MAX_PITCH_LIMIT = XMConvertToRadians(90.0f);
-		static constexpr float MAX_ROLL_LIMIT = XMConvertToRadians(90.0f);
-
-		// ƒNƒ‰ƒX‘S‘Ì‚Å‹¤—L‚³‚ê‚é’è”
-		// ‰½“x‚àŠÖ”“à‚Åƒ[ƒJƒ‹•Ï”‚Å“Ç‚Ş‚Ì‚Íˆ«‚¢‚È‚Ì‚Å‚±‚±‚Å‰Šú‰»AƒRƒ“ƒpƒCƒ‹‚É’l‚ğŒˆ’è
+		// ã‚¯ãƒ©ã‚¹å…¨ä½“
+		// ã§å…±æœ‰ã•ã‚Œã‚‹å®šæ•°
+		// ä½•åº¦ã‚‚é–¢æ•°å†…ã§ãƒ­ãƒ¼ã‚«ãƒ«å¤‰æ•°ã§èª­ã‚€ã®ã¯æ‚ªã„ãªã®ã§ã“ã“ã§åˆæœŸåŒ–ã€ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«æ™‚ã«å€¤ã‚’æ±ºå®š
 		static constexpr float DEAD_ZONE = 0.1f;
+		static constexpr float DEAD_ZONE_PITCH = 0.4f;
 		static constexpr float MAX_SPEED = 7.0f;
-		static constexpr float NORMAL_SPEED = 1.0f;
 		static constexpr float MAX_GAUGE = 100.0f;
 		static constexpr float GAUGE_CONSUMPTION_RATE = 1.0f;
 		static constexpr float GAUGE_RECOVERY_RATE = 3.0f;
-	
+		
+
 	public:
 		Player::Player(const shared_ptr<Stage>& ptrStage);
 		Player::~Player();
 
 		void OnCreate() override;
 		void OnUpdate() override;
-		void OnCollisionEnter(const shared_ptr<GameObject>& Other);
+		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
 
-		// ƒRƒ“ƒgƒ[ƒ‰‚ğ‚Á‚Ä‚­‚é‚Æ‚«
-		CONTROLER_STATE GetFirstPad()
-		{
-			auto& app = App::GetApp();
-			auto& input = app->GetInputDevice();
-			auto& controllers = input.GetControlerVec();
+		//----------------------------------------
+		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç§»å‹•ãƒ»å›è»¢ãƒ»å…¥åŠ›é–¢é€£
+		//----------------------------------------
 
-			if (controllers.empty())
-			{
-				return CONTROLER_STATE{};
-			}
-
-			return controllers[0];
-		}
-
-		// ƒvƒŒƒCƒ„[‚ÌˆÚ“®ˆ—
+		/*
+		@brief ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç§»å‹•å‡¦ç†
+		@details å·¦ã‚¹ãƒ†ã‚£ãƒƒã‚¯å…¥åŠ›ã‚„åŠ é€Ÿãƒœã‚¿ãƒ³ã«å¿œã˜ã¦ã€æ©Ÿä½“ã‚’å‰é€²ã•ã›ã‚‹ã€‚
+		@return ãªã—
+		*/
 		void PlayerMove();
-		
-		// ƒvƒŒƒCƒ„[‚ÌŠp“xˆ—
-		void PlayerAngle();
 
-		// ƒvƒŒƒCƒ„[‚Ìƒu[ƒXƒg
-		void PlayerBust();
+		/*
+		@brief ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®è§’åº¦å‡¦ç†
+		@details Pitchï¼ˆä¸Šä¸‹ï¼‰ãƒ»Rollï¼ˆå‚¾ãï¼‰ã‚’å…¥åŠ›ã«å¿œã˜ã¦åˆ¶å¾¡ã—ã€ ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã‚’é›¢ã—ãŸéš›ã«ã¯è‡ªå‹•çš„ã«å‚¾ãã‚’æ°´å¹³ã«æˆ»ã™ã€‚
+		@return ãªã—
+		*/
+		void TurnUpdate(float deltaTime);
 
-		// ƒvƒŒƒCƒ„[‚Ìƒu[ƒXƒg‰ñ•œ
-		void PlayerHealBust();
+		/*
+		@brief ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ãƒãƒªã‚¢ç”Ÿæˆå‡¦ç†
+		@details Xãƒœã‚¿ãƒ³å…¥åŠ›æ™‚ã«ãƒãƒªã‚¢ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç”Ÿæˆãƒ»æœ‰åŠ¹åŒ–ã™ã‚‹ã€‚
+		@return ãªã—
+		*/
+		//void CreateBarrier();
 
-		// ƒvƒŒƒCƒ„[‚ÌUŒ‚
-		void PlayerAttack();
+		/*
+		@brief ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å¼¾ä¸¸ç”Ÿæˆå‡¦ç†
+		@details Bãƒœã‚¿ãƒ³å…¥åŠ›æ™‚ã«å¼¾ä¸¸ï¼ˆBulletï¼‰ã‚’ç”Ÿæˆã™ã‚‹ã€‚
+		@return ãªã—
+		*/
+		//void CreateBullet();
 
-	private:
-		// PlayerBust‚Ì“ü—Í”»’è‚ğğŒ®‚ÌŠÖ”‰»
-		// ƒQ[ƒ€ƒpƒbƒh‚Ì“ü—Íó‘Ô
-		bool Player::IsBoostInputActive() const
-		{
-			auto& inputMgr = InputManager::GetInputManager();
+		/*
+		@brief ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ç•ªå·ã‚’è¨­å®šã™ã‚‹
+		@param index ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ç•ªå·ï¼ˆ0ã¾ãŸã¯1ï¼‰
+		@return ãªã—
+		*/
+		void SetPlayerIndex(int index);
 
-			bool stickActive = fabs(inputMgr->GetLStick().x) > DEAD_ZONE;
-			bool shoulderActive = inputMgr->GetButton(L"L") || inputMgr->GetButton(L"R");
-			bool triggerActive = inputMgr->GetLeftTrigger() > XINPUT_GAMEPAD_TRIGGER_THRESHOLD;
+		/*
+		@brief ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©åˆ‡ã‚Šæ›¿ãˆå‡¦ç†
+		@details DPadã®ä¸‹å…¥åŠ›ã«ã‚ˆã‚Šã€ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹ã€‚
+		@return ãªã—
+		*/
+		void ChangController();
 
-			return (stickActive || shoulderActive) && triggerActive;
-		}
-
-		// ƒQ[ƒW‚ÌƒNƒ‰ƒ“ƒvˆ—
-		void ClampBustGauge();
-
-		Vec3 QuatToEuler(const Quat& q)
-		{
-			Vec3 euler;
-
-			float sinr_cosp = 2.0f * (q.w * q.z + q.x * q.y);
-			float cosr_cosp = 1.0f - 2.0f * (q.y * q.y + q.z * q.z);
-			euler.z = atan2(sinr_cosp, cosr_cosp);
-
-			float sinp = 2.0f * (q.w * q.y - q.z * q.x);
-
-			if (abs(sinp) >= 1)
-			{
-				euler.y = copysign(XM_PI / 2, sinp);
-			}
-			else
-			{
-				euler.y = asin(sinp);
-			}
-
-			float siny_cosp = 2.0f * (q.w * q.x + q.y * q.z);
-			float cosy_cosp = 1.0f - 2.0f * (q.x * q.x + q.y * q.y);
-			euler.x = atan2(siny_cosp, cosy_cosp);
-
-			return euler;
-		}
 	};
-
 }
 //end basecross
 

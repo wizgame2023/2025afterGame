@@ -1,7 +1,7 @@
-/*!
+ï»¿/*!
 @file Player.cpp
-@brief ƒvƒŒƒCƒ„[‚È‚ÇÀ‘Ì
-’S“–F‹g“c ’q‹M
+@brief ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãªã©å®Ÿä½“
+æ‹…å½“ï¼šå‰ç”° æ™ºè²´
 */
 
 #include "stdafx.h"
@@ -9,22 +9,14 @@
 
 namespace basecross {
 	Player::Player(const shared_ptr<Stage>& ptrStage) :
-		Actor(ptrStage),
-		m_stickL(Vec3(0.0f)),
+		FighterAircraftBase(ptrStage),
 		m_velocity(Vec3(0.0f)),
-		m_speed(NORMAL_SPEED),
-		m_targetSpeed(0.0f),
-		m_accleRation(3.0f),
-		m_deceleRation(2.0f),
-		m_maxSpeed(2.5f),
-		m_angleSpeed(1.0f),
-		m_bustGauge(MAX_GAUGE),
-		m_timeOfStartAttack(1.0f),
-		m_timeOfAttack(0.0f),
-		m_plusAttack(0),
-		m_attackCollisionFlag(false),
-		m_pitchAngle(0.0f),
-		m_rollAngle(0.0f)
+		m_angleSpeed(2.0f),
+		m_playerIndex(0),
+		m_respawnPos(Vec3(0.0f)),
+		m_visualRoll(0.0f),
+		m_bankRoll(0.0f),
+		m_turnPower(2.0f)
 	{
 	}
 
@@ -35,212 +27,274 @@ namespace basecross {
 
 	void Player::OnCreate()
 	{
-		Actor::OnCreate();
-		auto& inputMgr = InputManager::CreateInputManager();
+		FighterAircraftBase::OnCreate();
 
 		auto ptrTrans = GetComponent<Transform>();
 		ptrTrans->SetPosition(Vec3(0.0f, 0.0f, -1.0f));
 
-		auto ptrCol = AddComponent<CollisionObb>();
-		ptrCol->SetDrawActive(true);
-
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
-		ptrDraw->SetMeshResource(L"Player");
-		ptrDraw->SetTextureResource(L"P_TX");
+		ptrDraw->SetMeshResource(L"Sentouki");
+		ptrDraw->SetTextureResource(L"diffuse_TX");
 
-		// ƒ‚ƒfƒ‹‚Æƒgƒ‰ƒ“ƒXƒtƒH[ƒ€ŠÔ‚Ì·•ªs—ñ
+		auto ptrCol = AddComponent<CollisionObb>();
+		ptrCol->SetDrawActive(false);
+
+		// ãƒ¢ãƒ‡ãƒ«ã¨ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ é–“ã®å·®åˆ†è¡Œåˆ—
 		Mat4x4 spanMat;
 		spanMat.affineTransformation(
-			Vec3(0.5f, 0.5f, 0.5f),
+			Vec3(0.2f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, XM_PI, 0.0f),
 			Vec3(0.0f, -0.59f, 0.0f)
 		);
-		ptrDraw->SetMeshToTransformMatrix(spanMat);
+
+		ptrDraw->SetMeshToTransformMatrix(spanMat);	
 	}
 
 	void Player::OnUpdate()
 	{
+		FighterAircraftBase::OnUpdate();
+
 		auto& app = App::GetApp();
-		auto input = app->GetInputDevice();
-		auto pad = input.GetControlerVec()[0];
-		auto elapsed = app->GetElapsedTime();
+		auto deltaTime = app->GetElapsedTime();
 		auto nowPos = GetComponent<Transform>()->GetPosition();
 		auto nowRot = GetComponent<Transform>()->GetRotation();
-		InputManager::CreateInputManager()->Update();
+		auto& input = InputManager::GetInputManager();
 
+		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æŒ™å‹•
 		PlayerMove();
-		PlayerAngle();
-		//PlayerBust();
-		PlayerHealBust();
-		// PlayerAttack();
+		TurnUpdate(deltaTime);
 
-		wstringstream wss(L"");
-		wss << "X : " << nowPos.x << " " << "Y : " << nowPos.y << " " << "Z : " << nowPos.z << " " << endl;
-		wss << "X : " << nowRot.x << " " << "Y : " << nowRot.y << " " << "Z : " << nowRot.z << " " << endl;
-
-		auto scene = app->GetScene<Scene>();
-		scene->SetDebugString(wss.str());
+		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®è£…å‚™
+		//CreateBarrier();
+		//CreateBullet();
+		
+		// dpadã§ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã‚’å¤‰ãˆã‚‹
+		ChangController();
 	}
 
-	void Player::OnCollisionEnter(const shared_ptr<GameObject>& Other)
+	void Player::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
+		FighterAircraftBase::OnCollisionEnter(obj);
+		
+		auto bullet = dynamic_pointer_cast<Bullet>(obj);
 
+		if (bullet)
+		{
+			auto trans = GetComponent<Transform>();
+			trans->SetPosition(m_respawnPos);
+		}
 	}
 
 	void Player::PlayerMove()
 	{
 		auto& app = App::GetApp();
+		auto& game = GameManager::GetGameManager();
+		auto pads = app->GetInputDevice();
 		auto& input = InputManager::GetInputManager();
 
 		auto ptrTrans = GetComponent<Transform>();
-		auto elapsed = app->GetElapsedTime();
-		auto currentPos = ptrTrans->GetPosition();
-		auto forward = ptrTrans->GetForward();
+		float deltaTime = game->GetDeltaTime();
+		Vec3 currentPos = ptrTrans->GetPosition();
+
+		Vec3 forward = ptrTrans->GetForward();
 		float damping = 0.9f;
-		auto Lstick = input->GetLStick();
 
-		if (input->GetButton(L"A"))
+		Vec2 lstick = input->GetLStick();
+
+		if (m_playerIndex == 0)
 		{
-			m_speed += m_accleRation * elapsed;
-			if (m_speed > m_maxSpeed)
-			{
-				m_speed = m_maxSpeed;
-			}
+			lstick = input->GetLStick();
 		}
-		else
+		else if (m_playerIndex == 1)
 		{
-			m_speed -= m_deceleRation * elapsed;
-			
-			if (m_speed < 0.0f)
-			{
-				m_speed = 0.0f;
-			}
+			lstick = input->GetLStick2();
 		}
 
-		if (m_speed > 1.0f)
+		if (m_playerIndex == 0)
 		{
-			m_velocity = forward * m_speed;
-			m_velocity *= damping; 
-
-			currentPos += m_velocity * elapsed;
+			m_aButton = input->GetButton(L"A");
+		}
+		else if (m_playerIndex == 1)
+		{
+			m_aButton = input->GetButton2(L"A");
 		}
 
-		// ¶‰E‚ÌˆÚ“®
-		if (abs(Lstick.x) > DEAD_ZONE)
+		// Aãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ã¦åŠ é€Ÿç§»å‹•
+		if (m_aButton)
 		{
-			currentPos.x += Lstick.x * m_speed * elapsed;
+			Vec3 forward = ptrTrans->GetForward();
+			forward.normalize();
+
+			Vec3 moveDir = forward;
+
+			// --- ç§»å‹•å‡¦ç† ---
+			m_velocity = moveDir * m_speedCurrent;
+			currentPos += m_velocity * deltaTime;
 		}
 
+		// ç§»å‹•åæ˜ 
 		ptrTrans->SetPosition(currentPos);
 	}
 
-	void Player::PlayerAngle()
+	void Player::TurnUpdate(float deltaTime)
 	{
 		auto& app = App::GetApp();
+		auto& game = GameManager::GetGameManager();
+		auto pads = app->GetInputDevice();
 		auto& input = InputManager::GetInputManager();
-
+		Vec2 lstick = input->GetLStick();
 		auto ptrTrans = GetComponent<Transform>();
-		auto elapsed = app->GetElapsedTime();
-		auto currentQuat = ptrTrans->GetQuaternion();
-		auto Lstick = input->GetLStick();
+		bool hasInput = (fabs(lstick.x) > 0.01f || fabs(lstick.y) > 0.01f);
 
-		// ã¸‰º~
-		if (fabs(Lstick.y) > DEAD_ZONE)
+		wstringstream wss;
+
+		if (m_playerIndex == 0)
 		{
-			// ƒsƒbƒ`•Ï‰»—Ê‚ğŒvZ
-			float pitch = -Lstick.y * m_angleSpeed * elapsed;
-
-			// ƒsƒbƒ`‰ñ“]—p‚ÌƒNƒH[ƒ^ƒjƒIƒ“‚ğì¬
-			Quat pitchQuat;
-			pitchQuat.rotationX(pitch); // X²‚Ì‰ñ“]
-
-			// Œ»İ‚Ì‰ñ“]‚É‡¬
-			currentQuat = currentQuat * pitchQuat;
-			currentQuat.normalize();
-		}
-
-		// ¶‰E‚ÌŒX‚¯
-		if (fabs(Lstick.x) > DEAD_ZONE)
-		{
-			float roll = -Lstick.x * m_angleSpeed * elapsed;
-
-			// m_rollAngle += roll;
-
-			Quat rollQuat;
-			rollQuat.rotationZ(roll);
-			currentQuat = currentQuat * rollQuat;
-			currentQuat.normalize();
-		}
-
-		ptrTrans->SetQuaternion(currentQuat);
-	}
-
-	void Player::ClampBustGauge()
-	{
-		// bustGauge‚ÌãŒÀ‚ğMaxGauge‚É‚·‚é‚±‚Æ‚ªo—ˆ‚é
-		m_bustGauge = clamp(m_bustGauge,0.0f, MAX_GAUGE);
-	}
-
-	void Player::PlayerBust()
-	{
-		auto& app = App::GetApp();
-		auto pad = GetFirstPad();
-		auto elapsed = app->GetElapsedTime();
-
-		bool isBoosting = IsBoostInputActive() && (m_bustGauge > 0.0f);
-
-		// ‰Á‘¬ˆ—
-		if (isBoosting)
-		{
-			m_speed = MAX_SPEED;
-			m_bustGauge -= GAUGE_CONSUMPTION_RATE * elapsed;
+			lstick = input->GetLStick();
 		}
 		else
 		{
-			m_speed = NORMAL_SPEED;
+			lstick = input->GetLStick2();
 		}
-	}
 
-	void Player::PlayerHealBust()
-	{
-		auto& app = App::GetApp();
-		auto pad = GetFirstPad();
-		auto elapsed = app->GetElapsedTime();
+		//----------------------------------------
+		// Pitch
+		//----------------------------------------
+		float pitchInput = 0.0f;
 
-		bool currentlyBoosting = IsBoostInputActive() && (m_bustGauge > 0.0f);
-
-		// ƒQ[ƒW‰ñ•œ
-		if (currentlyBoosting)
+		if (fabs(lstick.y) > fabs(lstick.x) * 1.1f)
 		{
-			m_bustGauge += GAUGE_RECOVERY_RATE * elapsed;
+			pitchInput = lstick.y * m_angleSpeed * deltaTime;
+			wss << "pitch" << endl;
 		}
 
-		ClampBustGauge();
+		Quat pitchQuat;
+		pitchQuat.rotationAxisAngle(Vec3(1, 0, 0), pitchInput);
+
+
+		//----------------------------------------
+		// Roll
+		//----------------------------------------
+		float maxRoll = XMConvertToRadians(45.0f);
+		float rollInput = 0.0f;
+
+		// 
+		if (fabs(lstick.x) > fabs(lstick.y) * 1.1f)
+		{
+			rollInput = lstick.x * m_angleSpeed * deltaTime;
+			wss << "Roll" << endl;
+		}
+
+		m_bankRoll = clamp(m_bankRoll + rollInput, -maxRoll, maxRoll);
+		
+		Quat rollQuat;
+		rollQuat.rotationAxisAngle(Vec3(0, 0, 1), -m_bankRoll);
+
+
+		//----------------------------------------
+		// BankTurnã«ã‚ˆã‚‹Yaw
+		//----------------------------------------
+		float yawInput = lstick.x * m_turnPower * deltaTime;
+		if (yawInput)
+		{
+			wss << "Yaw" << endl;
+		}
+		Quat yawQuat;
+		yawQuat.rotationAxisAngle(Vec3(0, 1, 0), yawInput);
+
+
+		//----------------------------------------
+		// å§¿å‹¢ã¨ã—ã¦ç´¯ç©ã™ã‚‹ã®ã¯ Pitch + Yawã®ã¿
+		//----------------------------------------
+		m_currentQuat = yawQuat * pitchQuat * m_currentQuat;
+		m_currentQuat.normalize();
+
+		if (!hasInput)
+		{
+			m_bankRoll = lerp(m_bankRoll, 0.0f, deltaTime * 4.0f);
+		}
+
+		//----------------------------------------
+		// Rollã¯ãƒ«ãƒƒã‚¯ï¼ˆè¦‹ãŸç›®ï¼‰ã ã‘å¾Œã‹ã‚‰åˆæˆ
+		//----------------------------------------
+		Quat finalQuat = rollQuat * m_currentQuat;
+		finalQuat.normalize();
+
+		ptrTrans->SetQuaternion(finalQuat);
+
+		auto scene = App::GetApp()->GetScene<Scene>();
+		scene->SetDebugString(wss.str());
+
 	}
 
-	void Player::PlayerAttack()
+
+	//void Player::CreateBarrier()
+	//{
+	//	auto stage = GetStage();
+	//	auto& input = InputManager::GetInputManager();
+
+	//	Vec3 pos = GetComponent<Transform>()->GetPosition();
+
+	//	if (!m_barrier)
+	//	{
+	//		m_barrier = stage->AddGameObject<Barrier>(GetThis<Player>());
+	//	}
+
+	//	auto useflag = m_barrier->GetUse();
+
+	//	if (input->GetDownButton(L"X", m_playerIndex))
+	//	{
+	//		if (!useflag)
+	//		{
+	//			m_barrier->SetUse(true);
+	//		}
+	//		else
+	//		{
+	//			m_barrier->SetUse(false);
+	//		}
+	//	}
+	//}
+
+	//void Player::CreateBullet()
+	//{
+	//	auto stage = GetStage();
+	//	auto& input = InputManager::GetInputManager();
+
+	//	if (input->GetDownButton(L"B", m_playerIndex))
+	//	{
+	//		m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
+	//	}
+	//}
+
+	// ãƒ•ãƒ©ã‚°ã®ã‚²ãƒƒã‚¿ã€ã‚»ãƒƒã‚¿
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ç•ªå·ã‚’ã‚»ãƒƒã‚¿
+	void Player::SetPlayerIndex(int index)
 	{
-		auto& app = App::GetApp();
+		m_playerIndex = index;
+	}
+
+	void Player::ChangController()
+	{
 		auto& input = InputManager::GetInputManager();
 
-		if (input->GetDownButton(L"A"))
+		bool dDown = input->GetButton(L"DDown");
+
+		// ã€ŒæŠ¼ã—ãŸç¬é–“ã€ã‚’æ¤œå‡º
+		if (dDown && !m_prevDDown)
 		{
-			m_attackCollisionFlag = true;
+			if (m_playerIndex == 0)
+			{
+				m_playerIndex = 1;
+			}				
+			else
+			{
+				m_playerIndex = 0;
+			}
 		}
 
-		// UŒ‚‚ª—LŒø‚É‚È‚éƒ^ƒCƒ~ƒ“ƒO‚É’B‚µ‚½‚çAUŒ‚”»’èî•ñ‚ğƒZƒbƒg‚·‚é
-		if (m_attackCollisionFlag)
-		{
-			auto attack = GetAttackPtr();
-			auto& info = attack->GetHitInfo();
-			info.Damage = 10 + m_plusAttack;
-			info.HitOnce = true;
-
-			attack->ActivateCollision(0.2f);
-
-			m_attackCollisionFlag = false;
-		}
+		// æ¬¡ãƒ•ãƒ¬ãƒ¼ãƒ ç”¨ã«çŠ¶æ…‹ã‚’ä¿å­˜
+		m_prevDDown = dDown;
 	}
 }
 //end basecross

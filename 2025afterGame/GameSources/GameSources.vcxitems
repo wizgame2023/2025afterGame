@@ -16,10 +16,18 @@
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Actor.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)AttackCollision.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Barrier.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Background.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)BaseState.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Bullet.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Camera.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Character.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)CheckPoint.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DebagPlayer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DisableBarrier.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Enemy.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ErionStage.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)FighterAircraftBase.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)InputManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MainCameraManager.h" />
@@ -30,16 +38,37 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Project.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ProjectBehavior.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ProjectShader.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)KaitoStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Scene.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SelectStage.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sprite.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)StageWall.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)StateBarrier.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)StateBase.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)StateDisableBarrier.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)StateEnemy.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TestCsv.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TitleStage.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TomokiStage.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)YuutaStage.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Actor.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)AttackCollision.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Barrier.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Background.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)BaseState.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Bullet.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)CheckPoint.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)DebagPlayer.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)DisableBarrier.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Enemy.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ErionStage.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)FighterAircraftBase.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)InputManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)KaitoStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MainCameraManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MultiViewStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MyGameObject.cpp" />
@@ -48,6 +77,17 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectBehavior.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectShader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Scene.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)SelectStage.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Sprite.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)StageWall.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)StateBarrier.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)StateBase.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)StateDisableBarrier.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)StateEnemy.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)TestCsv.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)TitleStage.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)TomokiStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WinMain.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)YuutaStage.cpp" />
   </ItemGroup>
 </Project>
