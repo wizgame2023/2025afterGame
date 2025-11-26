@@ -15,7 +15,8 @@ namespace basecross {
 		GameObject(StagePtr),
 		m_pos(Pos),
 		m_rot(Rot),
-		m_siz(Siz)
+		m_siz(Siz),
+		m_speed(3.0f)
 	{
 		try
 		{
@@ -43,9 +44,14 @@ namespace basecross {
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 	}
 
-	/*void CheckPoint::OnCollisionEnter(shared_ptr<GameObject>& obj)
+	void DashRing::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
 
-	}*/
+	}
+
+	float DashRing::GetSpeedUp()
+	{
+		return m_speed;
+	}
 }
 //end basecross

@@ -22,7 +22,9 @@ namespace basecross {
 
 		virtual void OnCreate() override;
 
-		//void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
+		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
+
+		float GetSpeedUp();
 	};
 }
 //end basecross

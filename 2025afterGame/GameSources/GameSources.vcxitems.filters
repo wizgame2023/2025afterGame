@@ -112,6 +112,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)DashRing.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)HpSprite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Actor.h">
@@ -228,6 +229,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)DashRing.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)HpSprite.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sources">

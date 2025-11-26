@@ -57,7 +57,7 @@ namespace basecross {
 			wstring DataDir;
 			App::GetApp()->GetDataDirectory(DataDir);
 			DataDir += L"Stage/";
-			////CSVファイルの読み込み
+			//CSVファイルの読み込み
 			m_objectFile.SetFileName(DataDir + L"positions.csv");
 			m_objectFile.ReadCsv();
 
@@ -65,7 +65,6 @@ namespace basecross {
 
 			CreateRingObject();
 
-			//壁の仮生成
 			CreateWallObject();
 		}
 		catch (...) {
