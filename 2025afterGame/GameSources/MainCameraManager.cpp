@@ -199,6 +199,7 @@ namespace basecross{
 		for (auto obj : objVec)
 		{
 			auto result = TestCameraObstruction(m_plInfo.pos, m_camPos, obj);
+
 			if (result.hit && result.hitLength < min)
 			{
 				min = result.hitLength;
@@ -220,9 +221,13 @@ namespace basecross{
 		result.hitPos = Vec3(0.0f);
 		result.hitLength = 9999999.9f;
 		result.hit = false;
-
+		result.diffuseColor = Col4(1.0f, 1.0f, 1.0f, 1.0f);
 		auto obstacles = dynamic_pointer_cast<GameObject>(obj);
-		if (!obstacles || !obstacles->FindTag(L"CameraObstruction"))
+		bool isCamObsDif = obstacles->FindTag(L"CameraObsDiffuse");
+		bool isCamObsNotDif = obstacles->FindTag(L"CameraObsNotDiffuse");
+
+		// É^ÉOÇ™ïtÇ¢ÇƒÇ¢Ç»Ç¢èÍçáÇÕñ≥éã
+		if (!obstacles || (!isCamObsDif && !isCamObsNotDif))
 			return result;
 
 		auto ptrDraw = obstacles->GetComponent<SmBaseDraw>();
@@ -230,15 +235,65 @@ namespace basecross{
 		size_t triangleNum;
 		ptrDraw->HitTestStaticMeshSegmentTriangles(from, to, result.hitPos, triangle, triangleNum); 
 
+		Col4 currentDiffuse = ptrDraw->GetDiffuse();
+		float currentAlpha = currentDiffuse.w;
+
 		if (result.hitPos != Vec3(0.0f))
 		{
-			Vec3 playerToHit = result.hitPos - from;
-			result.hitLength = abs(playerToHit.x) + abs(playerToHit.y) + abs(playerToHit.z);
-			result.hit = true;
+			if (isCamObsNotDif)
+			{
+				Vec3 playerToHit = result.hitPos - from;
+				result.hitLength = abs(playerToHit.x) + abs(playerToHit.y) + abs(playerToHit.z);
+				result.hit = true;
+			}
+			// ìßñæâªèàóùÇÇ∑ÇÈèÍçáÇÕSetAlphaActioveÇ<<ê‚ëŒÇ…>>trueÇ…Ç∑ÇÈÇ±Ç∆
+			if (isCamObsDif)
+			{
+				float newAlpha = currentAlpha - 0.03f;
+				newAlpha = clamp(newAlpha, 0.3f, 1.0f);
+
+				result.diffuseColor = Col4(1.0f, 1.0f, 1.0f, newAlpha);
+			}
 		}
+		else
+		{
+			if (isCamObsDif)
+			{
+				result.diffuseColor = Col4(1.0f, 1.0f, 1.0f, 1.0f);
+			}
+		}
+
+		if (isCamObsDif)
+			ptrDraw->SetDiffuse(result.diffuseColor);
+
 
 		return result;
 	}
+
+	// ==============================================================================
+
+	//bool TestCameraDiffuseObj(const Vec3& from, const Vec3& to, const shared_ptr<GameObject>& obj)
+	//{
+	//	auto obstacles = dynamic_pointer_cast<GameObject>(obj);
+	//	Vec3 hitPos = Vec3(0.0f);
+
+	//	if (obstacles != nullptr || obstacles->FindTag(L"CameraObsNotDiffuse"))
+	//		return false;
+
+	//	auto ptrDraw = obstacles->GetComponent<SmBaseDraw>();
+	//	TRIANGLE triangle;
+	//	size_t triangleNum;
+	//	ptrDraw->HitTestStaticMeshSegmentTriangles(from, to, hitPos, triangle, triangleNum); 
+
+	//	if (hitPos != Vec3(0.0f))
+	//	{
+	//		Vec3 playerToHit = hitPos - from;
+	//		hitLength = abs(playerToHit.x) + abs(playerToHit.y) + abs(playerToHit.z);
+	//		result.hit = true;
+	//	}
+
+	//	return result;
+	//}
 
 	// ==============================================================================
 
