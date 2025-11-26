@@ -104,7 +104,7 @@ namespace basecross{
 		@details Bボタン入力時に弾丸（Bullet）を生成する。
 		@return なし
 		*/
-		//void CreateBullet();
+		void CreateBullet();
 
 		/*
 		@brief プレイヤーのコントローラ番号を設定する
@@ -120,6 +120,10 @@ namespace basecross{
 		*/
 		void ChangController();
 
+		/*
+		@brief プレイヤーの切り替え
+		*/
+		void ChangePlayer(Vec2 lstick);
 	};
 }
 //end basecross

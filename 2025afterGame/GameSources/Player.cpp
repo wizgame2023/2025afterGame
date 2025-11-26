@@ -67,7 +67,7 @@ namespace basecross {
 
 		// プレイヤーの装備
 		//CreateBarrier();
-		//CreateBullet();
+		CreateBullet();
 		
 		// dpadでコントローラーを変える
 		ChangController();
@@ -98,18 +98,12 @@ namespace basecross {
 		Vec3 currentPos = ptrTrans->GetPosition();
 
 		Vec3 forward = ptrTrans->GetForward();
-		float damping = 0.9f;
+		forward.normalize();
+		Vec3 moveDir = forward;
 
 		Vec2 lstick = input->GetLStick();
 
-		if (m_playerIndex == 0)
-		{
-			lstick = input->GetLStick();
-		}
-		else if (m_playerIndex == 1)
-		{
-			lstick = input->GetLStick2();
-		}
+		ChangePlayer(lstick);
 
 		if (m_playerIndex == 0)
 		{
@@ -123,10 +117,10 @@ namespace basecross {
 		// Aボタンを押して加速移動
 		if (m_aButton)
 		{
-			Vec3 forward = ptrTrans->GetForward();
-			forward.normalize();
-
-			Vec3 moveDir = forward;
+			// 現在のスピードに加速度を足して動かす
+			m_speedCurrent += m_speedAdd * deltaTime;
+			// 現在のスピードをclampで0.0f以下m_speedMax以上にならないよう
+			m_speedCurrent = clamp(m_speedCurrent, 0.0f, m_speedMax);
 
 			// --- 移動処理 ---
 			m_velocity = moveDir * m_speedCurrent;
@@ -147,16 +141,7 @@ namespace basecross {
 		auto ptrTrans = GetComponent<Transform>();
 		bool hasInput = (fabs(lstick.x) > 0.01f || fabs(lstick.y) > 0.01f);
 
-		wstringstream wss;
-
-		if (m_playerIndex == 0)
-		{
-			lstick = input->GetLStick();
-		}
-		else
-		{
-			lstick = input->GetLStick2();
-		}
+		ChangePlayer(lstick);
 
 		//----------------------------------------
 		// Pitch
@@ -166,7 +151,6 @@ namespace basecross {
 		if (fabs(lstick.y) > fabs(lstick.x) * 1.1f)
 		{
 			pitchInput = lstick.y * m_angleSpeed * deltaTime;
-			wss << "pitch" << endl;
 		}
 
 		Quat pitchQuat;
@@ -179,11 +163,9 @@ namespace basecross {
 		float maxRoll = XMConvertToRadians(45.0f);
 		float rollInput = 0.0f;
 
-		// 
 		if (fabs(lstick.x) > fabs(lstick.y) * 1.1f)
 		{
 			rollInput = lstick.x * m_angleSpeed * deltaTime;
-			wss << "Roll" << endl;
 		}
 
 		m_bankRoll = clamp(m_bankRoll + rollInput, -maxRoll, maxRoll);
@@ -196,10 +178,6 @@ namespace basecross {
 		// BankTurnによるYaw
 		//----------------------------------------
 		float yawInput = lstick.x * m_turnPower * deltaTime;
-		if (yawInput)
-		{
-			wss << "Yaw" << endl;
-		}
 		Quat yawQuat;
 		yawQuat.rotationAxisAngle(Vec3(0, 1, 0), yawInput);
 
@@ -222,10 +200,6 @@ namespace basecross {
 		finalQuat.normalize();
 
 		ptrTrans->SetQuaternion(finalQuat);
-
-		auto scene = App::GetApp()->GetScene<Scene>();
-		scene->SetDebugString(wss.str());
-
 	}
 
 
@@ -256,16 +230,25 @@ namespace basecross {
 	//	}
 	//}
 
-	//void Player::CreateBullet()
-	//{
-	//	auto stage = GetStage();
-	//	auto& input = InputManager::GetInputManager();
+	void Player::CreateBullet()
+	{
+		auto stage = GetStage();
+		auto& input = InputManager::GetInputManager();
+		// 前フレームのTrigger値
+		static BYTE prevTrigger = 0;
 
-	//	if (input->GetDownButton(L"B", m_playerIndex))
-	//	{
-	//		m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
-	//	}
-	//}
+		BYTE nowTrigger = input->GetRightTrigger();
+		BYTE threshold = 30;
+
+		//「押した瞬間」だけ発射する
+		if (prevTrigger <= threshold && nowTrigger > threshold)
+		{
+			m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
+		}
+
+		// 前フレーム値の更新を忘れない
+		prevTrigger = nowTrigger;
+	}
 
 	// フラグのゲッタ、セッタ
 	// プレイヤーのコントローラ番号をセッタ
@@ -295,6 +278,20 @@ namespace basecross {
 
 		// 次フレーム用に状態を保存
 		m_prevDDown = dDown;
+	}
+
+	void Player::ChangePlayer(Vec2 lstick)
+	{
+		auto& input = InputManager::GetInputManager();
+
+		if (m_playerIndex == 0)
+		{
+			lstick = input->GetLStick();
+		}
+		else if (m_playerIndex == 1)
+		{
+			lstick = input->GetLStick2();
+		}
 	}
 }
 //end basecross
