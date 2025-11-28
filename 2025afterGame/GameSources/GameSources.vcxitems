@@ -24,6 +24,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)CheckPoint.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DebagPlayer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DisableBarrier.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)EffectManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)EffectUpdateDrawManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Enemy.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ErionStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FighterAircraftBase.h" />
@@ -63,6 +65,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)CheckPoint.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DebagPlayer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DisableBarrier.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)EffectManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)EffectUpdateDrawManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Enemy.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ErionStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FighterAircraftBase.cpp" />

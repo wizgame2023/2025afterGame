@@ -109,6 +109,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)ErionStage.cpp">
       <Filter>Sources\PrivateStage</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)EffectManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)EffectUpdateDrawManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)HpSprite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Actor.h">
@@ -222,6 +225,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)KaitoStage.h">
       <Filter>Header\PrivateStage</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)EffectManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)EffectUpdateDrawManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)HpSprite.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sources">
