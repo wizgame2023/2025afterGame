@@ -22,6 +22,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Camera.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Character.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)CheckPoint.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DashRing.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DebagPlayer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DisableBarrier.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)EffectManager.h" />
@@ -63,6 +64,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Bullet.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)CheckPoint.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)DashRing.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DebagPlayer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DisableBarrier.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)EffectManager.cpp" />

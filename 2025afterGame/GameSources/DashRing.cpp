@@ -7,7 +7,7 @@
 #include "Project.h"
 
 namespace basecross {
-	StageWall::StageWall(const shared_ptr<Stage>& StagePtr,
+	DashRing::DashRing(const shared_ptr<Stage>& StagePtr,
 		const Vec3& Pos,
 		const Vec3& Rot,
 		const Vec3& Siz
@@ -15,7 +15,8 @@ namespace basecross {
 		GameObject(StagePtr),
 		m_pos(Pos),
 		m_rot(Rot),
-		m_siz(Siz)
+		m_siz(Siz),
+		m_speed(3.0f)
 	{
 		try
 		{
@@ -27,26 +28,30 @@ namespace basecross {
 		}
 	}
 
-	StageWall::~StageWall() {
+	DashRing::~DashRing(){
 
 	}
 
-	void StageWall::OnCreate()
+	void DashRing::OnCreate()
 	{
 		auto PtrTrans = GetComponent<Transform>();
 		PtrTrans->SetScale(m_siz);
 		PtrTrans->SetRotation(m_rot);
 		PtrTrans->SetPosition(m_pos);
 
-		//コリジョン
-		auto ptrCol = AddComponent<CollisionObb>();
-		ptrCol->SetFixed(true);
-		ptrCol->SetDrawActive(false);
-		ptrCol->SetAfterCollision(AfterCollision::Auto);
-
 		//メッシュの描画
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+	}
+
+	void DashRing::OnCollisionEnter(shared_ptr<GameObject>& obj)
+	{
+
+	}
+
+	float DashRing::GetSpeedUp()
+	{
+		return m_speed;
 	}
 }
 //end basecross

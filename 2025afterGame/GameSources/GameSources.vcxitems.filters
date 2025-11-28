@@ -110,8 +110,14 @@
       <Filter>Sources\PrivateStage</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)EffectManager.cpp" />
+      <Filter>Sources</Filter>
     <ClCompile Include="$(MSBuildThisFileDirectory)EffectUpdateDrawManager.cpp" />
+      <Filter>Sources</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)DashRing.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)HpSprite.cpp" />
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Actor.h">
@@ -226,7 +232,14 @@
       <Filter>Header\PrivateStage</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)EffectManager.h" />
+      <Filter>Header</Filter>
+    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)EffectUpdateDrawManager.h" />
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)DashRing.h">
+      <Filter>Header</Filter>
+    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)HpSprite.h" />
   </ItemGroup>
   <ItemGroup>
