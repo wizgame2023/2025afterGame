@@ -27,7 +27,6 @@
 // 殿堂入りMyGameObject本体
 #include "MyGameObject.h";
 
-
 // 親クラスがMyGameObject//////////////////////////
 #include "Actor.h";
 #include "AttackCollision.h"
@@ -37,6 +36,10 @@
 #include "Sprite.h"
 #include "UIManager.h"
 ///////////////////////////////////////////////////
+
+// EffectManager
+#include "EffectManager.h"
+#include "EffectUpdateDrawManager.h"
 
 // 親クラスがActor/////////////////////////////////
 #include "FighterAircraftBase.h"
