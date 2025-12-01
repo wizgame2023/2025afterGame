@@ -42,6 +42,9 @@ namespace basecross{
 		// UI /////////////////////////////////////////////////
 		auto numberSprite = uiPath + L"Number.png";
 		App::GetApp()->RegisterTexture(L"Number", numberSprite);
+
+		auto startTex = uiPath + L"Title/PressA.png";
+		App::GetApp()->RegisterTexture(L"Start_TX", startTex);
 	}
 	
 	void Scene::OnCreate(){
