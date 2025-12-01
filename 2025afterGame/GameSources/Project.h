@@ -20,6 +20,7 @@
 #include "Background.h"
 #include "Plane.h"
 #include "StateEnemy.h"
+#include "UIManager.h"
 
 // 殿堂入りMyGameObject本体
 #include "MyGameObject.h";
@@ -31,7 +32,6 @@
 #include "MainCameraManager.h"
 #include "GameManager.h"
 #include "Sprite.h"
-#include "UIManager.h"
 ///////////////////////////////////////////////////
 
 // 親クラスがActor/////////////////////////////////
@@ -52,6 +52,7 @@
 
 // 親クラスがSprite////////////////////////////////
 #include "HpSprite.h"
+#include "NumberSprite.h"
 ///////////////////////////////////////////////////
 
 // ステージ関係は一番下のブロックでインクルードしてください

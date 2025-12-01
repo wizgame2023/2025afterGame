@@ -29,6 +29,9 @@ namespace basecross {
 	{
 		FighterAircraftBase::OnCreate();
 
+		m_hpMax = 100;
+		m_hpCurrent = m_hpMax;
+
 		auto ptrTrans = GetComponent<Transform>();
 		ptrTrans->SetPosition(Vec3(0.0f, 0.0f, -1.0f));
 
@@ -60,6 +63,9 @@ namespace basecross {
 		auto nowPos = GetComponent<Transform>()->GetPosition();
 		auto nowRot = GetComponent<Transform>()->GetRotation();
 		auto& input = InputManager::GetInputManager();
+		
+		//体力減少実験
+		//m_hpCurrent -= 1 * deltaTime;
 
 		// プレイヤーの挙動
 		PlayerMove();
@@ -102,6 +108,9 @@ namespace basecross {
 		Vec3 moveDir = forward;
 
 		Vec2 lstick = input->GetLStick();
+
+		m_speedAdd = 3.0f;
+		m_speedMax = 10.0f;
 
 		ChangePlayer(lstick);
 
