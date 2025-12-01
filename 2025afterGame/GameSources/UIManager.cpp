@@ -72,7 +72,7 @@ namespace basecross
 		auto limit  = gameManager->GetTimeLimit();
 
 		// OnCreate‚¾‚ÆScene‚æ‚è‘¬‚¢‚Ì‚ÅƒGƒ‰[‚ªã‚Ì•û‚¾‚Æo‚é
-		// if (dynamic_pointer_cast<GameStage>(stage) == nullptr) return;
+		if (dynamic_pointer_cast<TomokiStage>(stage) == nullptr) return;
 
 		GetPlayerHP();
 
