@@ -121,6 +121,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)KaitoStage.cpp">
       <Filter>Sources\privateStage</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)HpSprite.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)UIManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)NumberSprite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Actor.h">
@@ -246,6 +249,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)ErionStage.h">
       <Filter>Header\privateStage</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)HpSprite.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)UIManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)NumberSprite.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header">

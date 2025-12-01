@@ -24,6 +24,7 @@ namespace basecross{
 		wstring path = app->GetDataDirWString();
 		wstring modelPath = path + L"Models/";
 		wstring texPath = path + L"Textures/";
+		wstring uiPath = path + L"UI/Player/";
 		wstring uiPath = path + L"UI/";
 		wstring efkPath = path + L"Effects/";
 
@@ -43,6 +44,13 @@ namespace basecross{
 		// UI /////////////////////////////////////////////////
 		auto numberSprite = uiPath + L"Number.png";
 		App::GetApp()->RegisterTexture(L"Number", numberSprite);
+    
+		auto hp = uiPath + L"Hp.png";
+		App::GetApp()->RegisterTexture(L"HP", hp);
+    
+		auto colon = uiPath + L"Colon.png";
+		App::GetApp()->RegisterTexture(L"Colon", colon);
+    
     auto startTex = uiPath + L"Title/PressA.png";
 		App::GetApp()->RegisterTexture(L"Start_TX", startTex);
     
@@ -58,6 +66,7 @@ namespace basecross{
 			Col4 Col;
 			Col.set(31.0f / 255.0f, 30.0f / 255.0f, 71.0f / 255.0f, 255.0f / 255.0f);
 			SetClearColor(Col);
+
 			//自分自身にイベントを送る
 			//これにより各ステージやオブジェクトがCreate時にシーンにアクセスできる
 			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");			
@@ -66,8 +75,7 @@ namespace basecross{
 
 			// ゲームマネージャー作成
 			GameManager::CreateGameManager();
-
-
+			UIManager::CreateUIManager();
 		}
 		catch (...) {
 			throw;
@@ -80,6 +88,7 @@ namespace basecross{
 
 		// ゲームマネージャー更新
 		GameManager::GetGameManager()->OnUpdate();
+		UIManager::GetUIManager()->OnUpdate();
 
 	}
 
