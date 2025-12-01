@@ -22,10 +22,22 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)CheckPoint.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)DashRing.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)DebagPlayer.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)DisableBarrier.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)EffectManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)EffectUpdateDrawManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Enemy.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)FighterAircraftBase.cpp">
@@ -35,6 +47,9 @@
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)GameStage.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)HpSprite.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)InputManager.cpp">
@@ -94,25 +109,18 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)WinMain.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)TomokiStage.cpp">
-      <Filter>Sources\PrivateStage</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ErionStage.cpp">
+      <Filter>Sources\privateStage</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)YuutaStage.cpp">
-      <Filter>Sources\PrivateStage</Filter>
+      <Filter>Sources\privateStage</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)TomokiStage.cpp">
+      <Filter>Sources\privateStage</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)KaitoStage.cpp">
-      <Filter>Sources\PrivateStage</Filter>
+      <Filter>Sources\privateStage</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Enemy.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)ErionStage.cpp">
-      <Filter>Sources\PrivateStage</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)DashRing.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)HpSprite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Actor.h">
@@ -139,10 +147,19 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)CheckPoint.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)DashRing.h">
+      <Filter>Header</Filter>
+    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)DebagPlayer.h">
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)DisableBarrier.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)EffectManager.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)EffectUpdateDrawManager.h">
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Enemy.h">
@@ -155,6 +172,9 @@
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)GameStage.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)HpSprite.h">
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)InputManager.h">
@@ -214,35 +234,31 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)TitleStage.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)TomokiStage.h">
-      <Filter>Header\PrivateStage</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)YuutaStage.h">
-      <Filter>Header\PrivateStage</Filter>
+      <Filter>Header\privateStage</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ErionStage.h">
-      <Filter>Header\PrivateStage</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)TomokiStage.h">
+      <Filter>Header\privateStage</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)KaitoStage.h">
-      <Filter>Header\PrivateStage</Filter>
+      <Filter>Header\privateStage</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)DashRing.h">
-      <Filter>Header</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ErionStage.h">
+      <Filter>Header\privateStage</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)HpSprite.h" />
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Sources">
-      <UniqueIdentifier>{8d479718-cc78-46bd-8dd9-719023926282}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Sources\PrivateStage">
-      <UniqueIdentifier>{13cc9956-b8af-4c7f-b069-88dd9c995d50}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header">
-      <UniqueIdentifier>{107dc103-3141-4287-b504-7abc7eae6de8}</UniqueIdentifier>
+      <UniqueIdentifier>{2da20a3e-3220-4fdc-a1d5-e86de27be70c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header\PrivateStage">
-      <UniqueIdentifier>{a783caa8-3150-47d2-8ead-709e0a38eecc}</UniqueIdentifier>
+    <Filter Include="Header\privateStage">
+      <UniqueIdentifier>{db459b69-229f-4597-a887-ba01f458fd39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{d0880bfb-1e02-473f-89e9-64a5f54694d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\privateStage">
+      <UniqueIdentifier>{bd6e7dc1-6ac3-4355-b2f1-de67235566d6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
