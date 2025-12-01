@@ -11,9 +11,15 @@ namespace basecross {
 	class Enemy:public FighterAircraftBase
 	{
 	private:
+		float m_countDebagBulletTime; // デバック用の弾を出す時間計測変数
+
+		float AdjustmentAngle(float angle);	// 角度の調整0~360度までしか出ないようにする
+
+		// 追いかける目標のオブジェクト
+		weak_ptr<Actor> m_trackingObj;
 
 	public:
-		Enemy(const shared_ptr<Stage>& obj,const Vec3& pos,const Quat& qt,const Vec3& scale, const shared_ptr<CheckPoint>& startCheckPoint);
+		Enemy(const shared_ptr<Stage>& obj,const Vec3& pos,const Quat& qt,const Vec3& scale, const shared_ptr<CheckPoint>& startCheckPoint,const shared_ptr<Actor>& trackingObj);
 		~Enemy();
 
 		void OnCreate()override;

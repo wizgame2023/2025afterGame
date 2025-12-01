@@ -8,7 +8,9 @@
 
 namespace basecross {
 
-	TitleStage::TitleStage()
+	TitleStage::TitleStage() :
+		m_Transparency(1.0f),
+		m_Transparent(true)
 	{
 	}
 
@@ -34,12 +36,18 @@ namespace basecross {
 		PtrMultiLight->SetDefaultLighting();
 	}
 
-
+	//UI作成
+	void TitleStage::CreateUI()
+	{
+		m_testTitle = AddGameObject<Sprite>(L"Start_TX", Vec2(492.0f, 100.0f), Vec3(0.0f, -210.0f, 0.0f));
+	}
 
 	void TitleStage::OnCreate() {
 		try {
 			//ビューとライトの作成
 			CreateViewLight();
+
+			CreateUI();
 		}
 		catch (...) {
 			throw;
@@ -50,6 +58,8 @@ namespace basecross {
 	{
 		auto& app = App::GetApp();
 		auto& inputMgr=InputManager::GetInputManager();
+
+		BlinkUI(m_testTitle);
 
 		//Aボタンを押すとシーン遷移
 		if (inputMgr->GetDownButton(L"A"))
@@ -64,6 +74,31 @@ namespace basecross {
 
 		auto scene = app->GetScene<Scene>();
 		scene->SetDebugString(wss.str());
+	}
+
+	void TitleStage::BlinkUI(shared_ptr<Sprite> blinksprite)
+	{
+		//透明度を上げる、下げる
+		if (m_Transparency > 0.0f && !m_Transparent)
+		{
+			m_Transparency -= 1.0f * App::GetApp()->GetElapsedTime();
+		}
+		if (m_Transparency < 1.0f && m_Transparent)
+		{
+			m_Transparency += 1.0f * App::GetApp()->GetElapsedTime();
+		}
+
+		//透明度がしきい値を超えた時上がるか下がるかを変更
+		if (m_Transparency <= 0.0f)
+		{
+			m_Transparent = true;
+		}
+		if (m_Transparency >= 1.0f)
+		{
+			m_Transparent = false;
+		}
+
+		blinksprite->SetColor(Col4(1.0f, 1.0f, 1.0f, m_Transparency));
 	}
 }
 //end basecross
