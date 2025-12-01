@@ -10,7 +10,8 @@ namespace basecross {
 
 	TitleStage::TitleStage() :
 		m_Transparency(1.0f),
-		m_Transparent(true)
+		m_Transparent(true),
+		m_elapsedTime(0)
 	{
 	}
 
@@ -58,6 +59,7 @@ namespace basecross {
 	{
 		auto& app = App::GetApp();
 		auto& inputMgr=InputManager::GetInputManager();
+		m_elapsedTime = App::GetApp()->GetElapsedTime();
 
 		BlinkUI(m_testTitle);
 
@@ -81,11 +83,11 @@ namespace basecross {
 		//透明度を上げる、下げる
 		if (m_Transparency > 0.0f && !m_Transparent)
 		{
-			m_Transparency -= 1.0f * App::GetApp()->GetElapsedTime();
+			m_Transparency -= 1.0f * m_elapsedTime;
 		}
 		if (m_Transparency < 1.0f && m_Transparent)
 		{
-			m_Transparency += 1.0f * App::GetApp()->GetElapsedTime();
+			m_Transparency += 1.0f * m_elapsedTime;
 		}
 
 		//透明度がしきい値を超えた時上がるか下がるかを変更
