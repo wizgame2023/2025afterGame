@@ -45,12 +45,12 @@ namespace basecross {
 			AddGameObject<Background>();
 
 			// 正式のプレイヤー	
-			//auto player = AddGameObject<Player>();
-			//SetSharedGameObject(L"Player", player);
+			auto player = AddGameObject<Player>();
+			SetSharedGameObject(L"Player", player);
 
 			// デバック用のプレイヤー作成
-			auto player = AddGameObject<DebagPlayer>();
-			SetSharedGameObject(L"Player", player);
+			//auto player = AddGameObject<DebagPlayer>();
+			//SetSharedGameObject(L"Player", player);
 
 		}
 		catch (...) {
@@ -64,7 +64,9 @@ namespace basecross {
 
 		auto startCheckPoint = gameManager->GetCheckPoint(0);
 		// 敵が出ているかテスト処理
-		auto enemy = AddGameObject<Enemy>(Vec3(0.0f,0.0f,0.0f),Quat(0.0f,0.0f,0.0f,1.0f),Vec3(0.5f), startCheckPoint);
+		//auto debagPlayer =  dynamic_pointer_cast<Actor>(GetSharedGameObject<DebagPlayer>(L"Player"));
+		auto player = dynamic_pointer_cast<Actor>(GetSharedGameObject<Player>(L"Player"));
+		auto enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
 
 		// バリア妨害のテスト処理
 		//auto testBullet = AddGameObject<Bullet>();
@@ -83,8 +85,8 @@ namespace basecross {
 		AddGameObject<TestCube>(Vec3(0.0f, 0.0f, 10.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(1.0f, 1.0f, 1.0f));
 
 
-		//auto mainCamMana = AddGameObject<MainCameraManager>();
-		//SetSharedGameObject(L"MainCameraManager", mainCamMana);
+		auto mainCamMana = AddGameObject<MainCameraManager>();
+		SetSharedGameObject(L"MainCameraManager", mainCamMana);
 	}
 
 	void YuutaStage::OnUpdate()
