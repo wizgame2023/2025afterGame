@@ -86,7 +86,7 @@ namespace basecross {
 		// xz方面の距離の差を求める 次はzy方面の距離の差を求める
 		auto goal = GetStage()->GetSharedGameObject<DebagPlayer>(L"Player"); // いったんゴールの位置をプレイヤーにする
 		auto goalPos = goal->GetComponent<Transform>()->GetPosition();
-		auto posPlayerDifference = goalPos - m_pos; // ゴールと敵の位置の差を求める
+		Vec3 posPlayerDifference = goalPos - m_pos; // ゴールと敵の位置の差を求める
 		Vec2 differenceYZ = Vec2(posPlayerDifference.y, abs(posPlayerDifference.z));
 		differenceYZ.normalize();
 		posPlayerDifference.normalize(); // 正規化
@@ -116,6 +116,65 @@ namespace basecross {
 		goalAngleYX = debugYX;
 		//
 
+
+		// ピッチの向きたい方向を求める処理
+		// これで、向いている方向のY座標を0にしたものを求める
+		auto posPlayerDifferenceZY = posPlayerDifference;
+		posPlayerDifferenceZY.y = 0.0f;
+		
+		// 別の方法を試してみる
+		// 内積
+		//auto dot = (posPlayerDifference.x * posPlayerDifferenceZY.x) +
+		//	(posPlayerDifference.y * posPlayerDifferenceZY.y) +
+		//	(posPlayerDifference.z * posPlayerDifferenceZY.z);
+
+		float dotf = posPlayerDifference.dot(posPlayerDifferenceZY);
+
+		auto pitchAngle = acosf(dotf);
+
+		// 外積　使わない
+		auto copyDiff = posPlayerDifference;
+		copyDiff.cross(posPlayerDifferenceZY);
+
+		// 敵から見てプレイヤーが下にいたら角度をマイナスにする
+		if (posPlayerDifference.y > 0)
+		{
+			pitchAngle = -pitchAngle;
+		}
+
+		// 敵が追いかける際反転するか決める処理
+		auto forward = GetComponent<Transform>()->GetForward();
+		// 向いているZX平面の角度を計算
+		auto forwardAngle = atan2f(forward.z, forward.x); 
+		forwardAngle = AdjustmentAngle(forwardAngle);
+
+		// 敵から見てプレイヤーのいるZX平面の角度
+		auto playerAngle = atan2f(posPlayerDifference.z, posPlayerDifference.x);
+		playerAngle = AdjustmentAngle(playerAngle);
+
+		//if (forwardAngle - playerAngle > 0.0f)
+		//{
+		//	pitchAngle += XMConvertToRadians(180.0f);
+		//}
+		
+
+
+		//// ベクトルの大きさを求める
+		//auto posPlayerDifferenceVec = sqrt((posPlayerDifference.x * posPlayerDifference.x) +
+		//	sqrt(posPlayerDifference.y * posPlayerDifference.y) +
+		//	sqrt(posPlayerDifference.z * posPlayerDifference.z));
+
+		//auto posPlayerDifferenceZYVec = sqrt((posPlayerDifferenceZY.x * posPlayerDifferenceZY.x) +
+		//	sqrt(posPlayerDifferenceZY.y * posPlayerDifferenceZY.y) +
+		//	sqrt(posPlayerDifferenceZY.z * posPlayerDifferenceZY.z));
+
+		//// なす角を求める
+		//auto cosAngle = dot / (posPlayerDifferenceVec * posPlayerDifferenceZYVec);
+
+
+		// 
+
+
 		float speed = 0.0f;
 		float testAngle = XMConvertToRadians(45.0f);
 
@@ -127,13 +186,13 @@ namespace basecross {
 		//m_qt = Quat(0.0f, 0.0f, (sin(goalAngleYX / 2.0f)), cos((goalAngle / 2.0f))) *
 		//	Quat(0.0f, (sin(goalAngle / 2.0f)), 0.0f, cos((goalAngle / 2.0f)));
 		 
-		Vec3 axisYX = cross(Vec3(posPlayerDifference.x, 0, posPlayerDifference.z), Vec3(0, 1, 0));
+		//Vec3 axisYX = cross(Vec3(posPlayerDifference.x, 0, posPlayerDifference.z), Vec3(0, 1, 0));
 		// 個別の軸ずつ回転計算をしています
-		m_qt = Quat(0.0f, 0.0f, (sin(goalAngleYX / 2.0f)), cos((goalAngleZY / 2.0f))); // Z軸回転
-		m_qt *= Quat((sin(goalAngleZY / 2.0f)), 0.0f, 0.0f, cos((goalAngleZY / 2.0f))); // X軸回転
+		m_qt = Quat(0.0f, 0.0f, (sin(goalAngleYX / 2.0f)), cos((goalAngleYX / 2.0f))); // Z軸回転
+		m_qt *= Quat((sin(pitchAngle / 2.0f)), 0.0f, 0.0f, cos((pitchAngle / 2.0f))); // X軸回転
 		m_qt *= Quat(0.0f, sin(sin(goalAngle / 2.0f)), 0.0f, cos((goalAngle / 2.0f))); // Y軸回転
 		//m_qt *= Quat(0.0f, 0.0f, (sin(goalAngleYX / 2.0f)), cos((goalAngleYX / 2.0f))); // Z軸回転
-		XMQuaternionRotationRollPitchYaw(goalAngleYX, goalAngle, goalAngleZY);
+		//XMQuaternionRotationRollPitchYaw(goalAngleYX, goalAngle, goalAngleZY);
 
 		//auto rot = XMMatrixRotationAxis(axisYX, goalAngleYX);
 		//auto world = m_trans->GetWorldMatrix();
@@ -159,7 +218,8 @@ namespace basecross {
 
 		wss /* << L"デバッグ用文字列 "*/
 			<< L"\ngoalAngle : " << XMConvertToDegrees(goalAngle)
-			<< L"\ngoalAngleZY : " << XMConvertToDegrees(goalAngleYX)
+			<< L"\ngoalAngleYX : " << XMConvertToDegrees(pitchAngle)
+			<< L"\n外積 : " << copyDiff.y
 			<< endl;
 
 		scene->SetDebugString(wss.str());
