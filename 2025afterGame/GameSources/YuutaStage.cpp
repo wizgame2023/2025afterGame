@@ -12,7 +12,7 @@ namespace basecross {
 	//	ゲームステージクラス実体
 	//--------------------------------------------------------------------------------------
 	void YuutaStage::CreateViewLight() {
-		const Vec3 eye(0.0f, 5.0f, -30.0f);
+		const Vec3 eye(0.0f, 8.0f, -30.0f);
 		const Vec3 at(0.0f,0.0f,10.0f);
 		auto PtrView = CreateView<SingleView>();
 		//ビューのカメラの設定
