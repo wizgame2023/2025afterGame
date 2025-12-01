@@ -25,6 +25,7 @@ namespace basecross{
 		wstring modelPath = path + L"Models/";
 		wstring texPath = path + L"Textures/";
 		wstring uiPath = path + L"UI/";
+		wstring efkPath = path + L"Effects/";
 
 		//Textures //////////////////////////////////////////////
 		auto modelTex = modelPath + L"diffuse.png";
@@ -42,6 +43,10 @@ namespace basecross{
 		// UI /////////////////////////////////////////////////
 		auto numberSprite = uiPath + L"Number.png";
 		App::GetApp()->RegisterTexture(L"Number", numberSprite);
+
+		// Effect /////////////////////////////////////////////
+		EffectManager::Instance().CreateEfkInterface();
+		EffectManager::Instance().RegisterEffect(L"Fire", efkPath + L"Sword.efk");
 	}
 	
 	void Scene::OnCreate(){
@@ -80,7 +85,7 @@ namespace basecross{
 	void Scene::OnEvent(const shared_ptr<Event>& event) {
 		if (event->m_MsgStr == L"ToGameStage") {
 			//最初のアクティブステージの設定
-			ResetActiveStage<GameStage>();
+			ResetActiveStage<KaitoStage>();
 		}
 		if (event->m_MsgStr == L"ToMultiViewStage") {
 			//マルチビューのアクティブステージ設定
