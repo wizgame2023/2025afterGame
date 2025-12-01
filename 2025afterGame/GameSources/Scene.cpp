@@ -42,6 +42,10 @@ namespace basecross{
 		// UI /////////////////////////////////////////////////
 		auto numberSprite = uiPath + L"Number.png";
 		App::GetApp()->RegisterTexture(L"Number", numberSprite);
+		auto hp = uiPath + L"Hp.png";
+		App::GetApp()->RegisterTexture(L"HP", hp);
+		auto colon = uiPath + L"Colon.png";
+		App::GetApp()->RegisterTexture(L"Colon", colon);
 	}
 	
 	void Scene::OnCreate(){
@@ -52,14 +56,13 @@ namespace basecross{
 			SetClearColor(Col);
 			//自分自身にイベントを送る
 			//これにより各ステージやオブジェクトがCreate時にシーンにアクセスできる
-			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");			
+			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTomokiStage");			
 			
 			CreateResource();
 
 			// ゲームマネージャー作成
 			GameManager::CreateGameManager();
-
-
+			UIManager::CreateUIManager();
 		}
 		catch (...) {
 			throw;
@@ -72,6 +75,7 @@ namespace basecross{
 
 		// ゲームマネージャー更新
 		GameManager::GetGameManager()->OnUpdate();
+		UIManager::GetUIManager()->OnUpdate();
 
 	}
 
