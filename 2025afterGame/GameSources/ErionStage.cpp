@@ -48,12 +48,6 @@ namespace basecross {
 			SetSharedGameObject(L"Player", player);
 			int max = 0;
 
-			/*for (int i = 0; i < 3; i++)
-			{
-				game->AddCheckPoint();
-				max++;
-			}*/
-
 			wstring DataDir;
 			App::GetApp()->GetDataDirectory(DataDir);
 			DataDir += L"Stage/";
