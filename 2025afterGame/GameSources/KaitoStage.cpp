@@ -77,13 +77,16 @@ namespace basecross {
 		trans->SetPosition(m_pos);
 		trans->SetScale(m_scale);
 
-		auto ptrCol = AddComponent<CollisionSphere>();
+		auto ptrCol = AddComponent<CollisionObb>();
 		ptrCol->SetDrawActive(true);
 
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 		
-		AddTag(L"CameraObstruction");
+		SetAlphaActive(true);
+
+		// カメラを邪魔しえるオブジェクトのタグ(透明化処理はしない)
+		AddTag(L"CameraObsDiffuse");
 	}
 }
 //end basecross

@@ -11,8 +11,12 @@ namespace basecross {
 	Player::Player(const shared_ptr<Stage>& ptrStage) :
 		FighterAircraftBase(ptrStage),
 		m_velocity(Vec3(0.0f)),
-		m_angleSpeed(1.0f),
-		m_rollSpeed(1.0f)
+		m_angleSpeed(2.0f),
+		m_playerIndex(0),
+		m_respawnPos(Vec3(0.0f)),
+		m_visualRoll(0.0f),
+		m_bankRoll(0.0f),
+		m_turnPower(2.0f)
 	{
 	}
 
@@ -27,7 +31,6 @@ namespace basecross {
 
 		auto ptrTrans = GetComponent<Transform>();
 		ptrTrans->SetPosition(Vec3(0.0f, 0.0f, -1.0f));
-		m_initialQuat = ptrTrans->GetQuaternion();
 
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
 		ptrDraw->SetMeshResource(L"Sentouki");
@@ -53,17 +56,17 @@ namespace basecross {
 		FighterAircraftBase::OnUpdate();
 
 		auto& app = App::GetApp();
-		auto elapsed = app->GetElapsedTime();
+		auto deltaTime = app->GetElapsedTime();
 		auto nowPos = GetComponent<Transform>()->GetPosition();
 		auto nowRot = GetComponent<Transform>()->GetRotation();
 		auto& input = InputManager::GetInputManager();
 
 		// プレイヤーの挙動
 		PlayerMove();
-		PlayerAngle();
+		TurnUpdate(deltaTime);
 
 		// プレイヤーの装備
-		CreateBarrier();
+		//CreateBarrier();
 		CreateBullet();
 		
 		// dpadでコントローラーを変える
@@ -74,18 +77,12 @@ namespace basecross {
 	{
 		FighterAircraftBase::OnCollisionEnter(obj);
 		
-		auto checkPoint = dynamic_pointer_cast<CheckPoint>(obj);
 		auto bullet = dynamic_pointer_cast<Bullet>(obj);
 
 		if (bullet)
 		{
 			auto trans = GetComponent<Transform>();
 			trans->SetPosition(m_respawnPos);
-		}
-
-		if (checkPoint)
-		{
-			m_respawnPos = checkPoint->GetComponent<Transform>()->GetPosition();
 		}
 	}
 
@@ -101,18 +98,12 @@ namespace basecross {
 		Vec3 currentPos = ptrTrans->GetPosition();
 
 		Vec3 forward = ptrTrans->GetForward();
-		float damping = 0.9f;
+		forward.normalize();
+		Vec3 moveDir = forward;
 
 		Vec2 lstick = input->GetLStick();
 
-		if (m_playerIndex == 0)
-		{
-			lstick = input->GetLStick();
-		}
-		else if (m_playerIndex == 1)
-		{
-			lstick = input->GetLStick2();
-		}
+		ChangePlayer(lstick);
 
 		if (m_playerIndex == 0)
 		{
@@ -123,142 +114,140 @@ namespace basecross {
 			m_aButton = input->GetButton2(L"A");
 		}
 
-		// Aボタンを押して加速
+		// Aボタンを押して加速移動
 		if (m_aButton)
 		{
-			m_velocity = forward * m_speedCurrent;
+			// 現在のスピードに加速度を足して動かす
+			m_speedCurrent += m_speedAdd * deltaTime;
+			// 現在のスピードをclampで0.0f以下m_speedMax以上にならないよう
+			m_speedCurrent = clamp(m_speedCurrent, 0.0f, m_speedMax);
+
+			// --- 移動処理 ---
+			m_velocity = moveDir * m_speedCurrent;
 			currentPos += m_velocity * deltaTime;
 		}
 
+		// 移動反映
 		ptrTrans->SetPosition(currentPos);
-
-		//	m_speedCurrent += m_accleRation * deltaTime;
-
-		//	if (m_speedCurrent > m_speedMax)
-		//	{
-		//		m_speedCurrent = m_speedMax;
-		//	}
-		//}
-		//else if(m_speedCurrent < 0.0f)
-		//{
-		//	// 押していないと減速
-		//	m_speedCurrent -= m_deceleRation * deltaTime;
-
-		//	if (m_speedCurrent <= 0.0f)
-		//	{
-		//		m_speedCurrent = 0.0f;
-		//	}
-		//}
-
-		//// 移動処理（減衰付き）
-		//if (m_speedCurrent > 0.0f)
-		//{
-		//	m_velocity = forward * m_speedCurrent;
-		//	m_velocity *= damping;
-		//	currentPos += m_velocity * deltaTime;
-		//}
-
 	}
 
-	void Player::PlayerAngle()
+	void Player::TurnUpdate(float deltaTime)
 	{
+		auto& app = App::GetApp();
 		auto& game = GameManager::GetGameManager();
+		auto pads = app->GetInputDevice();
 		auto& input = InputManager::GetInputManager();
-		float deltaTime = game->GetDeltaTime();
+		Vec2 lstick = input->GetLStick();
 		auto ptrTrans = GetComponent<Transform>();
+		bool hasInput = (fabs(lstick.x) > 0.01f || fabs(lstick.y) > 0.01f);
 
-		Vec2 lstick;
+		ChangePlayer(lstick);
 
-		if (m_playerIndex == 0)
+		//----------------------------------------
+		// Pitch
+		//----------------------------------------
+		float pitchInput = 0.0f;
+
+		if (fabs(lstick.y) > fabs(lstick.x) * 1.1f)
 		{
-			lstick = input->GetLStick();
-		}
-		else
-		{
-			lstick = input->GetLStick2();
+			pitchInput = lstick.y * m_angleSpeed * deltaTime;
 		}
 
-		auto currentQuat = GetComponent<Transform>()->GetQuaternion();
-		
-		Quat yawQuat = FromAxisAngle(Vec3(0, 1, 0), 6.0f);
-		
-		//----------------------------------------
-		// Pitch（上下方向）
-		//----------------------------------------
-		Quat pitchQuat = PlayerPitch(lstick.y, deltaTime);
-
-		//----------------------------------------
-		// Roll（左右傾き）
-		//----------------------------------------
-		Quat rollQuat = PlayerRoll(lstick.x, deltaTime);
-		
-		//----------------------------------------
-		// 合成：Roll → Pitch（順序重要）
-		//----------------------------------------
-		Quat deltaQuat = rollQuat * pitchQuat;
-
-		//----------------------------------------
-		// 結果反映
-		//----------------------------------------
-		Quat resultQuat = deltaQuat * currentQuat;
-		resultQuat.normalize();
-		ptrTrans->SetQuaternion(resultQuat);
-
-		auto scene = App::GetApp()->GetScene<Scene>();
-	}
-
-	Quat Player::PlayerPitch(const float stickY, float deltaTime)
-	{
-		float pitch = stickY * m_angleSpeed * deltaTime;
 		Quat pitchQuat;
-		pitchQuat.rotationX(pitch);
-		return pitchQuat; 
-	}
+		pitchQuat.rotationAxisAngle(Vec3(1, 0, 0), pitchInput);
 
-	Quat Player::PlayerRoll(const float stickX, float deltaTime)
-	{
-		float roll = -stickX * m_angleSpeed * deltaTime;
+
+		//----------------------------------------
+		// Roll
+		//----------------------------------------
+		float maxRoll = XMConvertToRadians(45.0f);
+		float rollInput = 0.0f;
+
+		if (fabs(lstick.x) > fabs(lstick.y) * 1.1f)
+		{
+			rollInput = lstick.x * m_angleSpeed * deltaTime;
+		}
+
+		m_bankRoll = clamp(m_bankRoll + rollInput, -maxRoll, maxRoll);
+		
 		Quat rollQuat;
-		rollQuat.rotationZ(roll);
-		return rollQuat;
-	}
+		rollQuat.rotationAxisAngle(Vec3(0, 0, 1), -m_bankRoll);
 
-	void Player::CreateBarrier()
-	{
-		auto stage = GetStage();
-		auto& input = InputManager::GetInputManager();
 
-		Vec3 pos = GetComponent<Transform>()->GetPosition();
+		//----------------------------------------
+		// BankTurnによるYaw
+		//----------------------------------------
+		float yawInput = lstick.x * m_turnPower * deltaTime;
+		Quat yawQuat;
+		yawQuat.rotationAxisAngle(Vec3(0, 1, 0), yawInput);
 
-		if (!m_barrier)
+
+		//----------------------------------------
+		// 姿勢として累積するのは Pitch + Yawのみ
+		//----------------------------------------
+		m_currentQuat = yawQuat * pitchQuat * m_currentQuat;
+		m_currentQuat.normalize();
+
+		if (!hasInput)
 		{
-			m_barrier = stage->AddGameObject<Barrier>(GetThis<Player>());
+			m_bankRoll = lerp(m_bankRoll, 0.0f, deltaTime * 4.0f);
 		}
 
-		auto useflag = m_barrier->GetUse();
+		//----------------------------------------
+		// Rollはルック（見た目）だけ後から合成
+		//----------------------------------------
+		Quat finalQuat = rollQuat * m_currentQuat;
+		finalQuat.normalize();
 
-		if (input->GetDownButton(L"X", m_playerIndex))
-		{
-			if (!useflag)
-			{
-				m_barrier->SetUse(true);
-			}
-			else
-			{
-				m_barrier->SetUse(false);
-			}
-		}
+		ptrTrans->SetQuaternion(finalQuat);
 	}
+
+
+	//void Player::CreateBarrier()
+	//{
+	//	auto stage = GetStage();
+	//	auto& input = InputManager::GetInputManager();
+
+	//	Vec3 pos = GetComponent<Transform>()->GetPosition();
+
+	//	if (!m_barrier)
+	//	{
+	//		m_barrier = stage->AddGameObject<Barrier>(GetThis<Player>());
+	//	}
+
+	//	auto useflag = m_barrier->GetUse();
+
+	//	if (input->GetDownButton(L"X", m_playerIndex))
+	//	{
+	//		if (!useflag)
+	//		{
+	//			m_barrier->SetUse(true);
+	//		}
+	//		else
+	//		{
+	//			m_barrier->SetUse(false);
+	//		}
+	//	}
+	//}
 
 	void Player::CreateBullet()
 	{
 		auto stage = GetStage();
 		auto& input = InputManager::GetInputManager();
+		// 前フレームのTrigger値
+		static BYTE prevTrigger = 0;
 
-		if (input->GetDownButton(L"B", m_playerIndex))
+		BYTE nowTrigger = input->GetRightTrigger();
+		BYTE threshold = 30;
+
+		//「押した瞬間」だけ発射する
+		if (prevTrigger <= threshold && nowTrigger > threshold)
 		{
 			m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
 		}
+
+		// 前フレーム値の更新を忘れない
+		prevTrigger = nowTrigger;
 	}
 
 	// フラグのゲッタ、セッタ
@@ -266,30 +255,6 @@ namespace basecross {
 	void Player::SetPlayerIndex(int index)
 	{
 		m_playerIndex = index;
-	}
-
-	// プレイヤーのコントローラ番号ゲッタ
-	int Player::GetPlayerIndex() const
-	{
-		return m_playerIndex;
-	}
-
-	// 加速しているかのゲッタ
-	bool Player::GetAcceleration()
-	{
-		return m_acceleration;
-	}
-
-	bool Player::GetIsBoostInputActive() const
-	{
-		auto& game = GameManager::GetGameManager();
-		auto& inputMgr = InputManager::GetInputManager();
-
-		bool stickActive = fabs(inputMgr->GetLStick().x) > DEAD_ZONE;
-		bool shoulderActive = inputMgr->GetButton(L"L") || inputMgr->GetButton(L"R");
-		bool triggerActive = inputMgr->GetLeftTrigger() > XINPUT_GAMEPAD_TRIGGER_THRESHOLD;
-
-		return (stickActive || shoulderActive) && triggerActive;
 	}
 
 	void Player::ChangController()
@@ -315,117 +280,18 @@ namespace basecross {
 		m_prevDDown = dDown;
 	}
 
-	Quat Player::Slerp(const Quat& q1, const Quat& q2, float t)
+	void Player::ChangePlayer(Vec2 lstick)
 	{
-		// ドット積（角度のcosθを求める）
-		float dot = q1.x * q2.x + q1.y * q2.y + q1.z * q2.z + q1.w * q2.w;
+		auto& input = InputManager::GetInputManager();
 
-		Quat q2b = q2;
-		if (dot < 0.0f)
+		if (m_playerIndex == 0)
 		{
-			dot = -dot;
-			q2b = Quat(-q2.x, -q2.y, -q2.z, -q2.w);
+			lstick = input->GetLStick();
 		}
-
-		const float THRESHOLD = 0.9995f;
-		if (dot > THRESHOLD)
+		else if (m_playerIndex == 1)
 		{
-			// 線形補間でOK
-			Quat result(
-				q1.x + t * (q2b.x - q1.x),
-				q1.y + t * (q2b.y - q1.y),
-				q1.z + t * (q2b.z - q1.z),
-				q1.w + t * (q2b.w - q1.w)
-			);
-			result.normalize();
-			return result;
+			lstick = input->GetLStick2();
 		}
-
-		// 角度計算
-		float theta_0 = acosf(dot);
-		float theta = theta_0 * t;
-		float sin_theta = sinf(theta);
-		float sin_theta_0 = sinf(theta_0);
-
-		float s0 = cosf(theta) - dot * sin_theta / sin_theta_0;
-		float s1 = sin_theta / sin_theta_0;
-
-		// 補間結果
-		Quat result(
-			(s0 * q1.x) + (s1 * q2b.x),
-			(s0 * q1.y) + (s1 * q2b.y),
-			(s0 * q1.z) + (s1 * q2b.z),
-			(s0 * q1.w) + (s1 * q2b.w)
-		);
-
-		result.normalize();
-		return result;
-	}
-
-	Quat Player::FromAxisAngle(const Vec3& axis, float angleRad)
-	{
-		Vec3 normAxis = axis;
-		normAxis.normalize();
-		float halfAngle = angleRad * 0.5f;
-		float s = sinf(halfAngle);
-
-		return Quat(cosf(halfAngle),
-			normAxis.x * s,
-			normAxis.y * s,
-			normAxis.z * s);
-	}
-	
-	Vec3 Player::QuaternionToEuler(const Quat& q)
-	{
-		Vec3 euler;
-
-		// Pitch（X軸回転）
-		float sinp = 2.0f * (q.w * q.x + q.y * q.z);
-		float cosp = 1.0f - 2.0f * (q.x * q.x + q.y * q.y);
-		euler.x = atan2(sinp, cosp);
-
-		// Yaw（Y軸回転）
-		float siny = 2.0f * (q.w * q.y - q.z * q.x);
-		siny = clamp(siny, -1.0f, 1.0f); // 安定化
-		euler.y = asin(siny);
-
-		// Roll（Z軸回転）
-		float sinr = 2.0f * (q.w * q.z + q.x * q.y);
-		float cosr = 1.0f - 2.0f * (q.y * q.y + q.z * q.z);
-		euler.z = atan2(sinr, cosr);
-
-		return euler; // ラジアン単位
-	}
-
-	Vec3 Player::RotateVectorByQuat(const Vec3& v, const Quat& q)
-	{
-		// クォータニオンをベクトル部分とスカラー部分に分解
-		Vec3 qv(q.x, q.y, q.z);
-		float qw = q.w;
-
-		// まず、q と v（をクォータニオンとして扱ったもの）を掛ける
-		Vec3 t = 2.0f * cross(qv, v);
-		Vec3 rotated = v + qw * t + cross(qv, t);
-
-		return rotated;
-	}
-
-	float Player::AngleBetWeen(const Quat& a, const Quat& b)
-	{
-		float dot = fabs(a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w);
-
-		dot = clamp(dot, -1.0f, 1.0f);
-
-		return acosf(dot) * 2.0f;
-	}
-
-	Quat Player::rotationAxis(const Vec3& axis, float angle)
-	{
-		Vec3 n = axis;
-		n.normalize();
-		float s = sinf(angle * 0.5f);
-		float c = cosf(angle * 0.5f);
-		return Quat(n.x * s, n.y * s, n.z * s, c);
 	}
 }
 //end basecross

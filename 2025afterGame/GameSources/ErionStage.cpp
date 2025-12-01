@@ -48,42 +48,24 @@ namespace basecross {
 			SetSharedGameObject(L"Player", player);
 			int max = 0;
 
-			for (int i = 0; i < 3; i++)
+			/*for (int i = 0; i < 3; i++)
 			{
 				game->AddCheckPoint();
 				max++;
-			}
+			}*/
 
 			wstring DataDir;
 			App::GetApp()->GetDataDirectory(DataDir);
-			////CSVファイルの読み込み
+			DataDir += L"Stage/";
+			//CSVファイルの読み込み
 			m_objectFile.SetFileName(DataDir + L"positions.csv");
 			m_objectFile.ReadCsv();
 
-			//CreateTestObject();
+			CreateTestObject();
 
-			//壁の仮生成
-			auto wall1 = AddGameObject<StageWall>();
-			wall1->GetComponent<Transform>()->SetPosition(0.0f, 0.0f, 55.0f);
+			CreateRingObject();
 
-			auto wall2 = AddGameObject<StageWall>();
-			wall2->GetComponent<Transform>()->SetPosition(0.0f, 0.0f, -55.0f);
-
-			auto wall3 = AddGameObject<StageWall>();
-			wall3->GetComponent<Transform>()->SetPosition(0.0f, 55.0f, 0.0f);
-			wall3->GetComponent<Transform>()->SetRotation(XMConvertToRadians(90.0f), 0.0f, 0.0f);
-
-			auto wall4 = AddGameObject<StageWall>();
-			wall4->GetComponent<Transform>()->SetPosition(0.0f, -55.0f, 0.0f);
-			wall4->GetComponent<Transform>()->SetRotation(XMConvertToRadians(90.0f), 0.0f, 0.0f);
-
-			auto wall5 = AddGameObject<StageWall>();
-			wall5->GetComponent<Transform>()->SetPosition(55.0f, 0.0f, 0.0f);
-			wall5->GetComponent<Transform>()->SetRotation(0.0f, XMConvertToRadians(90.0f), 0.0f);
-
-			auto wall6 = AddGameObject<StageWall>();
-			wall6->GetComponent<Transform>()->SetPosition(-55.0f, 0.0f, 0.0f);
-			wall6->GetComponent<Transform>()->SetRotation(0.0f, XMConvertToRadians(90.0f), 0.0f);
+			CreateWallObject();
 		}
 		catch (...) {
 			throw;
@@ -144,7 +126,77 @@ namespace basecross {
 
 			//wstring tag = Tokens[10];
 
-			AddGameObject<TestCsv>(Siz, Rot, Pos);
+			AddGameObject<TestCsv>(Pos, Rot, Siz);
+		}
+	}
+
+	void ErionStage::CreateRingObject()
+	{
+		//オブジェクトの配列
+		vector<wstring> ObjectLine;
+		//抜き出し
+		m_objectFile.GetSelect(ObjectLine, 0, L"DashRing");
+		for (auto& v : ObjectLine)
+		{
+			//オブジェクトの作成
+			vector<wstring> Tokens;
+			Util::WStrToTokenVector(Tokens, v, L',');
+			Vec3 Pos(
+				(float)_wtof(Tokens[1].c_str()),
+				(float)_wtof(Tokens[2].c_str()),
+				(float)_wtof(Tokens[3].c_str())
+			);
+
+
+			Vec3 Rot;
+			Rot.x = (Tokens[4] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[4].c_str());
+			Rot.y = (Tokens[5] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[5].c_str());
+			Rot.z = (Tokens[6] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[6].c_str());
+
+			Vec3 Siz(
+				(float)_wtof(Tokens[7].c_str()),
+				(float)_wtof(Tokens[8].c_str()),
+				(float)_wtof(Tokens[9].c_str())
+			);
+
+			//wstring tag = Tokens[10];
+
+			AddGameObject<DashRing>(Pos, Rot, Siz);
+		}
+	}
+
+	void ErionStage::CreateWallObject()
+	{
+		//オブジェクトの配列
+		vector<wstring> ObjectLine;
+		//抜き出し
+		m_objectFile.GetSelect(ObjectLine, 0, L"StageWall");
+		for (auto& v : ObjectLine)
+		{
+			//オブジェクトの作成
+			vector<wstring> Tokens;
+			Util::WStrToTokenVector(Tokens, v, L',');
+			Vec3 Pos(
+				(float)_wtof(Tokens[1].c_str()),
+				(float)_wtof(Tokens[2].c_str()),
+				(float)_wtof(Tokens[3].c_str())
+			);
+
+
+			Vec3 Rot;
+			Rot.x = (Tokens[4] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[4].c_str());
+			Rot.y = (Tokens[5] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[5].c_str());
+			Rot.z = (Tokens[6] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[6].c_str());
+
+			Vec3 Siz(
+				(float)_wtof(Tokens[7].c_str()),
+				(float)_wtof(Tokens[8].c_str()),
+				(float)_wtof(Tokens[9].c_str())
+			);
+
+			//wstring tag = Tokens[10];
+
+			AddGameObject<StageWall>(Pos, Rot, Siz);
 		}
 	}
 }

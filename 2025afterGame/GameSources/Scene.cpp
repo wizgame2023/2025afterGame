@@ -24,17 +24,24 @@ namespace basecross{
 		wstring path = app->GetDataDirWString();
 		wstring modelPath = path + L"Models/";
 		wstring texPath = path + L"Textures/";
+		wstring uiPath = path + L"UI/";
 
-		auto Modeltex = modelPath + L"diffuse.png";
-		App::GetApp()->RegisterTexture(L"diffuse_TX", Modeltex);
+		//Textures //////////////////////////////////////////////
+		auto modelTex = modelPath + L"diffuse.png";
+		App::GetApp()->RegisterTexture(L"diffuse_TX", modelTex);
 
 		auto strTexture = texPath + L"TestTex.png";
 		App::GetApp()->RegisterTexture(L"TestTex", strTexture);
 
+		// Model /////////////////////////////////////////////////
 		// Player
-		auto ModelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"Sentouki.bmf");
-		app->RegisterResource(L"Sentouki", ModelMesh);
+		auto modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"Sentouki.bmf");
+		app->RegisterResource(L"Sentouki", modelMesh);
 
+
+		// UI /////////////////////////////////////////////////
+		auto numberSprite = uiPath + L"Number.png";
+		App::GetApp()->RegisterTexture(L"Number", numberSprite);
 	}
 	
 	void Scene::OnCreate(){
