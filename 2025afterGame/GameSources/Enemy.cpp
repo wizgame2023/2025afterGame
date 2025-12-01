@@ -9,8 +9,9 @@
 #include "Enemy.h"
 
 namespace basecross {
-	Enemy::Enemy(const shared_ptr<Stage>& obj,const Vec3& pos,const Quat& qt,const Vec3& scale,const shared_ptr<CheckPoint>& startCheckPoint):
-		FighterAircraftBase(obj,pos,qt,scale,startCheckPoint)
+	Enemy::Enemy(const shared_ptr<Stage>& obj,const Vec3& pos,const Quat& qt,const Vec3& scale,const shared_ptr<CheckPoint>& startCheckPoint, const shared_ptr<Actor>& trackingObj):
+		FighterAircraftBase(obj,pos,qt,scale,startCheckPoint),
+		m_trackingObj(trackingObj)
 	{
 
 	}
@@ -33,7 +34,7 @@ namespace basecross {
 		spanMat.affineTransformation(
 			Vec3(1.0f, 1.0f, 1.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, XMConvertToRadians(-90.0f), 0.0f),
+			Vec3(0.0f, XMConvertToRadians(180.0f), 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f)
 		);
 
@@ -73,40 +74,123 @@ namespace basecross {
 
 	void Enemy::OnUpdate()
 	{
-		// xz方面の距離の差を求める 次はzy方面の距離の差を求める
 		FighterAircraftBase::OnUpdate();
-		auto goal = GetStage()->GetSharedGameObject<DebagPlayer>(L"Player"); // いったんゴールの位置をプレイヤーにする
-		auto goalPos = goal->GetComponent<Transform>()->GetPosition();
-		auto posPlayerDifference = m_pos - goalPos; // ゴールと敵の位置の差を求める
-		posPlayerDifference.normalize();
+
+		// デバック用に弾を出す
+		m_countDebagBulletTime += m_delta;
+		if (m_countDebagBulletTime >= 0.5f)
+		{
+			//GetStage()->AddGameObject<Bullet>(GetThis<Actor>());
+			m_countDebagBulletTime = 0.0f;
+		}
+
+		// 追いかけるものが消えていたらUpdateしないようにする
+		shared_ptr<Actor> lockTrackingObj = m_trackingObj.lock();
+		if (!lockTrackingObj)
+		{
+			return;
+		}
+
+		// xz方面の距離の差を求める 次はzy方面の距離の差を求める
+		//auto goalObj = GetStage()->GetSharedGameObject<DebagPlayer>(L"Player"); // いったんゴールの位置をプレイヤーにする
+		auto goalPos = lockTrackingObj->GetComponent<Transform>()->GetPosition();
+		Vec3 posPlayerDifference = goalPos - m_pos; // ゴールと敵の位置の差を求める
+		Vec2 differenceYZ = Vec2(posPlayerDifference.y, abs(posPlayerDifference.z));
+		differenceYZ.normalize();
+		posPlayerDifference.normalize(); // 正規化
 
 		// 目的地の角度を取得
-		float goalAngle = atan2f(posPlayerDifference.z, -posPlayerDifference.x);
-		float goalAngleZY = atan2f(-posPlayerDifference.y, -posPlayerDifference.z);
+		float goalAngle = atan2f(posPlayerDifference.x, posPlayerDifference.z);
+		float goalAngleZY = atan2f(posPlayerDifference.y, abs(posPlayerDifference.z));
+		float goalAngleYX = atan2f(posPlayerDifference.y, -posPlayerDifference.x);
 
-		float speed = 0.0f;
-		float testAngle = XMConvertToRadians(45.0f);
+
+		// 角度がマイナスつかないように変更
+		goalAngle = AdjustmentAngle(goalAngle);
+		goalAngleZY = -AdjustmentAngle(goalAngleZY);
+		goalAngleYX = AdjustmentAngle(goalAngleYX);
+
+		// デバック用のロール回転
+		static float debugYX = 0.0f;
+		auto& input = InputManager::GetInputManager();
+		if (input->GetButton(L"DLeft"))
+		{
+			debugYX -= m_delta * 3.0f;
+		}
+		if (input->GetButton(L"DRight"))
+		{
+			debugYX += m_delta * 3.0f;
+		}
+		goalAngleYX = debugYX;
+		//
+
+
+		// ピッチの向きたい方向を求める処理
+		// これで、向いている方向のY座標を0にしたものを求める
+		auto posPlayerDifferenceZY = posPlayerDifference;
+		posPlayerDifferenceZY.y = 0.0f;
+		
+		
+		// 内積
+		float dotf = posPlayerDifference.dot(posPlayerDifferenceZY);
+		// なす角を求める
+		auto pitchAngle = acosf(dotf);
+
+		// 敵から見てプレイヤーが下にいたら角度をマイナスにする
+		if (posPlayerDifference.y > 0)
+		{
+			pitchAngle = -pitchAngle;
+		}
+
+		// 敵が追いかける際反転するか決める処理
+		auto forward = GetComponent<Transform>()->GetForward();
+		// 向いているZX平面の角度を計算
+		auto forwardAngle = atan2f(forward.z, forward.x); 
+		forwardAngle = AdjustmentAngle(forwardAngle);
+
+		// 敵から見てプレイヤーのいるZX平面の角度
+		auto playerAngle = atan2f(posPlayerDifference.z, posPlayerDifference.x);
+		playerAngle = AdjustmentAngle(playerAngle);
+
+		// 進むスピード(仮)
+		float speed = 3.0f;
 
 		// Pos移動
-		m_pos.x += cos(goalAngle) * speed * m_delta;
-		m_pos.z += sin(goalAngle) * speed * m_delta;
+		m_pos.x += cos(playerAngle) * speed * m_delta;
+		m_pos.z += sin(playerAngle) * speed * m_delta;
+
+		// y方向の差が＋かーか確認する
+		int ysign = 0;
+		if (posPlayerDifference.y > 0.05f)
+		{
+			ysign = 1;
+		}
+		else if(posPlayerDifference.y < -0.05f)
+		{
+			ysign = -1;
+		}
+		else
+		{
+			ysign = 0;
+		}
+		m_pos.y += ysign * speed * m_delta; // 向いている角度によってスピード変えないと違和感が出るかも
 
 		// Qt回転
-		m_qt = Quat(0.0f, 0.0f, (sin(goalAngleZY / 2.0f)), cos((goalAngle / 2.0f))) *
-			Quat(0.0f, (sin(goalAngle / 2.0f)), 0.0f, cos((goalAngle / 2.0f)));
-		//m_qt = Quat(0.0f, 0.0f, (sin(goalAngleZY / 2.0f)), cos((goalAngleZY / 2.0f)));
+		// 個別の軸ずつ回転計算をしています
+		m_qt = Quat(0.0f, 0.0f, (sin(goalAngleYX / 2.0f)), cos((goalAngleYX / 2.0f))); // Z軸回転
+		m_qt *= Quat((sin(pitchAngle / 2.0f)), 0.0f, 0.0f, cos((pitchAngle / 2.0f))); // X軸回転
+		m_qt *= Quat(0.0f, (sin(goalAngle / 2.0f)), 0.0f, cos((goalAngle / 2.0f))); // Y軸回転
 
-		//auto cameraManager = GetStage()->GetSharedGameObject<MainCameraManager>(L"MainCameraManager");
-		//cameraManager->DebugLog(L"goalAngle : ", XMConvertToDegrees(goalAngle));
-		//cameraManager->DebugLog(L"goalAngleZY : ",XMConvertToDegrees(goalAngleZY));
+		//auto rot = XMMatrixRotationAxis(axisYX, goalAngleYX);
+		//auto world = m_trans->GetWorldMatrix();
+		//world.rotation((Quat)XMQuaternionRotationMatrix(rot));
+		//m_qt = world.quatInMatrix();
 
-		//m_qt = Quat(0.0f, 0.0f, (sin(goalAngleZY / 2.0f)), cos((goalAngle / 2.0f)));
-		m_trans->SetQuaternion(m_qt);
-		//m_trans->SetRotation(0.0f, -goalAngle, 0.0f);
-
-		m_trans->SetPosition(m_pos);
+		// Transform反映
+		m_trans->SetQuaternion(m_qt); // qt反映
+		//m_trans->SetRotation(m_rot);
+		m_trans->SetPosition(m_pos); // pos反映
 		
-		// goalAngleを-180~0の間になるように変更
 
 
 		////デバック用
@@ -115,12 +199,29 @@ namespace basecross {
 
 		wss /* << L"デバッグ用文字列 "*/
 			<< L"\ngoalAngle : " << XMConvertToDegrees(goalAngle)
-			<< L"\ngoalAngleZY : " << XMConvertToDegrees(goalAngleZY)
+			<< L"\ngoalAngleYX : " << XMConvertToDegrees(pitchAngle)
 			<< endl;
 
 		scene->SetDebugString(wss.str());
 
 	}
+
+
+	//角度の調整0~360度までしか出ないようにする
+	float Enemy::AdjustmentAngle(float angle)
+	{
+		if (angle >= XMConvertToRadians(360.0f))
+		{
+			angle -= XMConvertToRadians(360.0f);
+		}
+		else if (angle < XMConvertToRadians(0.0f))
+		{
+			angle += XMConvertToRadians(360.0f);
+		}
+
+		return angle;
+	}
+
 
 }
 //end basecross

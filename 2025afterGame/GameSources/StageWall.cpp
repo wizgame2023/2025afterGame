@@ -6,44 +6,47 @@
 #include "stdafx.h"
 #include "Project.h"
 
-namespace basecross{
-	StageWall::StageWall(const shared_ptr<Stage>& stagePtr) :
-		Actor(stagePtr, Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(100.0f, 100.0f, 10.0f))
+namespace basecross {
+	StageWall::StageWall(const shared_ptr<Stage>& StagePtr,
+		const Vec3& Pos,
+		const Vec3& Rot,
+		const Vec3& Siz
+	) :
+		GameObject(StagePtr),
+		m_pos(Pos),
+		m_rot(Rot),
+		m_siz(Siz)
 	{
+		try
+		{
 
+		}
+		catch (...)
+		{
+			throw;
+		}
 	}
 
-	StageWall::~StageWall()
-	{
+	StageWall::~StageWall() {
 
 	}
 
 	void StageWall::OnCreate()
 	{
-		// 親クラス処理
-		Actor::OnCreate();
+		auto PtrTrans = GetComponent<Transform>();
+		PtrTrans->SetScale(m_siz);
+		PtrTrans->SetRotation(m_rot);
+		PtrTrans->SetPosition(m_pos);
 
-		// Trans処理追加
-		m_trans = GetComponent<Transform>();
-		m_trans->SetPosition(m_pos);
-		m_trans->SetQuaternion(m_qt);
-		m_trans->SetScale(m_scale);
-
-		// コリジョン追加
+		//コリジョン
 		auto ptrCol = AddComponent<CollisionObb>();
 		ptrCol->SetFixed(true);
 		ptrCol->SetDrawActive(false);
 		ptrCol->SetAfterCollision(AfterCollision::Auto);
 
-		// ドロー処理
-		/*auto ptrDraw = AddComponent<PNTStaticDraw>();
-		ptrDraw->SetMeshResource(L"DEFAULT_SQUARE");
-		SetAlphaActive(false);*/
-	}
-
-	void StageWall::OnUpdate()
-	{
-
+		//メッシュの描画
+		auto ptrDraw = AddComponent<PNTStaticDraw>();
+		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 	}
 }
 //end basecross

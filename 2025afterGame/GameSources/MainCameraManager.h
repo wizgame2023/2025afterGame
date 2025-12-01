@@ -30,6 +30,7 @@ namespace basecross{
 			Vec3 hitPos;
 			float hitLength;
 			bool hit;
+			Col4 diffuseColor;
 		};
 
 		PlayerInfo m_plInfo;
@@ -81,6 +82,7 @@ namespace basecross{
 		}
 
 		// 視野角調整
+		// isAccel : 加速中かどうか
 		void AdjustFov(bool isAccel);
 
 		// マルチビューかどうか
@@ -113,6 +115,12 @@ namespace basecross{
 		// to : カメラの位置
 		ObstructionHitResult TestCameraObstruction(const Vec3& from, const Vec3& to, const shared_ptr<GameObject>& obj);
 
+		// プレイヤーとカメラの間に障害物があるか
+		// from : プレイヤーの位置
+		// to : カメラの位置
+		// 戻り値 : 障害物に当たっているかどうか
+		//bool TestCameraDiffuseObj(const Vec3& from, const Vec3& to, const shared_ptr<GameObject>& obj);
+
 		//// 障害物の走査と収集
 		//vector<ObstructionHitResult> CollectObstructionHits(const Vec3& from, const Vec3& to);
 
@@ -137,12 +145,60 @@ namespace basecross{
 
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
-
 	};
 	// ==============================================================================
 	// MainCameraManagerクラス末尾
 	// ==============================================================================
 
+	// カメラを邪魔するオブジェクトを判定するクラス群
+	/*
+	// ======================================================================================================================
+	
+	// ==============================================================================
+	// カメラを邪魔するオブジェクトを判定する基底クラス
+	// ==============================================================================
+	class CameraBlocker
+	{
+	public:
+		// 最終的なカメラ位置を返す関数
+		// plPos : プレイヤー位置
+		// tgtCamPos : 本来行きたいカメラ位置
+		// stage : オブジェクト検索用
+		virtual Vec3 ResolveObstruction(const Vec3& plPos, const Vec3& tgtCamPos, const shared_ptr<Stage>& stage) = 0;
+		virtual ~CameraBlocker() = default;
+	};
+
+	// ==============================================================================
+	// カメラを近づけるためのクラス
+	// ==============================================================================
+	class CameraCloser : public CameraBlocker
+	{
+		struct HitResult {
+			Vec3 hitPos;
+			float hitLength;
+			bool hit;
+		};
+
+		// 内部処理用関数
+		HitResult TestObstruction(const Vec3& from, const Vec3& to, const shared_ptr<MyGameObject>& obj);
+
+	public:
+		virtual Vec3 ResolveObstruction(const Vec3& plPos, const Vec3& tgtCamPos, const shared_ptr<Stage>& stage) override;
+		virtual ~CameraCloser() = default;
+	};
+
+	// ==============================================================================
+	// オブジェクトを半透明にするクラス
+	// ==============================================================================
+	class CameraFader : public CameraBlocker
+	{
+	public:
+		virtual Vec3 ResolveObstruction(const Vec3& plPos, const Vec3& tgtCamPos, const shared_ptr<Stage>& stage) override;
+		virtual ~CameraFader() = default;
+	};
+
+	// ======================================================================================================================
+	*/
 
 	// ==============================================================================
 	// WindEffectImageAnimationクラス

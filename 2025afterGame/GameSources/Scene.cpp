@@ -1,7 +1,7 @@
 
 /*!
 @file Scene.cpp
-@brief ƒV[ƒ“À‘Ì
+@brief ã‚·ãƒ¼ãƒ³å®Ÿä½“
 */
 
 #include "stdafx.h"
@@ -10,7 +10,7 @@
 namespace basecross{
 
 	//--------------------------------------------------------------------------------------
-	///	ƒQ[ƒ€ƒV[ƒ“
+	///	ã‚²ãƒ¼ãƒ ã‚·ãƒ¼ãƒ³
 	//--------------------------------------------------------------------------------------
 	Scene::~Scene()
 	{
@@ -19,12 +19,14 @@ namespace basecross{
 
 	void Scene::CreateResource()
 	{
-		// ŠeíƒtƒHƒ‹ƒ_ƒpƒX‚ğæ“¾
+		// å„ç¨®ãƒ•ã‚©ãƒ«ãƒ€ãƒ‘ã‚¹ã‚’å–å¾—
 		auto& app = App::GetApp();
 		wstring path = app->GetDataDirWString();
 		wstring modelPath = path + L"Models/";
 		wstring texPath = path + L"Textures/";
 		wstring uiPath = path + L"UI/Player/";
+		wstring uiPath = path + L"UI/";
+		wstring efkPath = path + L"Effects/";
 
 		//Textures //////////////////////////////////////////////
 		auto modelTex = modelPath + L"diffuse.png";
@@ -42,25 +44,36 @@ namespace basecross{
 		// UI /////////////////////////////////////////////////
 		auto numberSprite = uiPath + L"Number.png";
 		App::GetApp()->RegisterTexture(L"Number", numberSprite);
+    
 		auto hp = uiPath + L"Hp.png";
 		App::GetApp()->RegisterTexture(L"HP", hp);
+    
 		auto colon = uiPath + L"Colon.png";
 		App::GetApp()->RegisterTexture(L"Colon", colon);
+    
+    auto startTex = uiPath + L"Title/PressA.png";
+		App::GetApp()->RegisterTexture(L"Start_TX", startTex);
+    
+		// Effect /////////////////////////////////////////////
+		EffectManager::Instance().CreateEfkInterface();
+		EffectManager::Instance().RegisterEffect(L"Fire", efkPath + L"Sword.efk");
+		
 	}
 	
 	void Scene::OnCreate(){
 		try {	
-			//ƒNƒŠƒA‚·‚éF‚ğİ’è
+			//ã‚¯ãƒªã‚¢ã™ã‚‹è‰²ã‚’è¨­å®š
 			Col4 Col;
 			Col.set(31.0f / 255.0f, 30.0f / 255.0f, 71.0f / 255.0f, 255.0f / 255.0f);
 			SetClearColor(Col);
-			//©•ª©g‚ÉƒCƒxƒ“ƒg‚ğ‘—‚é
-			//‚±‚ê‚É‚æ‚èŠeƒXƒe[ƒW‚âƒIƒuƒWƒFƒNƒg‚ªCreate‚ÉƒV[ƒ“‚ÉƒAƒNƒZƒX‚Å‚«‚é
-			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTomokiStage");			
+
+			//è‡ªåˆ†è‡ªèº«ã«ã‚¤ãƒ™ãƒ³ãƒˆã‚’é€ã‚‹
+			//ã“ã‚Œã«ã‚ˆã‚Šå„ã‚¹ãƒ†ãƒ¼ã‚¸ã‚„ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒCreateæ™‚ã«ã‚·ãƒ¼ãƒ³ã«ã‚¢ã‚¯ã‚»ã‚¹ã§ãã‚‹
+			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");			
 			
 			CreateResource();
 
-			// ƒQ[ƒ€ƒ}ƒl[ƒWƒƒ[ì¬
+			// ã‚²ãƒ¼ãƒ ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ä½œæˆ
 			GameManager::CreateGameManager();
 			UIManager::CreateUIManager();
 		}
@@ -73,7 +86,7 @@ namespace basecross{
 	{
 		SceneBase::OnUpdate();
 
-		// ƒQ[ƒ€ƒ}ƒl[ƒWƒƒ[XV
+		// ã‚²ãƒ¼ãƒ ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼æ›´æ–°
 		GameManager::GetGameManager()->OnUpdate();
 		UIManager::GetUIManager()->OnUpdate();
 
@@ -83,29 +96,29 @@ namespace basecross{
 
 	void Scene::OnEvent(const shared_ptr<Event>& event) {
 		if (event->m_MsgStr == L"ToGameStage") {
-			//Å‰‚ÌƒAƒNƒeƒBƒuƒXƒe[ƒW‚Ìİ’è
-			ResetActiveStage<GameStage>();
+			//æœ€åˆã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã‚¹ãƒ†ãƒ¼ã‚¸ã®è¨­å®š
+			ResetActiveStage<KaitoStage>();
 		}
 		if (event->m_MsgStr == L"ToMultiViewStage") {
-			//ƒ}ƒ‹ƒ`ƒrƒ…[‚ÌƒAƒNƒeƒBƒuƒXƒe[ƒWİ’è
+			//ãƒãƒ«ãƒãƒ“ãƒ¥ãƒ¼ã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã‚¹ãƒ†ãƒ¼ã‚¸è¨­å®š
 			ResetActiveStage<MultiViewStage>();
 		}
 		if (event->m_MsgStr == L"ToTitleStage") {
-			//ƒ^ƒCƒgƒ‹ƒXƒe[ƒW‚ÌƒAƒNƒeƒBƒuƒXƒe[ƒWİ’è
+			//ã‚¿ã‚¤ãƒˆãƒ«ã‚¹ãƒ†ãƒ¼ã‚¸ã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã‚¹ãƒ†ãƒ¼ã‚¸è¨­å®š
 			ResetActiveStage<TitleStage>();
 		}
 		if (event->m_MsgStr == L"ToSelectStage") {
-			//ƒZƒŒƒNƒgƒXƒe[ƒW‚ÌƒAƒNƒeƒBƒuƒXƒe[ƒWİ’è
+			//ã‚»ãƒ¬ã‚¯ãƒˆã‚¹ãƒ†ãƒ¼ã‚¸ã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã‚¹ãƒ†ãƒ¼ã‚¸è¨­å®š
 			ResetActiveStage<SelectStage>();
 		}
-		//ƒfƒoƒbƒO—pƒXƒe[ƒW
+		//ãƒ‡ãƒãƒƒã‚°ç”¨ã‚¹ãƒ†ãƒ¼ã‚¸
 		if (event->m_MsgStr == L"ToErionStage") {
-			//ƒZƒŒƒNƒgƒXƒe[ƒW‚ÌƒAƒNƒeƒBƒuƒXƒe[ƒWİ’è
+			//ã‚»ãƒ¬ã‚¯ãƒˆã‚¹ãƒ†ãƒ¼ã‚¸ã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã‚¹ãƒ†ãƒ¼ã‚¸è¨­å®š
 			ResetActiveStage<ErionStage>();
 		}
-		//ƒfƒoƒbƒO—pƒXƒe[ƒW
+		//ãƒ‡ãƒãƒƒã‚°ç”¨ã‚¹ãƒ†ãƒ¼ã‚¸
 		if (event->m_MsgStr == L"ToTomokiStage") {
-			//ƒZƒŒƒNƒgƒXƒe[ƒW‚ÌƒAƒNƒeƒBƒuƒXƒe[ƒWİ’è
+			//ã‚»ãƒ¬ã‚¯ãƒˆã‚¹ãƒ†ãƒ¼ã‚¸ã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã‚¹ãƒ†ãƒ¼ã‚¸è¨­å®š
 			ResetActiveStage<TomokiStage>();
 		}
 	}

@@ -21,10 +21,12 @@
 #include "Plane.h"
 #include "StateEnemy.h"
 #include "UIManager.h"
+#include "StageWall.h"
+#include "TestCsv.h"
+#include "DashRing.h"
 
 // 殿堂入りMyGameObject本体
 #include "MyGameObject.h";
-
 
 // 親クラスがMyGameObject//////////////////////////
 #include "Actor.h";
@@ -34,14 +36,16 @@
 #include "Sprite.h"
 ///////////////////////////////////////////////////
 
+// EffectManager
+#include "EffectManager.h"
+#include "EffectUpdateDrawManager.h"
+
 // 親クラスがActor/////////////////////////////////
 #include "FighterAircraftBase.h"
 #include "Bullet.h"
 #include "Barrier.h"
 #include "DisableBarrier.h"
 #include "CheckPoint.h"
-#include "StageWall.h"
-#include "TestCsv.h"
 ///////////////////////////////////////////////////
 
 //親クラスがFighterAircraftBase////////////////////

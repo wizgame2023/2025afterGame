@@ -27,6 +27,18 @@ namespace basecross{
 		float m_speedCurrent = 3.0f;	// スピード
 		float m_speedMax = 0.0f;		// 最大スピード
 
+		// 弾関係
+		int m_bulletNumCurrentNow = 30; // 現在の球数
+		int m_bulletNumMax = 30;		// 最大の球数
+
+		// スコア関係
+		int m_scoreCurrent = 0;		 // スコアの現在値
+		int m_scoreMax = 99999999;   // スコアの最大値
+
+		// 復活関係
+		float timeOfReturnUnDamage = 0.0f; // 復活までの無敵付与時間
+		float timeOfReturn = 0.0f;		   // 倒されてからの復活の時間
+
 		////エネルギー
 		//float m_energyCurrent = 0.0f;				// 現在のエネルギー
 		//float m_energyMax = 0.0f;					// 最大のエネルギー値

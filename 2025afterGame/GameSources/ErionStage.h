@@ -18,6 +18,10 @@ namespace basecross {
 		CsvFile m_objectFile;
 		//オブジェクトのテスト作成
 		void CreateTestObject();
+		//リングオブジェクトを作成
+		void CreateRingObject();
+		//壁オブジェクトを作成
+		void CreateWallObject();
 
 	public:
 		//構築と破棄

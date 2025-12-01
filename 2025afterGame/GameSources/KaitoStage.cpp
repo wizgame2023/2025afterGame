@@ -47,15 +47,24 @@ namespace basecross {
 			auto player = AddGameObject<Player>();
 			SetSharedGameObject(L"Player", player);
 
-			AddGameObject<TestCubeKaito>(Vec3(0.0f, 0.0f, 10.0f), Vec3(10.0f,10.0f,1.0f));
+			AddGameObject<TestCubeKaito>(Vec3(0.0f, 0.0f, 10.0f), Vec3(10.0f, 10.0f, 1.0f));
 
+			auto plPos = player->GetComponent<Transform>()->GetPosition();
+			EffectManager::Instance().PlayEffect(L"Fire", Vec3(plPos));
+
+			auto mainCamMana = AddGameObject<MainCameraManager>();
+			SetSharedGameObject(L"MainCameraManager", mainCamMana);
+
+			AddGameObject<EffectUpdateDrawManager>();
 		}
+
 		catch (...) {
 			throw;
 		}
+	}
 
-		auto mainCamMana = AddGameObject<MainCameraManager>();
-		SetSharedGameObject(L"MainCameraManager", mainCamMana);
+	void KaitoStage::OnUpdate()
+	{		
 	}
 
 	// ==============================================================================
@@ -77,13 +86,16 @@ namespace basecross {
 		trans->SetPosition(m_pos);
 		trans->SetScale(m_scale);
 
-		auto ptrCol = AddComponent<CollisionSphere>();
+		auto ptrCol = AddComponent<CollisionObb>();
 		ptrCol->SetDrawActive(true);
 
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 		
-		AddTag(L"CameraObstruction");
+		SetAlphaActive(true);
+
+		// カメラを邪魔しえるオブジェクトのタグ(透明化処理はしない)
+		AddTag(L"CameraObsDiffuse");
 	}
 }
 //end basecross
