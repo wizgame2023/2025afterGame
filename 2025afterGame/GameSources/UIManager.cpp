@@ -1,6 +1,7 @@
 /*!
 @file UIManager.cpp
 @brief UI管理の実体
+担当：吉田 智貴
 */
 
 #include "stdafx.h"
@@ -9,7 +10,12 @@
 
 namespace basecross
 {
-	UIManager::UIManager()
+	UIManager::UIManager():
+		m_createUI(false),
+		m_playerHpCurrent(0),
+		m_playerHpMax(0),
+		m_minute(0),
+		m_second(0)
 	{
 
 	}
@@ -54,30 +60,65 @@ namespace basecross
 	// 初期化処理
 	void UIManager::OnCreate()
 	{
-		// 入力マネージャーの作成
-		InputManager::CreateInputManager();
 	}
 
 	// 更新
 	void UIManager::OnUpdate()
 	{
+		auto& app = App::GetApp();
+		auto scene = app->GetScene<Scene>();
+		auto stage = scene->GetActiveStage();
+		auto& gameManager = GameManager::GetGameManager();
+		auto limit  = gameManager->GetTimeLimit();
 
+		// OnCreateだとSceneより速いのでエラーが上の方だと出る
+		// if (dynamic_pointer_cast<GameStage>(stage) == nullptr) return;
+
+		GetPlayerHP();
+
+		if (m_createUI == false)
+		{	
+			CreateUI();
+		}
+
+		UpdateTime(limit);
 	}
 
 	// 自分自身の破棄処理
 	void UIManager::DeleteUIManager()
 	{
-		// 子クラスマネージャーの破棄
-		DeleteChildManager();
-
 		// 自分自身の破棄
 		m_UIManager.reset();
+	}
+
+	void UIManager::CreateUI()
+	{
+		auto& app = App::GetApp();
+		auto scene = app->GetScene<Scene>();
+		auto stage = scene->GetActiveStage();
+
+		auto hp = stage->AddGameObject<HpSprite>(L"HP", Vec2(30.0f, 5.0f), Vec3(-600.0f, 375.0f, 0.0f));
+		auto hp2 = stage->AddGameObject<NumberSprite>(L"Number",Vec2(50.0f,50.0f),Vec3(600.0f, -225.0f, 0.0f));
+		hp2->SetMyType(NumberType::HP);
+		auto bullet = stage->AddGameObject<NumberSprite>(L"Number",Vec2(50.0f,50.0f),Vec3(600.0f, -280.0f, 0.0f));
+		bullet->SetMyType(NumberType::Bullet);
+		auto minuteTimer = stage->AddGameObject<NumberSprite>(L"Number",Vec2(50.0f,50.0f),Vec3(470.0f, 375.0f, 0.0f));
+		minuteTimer->SetMyType(NumberType::minute);
+		auto secondTimer = stage->AddGameObject<NumberSprite>(L"Number",Vec2(50.0f,50.0f),Vec3(600.0f, 375.0f, 0.0f));
+		secondTimer->SetMyType(NumberType::second);
+		secondTimer->SetDigitCount(2);
+		auto colon = stage->AddGameObject<Sprite>(L"Colon", Vec2(16.0f, 43.0f));
+		colon->SetPosition(Vec3(515.0f, 375.0f, 0.0f));
+
+		m_createUI = true;
 	}
 
 	void UIManager::GetPlayerHP()
 	{
 		auto& app = App::GetApp();
-		auto objets = app->GetScene<Scene>()->GetActiveStage()->GetGameObjectVec();
+		auto scene = app->GetScene<Scene>();
+		auto activeStage = scene->GetActiveStage();
+		auto objets = activeStage->GetGameObjectVec();
 
 		for (auto obj : objets)
 		{
@@ -85,11 +126,36 @@ namespace basecross
 		
 			if (player)
 			{
-				player->GetHpCurrent();
+				m_playerHpCurrent = player->GetHpCurrent();
+				m_playerHpMax = player->GetHpMax();
 			}
 		}
 	}
 
+	int UIManager::GetCurrentPlayerHP()
+	{
+		return m_playerHpCurrent;
+	}
 
+	int UIManager::GetMaxPlayerHP()
+	{
+		return m_playerHpMax;
+	}
+
+	void UIManager::UpdateTime(int limit)
+	{
+		m_minute = limit / 60;
+		m_second = limit % 60;
+	}
+
+	int UIManager::GetMinuteTimer()
+	{
+		return m_minute;
+	}
+
+	int UIManager::GetSecondTimer()
+	{
+		return m_second;
+	}
 }
 //end basecross

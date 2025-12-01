@@ -20,6 +20,7 @@
 #include "Background.h"
 #include "Plane.h"
 #include "StateEnemy.h"
+#include "UIManager.h"
 #include "StageWall.h"
 #include "TestCsv.h"
 #include "DashRing.h"
@@ -33,7 +34,6 @@
 #include "MainCameraManager.h"
 #include "GameManager.h"
 #include "Sprite.h"
-#include "UIManager.h"
 ///////////////////////////////////////////////////
 
 // EffectManager
@@ -56,6 +56,7 @@
 
 // 親クラスがSprite////////////////////////////////
 #include "HpSprite.h"
+#include "NumberSprite.h"
 ///////////////////////////////////////////////////
 
 // ステージ関係は一番下のブロックでインクルードしてください
