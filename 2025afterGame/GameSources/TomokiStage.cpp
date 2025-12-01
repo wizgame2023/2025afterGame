@@ -34,6 +34,7 @@ namespace basecross {
 			auto path = app->GetDataDirWString();
 			auto input = app->GetInputDevice();
 			auto& game = GameManager::GetGameManager();
+			game->SetGameStartFlag(true);
 
 			auto backgroundPath = path + L"Backgrounds/";
 			for (const auto& keyName : Background::pairs) {
