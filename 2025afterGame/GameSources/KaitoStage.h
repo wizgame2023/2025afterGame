@@ -14,12 +14,14 @@ namespace basecross {
 	class KaitoStage : public Stage {
 		//ƒrƒ…[‚Ìì¬
 		void CreateViewLight();
+
 	public:
 		//\’z‚Æ”jŠü
 		KaitoStage() :Stage() {}
 		virtual ~KaitoStage() {}
 		//‰Šú‰»
 		virtual void OnCreate()override;
+		virtual void OnUpdate() override;
 	};
 
 	class TestCubeKaito : public Actor

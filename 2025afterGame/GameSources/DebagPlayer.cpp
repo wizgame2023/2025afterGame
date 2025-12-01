@@ -66,8 +66,8 @@ namespace basecross {
 			float totalAngle = stickangle - m_rot.y;
 			//auto forward = m_trans->GetForward();
 
-			moveVec.x += (cos(totalAngle)) * 5.0f;
-			moveVec.z += (sin(totalAngle)) * 5.0f;
+			moveVec.x += (cos(totalAngle)) * 8.0f;
+			moveVec.z += (sin(totalAngle)) * 8.0f;
 		}
 
 		//Vec3 moveVec = (Vec3(lStick.x, 0.0f, lStick.y) * 3.0f);
