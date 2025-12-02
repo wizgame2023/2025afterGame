@@ -18,6 +18,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)AttackCollision.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Barrier.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Background.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)BillBoard.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)BillBoardGauge.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Bullet.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Camera.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Character.h" />
@@ -63,6 +65,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)AttackCollision.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Barrier.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Background.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)BillBoard.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)BillBoardGauge.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Bullet.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)CheckPoint.cpp" />

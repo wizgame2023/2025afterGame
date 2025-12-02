@@ -122,8 +122,18 @@
       <Filter>Sources\privateStage</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)HpSprite.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)UIManager.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)NumberSprite.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)NumberSprite.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)UIManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)BillBoard.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)BillBoardGauge.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Actor.h">
@@ -250,8 +260,18 @@
       <Filter>Header\privateStage</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)HpSprite.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)UIManager.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)NumberSprite.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)UIManager.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)NumberSprite.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)BillBoard.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)BillBoardGauge.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header">
