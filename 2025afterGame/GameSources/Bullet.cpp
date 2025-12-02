@@ -45,6 +45,18 @@ namespace basecross {
 	
 		AddTag(L"Bullet");
 
+		// 弾の所属を登録
+		shared_ptr<Player> player = dynamic_pointer_cast<Player>(m_parent.lock());
+		shared_ptr<Enemy> enemy = dynamic_pointer_cast<Enemy>(m_parent.lock());
+		if (player) // 味方
+		{
+			m_affiliation = true;
+		}
+		else if (enemy) // 敵
+		{
+			m_affiliation = false;
+		}
+
 	}
 
 	void Bullet::OnUpdate()
@@ -83,6 +95,24 @@ namespace basecross {
 
 	}
 
+	// 弾の所属のゲッタ
+	bool Bullet::GetAffiliation()
+	{
+		return m_affiliation;
+	}
+
+	// ダメージのセッタ
+	void Bullet::SetDamage(int damage)
+	{
+		m_damage = damage;
+	}
+
+
+	// ダメージのゲッタ
+	int Bullet::GetDamage()
+	{
+		return m_damage;
+	}
 
 	TestCube::TestCube(const shared_ptr<Stage>& stagePtr,Vec3 pos,Quat qt,Vec3 scale) :
 		Actor(stagePtr,pos,qt,scale)

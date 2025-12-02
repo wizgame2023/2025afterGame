@@ -11,7 +11,6 @@
 
 #pragma once
 
-
 #include "ProjectShader.h"
 #include "ProjectBehavior.h"
 #include "Scene.h"
@@ -19,7 +18,6 @@
 #include "InputManager.h"
 #include "Background.h"
 #include "Plane.h"
-#include "StateEnemy.h"
 #include "UIManager.h"
 #include "StageWall.h"
 #include "TestCsv.h"
@@ -35,6 +33,7 @@
 #include "GameManager.h"
 #include "Sprite.h"
 #include "BillBoard.h"
+#include "ScoreManager.h"
 ///////////////////////////////////////////////////
 
 // EffectManager
@@ -78,5 +77,7 @@
 // ステートインクルード
 #include "StateBase.h";
 
+// 親クラスがStateBase
 #include "StateBarrier.h"
 #include "StateDisableBarrier.h"
+#include "StateEnemy.h"
