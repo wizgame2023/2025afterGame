@@ -38,9 +38,16 @@ namespace basecross {
 		PtrTrans->SetRotation(m_rot);
 		PtrTrans->SetPosition(m_pos);
 
+		//コリジョン
+		auto ptrCol = AddComponent<CollisionObb>();
+		ptrCol->SetFixed(true);
+		ptrCol->SetDrawActive(false);
+		ptrCol->SetAfterCollision(AfterCollision::Auto);
+
 		//メッシュの描画
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+		ptrDraw->SetTextureResource(L"TestTex");
 	}
 }
 //end basecross

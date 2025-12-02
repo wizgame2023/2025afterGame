@@ -10,7 +10,8 @@ namespace basecross {
 
 	TitleStage::TitleStage() :
 		m_Transparency(1.0f),
-		m_Transparent(true)
+		m_Transparent(true),
+		m_elapsedTime(0.0f)
 	{
 	}
 
@@ -39,7 +40,7 @@ namespace basecross {
 	//UI作成
 	void TitleStage::CreateUI()
 	{
-		m_testTitle = AddGameObject<Sprite>(L"Start_TX", Vec2(492.0f, 100.0f), Vec3(0.0f, -210.0f, 0.0f));
+		m_testTitle = AddGameObject<Sprite>(L"Start_TX", Vec2(412.0f, 128.0f), Vec3(0.0f, -210.0f, 0.0f));
 	}
 
 	void TitleStage::OnCreate() {
@@ -58,6 +59,7 @@ namespace basecross {
 	{
 		auto& app = App::GetApp();
 		auto& inputMgr=InputManager::GetInputManager();
+		m_elapsedTime = App::GetApp()->GetElapsedTime();
 
 		BlinkUI(m_testTitle);
 
@@ -81,11 +83,11 @@ namespace basecross {
 		//透明度を上げる、下げる
 		if (m_Transparency > 0.0f && !m_Transparent)
 		{
-			m_Transparency -= 1.0f * App::GetApp()->GetElapsedTime();
+			m_Transparency -= 1.0f * m_elapsedTime;
 		}
 		if (m_Transparency < 1.0f && m_Transparent)
 		{
-			m_Transparency += 1.0f * App::GetApp()->GetElapsedTime();
+			m_Transparency += 1.0f * m_elapsedTime;
 		}
 
 		//透明度がしきい値を超えた時上がるか下がるかを変更

@@ -24,6 +24,7 @@ namespace basecross {
 		//ƒƒ“ƒo•Ï”
 		float m_Transparency;
 		bool m_Transparent;
+		float m_elapsedTime;
 
 	public:
 		//\’z‚Æ”jŠü

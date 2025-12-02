@@ -12,7 +12,8 @@ namespace basecross{
 		minute,
 		second,
 		Bullet,
-		MaxBullet
+		MaxBullet,
+		Score
 	};
 
 	class NumberSprite : public Sprite
