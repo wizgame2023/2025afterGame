@@ -60,7 +60,12 @@ namespace basecross {
 			auto player = AddGameObject<Player>();
 			player->SetPlayerIndex(0);
 			SetSharedGameObject(L"Player", player);
-			
+
+			auto& gameManager = GameManager::GetGameManager();
+			gameManager->AddCheckPoint();
+			auto startCheckPoint = gameManager->GetCheckPoint(0);
+			auto enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+
 
 			//auto player2 = AddGameObject<Player>();		
 			//player2->SetPlayerIndex(1);
