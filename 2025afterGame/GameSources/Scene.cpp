@@ -53,6 +53,9 @@ namespace basecross{
     
 		auto startTex = uiTitlePath + L"PressA.png";
 		App::GetApp()->RegisterTexture(L"Start_TX", startTex);
+
+		auto remainingRounds = uiPlayerPath + L"RemainingRounds.png";
+		App::GetApp()->RegisterTexture(L"RemainingRounds", remainingRounds);
     
 		// Effect /////////////////////////////////////////////
 		EffectManager::Instance().CreateEfkInterface();
@@ -69,7 +72,7 @@ namespace basecross{
 
 			//自分自身にイベントを送る
 			//これにより各ステージやオブジェクトがCreate時にシーンにアクセスできる
-			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");			
+			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTomokiStage");			
 			
 			CreateResource();
 

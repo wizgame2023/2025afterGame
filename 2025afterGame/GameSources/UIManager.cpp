@@ -115,8 +115,7 @@ namespace basecross
 		auto bullet = stage->AddGameObject<NumberSprite>(Vec2(40.0f, 40.0f),Vec3(-550.0f, 330.0f, 0.0f));
 		bullet->SetMyType(NumberType::Bullet);
 
-		auto maxBullet = stage->AddGameObject<NumberSprite>(Vec2(40.0f,40.0f),Vec3(-430.0f, 330.0f, 0.0f));
-		maxBullet->SetMyType(NumberType::MaxBullet);
+		auto maxBullet = stage->AddGameObject<Sprite>(L"RemainingRounds",Vec2(200.0f, 60.0f), Vec3(-510.0f, 330.0f, 0.0f));
 		
 		auto minuteTimer = stage->AddGameObject<NumberSprite>(Vec2(50.0f,50.0f),Vec3(470.0f, 375.0f, 0.0f));
 		minuteTimer->SetMyType(NumberType::Minute);
