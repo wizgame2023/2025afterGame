@@ -37,7 +37,7 @@ namespace basecross{
 
 		// Model /////////////////////////////////////////////////
 		// Player
-		auto modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"Sentouki.bmf");
+		auto modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"PropellerPlane.bmf");
 		app->RegisterResource(L"Sentouki", modelMesh);
 
 

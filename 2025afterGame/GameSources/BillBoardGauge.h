@@ -12,7 +12,7 @@ namespace basecross{
 	private:
 		float m_parsecond;//全体の何パーセント出すか決める
 		vector<uint16_t> m_indices;// インデックス情報
-	
+		int m_enemyIndex;
 	public:
 		BillBoardGauge(const shared_ptr<Stage>& stagePtr,
 			const shared_ptr<GameObject>& actorPtr,
@@ -21,13 +21,14 @@ namespace basecross{
 			float pushX = 18.0f,
 			float pushY = 18.0f,
 			Vec3 scale = Vec3(1.0f),
-			Col4 col = Col4(1.0f));
+			Col4 col = Col4(1.0f),
+			int enemyIndex = 0);
 		~BillBoardGauge();
 
 		void OnCreate()override;
 		void OnUpdate()override;
 
-		void SetPercent(float parcent);//頂点の更新
+		void SetPercent();
 	};
 
 }
