@@ -9,11 +9,10 @@
 namespace basecross{
 	enum class NumberType
 	{
-		HP,
-		Score,
 		minute,
 		second,
-		Bullet
+		Bullet,
+		MaxBullet
 	};
 
 	class NumberSprite : public Sprite
