@@ -73,7 +73,8 @@ namespace basecross {
 		m_hpCurrent = 30;
 		m_hpMax = 30;
 
-
+		// ステートマシン作成
+		m_stateMachine = unique_ptr<StateEnemyMachine>(new StateEnemyMachine(GetThis<MyGameObject>()));
 
 	}
 
@@ -251,6 +252,13 @@ namespace basecross {
 		}
 
 		return angle;
+	}
+
+
+	// ステートの変更処理
+	void Enemy::ChangeState(wstring stateName)
+	{
+		m_stateMachine->ChangeState(stateName);
 	}
 
 

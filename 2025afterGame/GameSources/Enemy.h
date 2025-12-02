@@ -1,6 +1,6 @@
 /*!
-@file StateEnemy.h
-@brief 敵のステート処理
+@file Enemy.h
+@brief 敵
 担当者：三瓶裕太
 */
 
@@ -8,6 +8,7 @@
 #include "stdafx.h"
 
 namespace basecross {
+	class StateEnemyMachine;
 	class Enemy:public FighterAircraftBase
 	{
 	private:
@@ -18,6 +19,8 @@ namespace basecross {
 		// 追いかける目標のオブジェクト
 		weak_ptr<Actor> m_trackingObj;
 
+		unique_ptr<StateEnemyMachine> m_stateMachine; // ステートマシン
+
 	public:
 		Enemy(const shared_ptr<Stage>& obj,const Vec3& pos,const Quat& qt,const Vec3& scale, const shared_ptr<CheckPoint>& startCheckPoint,const shared_ptr<Actor>& trackingObj);
 		~Enemy();
@@ -27,6 +30,9 @@ namespace basecross {
 
 		// 当たり判定
 		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
+
+		// ステートの変更処理
+		void ChangeState(wstring stateName);
 	};
 
 }
