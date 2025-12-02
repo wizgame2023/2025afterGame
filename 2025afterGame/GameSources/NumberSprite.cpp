@@ -5,7 +5,7 @@
 
 #include "stdafx.h"
 #include "Project.h"
-
+class ScoreManager;
 namespace basecross {
     NumberSprite::NumberSprite(
         const shared_ptr<Stage>& stagePtr,
@@ -39,6 +39,7 @@ namespace basecross {
         auto& gameManger = GameManager::GetGameManager();
         auto& uiManager = UIManager::GetUIManager();
         auto currentHP = uiManager->GetCurrentPlayerHP();
+        auto currentScore = ScoreManager::GetScoreManager()->GetScore();
 
         int value = 0;
 
@@ -55,6 +56,10 @@ namespace basecross {
             break;
         case NumberType::MaxBullet:
             value = uiManager->GetBulletNumMax();
+            break;
+        case NumberType::Score:
+			value = currentScore;
+			break;
         }
 
         if (value >= 0)

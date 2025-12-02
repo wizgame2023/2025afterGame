@@ -12,22 +12,39 @@ namespace basecross {
 	// ScoreManagerクラス
 	// ==============================================================================
 
-	class ScoreManager : public MyGameObject
+	class ScoreManager
 	{
+		// 削除処理
+		struct ScoreManagerDeleter
+		{
+			void operator()(ScoreManager* p) { delete p; };
+		};
+
+		static unique_ptr<ScoreManager, ScoreManagerDeleter> m_scoreManager;
+
 		// スコア
-		int m_score;
+		int m_score = 0;
 
 		// スプライト
-		vector<Sprite> m_numberSprite;
+		vector<shared_ptr<Sprite>> m_numberSprite;
 
 		// ステージ
 		shared_ptr<Stage> m_stage;
 
+		// 数値のUV座標変更
+		//void UpdateNumSprite(const shared_ptr<Sprite>& numSp);
+
 	public:
 		// コンストラクタ
-		ScoreManager(const shared_ptr<Stage>& stagePtr);
+		ScoreManager();
 		// デストラクタ
 		~ScoreManager() {};
+
+		// スコアマネージャーを作成
+		static unique_ptr<ScoreManager, ScoreManager::ScoreManagerDeleter>& CreateScoreManager();
+
+		// 自分を渡す
+		static unique_ptr<ScoreManager, ScoreManager::ScoreManagerDeleter>& GetScoreManager();
 
 		// スコア更新
 		// 引数 : 変動するスコア
@@ -38,9 +55,6 @@ namespace basecross {
 
 		// スコア初期化
 		void ResetScore();
-
-		virtual void OnCreate() override;
-		virtual void OnUpdate() override;
 
 	};
 
