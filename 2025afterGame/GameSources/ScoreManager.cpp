@@ -8,30 +8,12 @@
 #include "Project.h"
 
 namespace basecross {
+	unique_ptr<ScoreManager, ScoreManager::ScoreManagerDeleter> ScoreManager::m_scoreManager;
 
-	ScoreManager::ScoreManager(const shared_ptr<Stage>& stagePtr) :
-		MyGameObject(stagePtr)
-	{
-		ResetScore();
-	}
-
-	// ==============================================================================
-	// 生成
-	// ==============================================================================
-	void ScoreManager::OnCreate()
-	{
-		m_stage = GetStage();
-
-		//m_numberSprite.push_back()
-	}
-
-	// ==============================================================================
-	// 更新
-	// ==============================================================================
-	void ScoreManager::OnUpdate()
-	{
-
-	}
+	// コンストラクタ
+	ScoreManager::ScoreManager() :
+		m_score(0)
+	{}
 
 	// ==============================================================================
 	// 関数
@@ -53,6 +35,37 @@ namespace basecross {
 	{
 		return m_score;
 	}
+
+	// シングルトンによる生成
+	unique_ptr<ScoreManager, ScoreManager::ScoreManagerDeleter>& ScoreManager::CreateScoreManager()
+	{
+		try
+		{
+			if (m_scoreManager.get() == 0)
+			{
+				// 自分を作成
+				m_scoreManager.reset(new ScoreManager());
+			}
+			return m_scoreManager;
+		}
+		catch (...)
+		{
+			throw;
+		}
+
+		return m_scoreManager;
+	}
+
+	unique_ptr<ScoreManager, ScoreManager::ScoreManagerDeleter>& ScoreManager::GetScoreManager()
+	{
+		return m_scoreManager;
+	}
+
+
+	//void ScoreManager::UpdateNumSprite(const shared_ptr<Sprite>& numSp)
+	//{
+	//	int displayScore = m_score;
+	//}
 
 }
 //end basecross
