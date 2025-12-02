@@ -11,7 +11,6 @@
 
 #pragma once
 
-
 #include "ProjectShader.h"
 #include "ProjectBehavior.h"
 #include "Scene.h"
@@ -19,7 +18,6 @@
 #include "InputManager.h"
 #include "Background.h"
 #include "Plane.h"
-#include "StateEnemy.h"
 #include "StageWall.h"
 #include "TestCsv.h"
 #include "DashRing.h"
@@ -72,5 +70,7 @@
 // ステートインクルード
 #include "StateBase.h";
 
+// 親クラスがStateBase
 #include "StateBarrier.h"
 #include "StateDisableBarrier.h"
+#include "StateEnemy.h"
