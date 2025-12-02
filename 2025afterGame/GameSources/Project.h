@@ -35,6 +35,7 @@
 #include "GameManager.h"
 #include "Sprite.h"
 #include "BillBoard.h"
+#include "ScoreManager.h"
 ///////////////////////////////////////////////////
 
 // EffectManager
