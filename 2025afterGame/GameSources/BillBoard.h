@@ -18,6 +18,7 @@ namespace basecross{
 		Vec3 m_scale;
 		Col4 m_color;
 
+		// 空のvectorを用意
 		vector<VertexPositionNormalTexture> m_vertices;
 		vector<uint16_t> m_indices;//インデックス情報
 		shared_ptr<MeshResource> m_SquareMeshResource;
@@ -39,24 +40,7 @@ namespace basecross{
 		// 更新
 		virtual void OnUpdate() override;
 		
-		Quat Billboard(const Vec3& Line)
-		{
-			Vec3 Temp = Line;
-			Mat4x4 RotMatrix;
-			Vec3 DefUp(0, 1.0f, 0);
-			Vec2 TempVec2(Temp.x, Temp.z);
-			if (TempVec2.length() < 0.1f)
-			{
-				DefUp = Vec3(0, 0, 1.0f);
-			}
-			Temp.normalize();
-			RotMatrix = XMMatrixLookAtLH(Vec3(0, 0, 0), Temp, DefUp);
-			RotMatrix.inverse();
-			Quat Qt;
-			Qt = RotMatrix.quatInMatrix();
-			Qt.normalize();
-			return Qt;
-		}
+		Quat Billboard(const Vec3& Line);
 
 		void SetBillUV(Vec2 topLeft, Vec2 botRight);
 		
