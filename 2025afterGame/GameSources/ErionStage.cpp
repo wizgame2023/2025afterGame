@@ -118,9 +118,9 @@ namespace basecross {
 				(float)_wtof(Tokens[9].c_str())
 			);
 
-			//wstring tag = Tokens[10];
+			wstring Tag = Tokens[10];
 
-			AddGameObject<TestCsv>(Pos, Rot, Siz);
+			AddGameObject<TestCsv>(Pos, Rot, Siz, Tag);
 		}
 	}
 

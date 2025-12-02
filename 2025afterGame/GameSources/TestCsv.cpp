@@ -10,12 +10,14 @@ namespace basecross {
 	TestCsv::TestCsv(const shared_ptr<Stage>& StagePtr,
 		const Vec3& Pos,
 		const Vec3& Rot,
-		const Vec3& Siz
+		const Vec3& Siz,
+		const wstring& Tag
 	) :
 		GameObject(StagePtr),
 		m_pos(Pos),
 		m_rot(Rot),
-		m_siz(Siz)
+		m_siz(Siz),
+		m_tag(Tag)
 	{
 		try
 		{
@@ -44,10 +46,28 @@ namespace basecross {
 		ptrCol->SetDrawActive(false);
 		ptrCol->SetAfterCollision(AfterCollision::Auto);
 
+		Mat4x4 spanMat;
+		spanMat.affineTransformation(
+			Vec3(0.3f, 0.7f, 0.3f),
+			Vec3(0.0f, 0.0f, 0.0f),
+			Vec3(0.0f, 0.0f, 0.0f),
+			Vec3(0.0f, -0.7f, 0.0f)
+		);
+
 		//ƒƒbƒVƒ…‚Ì•`‰æ
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
-		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
-		ptrDraw->SetTextureResource(L"TestTex");
+
+		if (m_tag == L"Desk")
+		{
+			ptrDraw->SetMeshResource(L"Desk");
+			ptrDraw->SetTextureResource(L"DeskTex");
+			ptrDraw->SetMeshToTransformMatrix(spanMat);
+		}
+		else
+		{
+			ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+			ptrDraw->SetTextureResource(L"TestTex");
+		}
 	}
 }
 //end basecross

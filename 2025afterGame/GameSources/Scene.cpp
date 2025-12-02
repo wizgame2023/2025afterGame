@@ -35,10 +35,19 @@ namespace basecross{
 		auto strTexture = texPath + L"TestTex.png";
 		App::GetApp()->RegisterTexture(L"TestTex", strTexture);
 
+		modelTex = modelPath + L"desk.png";
+		App::GetApp()->RegisterTexture(L"DeskTex", modelTex);
+
 		// Model /////////////////////////////////////////////////
 		// Player
 		auto modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"PropellerPlane.bmf");
 		app->RegisterResource(L"Sentouki", modelMesh);
+
+		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"desk.bmf");
+		app->RegisterResource(L"Desk", modelMesh);
+
+		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"Chair.bmf");
+		app->RegisterResource(L"Chair", modelMesh);
 
 
 		// UI /////////////////////////////////////////////////
