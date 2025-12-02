@@ -11,7 +11,7 @@ namespace basecross {
 	TitleStage::TitleStage() :
 		m_Transparency(1.0f),
 		m_Transparent(true),
-		m_elapsedTime(0)
+		m_elapsedTime(0.0f)
 	{
 	}
 
