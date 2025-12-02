@@ -24,8 +24,8 @@ namespace basecross{
 		wstring path = app->GetDataDirWString();
 		wstring modelPath = path + L"Models/";
 		wstring texPath = path + L"Textures/";
-		wstring uiPath = path + L"UI/Player/";
-		wstring uiPath = path + L"UI/";
+		wstring uiPlayerPath = path + L"UI/Player/";
+		wstring uiTitlePath = path + L"UI/Title/";
 		wstring efkPath = path + L"Effects/";
 
 		//Textures //////////////////////////////////////////////
@@ -42,16 +42,16 @@ namespace basecross{
 
 
 		// UI /////////////////////////////////////////////////
-		auto numberSprite = uiPath + L"Number.png";
+		auto numberSprite = uiPlayerPath + L"Number.png";
 		App::GetApp()->RegisterTexture(L"Number", numberSprite);
     
-		auto hp = uiPath + L"Hp.png";
+		auto hp = uiPlayerPath + L"Hp.png";
 		App::GetApp()->RegisterTexture(L"HP", hp);
     
-		auto colon = uiPath + L"Colon.png";
+		auto colon = uiPlayerPath + L"Colon.png";
 		App::GetApp()->RegisterTexture(L"Colon", colon);
     
-    auto startTex = uiPath + L"Title/PressA.png";
+		auto startTex = uiTitlePath + L"PressA.png";
 		App::GetApp()->RegisterTexture(L"Start_TX", startTex);
     
 		// Effect /////////////////////////////////////////////

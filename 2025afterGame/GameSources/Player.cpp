@@ -64,9 +64,6 @@ namespace basecross {
 		auto nowRot = GetComponent<Transform>()->GetRotation();
 		auto& input = InputManager::GetInputManager();
 		
-		//体力減少実験
-		//m_hpCurrent -= 1 * deltaTime;
-
 		// プレイヤーの挙動
 		PlayerMove();
 		TurnUpdate(deltaTime);
@@ -252,7 +249,11 @@ namespace basecross {
 		//「押した瞬間」だけ発射する
 		if (prevTrigger <= threshold && nowTrigger > threshold)
 		{
-			m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
+			if (m_bulletNumCurrentNow > 0)
+			{
+				m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
+				m_bulletNumCurrentNow -= 1;
+			}
 		}
 
 		// 前フレーム値の更新を忘れない
