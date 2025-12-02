@@ -44,11 +44,8 @@ namespace basecross {
 
         switch (m_type)
         {
-        case NumberType::HP:
-            value = uiManager->GetCurrentPlayerHP();
-            break;
         case NumberType::Bullet:
-            value = 100;
+            value = uiManager->GetBulletNumCurrentNow();
             break;
         case NumberType::minute:
             value = uiManager->GetMinuteTimer();
@@ -56,6 +53,8 @@ namespace basecross {
         case NumberType::second:
             value = uiManager->GetSecondTimer();
             break;
+        case NumberType::MaxBullet:
+            value = uiManager->GetBulletNumMax();
         }
 
         if (value >= 0)

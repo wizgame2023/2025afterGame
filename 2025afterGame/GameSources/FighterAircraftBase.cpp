@@ -192,6 +192,16 @@ namespace basecross {
 	//	m_nextCheckPointID++;
 	//}
 
+	int FighterAircraftBase::GetBulletNumCurrentNow()
+	{
+		return m_bulletNumCurrentNow;
+	}
+
+	int FighterAircraftBase::GetBulletNumMax()
+	{
+		return m_bulletNumMax;
+	}
+
 }
 //end basecross
 
