@@ -70,6 +70,7 @@ namespace basecross {
 		if (m_gameStartFlag)
 		{
 			m_timeGamePlaying += m_deltaTime;
+			m_timeLimit -= m_deltaTime;
 		}
 
 		// 入力マネージャーの更新
@@ -174,6 +175,11 @@ namespace basecross {
 	void GameManager::ResetCheckPoint()
 	{
 		m_checkPoints.clear();
+	}
+
+	float GameManager::GetTimeLimit()
+	{
+		return m_timeLimit;
 	}
 
 }

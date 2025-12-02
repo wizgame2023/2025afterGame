@@ -1,12 +1,16 @@
 /*!
 @file UIManager.h
 @brief UIŠÇ—‚ÌéŒ¾
+’S“–F‹g“c ’q‹M
 */
 
 #pragma once
 #include "stdafx.h"
 
-namespace basecross{
+namespace basecross
+{
+	class HpSprite;
+	class Enemy;
 	class UIManager
 	{
 	private:
@@ -17,6 +21,17 @@ namespace basecross{
 		
 		// Manager‚ğˆê‚Â‚¾•Û
 		static unique_ptr<UIManager, UIManagerDeleter> m_UIManager;
+
+		shared_ptr<Enemy> m_enemy;
+		bool m_createUI;
+		int m_playerHpCurrent;
+		int m_playerHpMax;
+		int m_enemyHpCurrent;
+		int m_enemyHpMax;
+		int m_minute;
+		int m_second;
+		int m_bulletNumCurrentNow;
+		int m_bulletNumMax;
 
 	public:
 		//\’z‚Æ”jŠü
@@ -40,8 +55,28 @@ namespace basecross{
 		virtual void OnCreate();
 		virtual void OnUpdate();
 
-		// ƒvƒŒƒCƒ„[HP‚ğUI‚É“n‚·
+		void CreateUI();
+
+		// ƒvƒŒƒCƒ„[HP‚ğæ“¾
 		void GetPlayerHP();
+		// “G‚ÌHP‚ğæ“¾
+		void GetEnemyHP();
+		//Œ»İ‚ÌƒvƒŒƒCƒ„[‚ÌHP‚ğæ“¾
+		int GetCurrentPlayerHP();
+		//Œ»İ‚ÌƒvƒŒƒCƒ„[‚ÌÅ‘åHP‚ğæ“¾
+		int GetMaxPlayerHP();
+		// limit‚ğ•ª‚Æ•b‚É•ª‚¯‚é
+		void UpdateTime(int limit);
+		//Œ»İ‚Ì•ªŠÔ‚ğæ“¾
+		int GetMinuteTimer();
+		//Œ»İ‚Ì•bŠÔ‚ğæ“¾
+		int GetSecondTimer();
+
+		//Œ»İ‚Ì’e”‚ğæ“¾
+		int GetBulletNumCurrentNow();
+		//Å‘å‚Ì’e”‚ğæ“¾
+		int GetBulletNumMax();
+
 
 	private:
 		//ƒRƒs[‹Ö~

@@ -18,6 +18,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)AttackCollision.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Barrier.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Background.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)BillBoard.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)BillBoardGauge.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Bullet.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Camera.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Character.h" />
@@ -37,6 +39,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)MainCameraManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MultiViewStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MyGameObject.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)NumberSprite.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Plane.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Player.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Project.h" />
@@ -44,6 +47,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)ProjectShader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)KaitoStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Scene.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ScoreManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SelectStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Sprite.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StageWall.h" />
@@ -54,6 +58,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)TestCsv.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TitleStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TomokiStage.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)UIManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)YuutaStage.h" />
   </ItemGroup>
   <ItemGroup>
@@ -61,6 +66,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)AttackCollision.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Barrier.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Background.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)BillBoard.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)BillBoardGauge.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Bullet.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)CheckPoint.cpp" />
@@ -80,11 +87,13 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)MainCameraManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MultiViewStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MyGameObject.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)NumberSprite.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Plane.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Player.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectBehavior.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectShader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Scene.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ScoreManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SelectStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Sprite.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StageWall.cpp" />
@@ -95,6 +104,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)TestCsv.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TitleStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TomokiStage.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)UIManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WinMain.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)YuutaStage.cpp" />
   </ItemGroup>

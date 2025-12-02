@@ -29,6 +29,9 @@ namespace basecross {
 	{
 		FighterAircraftBase::OnCreate();
 
+		m_hpMax = 100;
+		m_hpCurrent = m_hpMax;
+
 		auto ptrTrans = GetComponent<Transform>();
 		ptrTrans->SetPosition(Vec3(0.0f, 0.0f, -1.0f));
 
@@ -60,7 +63,7 @@ namespace basecross {
 		auto nowPos = GetComponent<Transform>()->GetPosition();
 		auto nowRot = GetComponent<Transform>()->GetRotation();
 		auto& input = InputManager::GetInputManager();
-
+		
 		// プレイヤーの挙動
 		PlayerMove();
 		TurnUpdate(deltaTime);
@@ -102,6 +105,9 @@ namespace basecross {
 		Vec3 moveDir = forward;
 
 		Vec2 lstick = input->GetLStick();
+
+		m_speedAdd = 3.0f;
+		m_speedMax = 10.0f;
 
 		ChangePlayer(lstick);
 
@@ -243,7 +249,11 @@ namespace basecross {
 		//「押した瞬間」だけ発射する
 		if (prevTrigger <= threshold && nowTrigger > threshold)
 		{
-			m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
+			if (m_bulletNumCurrentNow > 0)
+			{
+				m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
+				m_bulletNumCurrentNow -= 1;
+			}
 		}
 
 		// 前フレーム値の更新を忘れない

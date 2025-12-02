@@ -47,15 +47,25 @@ namespace basecross {
 			auto player = AddGameObject<Player>();
 			SetSharedGameObject(L"Player", player);
 
-			AddGameObject<TestCubeKaito>(Vec3(0.0f, 0.0f, 10.0f), Vec3(10.0f,10.0f,1.0f));
+			AddGameObject<TestCubeKaito>(Vec3(0.0f, 0.0f, 10.0f), Vec3(10.0f, 10.0f, 1.0f));
 
+			auto plPos = player->GetComponent<Transform>()->GetPosition();
+			EffectManager::Instance().PlayEffect(L"Fire", Vec3(plPos));
+
+			auto mainCamMana = AddGameObject<MainCameraManager>();
+			SetSharedGameObject(L"MainCameraManager", mainCamMana);
+
+			// これがないとエフェクトが表示されない()
+			AddGameObject<EffectUpdateDrawManager>();
 		}
+
 		catch (...) {
 			throw;
 		}
+	}
 
-		auto mainCamMana = AddGameObject<MainCameraManager>();
-		SetSharedGameObject(L"MainCameraManager", mainCamMana);
+	void KaitoStage::OnUpdate()
+	{		
 	}
 
 	// ==============================================================================

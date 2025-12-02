@@ -1,6 +1,7 @@
 /*!
 @file HpSprite.cpp
 @brief HPの実体
+担当：吉田 智貴
 */
 
 #include "stdafx.h"
@@ -16,8 +17,9 @@ namespace basecross{
 		const Col4& color,
 		int layer) :
 		Sprite(stagePtr, textureName, size, pos, rot, color, layer),
-		m_nowHP(0.0f),
-		m_maxHP(0.0f)
+		m_Rate(0.0f),
+		m_size(size),
+		m_pos(pos)
 	{
 
 	}
@@ -28,30 +30,50 @@ namespace basecross{
 
 	void HpSprite::OnCreate()
 	{
-		m_width = m_nowHP / m_maxHP * 1.0f;
+		m_clear = true;
+		// uWidthに元の値を記録
+		Col4 color(1, 1, 1, 1); // ポリゴンの色
 
-		float helfSize = 1.0f;
+		vector<VertexPositionColorTexture> m_vertices = { // 頂点データ
+		//             座標                         , 頂点色,  UV座標
+		{Vec3(0,                +m_size.y * 0.5f, 0), m_color, Vec2(0.0f, 0.0f)},
+		{Vec3(m_size.x * 0.5f,  +m_size.y * 0.5f, 0), m_color, Vec2(1.0f, 0.0f)},
+		{Vec3(0,                -m_size.y * 0.5f, 0), m_color, Vec2(0.0f, 1.0f)},
+		{Vec3(m_size.x * 0.5f,  -m_size.y * 0.5f, 0), m_color, Vec2(1.0f, 1.0f)}, };
 
-		//頂点配列(縦横5個ずつ表示)
-		vector<VertexPositionColorTexture> vertices = {
-			{ VertexPositionColorTexture(Vec3(0,                0, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f),  Vec2(0.0f   , 0.0f)) },
-			{ VertexPositionColorTexture(Vec3(0,        -helfSize, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f),  Vec2(0.0f   , 1.0f)) },
-			{ VertexPositionColorTexture(Vec3(m_width,		    0, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f),  Vec2(m_width, 0.0f)) },
-			{ VertexPositionColorTexture(Vec3(m_width,  -helfSize, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f),  Vec2(m_width, 1.0f)) },
+		vector<uint16_t> m_indices = { // 頂点インデックス（頂点のつなげ順）
+			0, 1, 2, // ←これで一つのポリゴン(三角形)
+			2, 1, 3  // ←こっちも
 		};
 
-		//インデックス配列
-		vector<uint16_t> indices = { 0, 1, 2, 1, 3, 2 };
-		SetAlphaActive(m_clear);
 		m_trans = GetComponent<Transform>();
-		m_trans->SetScale(0.0f, 0.0f, 0.0f);
+		m_trans->SetScale(Vec3(m_size.x, m_size.y, 0.0f));
 		m_trans->SetPosition(m_pos);
 		//頂点とインデックスを指定してスプライト作成
-		m_drawComp = AddComponent<PCTSpriteDraw>(vertices, indices);
-		m_drawComp->SetSamplerState(SamplerState::LinearWrap);
-		m_drawComp->SetTextureResource(m_textureName);
+		auto drawComp = AddComponent<PCTSpriteDraw>(m_vertices, m_indices);
+		drawComp->SetSamplerState(SamplerState::LinearWrap);
+		drawComp->SetTextureResource(m_textureName);
+		SetDrawLayer(m_layer);
+		SetAlphaActive(m_clear);
 	}
 
+	void HpSprite::OnUpdate()
+	{
+		auto hpMin = 0.0f;
+		auto deltaTime = App::GetApp()->GetElapsedTime();
+		auto& uiManager = UIManager::GetUIManager();
+		auto currentHP = uiManager->GetCurrentPlayerHP();
+		auto maxHP = uiManager->GetMaxPlayerHP();
 
+		// 体力の割合
+		m_Rate = static_cast<float>(currentHP) / static_cast<float>(maxHP);
+		m_Rate = clamp(m_Rate, hpMin, 1.0f);
+
+		auto hpWidth = m_size.x * m_Rate;
+
+		// 比率でスケーリング（横方向のみ縮む）
+		m_trans->SetScale(Vec3(hpWidth, m_size.y, 1.0f));
+		m_trans->SetPosition(Vec3(m_pos));
+	}
 }
 //end basecross

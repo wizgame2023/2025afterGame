@@ -104,6 +104,11 @@ namespace basecross{
 		//void SetTimeCheckPointDifferece(float timeCheckPointDifferece);
 		//// 次のチェックポイントの位置のセッタ
 		//void SetNextCheckPointPos(Vec3 nextCheckPointPos);
+
+		// 現在の弾数のゲッタ
+		int GetBulletNumCurrentNow();
+		// 最大の弾数のゲッタ
+		int GetBulletNumMax();
 	};
 }
 //end basecross
