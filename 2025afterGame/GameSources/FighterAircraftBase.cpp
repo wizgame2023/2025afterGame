@@ -192,14 +192,52 @@ namespace basecross {
 	//	m_nextCheckPointID++;
 	//}
 
+	// 現在の弾数のゲッタ
 	int FighterAircraftBase::GetBulletNumCurrentNow()
 	{
 		return m_bulletNumCurrentNow;
 	}
 
+	// 最大の弾数のゲッタ
 	int FighterAircraftBase::GetBulletNumMax()
 	{
 		return m_bulletNumMax;
+	}
+
+	//  復活までの無敵付与時間のゲッタ
+	float FighterAircraftBase::GetTimeOfReturn()
+	{
+		return m_timeOfReturn;
+	}
+
+	// 復活までの無敵付与時間
+	float FighterAircraftBase::GetTimeOfReturnUnDamage()
+	{
+		return m_timeOfReturnUnDamage;
+	}
+
+	// 現在スコアのゲッタ
+	float FighterAircraftBase::GetScoreCurrent()
+	{
+		return m_scoreCurrent;
+	}
+
+	// 現在HPのゲッタ
+	float FighterAircraftBase::GetHPCurrent()
+	{
+		return m_hpCurrent;
+	}
+
+	// 現在HPのセッタ
+	void FighterAircraftBase::SetHPCurrent(float hp)
+	{
+		m_hpCurrent = hp;
+	}
+
+	// 最大HPのゲッタ
+	float FighterAircraftBase::GetHPMax()
+	{
+		return m_hpMax;
 	}
 
 }

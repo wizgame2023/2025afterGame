@@ -36,8 +36,8 @@ namespace basecross{
 		int m_scoreMax = 99999999;   // スコアの最大値
 
 		// 復活関係
-		float timeOfReturnUnDamage = 0.0f; // 復活までの無敵付与時間
-		float timeOfReturn = 0.0f;		   // 倒されてからの復活の時間
+		float m_timeOfReturnUnDamage = 0.0f; // 復活までの無敵付与時間
+		float m_timeOfReturn = 0.0f;		   // 倒されてからの復活の時間
 
 		////エネルギー
 		//float m_energyCurrent = 0.0f;				// 現在のエネルギー
@@ -109,6 +109,19 @@ namespace basecross{
 		int GetBulletNumCurrentNow();
 		// 最大の弾数のゲッタ
 		int GetBulletNumMax();
+		//  復活までの無敵付与時間のゲッタ
+		float GetTimeOfReturn();
+		// 復活までの無敵付与時間
+		float GetTimeOfReturnUnDamage();
+		// 現在スコアのゲッタ
+		float GetScoreCurrent();
+		// 現在HPのゲッタ
+		float GetHPCurrent();
+		// 現在HPのセッタ
+		void SetHPCurrent(float hp);
+		// 最大HPのゲッタ
+		float GetHPMax();
+
 	};
 }
 //end basecross
