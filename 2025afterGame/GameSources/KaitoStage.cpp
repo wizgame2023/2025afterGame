@@ -55,6 +55,7 @@ namespace basecross {
 			auto mainCamMana = AddGameObject<MainCameraManager>();
 			SetSharedGameObject(L"MainCameraManager", mainCamMana);
 
+			// これがないとエフェクトが表示されない()
 			AddGameObject<EffectUpdateDrawManager>();
 		}
 
