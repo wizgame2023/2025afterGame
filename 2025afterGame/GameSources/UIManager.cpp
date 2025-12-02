@@ -12,6 +12,7 @@ namespace basecross
 {
 	UIManager::UIManager():
 		m_createUI(false),
+		m_initialized(false),
 		m_playerHpCurrent(0),
 		m_playerHpMax(0),
 		m_enemyHpCurrent(0),
@@ -76,15 +77,20 @@ namespace basecross
 		auto limit  = gameManager->GetTimeLimit();
 
 		// OnCreate‚¾‚ÆScene‚æ‚è‘¬‚¢‚Ì‚ÅƒGƒ‰[‚ªã‚Ì•û‚¾‚Æo‚é
-		if (dynamic_pointer_cast<TomokiStage>(stage) == nullptr) return;
+		if (dynamic_pointer_cast<TitleStage>(stage) != nullptr || dynamic_pointer_cast<SelectStage>(stage) != nullptr) return;
 
 		GetPlayerHP();
 		GetEnemies();
-		GaugeUI();
 
 		if (m_createUI == false)
 		{	
 			CreateUI();
+		}
+
+		if (!m_initialized)
+		{
+			GaugeUI();
+			m_initialized = true;
 		}
 
 
@@ -133,12 +139,11 @@ namespace basecross
 
 		for (int i = 0; i < m_enemies.size(); i++)
 		{
-			auto enemyBillBoard = stage->AddGameObject<BillBoardGauge>(m_enemies[i], L"HP", 3, 2.0f, 2.0f, Vec3(2.0f, 0.5f, 5.0f),Col4(1.0f),i);
+			auto enemyBillBoard = stage->AddGameObject<BillBoardGauge>(m_enemies[i], L"HP", 3, 2.0f, 1.5f, Vec3(2.0f, 0.2f, 5.0f),Col4(1.0f),i);
 			m_enemyGauges.push_back(enemyBillBoard);
 		}
 
 	}
-
 
 	void UIManager::GetPlayerHP()
 	{
