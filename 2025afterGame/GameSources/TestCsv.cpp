@@ -47,6 +47,7 @@ namespace basecross {
 		//ƒƒbƒVƒ…‚Ì•`‰æ
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+		ptrDraw->SetTextureResource(L"TestTex");
 	}
 }
 //end basecross
