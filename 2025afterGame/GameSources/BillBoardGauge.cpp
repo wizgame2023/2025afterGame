@@ -15,10 +15,12 @@ namespace basecross{
 		float pushX,
 		float pushY,
 		Vec3 scale,
-		Col4 col) :
+		Col4 col,
+		int enemyIndex) :
 		BillBoard(stagePtr, actorPtr, spriteName, layer, pushX, pushY, scale,col),
 		m_indices(vector<uint16_t>()),
-		m_parsecond(0.0f)
+		m_parsecond(1.0f),
+		m_enemyIndex(enemyIndex)
 	{
 
 	}
@@ -81,13 +83,17 @@ namespace basecross{
 
 	void BillBoardGauge::OnUpdate()
 	{
-		if (m_actor.expired())
+		if (m_actor.expired() || m_parsecond <= 0.0f)
 		{
-			GetStage()->RemoveGameObject<BillBoard>(GetThis<BillBoard>());
+			RemoveBill();
+			return;
 		}
+
+		SetPercent();
+
 		if (!m_actor.expired()) {
-			auto SeekPtr = m_actor.lock();
-			auto SeekTransPtr = SeekPtr->GetComponent<Transform>();
+			auto seekPtr = m_actor.lock();
+			auto seekPtrTrans = seekPtr->GetComponent<Transform>();
 
 			//アニメーション処理/////////////////////////////////////////
 			m_vertices[1].position.x = -0.5f + (1.0f * m_parsecond);
@@ -113,7 +119,7 @@ namespace basecross{
 			m_SquareMeshResource = MeshResource::CreateMeshResource<VertexPositionColorTexture>(new_vertices, m_indices, true);
 
 			auto PtrTransform = GetComponent<Transform>();
-			auto Pos = SeekTransPtr->GetPosition();
+			auto Pos = seekPtrTrans->GetPosition();
 			Pos.y += m_pushY;
 			PtrTransform->SetPosition(Pos);
 			PtrTransform->SetScale(m_scale);
@@ -137,9 +143,29 @@ namespace basecross{
 	}
 
 	//何パーセントテクスチャを出すか決める
-	void BillBoardGauge::SetPercent(float parcent)
+	void BillBoardGauge::SetPercent()
 	{
-		m_parsecond = parcent;
+		auto& ui = UIManager::GetUIManager();
+
+		// 敵のHP配列を取得
+		auto currents = ui->GetCurrentEnemyHP();
+		auto maxs = ui->GetMaxEnemyHP();
+
+		// 自分が何番目の敵か
+		float current = (float)currents[m_enemyIndex];
+		float maxHP = (float)maxs[m_enemyIndex];
+
+		// 割合を作る
+		if (maxHP <= 0)
+		{
+			m_parsecond = 0.0f;
+		}
+		else
+		{
+			m_parsecond = current / maxHP;
+		}
+
+		m_parsecond = clamp(m_parsecond, 0.0f, 1.0f);
 	}
 
 }

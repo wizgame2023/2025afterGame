@@ -79,12 +79,14 @@ namespace basecross
 		if (dynamic_pointer_cast<TomokiStage>(stage) == nullptr) return;
 
 		GetPlayerHP();
-		GetEnemyHP();
+		GetEnemies();
+		GaugeUI();
 
 		if (m_createUI == false)
 		{	
 			CreateUI();
 		}
+
 
 		UpdateTime(limit);
 	}
@@ -120,11 +122,23 @@ namespace basecross
 		auto colon = stage->AddGameObject<Sprite>(L"Colon", Vec2(16.0f, 43.0f));
 		colon->SetPosition(Vec3(515.0f, 375.0f, 0.0f));
 
-		auto enemyBillBoad = stage->AddGameObject<BillBoardGauge>(m_enemy,L"HP", 3, 2.0f, 2.0f, Vec3(2.0f, 0.5f, 5.0f));
-		enemyBillBoad->SetPercent(1.0f);
-
 		m_createUI = true;
 	}
+
+	void UIManager::GaugeUI()
+	{
+		auto& app = App::GetApp();
+		auto scene = app->GetScene<Scene>();
+		auto stage = scene->GetActiveStage();
+
+		for (int i = 0; i < m_enemies.size(); i++)
+		{
+			auto enemyBillBoard = stage->AddGameObject<BillBoardGauge>(m_enemies[i], L"HP", 3, 2.0f, 2.0f, Vec3(2.0f, 0.5f, 5.0f),Col4(1.0f),i);
+			m_enemyGauges.push_back(enemyBillBoard);
+		}
+
+	}
+
 
 	void UIManager::GetPlayerHP()
 	{
@@ -146,13 +160,17 @@ namespace basecross
 			}
 		}
 	}
-
-	void UIManager::GetEnemyHP()
+	
+	void UIManager::GetEnemies()
 	{
 		auto& app = App::GetApp();
 		auto scene = app->GetScene<Scene>();
 		auto activeStage = scene->GetActiveStage();
 		auto objets = activeStage->GetGameObjectVec();
+
+		m_enemies.clear();
+		m_enemyHpCurrent.clear();
+		m_enemyHpMax.clear();
 
 		for (auto obj : objets)
 		{
@@ -160,9 +178,9 @@ namespace basecross
 			
 			if (enemy)
 			{
-				m_enemy = enemy;
-				m_enemyHpCurrent = enemy->GetHpCurrent();
-				m_enemyHpMax = enemy->GetHpMax();
+				m_enemies.push_back(enemy);
+				m_enemyHpCurrent.push_back(enemy->GetHpCurrent());
+				m_enemyHpMax.push_back(enemy->GetHpMax());
 			}
 		}
 	}
@@ -175,6 +193,16 @@ namespace basecross
 	int UIManager::GetMaxPlayerHP()
 	{
 		return m_playerHpMax;
+	}
+
+	vector<int> UIManager::GetCurrentEnemyHP()
+	{
+		return m_enemyHpCurrent;
+	}
+
+	vector<int> UIManager::GetMaxEnemyHP()
+	{
+		return m_enemyHpMax;
 	}
 
 	void UIManager::UpdateTime(int limit)
