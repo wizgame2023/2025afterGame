@@ -18,7 +18,6 @@
 #include "InputManager.h"
 #include "Background.h"
 #include "Plane.h"
-#include "StateEnemy.h"
 #include "UIManager.h"
 #include "StageWall.h"
 #include "TestCsv.h"
