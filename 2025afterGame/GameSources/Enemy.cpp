@@ -69,6 +69,11 @@ namespace basecross {
 		//m_qt = m_qt * Quat(0.0f, (sin(testAngle / 2.0f)), 0.0f, 0.0f);
 		//m_trans->SetQuaternion(m_qt);
 
+		// 初期化
+		m_hpCurrent = 30;
+		m_hpMax = 30;
+
+
 
 	}
 
@@ -153,7 +158,7 @@ namespace basecross {
 		playerAngle = AdjustmentAngle(playerAngle);
 
 		// 進むスピード(仮)
-		float speed = 3.0f;
+		float speed = 0.0f;
 
 		// Pos移動
 		m_pos.x += cos(playerAngle) * speed * m_delta;
@@ -190,6 +195,14 @@ namespace basecross {
 		m_trans->SetQuaternion(m_qt); // qt反映
 		//m_trans->SetRotation(m_rot);
 		m_trans->SetPosition(m_pos); // pos反映
+
+
+		// HPが０になったらリスポーンする
+		if (m_hpCurrent < 0)
+		{
+			Vec3 respawnPos = Vec3(0.0f,-10.0f,0.0f);
+			m_trans->SetPosition(respawnPos);
+		}
 		
 
 
@@ -204,6 +217,24 @@ namespace basecross {
 
 		scene->SetDebugString(wss.str());
 
+	}
+
+	// 当たり判定
+	void Enemy::OnCollisionEnter(shared_ptr<GameObject>& obj)
+	{
+		auto bullet = dynamic_pointer_cast<Bullet>(obj);
+
+		// 弾に当たった場合
+		if (bullet)
+		{
+			bool bulletAffiliation = bullet->GetAffiliation();
+
+			// 弾の所属がプレイヤーならダメージを受ける
+			if (bulletAffiliation == true)
+			{
+				m_hpCurrent -= bullet->GetDamage();
+			}
+		}
 	}
 
 
