@@ -25,6 +25,7 @@ namespace basecross
 		vector<shared_ptr<Enemy>> m_enemies;
 		vector<shared_ptr<BillBoardGauge>> m_enemyGauges;
 		bool m_createUI;
+		bool m_initialized;
 		int m_playerHpCurrent;
 		int m_playerHpMax;
 		vector<int> m_enemyHpCurrent;
