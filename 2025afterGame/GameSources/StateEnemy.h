@@ -58,6 +58,7 @@ namespace basecross {
 			StateMachineBase(parentObj)
 		{
 			AddState(L"Base", shared_ptr<StateEnemy>(new StateEnemy(parentObj))); // Šî”Õ•”•ª
+			AddState(L"Respawn", shared_ptr<StateRespawnEnemy>(new StateRespawnEnemy(parentObj))); // ƒŠƒXƒ|[ƒ“
 		}
 	};
 
