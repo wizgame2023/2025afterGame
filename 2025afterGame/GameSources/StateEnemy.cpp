@@ -90,8 +90,11 @@ namespace basecross {
 		// 親クラスEnter処理
 		StateEnemy::OnEnter();
 
+		// 初期化
+		m_countTimeOfReturn = 0.0f;
 		// 復活までの時間取得
 		m_timeOfReturn = m_enemyLock->GetTimeOfReturn();
+
 
 		// 自分が見えない状態に変更する
 		m_enemyLock->GetComponent<PNTStaticDraw>()->SetDrawActive(false);
@@ -105,13 +108,18 @@ namespace basecross {
 		m_countTimeOfReturn += m_deltaTime;
 
 		// リスポーン可能時間まで待機する
-		if (m_timeOfReturn >= m_countTimeOfReturn)
+		if (m_timeOfReturn <= m_countTimeOfReturn)
 		{
 			// 復活処理
 			m_enemyLock->GetComponent<Transform>()->SetPosition(Vec3(0.0f, -10.0f, 0.0f));
 
 			// 自分が見える状態に変更する
 			m_enemyLock->GetComponent<PNTStaticDraw>()->SetDrawActive(true);
+
+			m_enemyLock->GetHpMax();
+
+			int maxHP = m_enemyLock->GetHpMax();
+			m_enemyLock->SetHPCurrent(maxHP);
 
 			// 通常ステートに戻る
 			m_enemyLock->ChangeState(L"Base");
