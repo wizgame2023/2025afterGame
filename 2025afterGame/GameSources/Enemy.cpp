@@ -72,14 +72,20 @@ namespace basecross {
 		// 初期化
 		m_hpCurrent = 30;
 		m_hpMax = 30;
+		m_timeOfReturn = 3.0f;
 
-
+		// ステートマシン作成
+		m_stateMachine = unique_ptr<StateEnemyMachine>(new StateEnemyMachine(GetThis<MyGameObject>()));
+		m_stateMachine->ChangeState(L"Base"); // 仮で最初のステートはベースステートに変更する
 
 	}
 
 	void Enemy::OnUpdate()
 	{
 		FighterAircraftBase::OnUpdate();
+
+		// ステートのUpdate
+		m_stateMachine->Update();
 
 		// デバック用に弾を出す
 		m_countDebagBulletTime += m_delta;
@@ -197,12 +203,6 @@ namespace basecross {
 		m_trans->SetPosition(m_pos); // pos反映
 
 
-		// HPが０になったらリスポーンする
-		if (m_hpCurrent < 0)
-		{
-			Vec3 respawnPos = Vec3(0.0f,-10.0f,0.0f);
-			m_trans->SetPosition(respawnPos);
-		}
 		
 
 
@@ -234,6 +234,13 @@ namespace basecross {
 			{
 				m_hpCurrent -= bullet->GetDamage();
 			}
+
+			// HPが０になったらリスポーンする
+			if (m_hpCurrent < 0)
+			{
+				// リスポーンステートに遷移する
+				ChangeState(L"Respawn");
+			}
 		}
 	}
 
@@ -251,6 +258,13 @@ namespace basecross {
 		}
 
 		return angle;
+	}
+
+
+	// ステートの変更処理
+	void Enemy::ChangeState(wstring stateName)
+	{
+		m_stateMachine->ChangeState(stateName);
 	}
 
 
