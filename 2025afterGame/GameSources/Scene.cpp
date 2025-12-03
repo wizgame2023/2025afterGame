@@ -38,6 +38,9 @@ namespace basecross{
 		modelTex = modelPath + L"desk.png";
 		App::GetApp()->RegisterTexture(L"DeskTex", modelTex);
 
+		modelTex = modelPath + L"Chair.png";
+		App::GetApp()->RegisterTexture(L"ChairTex", modelTex);
+
 		// Model /////////////////////////////////////////////////
 		// Player
 		auto modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"PropellerPlane.bmf");
