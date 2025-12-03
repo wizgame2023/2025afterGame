@@ -62,10 +62,11 @@ namespace basecross{
 			for (auto& v : m_vertices) {
 				VertexPositionColorTexture nv;
 				nv.position = v.position;
-				nv.color = Col4(1.0f, 0.0f, 0.0f, 1.0f);//赤
+				nv.color = Col4(1.0f, 1.0f, 1.0f, 1.0f);//赤
 				nv.textureCoordinate = v.textureCoordinate;
 				new_vertices.push_back(nv);
 			}
+
 			//新しい頂点を使ってメッシュリソースの作成
 			m_SquareMeshResource = MeshResource::CreateMeshResource<VertexPositionColorTexture>(new_vertices, m_indices, true);
 
@@ -76,16 +77,14 @@ namespace basecross{
 			SetAlphaActive(true);
 			SetDrawLayer(m_layer);
 			SetDrawActive(true);
-
 		}
-
 	}
 
 	void BillBoardGauge::OnUpdate()
 	{
-		if (m_actor.expired() || m_parsecond <= 0.0f)
+		if (m_parsecond <= 0.0f)
 		{
-			RemoveBill();
+			RemoveBillBoardGauge();
 			return;
 		}
 
@@ -111,12 +110,12 @@ namespace basecross{
 			for (auto& v : m_vertices) {
 				VertexPositionColorTexture nv;
 				nv.position = v.position;
-				nv.color = Col4(1.0f, 0.0f, 0.0f, 1.0f);//赤
+				nv.color = Col4(1.0f, 1.0f, 1.0f, 1.0f);//赤
 				nv.textureCoordinate = v.textureCoordinate;
 				new_vertices.push_back(nv);
 			}
 			//新しい頂点を使ってメッシュリソースの作成
-			m_SquareMeshResource = MeshResource::CreateMeshResource<VertexPositionColorTexture>(new_vertices, m_indices, true);
+			m_SquareMeshResource->UpdateVirtexBuffer<VertexPositionColorTexture>(new_vertices);
 
 			auto PtrTransform = GetComponent<Transform>();
 			auto Pos = seekPtrTrans->GetPosition();
@@ -168,5 +167,10 @@ namespace basecross{
 		m_parsecond = clamp(m_parsecond, 0.0f, 1.0f);
 	}
 
+
+	void BillBoardGauge::RemoveBillBoardGauge()
+	{
+		GetStage()->RemoveGameObject<BillBoardGauge>(GetThis<BillBoardGauge>());
+	}
 }
 //end basecross
