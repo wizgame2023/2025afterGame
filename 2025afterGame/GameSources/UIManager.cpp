@@ -12,6 +12,7 @@ namespace basecross
 {
 	UIManager::UIManager():
 		m_createUI(false),
+		m_initialized(false),
 		m_playerHpCurrent(0),
 		m_playerHpMax(0),
 		m_enemyHpCurrent(0),
@@ -76,15 +77,22 @@ namespace basecross
 		auto limit  = gameManager->GetTimeLimit();
 
 		// OnCreate‚¾‚ÆScene‚æ‚è‘¬‚¢‚Ì‚ÅƒGƒ‰[‚ªã‚Ì•û‚¾‚Æo‚é
-		if (dynamic_pointer_cast<TomokiStage>(stage) == nullptr) return;
+		if (dynamic_pointer_cast<TitleStage>(stage) != nullptr || dynamic_pointer_cast<SelectStage>(stage) != nullptr) return;
 
 		GetPlayerHP();
-		GetEnemyHP();
+		GetEnemies();
 
 		if (m_createUI == false)
 		{	
 			CreateUI();
 		}
+
+		if (!m_initialized)
+		{
+			GaugeUI();
+			m_initialized = true;
+		}
+
 
 		UpdateTime(limit);
 	}
@@ -104,26 +112,39 @@ namespace basecross
 
 		auto hp = stage->AddGameObject<HpSprite>(L"HP", Vec2(30.0f, 5.0f), Vec3(-600.0f, 375.0f, 0.0f));
 				
-		auto bullet = stage->AddGameObject<NumberSprite>(L"Number",Vec2(40.0f, 40.0f),Vec3(-550.0f, 330.0f, 0.0f));
+		auto bullet = stage->AddGameObject<NumberSprite>(Vec2(40.0f, 40.0f),Vec3(-550.0f, 330.0f, 0.0f));
 		bullet->SetMyType(NumberType::Bullet);
 
-		auto maxBullet = stage->AddGameObject<NumberSprite>(L"Number",Vec2(40.0f,40.0f),Vec3(-430.0f, 330.0f, 0.0f));
-		maxBullet->SetMyType(NumberType::MaxBullet);
+		auto maxBullet = stage->AddGameObject<Sprite>(L"RemainingRounds",Vec2(200.0f, 60.0f), Vec3(-510.0f, 330.0f, 0.0f));
 		
-		auto minuteTimer = stage->AddGameObject<NumberSprite>(L"Number",Vec2(50.0f,50.0f),Vec3(470.0f, 375.0f, 0.0f));
-		minuteTimer->SetMyType(NumberType::minute);
+		//auto minuteTimer = stage->AddGameObject<NumberSprite>(Vec2(50.0f,50.0f),Vec3(470.0f, 375.0f, 0.0f));
+		//minuteTimer->SetMyType(NumberType::Minute);
 		
-		auto secondTimer = stage->AddGameObject<NumberSprite>(L"Number",Vec2(50.0f,50.0f),Vec3(600.0f, 375.0f, 0.0f));
-		secondTimer->SetMyType(NumberType::second);
-		secondTimer->SetDigitCount(2);
+		//auto secondTimer = stage->AddGameObject<NumberSprite>(Vec2(50.0f,50.0f),Vec3(600.0f, 375.0f, 0.0f));
+		//secondTimer->SetMyType(NumberType::Second);
+		//secondTimer->SetDigitCount(2);
 
-		auto colon = stage->AddGameObject<Sprite>(L"Colon", Vec2(16.0f, 43.0f));
-		colon->SetPosition(Vec3(515.0f, 375.0f, 0.0f));
+		//auto colon = stage->AddGameObject<Sprite>(L"Colon", Vec2(16.0f, 43.0f));
+		//colon->SetPosition(Vec3(515.0f, 375.0f, 0.0f));
 
-		auto enemyBillBoad = stage->AddGameObject<BillBoardGauge>(m_enemy,L"HP", 3, 2.0f, 2.0f, Vec3(2.0f, 0.5f, 5.0f));
-		enemyBillBoad->SetPercent(1.0f);
+		auto score = stage->AddGameObject<NumberSprite>(Vec2(50.0f,50.0f),Vec3(600.0f, 370.0f, 0.0f));
+		score->SetMyType(NumberType::Score);
 
 		m_createUI = true;
+	}
+
+	void UIManager::GaugeUI()
+	{
+		auto& app = App::GetApp();
+		auto scene = app->GetScene<Scene>();
+		auto stage = scene->GetActiveStage();
+
+		for (int i = 0; i < m_enemies.size(); i++)
+		{
+			auto enemyBillBoard = stage->AddGameObject<BillBoardGauge>(m_enemies[i], L"HP", 3, 2.0f, 1.5f, Vec3(2.0f, 0.2f, 5.0f),Col4(1.0f),i);
+			m_enemyGauges.push_back(enemyBillBoard);
+		}
+
 	}
 
 	void UIManager::GetPlayerHP()
@@ -146,13 +167,17 @@ namespace basecross
 			}
 		}
 	}
-
-	void UIManager::GetEnemyHP()
+	
+	void UIManager::GetEnemies()
 	{
 		auto& app = App::GetApp();
 		auto scene = app->GetScene<Scene>();
 		auto activeStage = scene->GetActiveStage();
 		auto objets = activeStage->GetGameObjectVec();
+
+		m_enemies.clear();
+		m_enemyHpCurrent.clear();
+		m_enemyHpMax.clear();
 
 		for (auto obj : objets)
 		{
@@ -160,9 +185,9 @@ namespace basecross
 			
 			if (enemy)
 			{
-				m_enemy = enemy;
-				m_enemyHpCurrent = enemy->GetHpCurrent();
-				m_enemyHpMax = enemy->GetHpMax();
+				m_enemies.push_back(enemy);
+				m_enemyHpCurrent.push_back(enemy->GetHpCurrent());
+				m_enemyHpMax.push_back(enemy->GetHpMax());
 			}
 		}
 	}
@@ -175,6 +200,16 @@ namespace basecross
 	int UIManager::GetMaxPlayerHP()
 	{
 		return m_playerHpMax;
+	}
+
+	vector<int> UIManager::GetCurrentEnemyHP()
+	{
+		return m_enemyHpCurrent;
+	}
+
+	vector<int> UIManager::GetMaxEnemyHP()
+	{
+		return m_enemyHpMax;
 	}
 
 	void UIManager::UpdateTime(int limit)

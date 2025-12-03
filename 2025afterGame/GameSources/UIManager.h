@@ -9,8 +9,8 @@
 
 namespace basecross
 {
-	class HpSprite;
 	class Enemy;
+	class BillBoardGauge;
 	class UIManager
 	{
 	private:
@@ -22,12 +22,14 @@ namespace basecross
 		// Managerを一つだ保持
 		static unique_ptr<UIManager, UIManagerDeleter> m_UIManager;
 
-		shared_ptr<Enemy> m_enemy;
+		vector<shared_ptr<Enemy>> m_enemies;
+		vector<shared_ptr<BillBoardGauge>> m_enemyGauges;
 		bool m_createUI;
+		bool m_initialized;
 		int m_playerHpCurrent;
 		int m_playerHpMax;
-		int m_enemyHpCurrent;
-		int m_enemyHpMax;
+		vector<int> m_enemyHpCurrent;
+		vector<int> m_enemyHpMax;
 		int m_minute;
 		int m_second;
 		int m_bulletNumCurrentNow;
@@ -55,16 +57,22 @@ namespace basecross
 		virtual void OnCreate();
 		virtual void OnUpdate();
 
+		// 一つだけ生成した物
 		void CreateUI();
-
+		// 複数生成するもの
+		void GaugeUI();
 		// プレイヤーHPを取得
 		void GetPlayerHP();
-		// 敵のHPを取得
-		void GetEnemyHP();
+		// ステージにいる敵の数を取得
+		void GetEnemies();
 		//現在のプレイヤーのHPを取得
 		int GetCurrentPlayerHP();
 		//現在のプレイヤーの最大HPを取得
 		int GetMaxPlayerHP();
+		// 現在の敵のHPを取得
+		vector<int> GetCurrentEnemyHP();
+		// 現在の敵の最大HPを取得
+		vector<int> GetMaxEnemyHP();
 		// limitを分と秒に分ける
 		void UpdateTime(int limit);
 		//現在の分時間を取得

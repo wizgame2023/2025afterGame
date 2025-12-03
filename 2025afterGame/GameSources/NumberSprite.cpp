@@ -5,16 +5,17 @@
 
 #include "stdafx.h"
 #include "Project.h"
-
+class ScoreManager;
 namespace basecross {
     NumberSprite::NumberSprite(
         const shared_ptr<Stage>& stagePtr,
-        const wstring& textureName,
         const Vec2& size,
         const Vec3& pos,
         const Vec3& rot,
         const Col4& color,
-        int layer) :
+        int layer,
+        const wstring& textureName
+    ) :
         Sprite(stagePtr, textureName, size, pos, rot, color, layer),
         m_number(0),
         m_digit(0),
@@ -39,6 +40,7 @@ namespace basecross {
         auto& gameManger = GameManager::GetGameManager();
         auto& uiManager = UIManager::GetUIManager();
         auto currentHP = uiManager->GetCurrentPlayerHP();
+        auto currentScore = ScoreManager::GetScoreManager()->GetScore();
 
         int value = 0;
 
@@ -47,14 +49,18 @@ namespace basecross {
         case NumberType::Bullet:
             value = uiManager->GetBulletNumCurrentNow();
             break;
-        case NumberType::minute:
+        case NumberType::Minute:
             value = uiManager->GetMinuteTimer();
             break;
-        case NumberType::second:
+        case NumberType::Second:
             value = uiManager->GetSecondTimer();
             break;
         case NumberType::MaxBullet:
             value = uiManager->GetBulletNumMax();
+            break;
+        case NumberType::Score:
+			value = currentScore;
+			break;
         }
 
         if (value >= 0)

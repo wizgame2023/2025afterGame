@@ -37,7 +37,7 @@ namespace basecross{
 
 		// Model /////////////////////////////////////////////////
 		// Player
-		auto modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"Sentouki.bmf");
+		auto modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"PropellerPlane.bmf");
 		app->RegisterResource(L"Sentouki", modelMesh);
 
 
@@ -53,6 +53,9 @@ namespace basecross{
     
 		auto startTex = uiTitlePath + L"PressA.png";
 		App::GetApp()->RegisterTexture(L"Start_TX", startTex);
+
+		auto remainingRounds = uiPlayerPath + L"RemainingRounds.png";
+		App::GetApp()->RegisterTexture(L"RemainingRounds", remainingRounds);
     
 		// Effect /////////////////////////////////////////////
 		EffectManager::Instance().CreateEfkInterface();
@@ -75,7 +78,6 @@ namespace basecross{
 
 			// ゲームマネージャー作成
 			GameManager::CreateGameManager();
-			UIManager::CreateUIManager();
 		}
 		catch (...) {
 			throw;
@@ -88,8 +90,6 @@ namespace basecross{
 
 		// ゲームマネージャー更新
 		GameManager::GetGameManager()->OnUpdate();
-		UIManager::GetUIManager()->OnUpdate();
-
 	}
 
 

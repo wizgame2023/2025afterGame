@@ -49,7 +49,8 @@ namespace basecross{
 		m_trans = GetComponent<Transform>();
 		m_trans->SetScale(Vec3(m_size.x, m_size.y, 0.0f));
 		m_trans->SetPosition(m_pos);
-		//頂点とインデックスを指定してスプライト作成
+		// 頂点とインデックスを指定してスプライト作成
+		// メッシュの作成
 		auto drawComp = AddComponent<PCTSpriteDraw>(m_vertices, m_indices);
 		drawComp->SetSamplerState(SamplerState::LinearWrap);
 		drawComp->SetTextureResource(m_textureName);
@@ -69,6 +70,7 @@ namespace basecross{
 		m_Rate = static_cast<float>(currentHP) / static_cast<float>(maxHP);
 		m_Rate = clamp(m_Rate, hpMin, 1.0f);
 
+		// 割合×横サイズ
 		auto hpWidth = m_size.x * m_Rate;
 
 		// 比率でスケーリング（横方向のみ縮む）

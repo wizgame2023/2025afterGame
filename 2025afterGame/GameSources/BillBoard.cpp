@@ -38,65 +38,72 @@ namespace basecross{
 		// 存在していなかったら
 		if (!m_actor.expired())
 		{
-			auto Seekptr = m_actor.lock();
-			auto SeekTransPtr = Seekptr->GetComponent<Transform>();
-			auto Pos = SeekTransPtr->GetPosition();
-			Pos.y += m_pushY;
-			Pos.x += m_pushX;
-			ptrTrans->SetPosition(Pos);
+			auto seekPtr = m_actor.lock();
+			auto seekPtrTrans = seekPtr->GetComponent<Transform>();
+			auto pos = seekPtrTrans->GetPosition();
+			pos.x += m_pushX;
+			pos.y += m_pushY;
+			ptrTrans->SetPosition(pos);
 			ptrTrans->SetScale(m_scale);
-			ptrTrans->SetQuaternion(SeekTransPtr->GetQuaternion());
-
+			ptrTrans->SetQuaternion(seekPtrTrans->GetQuaternion());
+			//Squareの作成(ヘルパー関数を利用)
 			MeshUtill::CreateSquare(1.0f, m_vertices, m_indices);
+			
 			//UV値の変更
 			//左上頂点
-			m_vertices[0].textureCoordinate = Vec2(0, 0);
+			m_vertices[0].textureCoordinate = Vec2(0.0f, 0.0f);
 			//右上頂点
-			m_vertices[1].textureCoordinate = Vec2(1, 0);
+			m_vertices[1].textureCoordinate = Vec2(1.0f, 0.0f);
 			//左下頂点
-			m_vertices[2].textureCoordinate = Vec2(0, 1.0f);
+			m_vertices[2].textureCoordinate = Vec2(0.0f, 1.0f);
 			//右下頂点
-			m_vertices[3].textureCoordinate = Vec2(1, 1.0f);
+			m_vertices[3].textureCoordinate = Vec2(1.0f, 1.0f);
 
-			//頂点の型を変えた新しい頂点を作成(こうしないと色がつかない)
+			//頂点の型を変えた新しい頂点を作成
+			// PCTを使いたいので頂点からPosition、Color、UVだけ取って
+			// new_verticesに入れている
 			vector<VertexPositionColorTexture> new_vertices;
-			for (auto& v : m_vertices) {
+			for (auto& v : m_vertices)
+			{
 				VertexPositionColorTexture nv;
 				nv.position = v.position;
 				nv.color = Col4(1.0f, 1.0f, 1.0f, 1.0f);
 				nv.textureCoordinate = v.textureCoordinate;
 				new_vertices.push_back(nv);
 			}
+
 			//新しい頂点を使ってメッシュリソースの作成
 			m_SquareMeshResource = MeshResource::CreateMeshResource<VertexPositionColorTexture>(new_vertices, m_indices, true);
 
-			auto DrawComp = AddComponent<PCTStaticDraw>();
-			DrawComp->SetMeshResource(m_SquareMeshResource);
-			DrawComp->SetTextureResource(m_textureName);
-			//// エフェクトの消える現象の解決
-			//DrawComp->SetDepthStencilState(DepthStencilState::Read);
+			// メッシュ作成
+			auto drawComp = AddComponent<PCTStaticDraw>();
+			drawComp->SetMeshResource(m_SquareMeshResource);
+			drawComp->SetTextureResource(m_textureName);
 			SetAlphaActive(true);
 			SetDrawLayer(m_layer);
-			SetDrawActive(true);
 		}
 	}
 
-	void BillBoard::OnUpdate() {
+	void BillBoard::OnUpdate()
+	{
+		//　actorがいなかったら
 		if (m_actor.expired())
 		{
-			GetStage()->RemoveGameObject<BillBoard>(GetThis<BillBoard>());
+			RemoveBill();
 		}
+
+		// actorがいたら
 		if (!m_actor.expired()) {
-			auto SeekPtr = m_actor.lock();
-			auto SeekTransPtr = SeekPtr->GetComponent<Transform>();
+			auto seekPtr = m_actor.lock();
+			auto seekPtrTrans = seekPtr->GetComponent<Transform>();
 
 			//トランスフォーム取得
-			auto PtrTransform = GetComponent<Transform>();
-			auto Pos = SeekTransPtr->GetPosition();
-			Pos.y += m_pushY;
-			Pos.x += m_pushX;
-			PtrTransform->SetPosition(Pos);
-			PtrTransform->SetScale(m_scale);
+			auto ptrTrans= GetComponent<Transform>();
+			auto pos = ptrTrans->GetPosition();
+			pos.y += m_pushY;
+			pos.x += m_pushX;
+			ptrTrans->SetPosition(pos);
+			ptrTrans->SetScale(m_scale);
 
 			auto DrawComp = GetComponent<PCTStaticDraw>();
 			DrawComp->SetTextureResource(m_textureName);//テクスチャ更新
@@ -107,7 +114,7 @@ namespace basecross{
 			//向きをカメラ目線にする
 			Qt = Billboard(PtrCamera->GetAt() - PtrCamera->GetEye());
 
-			PtrTransform->SetQuaternion(Qt);
+			ptrTrans->SetQuaternion(Qt);
 		}
 	}
 
@@ -144,6 +151,26 @@ namespace basecross{
 		SetAlphaActive(true);
 	}
 
+	Quat BillBoard::Billboard(const Vec3& Line)
+	{
+		Vec3 Temp = Line;
+		Mat4x4 RotMatrix;
+		Vec3 DefUp(0, 1.0f, 0);
+		Vec2 TempVec2(Temp.x, Temp.z);
+		if (TempVec2.length() < 0.1f)
+		{
+			DefUp = Vec3(0, 0, 1.0f);
+		}
+		Temp.normalize();
+		RotMatrix = XMMatrixLookAtLH(Vec3(0, 0, 0), Temp, DefUp);
+		RotMatrix.inverse();
+		Quat Qt;
+		Qt = RotMatrix.quatInMatrix();
+		Qt.normalize();
+		return Qt;
+	}
+
+
 	//ビルボードのテクスチャ変更
 	void BillBoard::ChangeTexture(wstring textureName)
 	{
@@ -166,6 +193,5 @@ namespace basecross{
 	{
 		GetStage()->RemoveGameObject<BillBoard>(GetThis<BillBoard>());
 	}
-
 }
 //end basecross

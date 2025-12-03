@@ -57,6 +57,8 @@ namespace basecross {
 	{
 		// 入力マネージャーの作成
 		InputManager::CreateInputManager();
+		ScoreManager::CreateScoreManager();
+		UIManager::CreateUIManager();
 	}
 
 	// 更新
@@ -75,6 +77,8 @@ namespace basecross {
 
 		// 入力マネージャーの更新
 		InputManager::GetInputManager()->Update();
+
+		UIManager::GetUIManager()->OnUpdate();
 	}
 
 	// 自分自身の破棄処理
