@@ -77,7 +77,7 @@ namespace basecross {
 			ptrDraw->SetTextureResource(L"ChairTex");
 			ptrDraw->SetMeshToTransformMatrix(spanMat2);
 		}
-		else if (m_tag==L"InvisibleCollision")
+		else if (m_tag == L"InvisibleCollision")
 		{
 
 		}

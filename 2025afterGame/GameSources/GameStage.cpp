@@ -165,7 +165,7 @@ namespace basecross {
 				(float)_wtof(Tokens[9].c_str())
 			);
 
-			//wstring tag = Tokens[10];
+			wstring tag = Tokens[10];
 
 			AddGameObject<DashRing>(Pos, Rot, Siz);
 		}
@@ -200,9 +200,9 @@ namespace basecross {
 				(float)_wtof(Tokens[9].c_str())
 			);
 
-			//wstring tag = Tokens[10];
+			wstring Tag = Tokens[10];
 
-			AddGameObject<StageWall>(Pos, Rot, Siz);
+			AddGameObject<StageWall>(Pos, Rot, Siz, Tag);
 		}
 	}
 
