@@ -115,12 +115,8 @@ namespace basecross{
 		float GetTimeOfReturnUnDamage();
 		// 現在スコアのゲッタ
 		float GetScoreCurrent();
-		// 現在HPのゲッタ
-		float GetHPCurrent();
 		// 現在HPのセッタ
 		void SetHPCurrent(float hp);
-		// 最大HPのゲッタ
-		float GetHPMax();
 
 	};
 }

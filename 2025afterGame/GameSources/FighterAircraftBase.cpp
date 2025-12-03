@@ -222,22 +222,10 @@ namespace basecross {
 		return m_scoreCurrent;
 	}
 
-	// 現在HPのゲッタ
-	float FighterAircraftBase::GetHPCurrent()
-	{
-		return m_hpCurrent;
-	}
-
 	// 現在HPのセッタ
 	void FighterAircraftBase::SetHPCurrent(float hp)
 	{
 		m_hpCurrent = hp;
-	}
-
-	// 最大HPのゲッタ
-	float FighterAircraftBase::GetHPMax()
-	{
-		return m_hpMax;
 	}
 
 }
