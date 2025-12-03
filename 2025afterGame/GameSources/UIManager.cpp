@@ -117,17 +117,17 @@ namespace basecross
 
 		auto maxBullet = stage->AddGameObject<Sprite>(L"RemainingRounds",Vec2(200.0f, 60.0f), Vec3(-510.0f, 330.0f, 0.0f));
 		
-		auto minuteTimer = stage->AddGameObject<NumberSprite>(Vec2(50.0f,50.0f),Vec3(470.0f, 375.0f, 0.0f));
-		minuteTimer->SetMyType(NumberType::Minute);
+		//auto minuteTimer = stage->AddGameObject<NumberSprite>(Vec2(50.0f,50.0f),Vec3(470.0f, 375.0f, 0.0f));
+		//minuteTimer->SetMyType(NumberType::Minute);
 		
-		auto secondTimer = stage->AddGameObject<NumberSprite>(Vec2(50.0f,50.0f),Vec3(600.0f, 375.0f, 0.0f));
-		secondTimer->SetMyType(NumberType::Second);
-		secondTimer->SetDigitCount(2);
+		//auto secondTimer = stage->AddGameObject<NumberSprite>(Vec2(50.0f,50.0f),Vec3(600.0f, 375.0f, 0.0f));
+		//secondTimer->SetMyType(NumberType::Second);
+		//secondTimer->SetDigitCount(2);
 
-		auto colon = stage->AddGameObject<Sprite>(L"Colon", Vec2(16.0f, 43.0f));
-		colon->SetPosition(Vec3(515.0f, 375.0f, 0.0f));
+		//auto colon = stage->AddGameObject<Sprite>(L"Colon", Vec2(16.0f, 43.0f));
+		//colon->SetPosition(Vec3(515.0f, 375.0f, 0.0f));
 
-		auto score = stage->AddGameObject<NumberSprite>(Vec2(50.0f,50.0f),Vec3(600.0f, 0.0f, 0.0f));
+		auto score = stage->AddGameObject<NumberSprite>(Vec2(50.0f,50.0f),Vec3(600.0f, 370.0f, 0.0f));
 		score->SetMyType(NumberType::Score);
 
 		m_createUI = true;
