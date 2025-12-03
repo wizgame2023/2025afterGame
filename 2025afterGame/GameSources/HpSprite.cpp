@@ -70,6 +70,7 @@ namespace basecross{
 		m_Rate = static_cast<float>(currentHP) / static_cast<float>(maxHP);
 		m_Rate = clamp(m_Rate, hpMin, 1.0f);
 
+		// 割合×横サイズ
 		auto hpWidth = m_size.x * m_Rate;
 
 		// 比率でスケーリング（横方向のみ縮む）

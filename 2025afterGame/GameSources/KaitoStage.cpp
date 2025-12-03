@@ -55,6 +55,9 @@ namespace basecross {
 			auto mainCamMana = AddGameObject<MainCameraManager>();
 			SetSharedGameObject(L"MainCameraManager", mainCamMana);
 
+			//auto a = AddGameObject<NumberSprite>(L"Number",Vec2(1.0f),Vec3(0.0f));
+			//a->SetMyType(NumberType::Score);
+
 			// これがないとエフェクトが表示されない()
 			AddGameObject<EffectUpdateDrawManager>();
 		}

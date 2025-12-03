@@ -9,10 +9,11 @@
 namespace basecross{
 	enum class NumberType
 	{
-		minute,
-		second,
+		Minute,
+		Second,
 		Bullet,
-		MaxBullet
+		MaxBullet,
+		Score
 	};
 
 	class NumberSprite : public Sprite
@@ -28,20 +29,32 @@ namespace basecross{
 	public:
 		NumberSprite(
 			const shared_ptr<Stage>& stagePtr,
-			const wstring& textureName,
 			const Vec2& size,
 			const Vec3& pos,
 			const Vec3& rot = Vec3(0.0f, 0.0f, 0.0f),
 			const Col4& color = Col4(1.0f, 1.0f, 1.0f, 1.0f),
-			int layer = 1
+			int layer = 1,
+			const wstring& textureName = L"Number"
+
 		);
 		virtual ~NumberSprite();//デストラクタ
 
+		// 初期化
 		void OnCreate() override;
-		void OnUpdate() override;         // 更新(必要なら)
-		void SetNumber(int number);       // 数値変更
+		
+		// 更新
+		void OnUpdate() override;
+		
+		// 数値変更
+		void SetNumber(int number);
+
+		// 表示する桁数
 		void SetDigit(int digit);
+		
+		// 数値の種類を設定
 		void SetMyType(NumberType type);
+
+		// 数字の固定表示桁数を設定する。桁数が不足する場合はゼロ埋めする
 		void SetDigitCount(int digitCount);
 	};
 }

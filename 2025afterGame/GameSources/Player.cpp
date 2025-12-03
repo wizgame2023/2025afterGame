@@ -106,8 +106,10 @@ namespace basecross {
 
 		Vec2 lstick = input->GetLStick();
 
+		auto speedBrake = 1.0f;
+
 		m_speedAdd = 3.0f;
-		m_speedMax = 10.0f;
+		m_speedMax = 7.5f;
 
 		ChangePlayer(lstick);
 
@@ -125,13 +127,18 @@ namespace basecross {
 		{
 			// 現在のスピードに加速度を足して動かす
 			m_speedCurrent += m_speedAdd * deltaTime;
-			// 現在のスピードをclampで0.0f以下m_speedMax以上にならないよう
-			m_speedCurrent = clamp(m_speedCurrent, 0.0f, m_speedMax);
-
-			// --- 移動処理 ---
-			m_velocity = moveDir * m_speedCurrent;
-			currentPos += m_velocity * deltaTime;
 		}
+		else
+		{
+			m_speedCurrent -= speedBrake * deltaTime;
+		}
+
+		// 現在のスピードをclampで0.0f以下m_speedMax以上にならないよう
+		m_speedCurrent = clamp(m_speedCurrent, 0.0f, m_speedMax);
+
+		// --- 移動処理 ---
+		m_velocity = moveDir * m_speedCurrent;
+		currentPos += m_velocity * deltaTime;
 
 		// 移動反映
 		ptrTrans->SetPosition(currentPos);
