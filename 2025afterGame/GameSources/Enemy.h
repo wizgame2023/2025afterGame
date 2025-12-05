@@ -14,7 +14,6 @@ namespace basecross {
 	private:
 		float m_countDebagBulletTime; // デバック用の弾を出す時間計測変数
 
-		float AdjustmentAngle(float angle);	// 角度の調整0~360度までしか出ないようにする
 
 		// 追いかける目標のオブジェクト
 		weak_ptr<Actor> m_trackingObj;
@@ -31,8 +30,17 @@ namespace basecross {
 		// 当たり判定
 		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
 
+		// 角度の調整0~360度までしか出ないようにする
+		float AdjustmentAngle(float angle);
+
 		// ステートの変更処理
 		void ChangeState(wstring stateName);
+
+		// 追いかける処理
+		void TrackingMove();
+
+		// 追いかける対象ポインタのゲッタ
+		shared_ptr<Actor> GetTrackingObj();
 	};
 
 }
