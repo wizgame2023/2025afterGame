@@ -63,11 +63,91 @@ namespace basecross {
 
 	void StateTrackingEnemy::OnEnter()
 	{
-
+		// 追いかける対象を取得
+		m_trackingObj = m_enemyLock->GetTrackingObj();
 	}
 
 	void StateTrackingEnemy::OnUpdate()
 	{
+		m_trackingObj = m_enemyLock->GetTrackingObj();
+		auto trackingObjLock = m_trackingObj.lock();
+
+		if (trackingObjLock)
+		{
+			throw BaseException
+			{
+				L"追いかける対象が存在しません",
+				L"if (trackingObjLock)",
+				L"void StateTrackingEnemy::OnUpdate()"
+			};
+		}
+
+		auto parentPos = m_enemyLock->GetComponent<Transform>()->GetPosition();
+
+		// xz方面の距離の差を求める 次はzy方面の距離の差を求める
+		//auto goalObj = GetStage()->GetSharedGameObject<DebagPlayer>(L"Player"); // いったんゴールの位置をプレイヤーにする
+		auto goalPos = trackingObjLock->GetComponent<Transform>()->GetPosition();
+		Vec3 posPlayerDifference = goalPos - parentPos; // ゴールと敵の位置の差を求める
+		Vec2 differenceYZ = Vec2(posPlayerDifference.y, abs(posPlayerDifference.z));
+		differenceYZ.normalize();
+		posPlayerDifference.normalize(); // 正規化
+
+		// 目的地の角度を取得
+		float goalAngle = atan2f(posPlayerDifference.x, posPlayerDifference.z);
+		float goalAngleZY = atan2f(posPlayerDifference.y, abs(posPlayerDifference.z));
+		float goalAngleYX = atan2f(posPlayerDifference.y, -posPlayerDifference.x);
+
+
+		// 角度がマイナスつかないように変更
+		goalAngle = m_enemyLock->AdjustmentAngle(goalAngle);
+		goalAngleZY = m_enemyLock->AdjustmentAngle(-goalAngleZY);
+		goalAngleYX = m_enemyLock->AdjustmentAngle(goalAngleYX);
+
+
+		// ピッチの向きたい方向を求める処理
+		// これで、向いている方向のY座標を0にしたものを求める
+		auto posPlayerDifferenceZY = posPlayerDifference;
+		posPlayerDifferenceZY.y = 0.0f;
+
+
+		// 内積
+		float dotf = posPlayerDifference.dot(posPlayerDifferenceZY);
+		// なす角を求める
+		auto pitchAngle = acosf(dotf);
+
+		// 敵から見てプレイヤーが下にいたら角度をマイナスにする
+		if (posPlayerDifference.y > 0)
+		{
+			pitchAngle = -pitchAngle;
+		}
+
+		// 敵から見てプレイヤーのいるZX平面の角度
+		auto playerAngle = atan2f(posPlayerDifference.z, posPlayerDifference.x);
+		playerAngle = m_enemyLock->AdjustmentAngle(playerAngle);
+
+		// 進むスピード(仮)
+		float speed = 1.0f;
+
+		// Pos移動
+		parentPos.x += cos(playerAngle) * speed * m_deltaTime;
+		parentPos.z += sin(playerAngle) * speed * m_deltaTime;
+
+		// y方向の差が＋かーか確認する
+		int ysign = 0;
+		if (posPlayerDifference.y > 0.05f)
+		{
+			ysign = 1;
+		}
+		else if (posPlayerDifference.y < -0.05f)
+		{
+			ysign = -1;
+		}
+		else
+		{
+			ysign = 0;
+		}
+		parentPos.y += ysign * speed * m_deltaTime; // 向いている角度によってスピード変えないと違和感が出るかも
+
 
 	}
 	//
