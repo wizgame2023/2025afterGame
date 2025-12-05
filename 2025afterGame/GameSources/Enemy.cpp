@@ -225,6 +225,10 @@ namespace basecross {
 		auto bullet = dynamic_pointer_cast<Bullet>(obj);
 
 		// 弾に当たった場合
+
+		// HPがなかったら弾の処理は無視する
+		if (m_hpCurrent < 0) return;
+
 		if (bullet)
 		{
 			bool bulletAffiliation = bullet->GetAffiliation();
@@ -236,11 +240,13 @@ namespace basecross {
 			}
 
 			// HPが０になったらリスポーンする
-			if (m_hpCurrent < 0)
+			if (m_hpCurrent <= 0)
 			{
 				// リスポーンステートに遷移する
 				ChangeState(L"Respawn");
 			}
+
+			GetStage()->RemoveGameObject<Bullet>(bullet);
 		}
 	}
 
