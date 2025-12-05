@@ -27,6 +27,7 @@ namespace basecross {
 	class StateTrackingEnemy :public StateEnemy
 	{
 	private:
+		weak_ptr<Actor> m_trackingObj; // ’Ç‚¢‚©‚¯‚é‘ÎÛ‚Ìƒ|ƒCƒ“ƒ^
 
 	public:
 		StateTrackingEnemy(const shared_ptr<MyGameObject>& parentObj);
