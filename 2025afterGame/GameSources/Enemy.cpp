@@ -28,14 +28,14 @@ namespace basecross {
 		m_trans = GetComponent<Transform>();
 		m_trans->SetPosition(m_pos);
 		m_trans->SetQuaternion(m_qt);
-		m_trans->SetScale(m_scale);
+		m_trans->SetScale(Vec3(1.0f));
 
 		Mat4x4 spanMat;
 		spanMat.affineTransformation(
-			Vec3(1.0f, 1.0f, 1.0f),
+			Vec3(0.25f, 0.25f, 0.25f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, XMConvertToRadians(180.0f), 0.0f),
-			Vec3(0.0f, 0.0f, 0.0f)
+			Vec3(0.0f, -0.5f, 0.0f)
 		);
 
 		// コリジョン追加
@@ -164,7 +164,7 @@ namespace basecross {
 		playerAngle = AdjustmentAngle(playerAngle);
 
 		// 進むスピード(仮)
-		float speed = 0.0f;
+		float speed = 1.0f;
 
 		// Pos移動
 		m_pos.x += cos(playerAngle) * speed * m_delta;
@@ -206,16 +206,16 @@ namespace basecross {
 		
 
 
-		////デバック用
-		wstringstream wss(L"");
-		auto scene = App::GetApp()->GetScene<Scene>();
+		//////デバック用
+		//wstringstream wss(L"");
+		//auto scene = App::GetApp()->GetScene<Scene>();
 
-		wss /* << L"デバッグ用文字列 "*/
-			<< L"\ngoalAngle : " << XMConvertToDegrees(goalAngle)
-			<< L"\ngoalAngleYX : " << XMConvertToDegrees(pitchAngle)
-			<< endl;
+		//wss /* << L"デバッグ用文字列 "*/
+		//	<< L"\ngoalAngle : " << XMConvertToDegrees(goalAngle)
+		//	<< L"\ngoalAngleYX : " << XMConvertToDegrees(pitchAngle)
+		//	<< endl;
 
-		scene->SetDebugString(wss.str());
+		//scene->SetDebugString(wss.str());
 
 	}
 
@@ -225,6 +225,10 @@ namespace basecross {
 		auto bullet = dynamic_pointer_cast<Bullet>(obj);
 
 		// 弾に当たった場合
+
+		// HPがなかったら弾の処理は無視する
+		if (m_hpCurrent < 0) return;
+
 		if (bullet)
 		{
 			bool bulletAffiliation = bullet->GetAffiliation();
@@ -236,11 +240,13 @@ namespace basecross {
 			}
 
 			// HPが０になったらリスポーンする
-			if (m_hpCurrent < 0)
+			if (m_hpCurrent <= 0)
 			{
 				// リスポーンステートに遷移する
 				ChangeState(L"Respawn");
 			}
+
+			GetStage()->RemoveGameObject<Bullet>(bullet);
 		}
 	}
 

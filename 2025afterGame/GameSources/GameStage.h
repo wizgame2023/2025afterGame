@@ -14,12 +14,19 @@ namespace basecross {
 	class GameStage : public Stage {
 		//ƒrƒ…[‚Ìì¬
 		void CreateViewLight();
+
+		CsvFile m_objectFile;
+
 	public:
 		//\’z‚Æ”jŠü
 		GameStage() :Stage() {}
 		virtual ~GameStage() {}
 		//‰Šú‰»
 		virtual void OnCreate()override;
+
+		void CreateTestObject();
+		void CreateRingObject();
+		void CreateWallObject();
 	};
 
 

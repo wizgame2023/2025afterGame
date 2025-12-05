@@ -10,12 +10,14 @@ namespace basecross {
 	StageWall::StageWall(const shared_ptr<Stage>& StagePtr,
 		const Vec3& Pos,
 		const Vec3& Rot,
-		const Vec3& Siz
+		const Vec3& Siz,
+		const wstring& Tag
 	) :
 		GameObject(StagePtr),
 		m_pos(Pos),
 		m_rot(Rot),
-		m_siz(Siz)
+		m_siz(Siz),
+		m_tag(Tag)
 	{
 		try
 		{
@@ -46,7 +48,22 @@ namespace basecross {
 
 		//ÉÅÉbÉVÉÖÇÃï`âÊ
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
-		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+
+		if (m_tag == L"StageWall")
+		{
+			ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+			ptrDraw->SetTextureResource(L"StageWall");
+		}
+		else if (m_tag == L"StageFloor")
+		{
+			ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+			ptrDraw->SetTextureResource(L"StageFloor");
+		}
+		else
+		{
+			ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+			ptrDraw->SetTextureResource(L"TestTex");
+		}
 	}
 }
 //end basecross

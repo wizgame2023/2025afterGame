@@ -109,7 +109,7 @@ namespace basecross {
 		auto speedBrake = 1.0f;
 
 		m_speedAdd = 3.0f;
-		m_speedMax = 10.0f;
+		m_speedMax = 7.5f;
 
 		ChangePlayer(lstick);
 
