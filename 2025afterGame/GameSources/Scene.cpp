@@ -44,8 +44,11 @@ namespace basecross{
 		strTexture = texPath + L"StageWall.png";
 		App::GetApp()->RegisterTexture(L"StageWall", strTexture);
 
-		strTexture = texPath + L"StageFloor.jpg";
-		App::GetApp()->RegisterTexture(L"StageFloor", strTexture);
+		strTexture = texPath + L"StageCeiling.jpg";
+		App::GetApp()->RegisterTexture(L"StageCeiling", strTexture);
+
+		modelTex = modelPath + L"floar.png";
+		App::GetApp()->RegisterTexture(L"StageFloarTex", modelTex);
 
 		// Model /////////////////////////////////////////////////
 		// Player
@@ -57,6 +60,9 @@ namespace basecross{
 
 		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"Chair.bmf");
 		app->RegisterResource(L"Chair", modelMesh);
+
+		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"floar.bmf");
+		app->RegisterResource(L"StageFloar", modelMesh);
 
 
 		// UI /////////////////////////////////////////////////
