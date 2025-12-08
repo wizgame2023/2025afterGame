@@ -54,10 +54,25 @@ namespace basecross {
 			ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 			ptrDraw->SetTextureResource(L"StageWall");
 		}
-		else if (m_tag == L"StageFloor")
+		else if (m_tag == L"StageCeiling")
 		{
 			ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
-			ptrDraw->SetTextureResource(L"StageFloor");
+			ptrDraw->SetTextureResource(L"StageCeiling");
+		}
+		else if (m_tag == L"StageFloar")
+		{
+			ptrDraw->SetMeshResource(L"StageFloar");
+			ptrDraw->SetTextureResource(L"StageFloarTex");
+			//インスタンスの行列を作成する
+			Mat4x4 matrix;
+			matrix.affineTransformation(
+				Vec3(0.065f, 0.1f, 0.065f),
+				Vec3(),
+				Vec3(),
+				Vec3(0.0f, 0.0f, 0.0f)
+			);
+			//ブロックを表示
+			ptrDraw->SetMeshToTransformMatrix(matrix);
 		}
 		else
 		{
