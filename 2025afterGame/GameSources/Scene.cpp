@@ -50,6 +50,9 @@ namespace basecross{
 		modelTex = modelPath + L"floar.png";
 		App::GetApp()->RegisterTexture(L"StageFloarTex", modelTex);
 
+		modelTex = modelPath + L"bed.png";
+		App::GetApp()->RegisterTexture(L"BedTex", modelTex);
+
 		// Model /////////////////////////////////////////////////
 		// Player
 		auto modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"PropellerPlane.bmf");
@@ -63,6 +66,9 @@ namespace basecross{
 
 		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"floar.bmf");
 		app->RegisterResource(L"StageFloar", modelMesh);
+
+		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"bed.bmf");
+		app->RegisterResource(L"Bed", modelMesh);
 
 
 		// UI /////////////////////////////////////////////////

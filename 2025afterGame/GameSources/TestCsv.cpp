@@ -43,7 +43,7 @@ namespace basecross {
 		//コリジョン
 		auto ptrCol = AddComponent<CollisionObb>();
 		ptrCol->SetFixed(true);
-		ptrCol->SetDrawActive(false);
+		ptrCol->SetDrawActive(true);
 		ptrCol->SetAfterCollision(AfterCollision::Auto);
 
 		Mat4x4 spanMat1;
@@ -62,6 +62,14 @@ namespace basecross {
 			Vec3(0.0f, -5.5f, 0.0f)
 		);
 
+		Mat4x4 spanMat3;
+		spanMat3.affineTransformation(
+			Vec3(0.15f, 1.0f, 0.3f),
+			Vec3(0.0f, 0.0f, 0.0f),
+			Vec3(0.0f, XMConvertToRadians(90.0f), 0.0f),
+			Vec3(0.0f, -1.0f, 0.0f)
+		);
+
 		//メッシュの描画
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
 
@@ -76,6 +84,12 @@ namespace basecross {
 			ptrDraw->SetMeshResource(L"Chair");
 			ptrDraw->SetTextureResource(L"ChairTex");
 			ptrDraw->SetMeshToTransformMatrix(spanMat2);
+		}
+		else if (m_tag == L"Bed")
+		{
+			ptrDraw->SetMeshResource(L"Bed");
+			ptrDraw->SetTextureResource(L"BedTex");
+			ptrDraw->SetMeshToTransformMatrix(spanMat3);
 		}
 		else if (m_tag == L"InvisibleCollision")
 		{
