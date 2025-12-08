@@ -273,6 +273,79 @@ namespace basecross {
 		m_stateMachine->ChangeState(stateName);
 	}
 
+	// 追いかける処理
+	void Enemy::TrackingMove()
+	{
+		shared_ptr<Actor> lockTrackingObj = m_trackingObj.lock();
+
+		//auto goalObj = GetStage()->GetSharedGameObject<DebagPlayer>(L"Player"); // いったんゴールの位置をプレイヤーにする
+		auto goalPos = lockTrackingObj->GetComponent<Transform>()->GetPosition();
+		Vec3 posPlayerDifference = goalPos - m_pos; // ゴールと敵の位置の差を求める
+		Vec2 differenceYZ = Vec2(posPlayerDifference.y, abs(posPlayerDifference.z));
+		differenceYZ.normalize();
+		posPlayerDifference.normalize(); // 正規化
+
+		// 目的地の角度を取得
+		float goalAngle = atan2f(posPlayerDifference.x, posPlayerDifference.z);
+		float goalAngleZY = atan2f(posPlayerDifference.y, abs(posPlayerDifference.z));
+		float goalAngleYX = atan2f(posPlayerDifference.y, -posPlayerDifference.x);
+
+
+		// 角度がマイナスつかないように変更
+		goalAngle = AdjustmentAngle(goalAngle);
+		goalAngleZY = -AdjustmentAngle(goalAngleZY);
+		goalAngleYX = AdjustmentAngle(goalAngleYX);
+
+
+		// ピッチの向きたい方向を求める処理
+		// これで、向いている方向のY座標を0にしたものを求める
+		auto posPlayerDifferenceZY = posPlayerDifference;
+		posPlayerDifferenceZY.y = 0.0f;
+
+
+		// 内積
+		float dotf = posPlayerDifference.dot(posPlayerDifferenceZY);
+		// なす角を求める
+		auto pitchAngle = acosf(dotf);
+
+
+		// 敵から見てプレイヤーが下にいたら角度をマイナスにする
+		if (posPlayerDifference.y > 0)
+		{
+			pitchAngle = -pitchAngle;
+		}
+
+		// 敵から見てプレイヤーのいるZX平面の角度
+		auto playerAngle = atan2f(posPlayerDifference.z, posPlayerDifference.x);
+		playerAngle = AdjustmentAngle(playerAngle);
+
+		// Pos移動
+		float speed = 1.0f;
+		m_pos.x += cos(playerAngle) * speed * m_delta;
+		m_pos.z += sin(playerAngle) * speed * m_delta;
+
+		return;
+	}
+
+	// 追いかける対象ポインタのゲッタ
+	shared_ptr<Actor> Enemy::GetTrackingObj()
+	{
+		auto trackingObjLock = m_trackingObj.lock();
+		if (!trackingObjLock)
+		{
+			throw BaseException
+			{
+				L"追いかける対象が存在しません",
+				L"if (!trackingObjLock)",
+				L"shared_ptr<Actor> Enemy::GetTrackingObj()"
+			};
+
+			return nullptr;
+		}
+
+		return trackingObjLock;
+	}
+
 
 }
 //end basecross
