@@ -69,7 +69,7 @@ namespace basecross {
 				Vec3(0.065f, 0.1f, 0.065f),
 				Vec3(),
 				Vec3(),
-				Vec3(0.0f, 0.0f, 0.0f)
+				Vec3()
 			);
 			//ブロックを表示
 			ptrDraw->SetMeshToTransformMatrix(matrix);
