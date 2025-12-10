@@ -10,12 +10,14 @@ namespace basecross {
 	StageWall::StageWall(const shared_ptr<Stage>& StagePtr,
 		const Vec3& Pos,
 		const Vec3& Rot,
-		const Vec3& Siz
+		const Vec3& Siz,
+		const wstring& Tag
 	) :
 		GameObject(StagePtr),
 		m_pos(Pos),
 		m_rot(Rot),
-		m_siz(Siz)
+		m_siz(Siz),
+		m_tag(Tag)
 	{
 		try
 		{
@@ -46,7 +48,37 @@ namespace basecross {
 
 		//メッシュの描画
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
-		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+
+		if (m_tag == L"StageWall")
+		{
+			ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+			ptrDraw->SetTextureResource(L"StageWall");
+		}
+		else if (m_tag == L"StageCeiling")
+		{
+			ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+			ptrDraw->SetTextureResource(L"StageCeiling");
+		}
+		else if (m_tag == L"StageFloar")
+		{
+			ptrDraw->SetMeshResource(L"StageFloar");
+			ptrDraw->SetTextureResource(L"StageFloarTex");
+			//インスタンスの行列を作成する
+			Mat4x4 matrix;
+			matrix.affineTransformation(
+				Vec3(0.065f, 0.1f, 0.065f),
+				Vec3(),
+				Vec3(),
+				Vec3()
+			);
+			//ブロックを表示
+			ptrDraw->SetMeshToTransformMatrix(matrix);
+		}
+		else
+		{
+			ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+			ptrDraw->SetTextureResource(L"TestTex");
+		}
 	}
 }
 //end basecross
