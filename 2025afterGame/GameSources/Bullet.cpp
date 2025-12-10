@@ -134,8 +134,9 @@ namespace basecross {
 		trans->SetQuaternion(m_qt);
 		trans->SetScale(m_scale);
 
-		auto ptrCol = AddComponent<CollisionSphere>();
+		auto ptrCol = AddComponent<CollisionObb>();
 		ptrCol->SetDrawActive(true);
+		ptrCol->SetFixed(true);
 
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");

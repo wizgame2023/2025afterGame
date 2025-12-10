@@ -17,6 +17,19 @@ namespace basecross {
 
 		// 追いかける目標のオブジェクト
 		weak_ptr<Actor> m_trackingObj;
+		shared_ptr<Actor> m_trakingObjLock;
+
+		float m_speed = 1.5f; // スピード
+
+		// X軸に向いている方向
+		float m_pitchAngle;
+		// ロール方向に向いている方向
+		float m_rollAngle;
+		// ヨー方向に向いている方向
+		float m_yawAngle;
+
+		// 進みたいベクトル
+		Vec3 m_moveVec;
 
 		unique_ptr<StateEnemyMachine> m_stateMachine; // ステートマシン
 
@@ -36,8 +49,17 @@ namespace basecross {
 		// ステートの変更処理
 		void ChangeState(wstring stateName);
 
-		// 追いかける処理
-		void TrackingMove();
+		// 対象に向かって追いかける処理
+		void TrackingMove(const Vec3& posPlayerDifference);
+
+		// 追いかける対象に向かってX軸回転方向で向く処理
+		void TrackingPitchQt(const Vec3& posPlayerDifference);
+
+		// 追いかける対象に向かってZ軸回転方向で向く処理
+		void TrackingRollQt();
+
+		// 追いかける対象に向かってY軸回転方向で向く処理
+		void TrackingYawQt(const Vec3& posPlayerDifference);
 
 		// 追いかける対象ポインタのゲッタ
 		shared_ptr<Actor> GetTrackingObj();

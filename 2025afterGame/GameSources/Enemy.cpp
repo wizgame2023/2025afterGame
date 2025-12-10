@@ -41,7 +41,7 @@ namespace basecross {
 		// コリジョン追加
 		auto ptrCol = AddComponent<CollisionObb>();
 		ptrCol->SetDrawActive(false);
-		ptrCol->SetAfterCollision(AfterCollision::None);
+		//ptrCol->SetAfterCollision(AfterCollision::None);
 
 		// ドロー処理
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
@@ -76,7 +76,7 @@ namespace basecross {
 
 		// ステートマシン作成
 		m_stateMachine = unique_ptr<StateEnemyMachine>(new StateEnemyMachine(GetThis<MyGameObject>()));
-		m_stateMachine->ChangeState(L"Base"); // 仮で最初のステートはベースステートに変更する
+		m_stateMachine->ChangeState(L"Tracking"); // 仮で最初のステートはベースステートに変更する
 
 	}
 
@@ -96,123 +96,65 @@ namespace basecross {
 		}
 
 		// 追いかけるものが消えていたらUpdateしないようにする
-		shared_ptr<Actor> lockTrackingObj = m_trackingObj.lock();
-		if (!lockTrackingObj)
+		m_trakingObjLock = m_trackingObj.lock();
+		if (!m_trakingObjLock)
 		{
 			return;
 		}
 
-		// xz方面の距離の差を求める 次はzy方面の距離の差を求める
-		//auto goalObj = GetStage()->GetSharedGameObject<DebagPlayer>(L"Player"); // いったんゴールの位置をプレイヤーにする
-		auto goalPos = lockTrackingObj->GetComponent<Transform>()->GetPosition();
-		Vec3 posPlayerDifference = goalPos - m_pos; // ゴールと敵の位置の差を求める
-		Vec2 differenceYZ = Vec2(posPlayerDifference.y, abs(posPlayerDifference.z));
-		differenceYZ.normalize();
-		posPlayerDifference.normalize(); // 正規化
 
-		// 目的地の角度を取得
-		float goalAngle = atan2f(posPlayerDifference.x, posPlayerDifference.z);
-		float goalAngleZY = atan2f(posPlayerDifference.y, abs(posPlayerDifference.z));
-		float goalAngleYX = atan2f(posPlayerDifference.y, -posPlayerDifference.x);
+		//// 自分と追尾対象の座標の差を計算する
+		//auto goalPos = m_trakingObjLock->GetComponent<Transform>()->GetPosition();
+		//Vec3 posPlayerDifference = goalPos - m_pos; // ゴールと敵の位置の差を求める
+		//posPlayerDifference.normalize(); // 正規化
+
+		//// 目的地の角度を取得
+		//m_yawAngle = atan2f(posPlayerDifference.x, posPlayerDifference.z);
+		//m_rollAngle = atan2f(posPlayerDifference.y, -posPlayerDifference.x);
 
 
-		// 角度がマイナスつかないように変更
-		goalAngle = AdjustmentAngle(goalAngle);
-		goalAngleZY = -AdjustmentAngle(goalAngleZY);
-		goalAngleYX = AdjustmentAngle(goalAngleYX);
+		//// 角度がマイナスつかないように変更
+		//m_yawAngle = AdjustmentAngle(m_yawAngle);
+		//m_rollAngle = AdjustmentAngle(m_rollAngle);
 
-		// デバック用のロール回転
-		static float debugYX = 0.0f;
-		auto& input = InputManager::GetInputManager();
-		if (input->GetButton(L"DLeft"))
-		{
-			debugYX -= m_delta * 3.0f;
-		}
-		if (input->GetButton(L"DRight"))
-		{
-			debugYX += m_delta * 3.0f;
-		}
-		goalAngleYX = debugYX;
-		//
+		//// 追いかけるときのロール回転処理(デバック用処理しか書いていない)
+		//TrackingRollQt();
+		//// 追いかける対象にX軸に向く処理
+		//TrackingPitchQt(posPlayerDifference);
+		//// 追いかける対象に向かってヨーを回転させる処理
+		//TrackingYawQt(posPlayerDifference);
 
+		// この処理はいったん保留
+		//// 敵が追いかける際反転するか決める処理
+		//auto forward = GetComponent<Transform>()->GetForward();
+		//// 向いているZX平面の角度を計算
+		//auto forwardAngle = atan2f(forward.z, forward.x); 
+		//forwardAngle = AdjustmentAngle(forwardAngle);
 
-		// ピッチの向きたい方向を求める処理
-		// これで、向いている方向のY座標を0にしたものを求める
-		auto posPlayerDifferenceZY = posPlayerDifference;
-		posPlayerDifferenceZY.y = 0.0f;
-		
-		
-		// 内積
-		float dotf = posPlayerDifference.dot(posPlayerDifferenceZY);
-		// なす角を求める
-		auto pitchAngle = acosf(dotf);
-
-		// 敵から見てプレイヤーが下にいたら角度をマイナスにする
-		if (posPlayerDifference.y > 0)
-		{
-			pitchAngle = -pitchAngle;
-		}
-
-		// 敵が追いかける際反転するか決める処理
-		auto forward = GetComponent<Transform>()->GetForward();
-		// 向いているZX平面の角度を計算
-		auto forwardAngle = atan2f(forward.z, forward.x); 
-		forwardAngle = AdjustmentAngle(forwardAngle);
-
-		// 敵から見てプレイヤーのいるZX平面の角度
-		auto playerAngle = atan2f(posPlayerDifference.z, posPlayerDifference.x);
-		playerAngle = AdjustmentAngle(playerAngle);
-
-		// 進むスピード(仮)
-		float speed = 1.0f;
-
-		// Pos移動
-		m_pos.x += cos(playerAngle) * speed * m_delta;
-		m_pos.z += sin(playerAngle) * speed * m_delta;
-
-		// y方向の差が＋かーか確認する
-		int ysign = 0;
-		if (posPlayerDifference.y > 0.05f)
-		{
-			ysign = 1;
-		}
-		else if(posPlayerDifference.y < -0.05f)
-		{
-			ysign = -1;
-		}
-		else
-		{
-			ysign = 0;
-		}
-		m_pos.y += ysign * speed * m_delta; // 向いている角度によってスピード変えないと違和感が出るかも
+		// 対象に向かって追いかける処理
+		//TrackingMove(posPlayerDifference);
 
 		// Qt回転
 		// 個別の軸ずつ回転計算をしています
-		m_qt = Quat(0.0f, 0.0f, (sin(goalAngleYX / 2.0f)), cos((goalAngleYX / 2.0f))); // Z軸回転
-		m_qt *= Quat((sin(pitchAngle / 2.0f)), 0.0f, 0.0f, cos((pitchAngle / 2.0f))); // X軸回転
-		m_qt *= Quat(0.0f, (sin(goalAngle / 2.0f)), 0.0f, cos((goalAngle / 2.0f))); // Y軸回転
+		m_qt = Quat(0.0f, 0.0f, (sin(m_rollAngle / 2.0f)), cos((m_rollAngle / 2.0f))); // Z軸回転
+		m_qt *= Quat((sin(m_pitchAngle / 2.0f)), 0.0f, 0.0f, cos((m_pitchAngle / 2.0f))); // X軸回転
+		m_qt *= Quat(0.0f, (sin(m_yawAngle / 2.0f)), 0.0f, cos((m_yawAngle / 2.0f))); // Y軸回転
 
-		//auto rot = XMMatrixRotationAxis(axisYX, goalAngleYX);
-		//auto world = m_trans->GetWorldMatrix();
-		//world.rotation((Quat)XMQuaternionRotationMatrix(rot));
-		//m_qt = world.quatInMatrix();
 
 		// Transform反映
 		m_trans->SetQuaternion(m_qt); // qt反映
-		//m_trans->SetRotation(m_rot);
-		m_trans->SetPosition(m_pos); // pos反映
+		m_trans->SetPosition(m_pos + m_moveVec); // pos反映
 
-
-		
-
+		// 位置取得
+		m_pos = GetComponent<Transform>()->GetPosition();
 
 		//////デバック用
 		//wstringstream wss(L"");
 		//auto scene = App::GetApp()->GetScene<Scene>();
 
 		//wss /* << L"デバッグ用文字列 "*/
-		//	<< L"\ngoalAngle : " << XMConvertToDegrees(goalAngle)
-		//	<< L"\ngoalAngleYX : " << XMConvertToDegrees(pitchAngle)
+		//	<< L"\ngoalAngle : " << XMConvertToDegrees(m_yawAngle)
+		//	<< L"\ngoalAngleYX : " << XMConvertToDegrees(m_pitchAngle)
 		//	<< endl;
 
 		//scene->SetDebugString(wss.str());
@@ -273,57 +215,61 @@ namespace basecross {
 		m_stateMachine->ChangeState(stateName);
 	}
 
-	// 追いかける処理
-	void Enemy::TrackingMove()
+	// 対象に向かって追いかける処理
+	void Enemy::TrackingMove(const Vec3& posPlayerDifference)
 	{
-		shared_ptr<Actor> lockTrackingObj = m_trackingObj.lock();
+		// 移動ベクトル加算
+		m_moveVec.x = posPlayerDifference.x * m_delta;
+		m_moveVec.y = posPlayerDifference.y * m_delta;
+		m_moveVec.z = posPlayerDifference.z * m_delta;
 
-		//auto goalObj = GetStage()->GetSharedGameObject<DebagPlayer>(L"Player"); // いったんゴールの位置をプレイヤーにする
-		auto goalPos = lockTrackingObj->GetComponent<Transform>()->GetPosition();
-		Vec3 posPlayerDifference = goalPos - m_pos; // ゴールと敵の位置の差を求める
-		Vec2 differenceYZ = Vec2(posPlayerDifference.y, abs(posPlayerDifference.z));
-		differenceYZ.normalize();
-		posPlayerDifference.normalize(); // 正規化
+		return;
+	}
 
-		// 目的地の角度を取得
-		float goalAngle = atan2f(posPlayerDifference.x, posPlayerDifference.z);
-		float goalAngleZY = atan2f(posPlayerDifference.y, abs(posPlayerDifference.z));
-		float goalAngleYX = atan2f(posPlayerDifference.y, -posPlayerDifference.x);
-
-
-		// 角度がマイナスつかないように変更
-		goalAngle = AdjustmentAngle(goalAngle);
-		goalAngleZY = -AdjustmentAngle(goalAngleZY);
-		goalAngleYX = AdjustmentAngle(goalAngleYX);
-
-
+	// 追いかける対象に向かってX軸回転方向で向く処理
+	void Enemy::TrackingPitchQt(const Vec3& posPlayerDifference)
+	{
 		// ピッチの向きたい方向を求める処理
 		// これで、向いている方向のY座標を0にしたものを求める
 		auto posPlayerDifferenceZY = posPlayerDifference;
 		posPlayerDifferenceZY.y = 0.0f;
 
-
 		// 内積
 		float dotf = posPlayerDifference.dot(posPlayerDifferenceZY);
 		// なす角を求める
-		auto pitchAngle = acosf(dotf);
-
+		m_pitchAngle = acosf(dotf);
 
 		// 敵から見てプレイヤーが下にいたら角度をマイナスにする
 		if (posPlayerDifference.y > 0)
 		{
-			pitchAngle = -pitchAngle;
+			m_pitchAngle = -m_pitchAngle;
 		}
+	}
 
-		// 敵から見てプレイヤーのいるZX平面の角度
-		auto playerAngle = atan2f(posPlayerDifference.z, posPlayerDifference.x);
-		playerAngle = AdjustmentAngle(playerAngle);
+	// 追いかける対象に向かってZ軸回転方向で向く処理
+	void Enemy::TrackingRollQt()
+	{
+		// デバック用のロール回転
+		static float debugYX = 0.0f;
+		auto& input = InputManager::GetInputManager();
+		if (input->GetButton(L"DLeft"))
+		{
+			debugYX -= m_delta * 3.0f;
+		}
+		if (input->GetButton(L"DRight"))
+		{
+			debugYX += m_delta * 3.0f;
+		}
+		m_rollAngle = debugYX;
+		//
 
-		// Pos移動
-		float speed = 1.0f;
-		m_pos.x += cos(playerAngle) * speed * m_delta;
-		m_pos.z += sin(playerAngle) * speed * m_delta;
+		return;
+	}
 
+	// 追いかける対象に向かってY軸回転方向で向く処理
+	void Enemy::TrackingYawQt(const Vec3& posPlayerDifference)
+	{
+		m_yawAngle = atan2f(posPlayerDifference.x, posPlayerDifference.z);
 		return;
 	}
 
