@@ -41,6 +41,17 @@ namespace basecross {
 			//ビューとライトの作成
 			CreateViewLight();
 
+			// ゲームマネージャ
+			auto& game = GameManager::GetGameManager();
+			game->SetGameStartFlag(true);
+			game->ResetCheckPoint();
+
+			auto& scrMana = ScoreManager::CreateScoreManager();
+			
+			scrMana->CreateHighScoreBinary();
+			scrMana->SetScore(scrMana->GetScore() + 200);
+			scrMana->SaveHighScoreBinary();
+
 			//背景
 			AddGameObject<Background>();
 
@@ -55,8 +66,6 @@ namespace basecross {
 			auto mainCamMana = AddGameObject<MainCameraManager>();
 			SetSharedGameObject(L"MainCameraManager", mainCamMana);
 
-			//auto a = AddGameObject<NumberSprite>(L"Number",Vec2(1.0f),Vec3(0.0f));
-			//a->SetMyType(NumberType::Score);
 
 			// これがないとエフェクトが表示されない()
 			AddGameObject<EffectUpdateDrawManager>();
@@ -69,6 +78,9 @@ namespace basecross {
 
 	void KaitoStage::OnUpdate()
 	{		
+		DebugLog(L"\n\n\n\n\nscore : ", ScoreManager::GetScoreManager()->GetScore());
+		DebugLog(L"fileScore : ", ScoreManager::GetScoreManager()->LoadHighScoreBinary());
+		FlushDebugLog();
 	}
 
 	// ==============================================================================
