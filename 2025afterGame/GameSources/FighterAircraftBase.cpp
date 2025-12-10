@@ -6,6 +6,7 @@
 
 #include "stdafx.h"
 #include "Project.h"
+#include "FighterAircraftBase.h"
 
 namespace basecross {
 	FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& ptrStage) :
@@ -220,6 +221,13 @@ namespace basecross {
 	float FighterAircraftBase::GetScoreCurrent()
 	{
 		return m_scoreCurrent;
+	}
+
+	// スコアの追加処理
+	void FighterAircraftBase::AddScoreCurrent(int addScore)
+	{
+		m_scoreCurrent += addScore;
+		return;
 	}
 
 	// 現在HPのセッタ
