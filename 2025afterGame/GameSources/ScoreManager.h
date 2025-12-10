@@ -6,6 +6,7 @@
 
 #pragma once
 #include "stdafx.h"
+#include "fstream"
 
 namespace basecross {
 	// ==============================================================================
@@ -31,8 +32,8 @@ namespace basecross {
 		// ステージ
 		shared_ptr<Stage> m_stage;
 
-		// 数値のUV座標変更
-		//void UpdateNumSprite(const shared_ptr<Sprite>& numSp);
+		// スコアバイナリファイルパス取得
+		wstring GetBinaryPath() const;
 
 	public:
 		// コンストラクタ
@@ -48,7 +49,7 @@ namespace basecross {
 
 		// スコア更新
 		// 引数 : 変動するスコア
-		void UpdateScore(int score);
+		void SetScore(int score);
 
 		// 現在のスコア取得
 		int GetScore() const;
@@ -56,6 +57,14 @@ namespace basecross {
 		// スコア初期化
 		void ResetScore();
 
+		// スコアバイナリ生成
+		void CreateHighScoreBinary();
+
+		// スコアバイナリ書き込み
+		void SaveHighScoreBinary();
+
+		// スコアバイナリ読み込み
+		int LoadHighScoreBinary();
 	};
 
 }
