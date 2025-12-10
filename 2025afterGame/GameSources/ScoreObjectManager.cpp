@@ -1,0 +1,54 @@
+/*!
+@file Character.cpp
+@brief キャラクターなど実体
+*/
+
+#include "stdafx.h"
+#include "Project.h"
+
+namespace basecross{
+	ScoreObjectManager::ScoreObjectManager()
+	{
+
+	}
+
+	ScoreObjectManager::~ScoreObjectManager()
+	{
+
+	}
+
+	unique_ptr<ScoreObjectManager, ScoreObjectManager::ScoreObjectManagerDeleter> ScoreObjectManager::m_scoreObjectManager;
+
+	unique_ptr<ScoreObjectManager, ScoreObjectManager::ScoreObjectManagerDeleter>& ScoreObjectManager::CreateScoreObjectManager()
+	{
+		try
+		{
+			if (m_scoreObjectManager.get() == 0)
+			{
+				//自分を作成
+				m_scoreObjectManager.reset(new ScoreObjectManager());
+
+				//初期化
+				m_scoreObjectManager->OnCreate();
+			}
+			return m_scoreObjectManager;
+		}
+		catch (...)
+		{
+			throw;
+		}
+
+		return m_scoreObjectManager;
+	}
+
+	unique_ptr<ScoreObjectManager, ScoreObjectManager::ScoreObjectManagerDeleter>& ScoreObjectManager::GetScoreObjectManager()
+	{
+		return m_scoreObjectManager;
+	}
+
+	void ScoreObjectManager::OnCreate()
+	{
+
+	}
+}
+//end basecross
