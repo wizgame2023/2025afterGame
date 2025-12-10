@@ -11,6 +11,10 @@
 *.sln.docstates
 *.cso
 
+# Custom binary data (.dat etc.)
+Bin/*
+!Bin/.gitkeep
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

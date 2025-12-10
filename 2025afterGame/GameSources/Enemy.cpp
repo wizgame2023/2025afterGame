@@ -41,7 +41,7 @@ namespace basecross {
 		// コリジョン追加
 		auto ptrCol = AddComponent<CollisionObb>();
 		ptrCol->SetDrawActive(false);
-		ptrCol->SetAfterCollision(AfterCollision::None);
+		//ptrCol->SetAfterCollision(AfterCollision::None);
 
 		// ドロー処理
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
@@ -102,6 +102,7 @@ namespace basecross {
 			return;
 		}
 
+
 		//// 自分と追尾対象の座標の差を計算する
 		//auto goalPos = m_trakingObjLock->GetComponent<Transform>()->GetPosition();
 		//Vec3 posPlayerDifference = goalPos - m_pos; // ゴールと敵の位置の差を求める
@@ -142,7 +143,10 @@ namespace basecross {
 
 		// Transform反映
 		m_trans->SetQuaternion(m_qt); // qt反映
-		m_trans->SetPosition(m_pos); // pos反映
+		m_trans->SetPosition(m_pos + m_moveVec); // pos反映
+
+		// 位置取得
+		m_pos = GetComponent<Transform>()->GetPosition();
 
 		//////デバック用
 		//wstringstream wss(L"");
@@ -214,29 +218,10 @@ namespace basecross {
 	// 対象に向かって追いかける処理
 	void Enemy::TrackingMove(const Vec3& posPlayerDifference)
 	{
-		// 敵から見てプレイヤーのいるZX平面の角度
-		auto playerAngle = atan2f(posPlayerDifference.z, posPlayerDifference.x);
-		playerAngle = AdjustmentAngle(playerAngle);
-
-		// Pos移動
-		m_pos.x += cos(playerAngle) * m_speed * m_delta;
-		m_pos.z += sin(playerAngle) * m_speed * m_delta;
-
-		// y方向の差が＋かーか確認する
-		int ysign = 0;
-		if (posPlayerDifference.y > 0.05f)
-		{
-			ysign = 1;
-		}
-		else if (posPlayerDifference.y < -0.05f)
-		{
-			ysign = -1;
-		}
-		else
-		{
-			ysign = 0;
-		}
-		m_pos.y += ysign * m_speed * m_delta; // 向いている角度によってスピード変えないと違和感が出るかも
+		// 移動ベクトル加算
+		m_moveVec.x = posPlayerDifference.x * m_delta;
+		m_moveVec.y = posPlayerDifference.y * m_delta;
+		m_moveVec.z = posPlayerDifference.z * m_delta;
 
 		return;
 	}

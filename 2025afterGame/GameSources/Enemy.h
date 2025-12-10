@@ -19,7 +19,7 @@ namespace basecross {
 		weak_ptr<Actor> m_trackingObj;
 		shared_ptr<Actor> m_trakingObjLock;
 
-		float m_speed = 3.0f; // スピード
+		float m_speed = 1.5f; // スピード
 
 		// X軸に向いている方向
 		float m_pitchAngle;
@@ -27,6 +27,9 @@ namespace basecross {
 		float m_rollAngle;
 		// ヨー方向に向いている方向
 		float m_yawAngle;
+
+		// 進みたいベクトル
+		Vec3 m_moveVec;
 
 		unique_ptr<StateEnemyMachine> m_stateMachine; // ステートマシン
 
