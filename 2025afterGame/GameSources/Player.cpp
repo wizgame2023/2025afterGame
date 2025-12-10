@@ -11,12 +11,15 @@ namespace basecross {
 	Player::Player(const shared_ptr<Stage>& ptrStage) :
 		FighterAircraftBase(ptrStage),
 		m_velocity(Vec3(0.0f)),
-		m_angleSpeed(2.0f),
+		m_angleSpeed(1.5f),
 		m_playerIndex(0),
 		m_respawnPos(Vec3(0.0f)),
 		m_visualRoll(0.0f),
 		m_bankRoll(0.0f),
-		m_turnPower(2.0f)
+		m_turnPower(1.0f),
+		m_pitchSpeed(0.0f),
+		m_yawSpeed(0.0f),
+		m_recoveryTime(0.0f)
 	{
 	}
 
@@ -33,7 +36,7 @@ namespace basecross {
 		m_hpCurrent = m_hpMax;
 
 		auto ptrTrans = GetComponent<Transform>();
-		ptrTrans->SetPosition(Vec3(0.0f, 0.0f, -1.0f));
+		ptrTrans->SetPosition(Vec3(0.0f, -14.0f, -1.0f));
 
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
 		ptrDraw->SetMeshResource(L"Sentouki");
@@ -52,6 +55,8 @@ namespace basecross {
 		);
 
 		ptrDraw->SetMeshToTransformMatrix(spanMat);	
+
+		m_gravity = AddComponent<Gravity>();
 	}
 
 	void Player::OnUpdate()
@@ -100,11 +105,19 @@ namespace basecross {
 		float deltaTime = game->GetDeltaTime();
 		Vec3 currentPos = ptrTrans->GetPosition();
 
+		Vec3 worldup = Vec3(0,1,0);
 		Vec3 forward = ptrTrans->GetForward();
 		forward.normalize();
 		Vec3 moveDir = forward;
 
 		Vec2 lstick = input->GetLStick();
+		float pitchInput = 0.0f;
+
+		// 入力の確保
+		if (fabs(lstick.y) > fabs(lstick.x) * 1.1f)
+		{
+			pitchInput = lstick.y;
+		}
 
 		auto speedBrake = 1.0f;
 
@@ -125,16 +138,56 @@ namespace basecross {
 		// Aボタンを押して加速移動
 		if (m_aButton)
 		{
+			m_recoveryTime = 0.0f;
 			// 現在のスピードに加速度を足して動かす
 			m_speedCurrent += m_speedAdd * deltaTime;
 		}
 		else
 		{
+			m_recoveryTime += deltaTime;
 			m_speedCurrent -= speedBrake * deltaTime;
 		}
 
 		// 現在のスピードをclampで0.0f以下m_speedMax以上にならないよう
-		m_speedCurrent = clamp(m_speedCurrent, 0.0f, m_speedMax);
+		m_speedCurrent = clamp(m_speedCurrent, 1.0f, m_speedMax);
+
+		if (m_gravity)
+		{
+			// 空気密度
+			float rho = 1.2f;
+			// 前進速度
+			float v = m_speedCurrent;
+			// 面積パラメーター
+			float s = 5.0f;
+			// 揚力係数
+			float cl = 0.0581;
+
+			// 揚力の大きさを計算
+			// ここが9.8より小さいとーが蓄積されて最終的に落ちてしまう
+			float liftMag = 0.5f * rho * v * v * s * cl;
+
+			// 加速度 // 9.8に近い数字になればいい
+			Vec3 liftAcc = worldup * liftMag;
+
+			// 重力の大きさ
+			auto vel = m_gravity->GetGravityVelocity();
+
+			float maxFallSpeed = -3.0f;
+			
+			if (m_recoveryTime < 2.0f)
+			{
+				maxFallSpeed = -3.0;
+			}
+			else
+			{
+				maxFallSpeed = -10.0f;
+			}
+
+			vel.y = max(vel.y, maxFallSpeed);
+
+			// 重力に勝つためvelを足す重力はーでliftAccは＋でACC量で勝ったら受ける
+			vel += liftAcc * deltaTime;
+		}
 
 		// --- 移動処理 ---
 		m_velocity = moveDir * m_speedCurrent;
@@ -152,23 +205,41 @@ namespace basecross {
 		auto& input = InputManager::GetInputManager();
 		Vec2 lstick = input->GetLStick();
 		auto ptrTrans = GetComponent<Transform>();
-		bool hasInput = (fabs(lstick.x) > 0.01f || fabs(lstick.y) > 0.01f);
+		float deadZone = 0.1f;
 
 		ChangePlayer(lstick);
 
 		//----------------------------------------
 		// Pitch
 		//----------------------------------------
-		float pitchInput = 0.0f;
+		float maxPitchSpeed = XMConvertToRadians(60.0f);
+		
+		float accel = 0.7f;
+		float damping = 0.98; // 減少
 
+		// Pitchのステックの判定の拡大
 		if (fabs(lstick.y) > fabs(lstick.x) * 1.1f)
+		{	
+			if (lstick.y > deadZone)
+			{
+				accel = 0.9;
+			} 
+			else if(lstick.y < -deadZone)
+			{
+				accel = 0.4;
+			}
+
+			m_pitchSpeed += lstick.y * accel * deltaTime;
+		}
+		else
 		{
-			pitchInput = lstick.y * m_angleSpeed * deltaTime;
+			m_pitchSpeed *= damping;
 		}
 
-		Quat pitchQuat;
-		pitchQuat.rotationAxisAngle(Vec3(1, 0, 0), pitchInput);
+		m_pitchSpeed = clamp(m_pitchSpeed, -maxPitchSpeed, maxPitchSpeed);
 
+		Quat pitchQuat;
+		pitchQuat.rotationAxisAngle(Vec3(1, 0, 0), m_pitchSpeed * deltaTime);
 
 		//----------------------------------------
 		// Roll
@@ -188,23 +259,28 @@ namespace basecross {
 
 
 		//----------------------------------------
-		// BankTurnによるYaw
+		// Yaw
 		//----------------------------------------
-		float yawInput = lstick.x * m_turnPower * deltaTime;
-		Quat yawQuat;
-		yawQuat.rotationAxisAngle(Vec3(0, 1, 0), yawInput);
+		if (fabs(lstick.x) > 0.01f)
+		{
+			m_yawSpeed += lstick.x * m_turnPower * deltaTime;
+		}
+		else
+		{
+			m_yawSpeed = lerp(m_yawSpeed, 0.0f, deltaTime * 2.5f);
+		}
 
+		float maxYawSpeed = XMConvertToRadians(90.0f);
+		m_yawSpeed = clamp(m_yawSpeed, -maxYawSpeed, maxYawSpeed);
+
+		Quat yawQuat;
+		yawQuat.rotationAxisAngle(Vec3(0, 1, 0), m_yawSpeed * deltaTime);
 
 		//----------------------------------------
 		// 姿勢として累積するのは Pitch + Yawのみ
 		//----------------------------------------
 		m_currentQuat = yawQuat * pitchQuat * m_currentQuat;
 		m_currentQuat.normalize();
-
-		if (!hasInput)
-		{
-			m_bankRoll = lerp(m_bankRoll, 0.0f, deltaTime * 4.0f);
-		}
 
 		//----------------------------------------
 		// Rollはルック（見た目）だけ後から合成
@@ -267,7 +343,6 @@ namespace basecross {
 		prevTrigger = nowTrigger;
 	}
 
-	// フラグのゲッタ、セッタ
 	// プレイヤーのコントローラ番号をセッタ
 	void Player::SetPlayerIndex(int index)
 	{
