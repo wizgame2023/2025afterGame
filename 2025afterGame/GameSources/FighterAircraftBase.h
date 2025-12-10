@@ -115,6 +115,8 @@ namespace basecross{
 		float GetTimeOfReturnUnDamage();
 		// 現在スコアのゲッタ
 		float GetScoreCurrent();
+		// 現在スコアの追加処理
+		void AddScoreCurrent(int addScore);
 		// 現在HPのセッタ
 		void SetHPCurrent(float hp);
 
