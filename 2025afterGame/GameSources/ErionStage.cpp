@@ -200,6 +200,9 @@ namespace basecross {
 	{
 		//オブジェクトの配列
 		vector<wstring> ObjectLine;
+
+		auto& score = ScoreObjectManager::GetScoreObjectManager();
+
 		//抜き出し
 		m_objectFile.GetSelect(ObjectLine, 0, L"ScoreObjectAnchor");
 		for (auto& v : ObjectLine)
@@ -227,7 +230,7 @@ namespace basecross {
 
 			//wstring Tag = Tokens[10];
 
-			AddGameObject<ScoreObject>(Pos, Rot, Siz);
+			score->CreateScoreObject(Pos, Rot, Siz);
 		}
 	}
 }

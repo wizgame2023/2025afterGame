@@ -26,6 +26,8 @@ namespace basecross{
 		static unique_ptr<ScoreObjectManager, ScoreObjectManagerDeleter>& GetScoreObjectManager();
 
 		virtual void OnCreate();
+
+		void CreateScoreObject(Vec3 pos, Vec3 rot, Vec3 siz);
 	};
 }
 //end basecross
