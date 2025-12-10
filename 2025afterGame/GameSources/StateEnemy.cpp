@@ -63,16 +63,22 @@ namespace basecross {
 
 	void StateTrackingEnemy::OnEnter()
 	{
+		// 親クラスEnter呼び出し
+		StateEnemy::OnEnter();
+
 		// 追いかける対象を取得
 		m_trackingObj = m_enemyLock->GetTrackingObj();
 	}
 
 	void StateTrackingEnemy::OnUpdate()
 	{
+		// 親クラスUpdate呼び出し
+		StateEnemy::OnUpdate();
+
 		m_trackingObj = m_enemyLock->GetTrackingObj();
 		auto trackingObjLock = m_trackingObj.lock();
 
-		if (trackingObjLock)
+		if (!trackingObjLock)
 		{
 			throw BaseException
 			{
@@ -82,72 +88,24 @@ namespace basecross {
 			};
 		}
 
+		// 親オブジェクトの位置
 		auto parentPos = m_enemyLock->GetComponent<Transform>()->GetPosition();
 
-		// xz方面の距離の差を求める 次はzy方面の距離の差を求める
-		//auto goalObj = GetStage()->GetSharedGameObject<DebagPlayer>(L"Player"); // いったんゴールの位置をプレイヤーにする
+		// 自分と追尾対象の座標の差を計算する
 		auto goalPos = trackingObjLock->GetComponent<Transform>()->GetPosition();
 		Vec3 posPlayerDifference = goalPos - parentPos; // ゴールと敵の位置の差を求める
-		Vec2 differenceYZ = Vec2(posPlayerDifference.y, abs(posPlayerDifference.z));
-		differenceYZ.normalize();
 		posPlayerDifference.normalize(); // 正規化
 
-		// 目的地の角度を取得
-		float goalAngle = atan2f(posPlayerDifference.x, posPlayerDifference.z);
-		float goalAngleZY = atan2f(posPlayerDifference.y, abs(posPlayerDifference.z));
-		float goalAngleYX = atan2f(posPlayerDifference.y, -posPlayerDifference.x);
 
+		// 追いかけるときのロール回転処理(デバック用処理しか書いていない)
+		m_enemyLock->TrackingRollQt();
+		// 追いかける対象にX軸に向く処理
+		m_enemyLock->TrackingPitchQt(posPlayerDifference);
+		// 追いかける対象に向かってヨーを回転させる処理
+		m_enemyLock->TrackingYawQt(posPlayerDifference);
 
-		// 角度がマイナスつかないように変更
-		goalAngle = m_enemyLock->AdjustmentAngle(goalAngle);
-		goalAngleZY = m_enemyLock->AdjustmentAngle(-goalAngleZY);
-		goalAngleYX = m_enemyLock->AdjustmentAngle(goalAngleYX);
-
-
-		// ピッチの向きたい方向を求める処理
-		// これで、向いている方向のY座標を0にしたものを求める
-		auto posPlayerDifferenceZY = posPlayerDifference;
-		posPlayerDifferenceZY.y = 0.0f;
-
-
-		// 内積
-		float dotf = posPlayerDifference.dot(posPlayerDifferenceZY);
-		// なす角を求める
-		auto pitchAngle = acosf(dotf);
-
-		// 敵から見てプレイヤーが下にいたら角度をマイナスにする
-		if (posPlayerDifference.y > 0)
-		{
-			pitchAngle = -pitchAngle;
-		}
-
-		// 敵から見てプレイヤーのいるZX平面の角度
-		auto playerAngle = atan2f(posPlayerDifference.z, posPlayerDifference.x);
-		playerAngle = m_enemyLock->AdjustmentAngle(playerAngle);
-
-		// 進むスピード(仮)
-		float speed = 1.0f;
-
-		// Pos移動
-		parentPos.x += cos(playerAngle) * speed * m_deltaTime;
-		parentPos.z += sin(playerAngle) * speed * m_deltaTime;
-
-		// y方向の差が＋かーか確認する
-		int ysign = 0;
-		if (posPlayerDifference.y > 0.05f)
-		{
-			ysign = 1;
-		}
-		else if (posPlayerDifference.y < -0.05f)
-		{
-			ysign = -1;
-		}
-		else
-		{
-			ysign = 0;
-		}
-		parentPos.y += ysign * speed * m_deltaTime; // 向いている角度によってスピード変えないと違和感が出るかも
-
+		// 対象に向かって追いかける処理
+		m_enemyLock->TrackingMove(posPlayerDifference);
 
 	}
 	//
