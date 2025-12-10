@@ -41,7 +41,7 @@ namespace basecross {
 		// コリジョン追加
 		auto ptrCol = AddComponent<CollisionObb>();
 		ptrCol->SetDrawActive(false);
-		ptrCol->SetAfterCollision(AfterCollision::None);
+		//ptrCol->SetAfterCollision(AfterCollision::None);
 
 		// ドロー処理
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
@@ -214,29 +214,10 @@ namespace basecross {
 	// 対象に向かって追いかける処理
 	void Enemy::TrackingMove(const Vec3& posPlayerDifference)
 	{
-		// 敵から見てプレイヤーのいるZX平面の角度
-		auto playerAngle = atan2f(posPlayerDifference.z, posPlayerDifference.x);
-		playerAngle = AdjustmentAngle(playerAngle);
-
 		// Pos移動
-		m_pos.x += cos(playerAngle) * m_speed * m_delta;
-		m_pos.z += sin(playerAngle) * m_speed * m_delta;
-
-		// y方向の差が＋かーか確認する
-		int ysign = 0;
-		if (posPlayerDifference.y > 0.05f)
-		{
-			ysign = 1;
-		}
-		else if (posPlayerDifference.y < -0.05f)
-		{
-			ysign = -1;
-		}
-		else
-		{
-			ysign = 0;
-		}
-		m_pos.y += ysign * m_speed * m_delta; // 向いている角度によってスピード変えないと違和感が出るかも
+		m_pos.x += posPlayerDifference.x * m_delta * m_speed;
+		m_pos.y += posPlayerDifference.y * m_delta * m_speed;
+		m_pos.z += posPlayerDifference.z * m_delta * m_speed;
 
 		return;
 	}
