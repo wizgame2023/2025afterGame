@@ -171,22 +171,24 @@ namespace basecross {
 
 			// 重力の大きさ
 			auto vel = m_gravity->GetGravityVelocity();
+			
+			// 重力に勝つためvelを足す重力はーでliftAccは＋でACC量で勝ったら受ける
+			vel += liftAcc * deltaTime;
 
 			float maxFallSpeed = -3.0f;
-			
-			if (m_recoveryTime < 2.0f)
+
+			if (m_recoveryTime < 5.0f)
 			{
 				maxFallSpeed = -3.0;
 			}
 			else
 			{
-				maxFallSpeed = -10.0f;
+				maxFallSpeed = -20.0f;
 			}
 
 			vel.y = max(vel.y, maxFallSpeed);
 
-			// 重力に勝つためvelを足す重力はーでliftAccは＋でACC量で勝ったら受ける
-			vel += liftAcc * deltaTime;
+			m_gravity->SetGravityVerocity(vel);
 		}
 
 		// --- 移動処理 ---
