@@ -24,6 +24,7 @@
 #include "DashRing.h"
 #include "ScoreObject.h"
 #include "ScoreObjectManager.h"
+#include "InvisibleCollision.h"
 
 // 殿堂入りMyGameObject本体
 #include "MyGameObject.h";
