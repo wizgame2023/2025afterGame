@@ -61,6 +61,12 @@ namespace basecross {
 		// 追いかける対象に向かってY軸回転方向で向く処理
 		void TrackingYawQt(const Vec3& posPlayerDifference);
 
+		// 障害物を避ける処理
+		void DodgeObstacles(const Vec3& posPlayerDifference);
+
+		// 障害物を避けるルートを考える処理
+		shared_ptr<TestCube> DodgeRoute();
+
 		// 追いかける対象ポインタのゲッタ
 		shared_ptr<Actor> GetTrackingObj();
 	};
