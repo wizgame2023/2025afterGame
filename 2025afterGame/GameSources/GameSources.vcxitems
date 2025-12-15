@@ -36,6 +36,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)GameStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)HpSprite.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)InputManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)InvisibleCollision.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MainCameraManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MultiViewStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MyGameObject.h" />
@@ -49,6 +50,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Scene.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ScoreManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ScoreObject.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ScoreObjectManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SelectStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Sprite.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StageWall.h" />
@@ -84,6 +86,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)GameStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)HpSprite.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)InputManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)InvisibleCollision.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)KaitoStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MainCameraManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MultiViewStage.cpp" />
@@ -96,6 +99,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Scene.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ScoreManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ScoreObject.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ScoreObjectManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SelectStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Sprite.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StageWall.cpp" />
