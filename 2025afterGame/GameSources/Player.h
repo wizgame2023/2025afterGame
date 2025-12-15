@@ -103,6 +103,13 @@ namespace basecross{
 		void CreateBullet();
 
 		/*
+		@brief プレイヤーの飛行処理
+		@details グラビティがある状態の時にさせる処理
+		@return なし
+		*/
+		void Flight(float deltaTime);
+
+		/*
 		@brief プレイヤーのコントローラ番号を設定する
 		@param index コントローラ番号（0または1）
 		@return なし
