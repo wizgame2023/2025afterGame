@@ -159,6 +159,8 @@ namespace basecross {
 
 		//scene->SetDebugString(wss.str());
 
+
+
 	}
 
 	// 当たり判定
@@ -271,6 +273,35 @@ namespace basecross {
 	{
 		m_yawAngle = atan2f(posPlayerDifference.x, posPlayerDifference.z);
 		return;
+	}
+
+	// 障害物を避ける処理
+	void Enemy::DodgeObstacles(const Vec3& posPlayerDifference)
+	{
+		auto objVec = GetStage()->GetGameObjectVec();
+
+		Vec3 hitPos;			// 出力用：レイの交差地点(衝突点)
+		TRIANGLE triangle;		// レイが交差したポリゴンを構成する頂点の座標
+		size_t triangleNumber;	// レイが交差したポリゴンの番号
+
+		for (auto obj : objVec)
+		{
+			auto obstacles = dynamic_pointer_cast<TestCsv>(obj);// 当たり判定の対象
+		
+			// 進行上の障害になりそうなものか判断
+			if (obstacles)
+			{
+				auto ptrDraw = obstacles->GetComponent<SmBaseDraw>();
+				auto endPoint = m_pos + (posPlayerDifference * 5);
+				ptrDraw->HitTestStaticMeshSegmentTriangles(m_pos, endPoint, hitPos, triangle, triangleNumber);
+			}
+
+			// レイが当たったら動かないようにする
+			if (hitPos != Vec3(0.0f))
+			{
+				m_moveVec = Vec3(0.0f);
+			}
+		}
 	}
 
 	// 追いかける対象ポインタのゲッタ
