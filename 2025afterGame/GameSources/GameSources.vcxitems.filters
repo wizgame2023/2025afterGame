@@ -146,6 +146,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)InvisibleCollision.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ObstaclesDodge.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Actor.h">
@@ -296,6 +297,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)InvisibleCollision.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ObstaclesDodge.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header">
