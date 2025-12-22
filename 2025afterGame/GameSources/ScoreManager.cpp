@@ -6,34 +6,103 @@
 
 #include "stdafx.h"
 #include "Project.h"
+#include<algorithm>
 
 namespace basecross {
 	unique_ptr<ScoreManager, ScoreManager::ScoreManagerDeleter> ScoreManager::m_scoreManager;
 
 	// コンストラクタ
 	ScoreManager::ScoreManager() :
-		m_score(0)
+		m_scores(0)
 	{}
 
 	// ==============================================================================
 	// 関数
 	// ==============================================================================
 
-	void ScoreManager::SetScore(int score)
+	void ScoreManager::SetID(const wstring& id)
 	{
-		m_score = score;
-		// スコアがマイナスにならないようにする
-		max(m_score, 0);
+		if (FindScoreInfo(id) == nullptr)
+		{
+			ScoreInfo newScore;
+			newScore.id = id;
+			newScore.crntScore = 0;
+
+			m_scores.push_back(newScore);
+		}
 	}
 
-	void ScoreManager::ResetScore()
+	ScoreManager::ScoreInfo* ScoreManager::FindScoreInfo(const wstring& id)
 	{
-		m_score = 0;
+		// IDからスコア情報を探す
+		for (auto& entity : m_scores)
+		{
+			// IDが一致したらそのポインタを返す
+			if (entity.id == id)
+			{
+				return &entity;
+			}
+		}
+		// なかったらnullptrを返す
+		return nullptr;
 	}
 
-	int ScoreManager::GetScore() const
+	const ScoreManager::ScoreInfo* ScoreManager::FindScoreInfo(const wstring& id) const
 	{
-		return m_score;
+		// IDからスコア情報を探す
+		for (const auto& entity : m_scores)
+		{
+			// IDが一致したらそのポインタを返す
+			if (entity.id == id)
+			{
+				return &entity;
+			}
+		}
+		// なかったらnullptrを返す
+		return nullptr;
+	}
+
+	vector<ScoreManager::ScoreInfo> ScoreManager::GetSortedScores() const
+	{
+		// スコア情報のコピーを作成
+		vector<ScoreInfo> sortedScores = m_scores;
+
+		// スコアの高い順にソート
+		sort(sortedScores.begin(), sortedScores.end(),
+			// ラムダ式(aとbを比較して並び替え)
+			[](const ScoreInfo& a, const ScoreInfo& b)
+			{ return a.crntScore > b.crntScore; }
+		);
+
+		return sortedScores;
+	}
+
+	void ScoreManager::SetScore(const wstring& id, int score)
+	{
+		// IDからスコア情報を探す
+		if (auto* entity = FindScoreInfo(id))
+		{
+			entity->crntScore = score;
+		}
+	}
+
+	int ScoreManager::GetScore(const wstring& id) const
+	{
+		// IDからスコア情報を探す
+		if (auto* entity = FindScoreInfo(id))
+		{
+			return entity->crntScore;
+		}
+		return 0;
+	}
+
+	void ScoreManager::ResetScore(const wstring& id)
+	{
+		// IDからスコア情報を探す
+		if (auto* entity = FindScoreInfo(id))
+		{
+			entity->crntScore = 0;
+		}
 	}
 
 	// シングルトンによる生成
@@ -102,15 +171,17 @@ namespace basecross {
 
 		ifstream ifs(scorePath, ios::binary);
 
+		int plScore = GetPlScore();
+
 		// ファイルが存在し、スコアがハイスコアより高ければ上書き
-		if (ifs && LoadHighScoreBinary() < m_score)
+		if (ifs && LoadHighScoreBinary() < plScore)
 		{
 			// ofstreamでファイルを開く or 生成
 			ofstream ofs(scorePath, ios::binary);
 			assert(ofs);
 
 			// スコアを書き込み
-			ofs.write(reinterpret_cast<const char*>(&m_score), sizeof(m_score));
+			ofs.write(reinterpret_cast<const char*>(&plScore), sizeof(plScore));
 		}
 	}
 
