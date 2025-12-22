@@ -1,21 +1,19 @@
 /*!
-@file Character.cpp
-@brief キャラクターなど実体
+@file InvisibleCollsion.cpp
+@brief 見えない当たり判定
 */
 
 #include "stdafx.h"
 #include "Project.h"
 
 namespace basecross {
-	InvisibleCollision::InvisibleCollision(const shared_ptr<Stage>& StagePtr,
-		const Vec3& Pos,
-		const Vec3& Rot,
-		const Vec3& Siz
+	InvisibleCollision::InvisibleCollision(const shared_ptr<Stage>& stagePtr,
+		const Vec3& pos,
+		const Vec3& rot,
+		const Vec3& siz,
+		const Col4& color
 	) :
-		GameObject(StagePtr),
-		m_pos(Pos),
-		m_rot(Rot),
-		m_siz(Siz)
+		Actor(stagePtr,pos,rot,siz,color)
 	{
 		try
 		{
@@ -34,7 +32,7 @@ namespace basecross {
 	void InvisibleCollision::OnCreate()
 	{
 		auto PtrTrans = GetComponent<Transform>();
-		PtrTrans->SetScale(m_siz);
+		PtrTrans->SetScale(m_scale);
 		PtrTrans->SetRotation(m_rot);
 		PtrTrans->SetPosition(m_pos);
 
