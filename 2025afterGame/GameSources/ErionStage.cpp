@@ -231,8 +231,9 @@ namespace basecross {
 			); 
 
 			//wstring Tag = Tokens[10];
+			int Tag = (int)_wtof(Tokens[10].c_str());
 
-			score->CreateScoreObject(Pos, Rot, Siz);
+			score->CreateScoreObject(Pos, Rot, Siz, Tag);
 		}
 	}
 

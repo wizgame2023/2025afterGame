@@ -10,12 +10,14 @@ namespace basecross{
 		ScoreObject::ScoreObject(const shared_ptr<Stage>& StagePtr,
 		const Vec3& Pos,
 		const Vec3& Rot,
-		const Vec3& Siz
+		const Vec3& Siz,
+		const int& ID
 	) :
 		GameObject(StagePtr),
 		m_pos(Pos),
 		m_rot(Rot),
 		m_siz(Siz),
+		m_id(ID),
 		m_score(10)
 	{
 		try
@@ -57,6 +59,11 @@ namespace basecross{
 			body->AddScoreCurrent(m_score);
 			GetStage()->RemoveGameObject<ScoreObject>(GetThis<ScoreObject>());
 		}
+	}
+
+	int ScoreObject::GetObjectID()
+	{
+		return m_id;
 	}
 }
 //end basecross
