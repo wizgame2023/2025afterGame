@@ -65,7 +65,7 @@ namespace basecross {
 		void DodgeObstacles(const Vec3& posPlayerDifference);
 
 		// 障害物を避けるルートを考える処理
-		shared_ptr<TestCube> DodgeRoute();
+		shared_ptr<ObstaclesDodge> DodgeRoute();
 
 		// 追いかける対象ポインタのゲッタ
 		shared_ptr<Actor> GetTrackingObj();

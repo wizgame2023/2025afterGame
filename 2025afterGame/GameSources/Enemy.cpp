@@ -302,25 +302,25 @@ namespace basecross {
 				// ここを動かないようにじゃなくて迂回するルートを考える処理にする
 				m_moveVec = Vec3(0.0f);
 
-				//// 障害物を避けるために進むルートを決める
-				//auto obstaclesDodgeObj = DodgeRoute();
-				//// 追いかける対象を変える
-				//m_trackingObj = obstaclesDodgeObj;
+				// 障害物を避けるために進むルートを決める ポインタの関係でエラー吐く
+				auto obstaclesDodgeObj = DodgeRoute();
+				// 追いかける対象を変える
+				m_trackingObj = obstaclesDodgeObj;
 			}
 		}
 
 	}
 
 	// 障害物を避けるルートを考える処理
-	shared_ptr<TestCube> Enemy::DodgeRoute()
+	shared_ptr<ObstaclesDodge> Enemy::DodgeRoute()
 	{
 		auto objVec = GetStage()->GetGameObjectVec();
-		vector<shared_ptr<TestCube>> m_obstaclesDodgeObjs;
+		vector<shared_ptr<ObstaclesDodge>> m_obstaclesDodgeObjs;
 
 		for (auto obj : objVec)
 		{
 			// 回避ルート用のオブジェクトか確認した後回避ルートをきめる
-			auto obstaclesDodgeObj = dynamic_pointer_cast<TestCube>(obj);
+			auto obstaclesDodgeObj = dynamic_pointer_cast<ObstaclesDodge>(obj);
 
 			if (obstaclesDodgeObj)
 			{
@@ -333,7 +333,7 @@ namespace basecross {
 		}
 
 		float min = 999999.9f; // 最短距離
-		shared_ptr<TestCube> targetObstaclesDodgeObj; // 障害物を避けるために追跡するオブジェクト
+		shared_ptr<ObstaclesDodge> targetObstaclesDodgeObj; // 障害物を避けるために追跡するオブジェクト
 
 		// 障害物を避けるためにどこを経由すると最短距離はどのオブジェクトか確認する
 		for (auto obj : m_obstaclesDodgeObjs)
