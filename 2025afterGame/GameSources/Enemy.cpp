@@ -296,31 +296,38 @@ namespace basecross {
 				ptrDraw->HitTestStaticMeshSegmentTriangles(m_pos, endPoint, hitPos, triangle, triangleNumber);
 			}
 
-			// レイが当たったら動かないようにする
-			if (hitPos != Vec3(0.0f))
+			// 現在のステートの文字列を受け取る
+			auto currentStateWstring = m_stateMachine->GetCurrentStateWString();
+
+			// レイが当たったら動かないようにする (障害物を避けるステートに移行するための物なので連続して同じステートに変更しないようにしてます)
+			if (hitPos != Vec3(0.0f) && currentStateWstring != L"ObstaclesDodge")
 			{
 				// ここを動かないようにじゃなくて迂回するルートを考える処理にする
 				m_moveVec = Vec3(0.0f);
 
-				//// 障害物を避けるために進むルートを決める
-				//auto obstaclesDodgeObj = DodgeRoute();
-				//// 追いかける対象を変える
-				//m_trackingObj = obstaclesDodgeObj;
+				// 障害物を避けるために進むルートを決める ポインタの関係でエラー吐く
+				auto obstaclesDodgeObj = DodgeRoute();
+
+				// 変更したステートに障害物を避けるためにこのオブジェクトを目印にしてほしいと伝える
+				ChangeState(L"ObstaclesDodge");
+				auto currentState = m_stateMachine->GetCurrentState(); // 現在のステート取得
+				auto obstaclesDodgeState = dynamic_pointer_cast<StateObstaclesDodgeEnemy>(currentState);
+				obstaclesDodgeState->SetObstaclesDodge(obstaclesDodgeObj);
 			}
 		}
 
 	}
 
 	// 障害物を避けるルートを考える処理
-	shared_ptr<TestCube> Enemy::DodgeRoute()
+	shared_ptr<ObstaclesDodge> Enemy::DodgeRoute()
 	{
 		auto objVec = GetStage()->GetGameObjectVec();
-		vector<shared_ptr<TestCube>> m_obstaclesDodgeObjs;
+		vector<shared_ptr<ObstaclesDodge>> m_obstaclesDodgeObjs;
 
 		for (auto obj : objVec)
 		{
 			// 回避ルート用のオブジェクトか確認した後回避ルートをきめる
-			auto obstaclesDodgeObj = dynamic_pointer_cast<TestCube>(obj);
+			auto obstaclesDodgeObj = dynamic_pointer_cast<ObstaclesDodge>(obj);
 
 			if (obstaclesDodgeObj)
 			{
@@ -333,23 +340,21 @@ namespace basecross {
 		}
 
 		float min = 999999.9f; // 最短距離
-		shared_ptr<TestCube> targetObstaclesDodgeObj; // 障害物を避けるために追跡するオブジェクト
+		shared_ptr<ObstaclesDodge> targetObstaclesDodgeObj; // 障害物を避けるために追跡するオブジェクト
 
-		// 障害物を避けるためにどこを経由すると最短距離はどのオブジェクトか確認する
+		// 障害物を避ける際の最短距離はどのオブジェクトを経由すればいいか確認する
 		for (auto obj : m_obstaclesDodgeObjs)
 		{
-			auto objPos = obj->GetComponent<Transform>()->GetPosition();// 現在ここ作業中
-			Vec3 objAbsPos = Vec3(abs(objPos.x),abs(objPos.y),abs(objPos.z));
-			Vec3 myAbsPos = Vec3(abs(m_pos.x), abs(m_pos.y), abs(m_pos.z));
-			// 現在距離と障害物回避経由位置の距離の差を求める
-			float difference = abs(objAbsPos.x - myAbsPos.x) +
-				abs(objAbsPos.y - myAbsPos.y) +
-				abs(objAbsPos.z - myAbsPos.z);
+			auto objPos = obj->GetComponent<Transform>()->GetPosition();
+
+			// 自分の位置と経由するオブジェクトの位置の差を求める
+			auto differencePos = m_pos - objPos;
+			float distanceVec = differencePos.length();
 
 			// 最短距離だった場合そこを追跡対象として追いかける
-			if (min > difference && difference != 0.0f)
+			if (min > distanceVec && distanceVec != 0.0f)
 			{
-				min = difference;
+				min = distanceVec;
 				targetObstaclesDodgeObj = obj;
 			}
 		}
