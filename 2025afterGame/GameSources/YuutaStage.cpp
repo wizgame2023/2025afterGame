@@ -139,6 +139,7 @@ namespace basecross {
 		m_objectFile.GetSelect(ObjectLine, 0, L"Object");
 		m_objectFile.GetSelect(dodgeAnchorLine, 0, L"DodgeAnchor");
 
+		// 障害物を回避するための道しるべとなるオブジェクト
 		for (auto& v : dodgeAnchorLine)
 		{
 			//オブジェクトの作成
@@ -164,8 +165,8 @@ namespace basecross {
 
 			wstring Tag = Tokens[10];
 
-			auto obstacle = AddGameObject<TestCube>(Pos, Quat(0.0f,0.0f,0.0f,1.0f), Siz);
-			obstacle->AddTag(L"ObstacleRoute"); // 障害物ルートタグを追加
+			auto obstacle = AddGameObject<ObstaclesDodge>(Pos, Vec3(0.0f,0.0f,0.0f), Siz);
+			obstacle->AddTag(L"ObstaclesRoute"); // 障害物ルートタグを追加
 		}
 
 		for (auto& v : ObjectLine)
