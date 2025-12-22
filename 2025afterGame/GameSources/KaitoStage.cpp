@@ -49,7 +49,14 @@ namespace basecross {
 			auto& scrMana = ScoreManager::CreateScoreManager();
 			
 			scrMana->CreateHighScoreBinary();
-			scrMana->SetScore(scrMana->GetScore() + 200);
+			scrMana->SetID(L"Player");
+			scrMana->SetID(L"Enemy1");
+			scrMana->SetID(L"Enemy2");
+
+			scrMana->SetPlScore(scrMana->GetPlScore() + 200);
+			scrMana->SetScore(L"Enemy1", scrMana->GetScore(L"Enemy1") + 400);
+			scrMana->SetScore(L"Enemy2", scrMana->GetScore(L"Enemy2") + 100);
+
 			scrMana->SaveHighScoreBinary();
 
 			//背景
@@ -66,6 +73,11 @@ namespace basecross {
 			auto mainCamMana = AddGameObject<MainCameraManager>();
 			SetSharedGameObject(L"MainCameraManager", mainCamMana);
 
+			auto& gameManager = GameManager::GetGameManager();
+			gameManager->AddCheckPoint();
+			auto startCheckPoint = gameManager->GetCheckPoint(0);
+
+			auto enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
 
 			// これがないとエフェクトが表示されない()
 			AddGameObject<EffectUpdateDrawManager>();
@@ -78,8 +90,18 @@ namespace basecross {
 
 	void KaitoStage::OnUpdate()
 	{		
-		DebugLog(L"\n\n\n\n\nscore : ", ScoreManager::GetScoreManager()->GetScore());
-		DebugLog(L"fileScore : ", ScoreManager::GetScoreManager()->LoadHighScoreBinary());
+		auto& scrMana = ScoreManager::GetScoreManager();
+		scrMana->SetPlScore(scrMana->GetPlScore() + 1);
+		DebugLog(L"\n\n\n\n\nPLScore : ", scrMana->GetPlScore());
+		//DebugLog(L"Enemy1Score : ", scrMana->GetScore(L"Enemy1"));
+		//DebugLog(L"fileScore : ", scrMana->LoadHighScoreBinary());
+		auto SortedScores = scrMana->GetSortedScores();
+		for (size_t i = 0; i < SortedScores.size(); i++)
+		{
+			DebugLog(L"\nRank ", i + 1);
+			DebugLog(L" ID : ", SortedScores[i].id);
+			DebugLog(L" Score : ", SortedScores[i].crntScore);
+		}
 		FlushDebugLog();
 	}
 

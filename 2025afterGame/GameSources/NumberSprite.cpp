@@ -40,7 +40,7 @@ namespace basecross {
         auto& gameManger = GameManager::GetGameManager();
         auto& uiManager = UIManager::GetUIManager();
         auto currentHP = uiManager->GetCurrentPlayerHP();
-        auto currentScore = ScoreManager::GetScoreManager()->GetScore();
+        auto currentScore = ScoreManager::GetScoreManager()->GetPlScore();
 
         int value = 0;
 
