@@ -37,6 +37,25 @@ namespace basecross {
 		void OnUpdate()override;
 	};
 
+	// 障害物を回避するステート
+	class StateObstaclesDodgeEnemy :public StateEnemy
+	{
+	private:
+		weak_ptr<Actor> m_trackingObj; // 追いかける対象のポインタ
+		weak_ptr<ObstaclesDodge> m_obstaclesDodge; // 障害物を回避するためのルート
+
+	public:
+		StateObstaclesDodgeEnemy(const shared_ptr<MyGameObject>& parentObj);
+		~StateObstaclesDodgeEnemy();
+
+		void OnEnter()override;
+		void OnUpdate()override;
+
+		// 障害物を回避するためにここを通過点にしろと伝えるセッタ
+		void SetObstaclesDodge(weak_ptr<ObstaclesDodge> obstaclesDodge);
+	};
+
+
 	// リスポーン待機ステート
 	class StateRespawnEnemy :public StateEnemy
 	{

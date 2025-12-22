@@ -108,10 +108,48 @@ namespace basecross {
 		// 対象に向かって追いかける処理
 		m_enemyLock->TrackingMove(posPlayerDifference);
 
+		// そのまま進むと障害物にぶつかるかレイを使用して判断する
 		m_enemyLock->DodgeObstacles(posPlayerDifference);
 
 	}
 	//
+
+
+	// 障害物を回避するためのステート
+	StateObstaclesDodgeEnemy::StateObstaclesDodgeEnemy(const shared_ptr<MyGameObject>& parentObj):
+		StateEnemy(parentObj)
+	{
+
+	}
+
+	StateObstaclesDodgeEnemy::~StateObstaclesDodgeEnemy()
+	{
+	}
+
+	void StateObstaclesDodgeEnemy::OnEnter()
+	{
+		// 親クラスEnter処理
+		StateEnemy::OnEnter();
+
+		// (元々)追いかける対象を取得
+		m_trackingObj = m_enemyLock->GetTrackingObj();
+	}
+
+	void StateObstaclesDodgeEnemy::OnUpdate()
+	{
+		// 親クラスUpdate処理
+		StateEnemy::OnUpdate();
+
+
+	}
+
+	// 障害物を回避するためにここを通過点にしろと伝えるセッタ
+	void StateObstaclesDodgeEnemy::SetObstaclesDodge(weak_ptr<ObstaclesDodge> obstaclesDodge)
+	{
+		m_obstaclesDodge = obstaclesDodge;
+	}
+	///////////////////////////////////////////////////////////
+
 
 
 	// リスポーン待機ステート
@@ -168,6 +206,7 @@ namespace basecross {
 		}
 	}
 	//
+
 
 }
 //end basecross
