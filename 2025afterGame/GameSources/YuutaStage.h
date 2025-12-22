@@ -15,6 +15,9 @@ namespace basecross {
 		//ƒrƒ…[‚Ìì¬
 		void CreateViewLight();
 		function<void()> m_Func;
+
+		CsvFile m_objectFile;
+
 	public:
 		//\’z‚Æ”jŠü
 		YuutaStage() :Stage() {}
@@ -22,6 +25,9 @@ namespace basecross {
 		//‰Šú‰»
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
+
+
+		void CreateDodgeObject();
 	};
 
 

@@ -27,6 +27,8 @@ namespace basecross {
 		void CreateTestObject();
 		void CreateRingObject();
 		void CreateWallObject();
+		void CreateScoreObject();
+		void CreateInvisibleCollision();
 	};
 
 

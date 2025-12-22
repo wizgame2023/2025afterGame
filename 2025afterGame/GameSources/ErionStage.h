@@ -22,6 +22,10 @@ namespace basecross {
 		void CreateRingObject();
 		//壁オブジェクトを作成
 		void CreateWallObject();
+		//スコアオブジェクト用の作成関数
+		void CreateScoreObject();
+		//見えないオブジェクト
+		void CreateInvisibleCollision();
 
 	public:
 		//構築と破棄

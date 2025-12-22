@@ -75,6 +75,7 @@ namespace basecross {
 		// 親クラスUpdate呼び出し
 		StateEnemy::OnUpdate();
 
+		// 追いかける対象の更新
 		m_trackingObj = m_enemyLock->GetTrackingObj();
 		auto trackingObjLock = m_trackingObj.lock();
 
@@ -106,6 +107,8 @@ namespace basecross {
 
 		// 対象に向かって追いかける処理
 		m_enemyLock->TrackingMove(posPlayerDifference);
+
+		m_enemyLock->DodgeObstacles(posPlayerDifference);
 
 	}
 	//

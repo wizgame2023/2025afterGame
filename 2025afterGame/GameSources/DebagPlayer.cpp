@@ -23,11 +23,12 @@ namespace basecross {
 		FighterAircraftBase::OnCreate();
 
 		m_trans = GetComponent<Transform>();
-		m_trans->SetPosition(Vec3(0.0f, 0.0f, -1.0f));
+		m_trans->SetPosition(Vec3(-10.0f, 0.0f, -1.0f));
 		m_initialQuat = m_trans->GetQuaternion();
 
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+		ptrDraw->SetDiffuse(Col4(1.0f, 0.0f, 0.0f, 1.0f));
 		//ptrDraw->SetTextureResource(L"diffuse_TX");
 
 		auto ptrCol = AddComponent<CollisionObb>();
