@@ -1,6 +1,6 @@
 /*!
-@file Character.h
-@brief キャラクターなど
+@file PauseMenu.h
+@brief PauseMenuヘッダ
 */
 
 #pragma once

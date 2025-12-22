@@ -1,6 +1,6 @@
 /*!
-@file Character.cpp
-@brief キャラクターなど実体
+@file PauseMenu.cpp
+@brief PauseMenu実体
 */
 
 #include "stdafx.h"
