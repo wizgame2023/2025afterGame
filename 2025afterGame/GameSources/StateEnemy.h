@@ -28,6 +28,7 @@ namespace basecross {
 	{
 	private:
 		weak_ptr<Actor> m_trackingObj; // 追いかける対象のポインタ
+		shared_ptr<Actor> m_trackingObjLock; // ロック解除した追いかける対象のポインタ
 
 	public:
 		StateTrackingEnemy(const shared_ptr<MyGameObject>& parentObj);
@@ -35,14 +36,18 @@ namespace basecross {
 
 		void OnEnter()override;
 		void OnUpdate()override;
+
+		// 自分と追尾対象の座標の差を計算する
+		Vec3 CheckDifferencePos(Vec3 goalPos);
 	};
 
 	// 障害物を回避するステート
-	class StateObstaclesDodgeEnemy :public StateEnemy
+	class StateObstaclesDodgeEnemy :public StateTrackingEnemy
 	{
 	private:
 		weak_ptr<Actor> m_trackingObj; // 追いかける対象のポインタ
 		weak_ptr<ObstaclesDodge> m_obstaclesDodge; // 障害物を回避するためのルート
+		shared_ptr<ObstaclesDodge> m_obstaclesDodgeLock; // 障害物を回避するためのルート
 
 	public:
 		StateObstaclesDodgeEnemy(const shared_ptr<MyGameObject>& parentObj);
@@ -80,6 +85,7 @@ namespace basecross {
 			AddState(L"Base", shared_ptr<StateEnemy>(new StateEnemy(parentObj))); // 基盤部分
 			AddState(L"Respawn", shared_ptr<StateRespawnEnemy>(new StateRespawnEnemy(parentObj))); // リスポーン
 			AddState(L"Tracking", shared_ptr<StateTrackingEnemy>(new StateTrackingEnemy(parentObj))); // 追尾処理
+			AddState(L"ObstaclesDodge", shared_ptr<StateObstaclesDodgeEnemy>(new StateObstaclesDodgeEnemy(parentObj))); // 障害物回避ステート
 		}
 	};
 
