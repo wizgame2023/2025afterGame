@@ -24,7 +24,6 @@
 #include "DashRing.h"
 #include "ScoreObject.h"
 #include "ScoreObjectManager.h"
-#include "InvisibleCollision.h"
 
 // 殿堂入りMyGameObject本体
 #include "MyGameObject.h";
@@ -49,6 +48,8 @@
 #include "Barrier.h"
 #include "DisableBarrier.h"
 #include "CheckPoint.h"
+#include "ObstaclesDodge.h"
+#include "InvisibleCollision.h"
 ///////////////////////////////////////////////////
 
 //親クラスがFighterAircraftBase////////////////////

@@ -15,7 +15,7 @@ namespace basecross {
 
 	}
 
-	Actor::Actor(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 rot, Vec3 scale, Col4 color):
+	Actor::Actor(const shared_ptr<Stage>& stagePtr, const Vec3& pos, const Vec3& rot, const Vec3& scale, const Col4& color) :
 		MyGameObject(stagePtr),
 		m_pos(pos),
 		m_rot(rot),
@@ -25,7 +25,7 @@ namespace basecross {
 
 	}
 
-	Actor::Actor(const shared_ptr<Stage>& stagePtr, Vec3 pos, Quat qt, Vec3 scale, Col4 color):
+	Actor::Actor(const shared_ptr<Stage>& stagePtr, const Vec3& pos, const Quat& qt, const Vec3& scale, const Col4& color) :
 		MyGameObject(stagePtr),
 		m_pos(pos),
 		m_qt(qt),
