@@ -12,7 +12,7 @@ LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 const wchar_t* pClassName = L"BaseCrossFullClass";
 const wchar_t* pWndTitle = L"BaseCrossFullSample";
 
-
+BOOL IsMouseCursor = FALSE;
 //--------------------------------------------------------------------------------------
 //
 //  ä÷êî: MyRegisterClass()
@@ -112,6 +112,7 @@ HWND InitInstance(HINSTANCE hInstance, int nCmdShow, bool isFullScreen, int iCli
 		nCmdShow    //WinMainÇ…ìnÇ≥ÇÍÇΩÉpÉâÉÅÅ[É^
 	);
 	UpdateWindow(hWnd);
+	ShowCursor(IsMouseCursor);
 	return hWnd;
 }
 
