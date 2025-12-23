@@ -224,6 +224,8 @@ namespace basecross {
 
 		// 自分が見えない状態に変更する
 		m_enemyLock->GetComponent<PNTStaticDraw>()->SetDrawActive(false);
+		// 無敵状態をオンにする
+		m_enemyLock->OnInvincibleFlag();
 	}
 
 	void StateRespawnEnemy::OnUpdate()
@@ -248,8 +250,7 @@ namespace basecross {
 			m_enemyLock->SetHPCurrent(maxHP);
 
 			// 通常ステートに戻る
-			m_enemyLock->ChangeState(L"Base");
-
+			m_enemyLock->ChangeState(L"Tracking");
 		}
 	}
 	//

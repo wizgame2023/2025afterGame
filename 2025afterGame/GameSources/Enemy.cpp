@@ -10,7 +10,7 @@
 
 namespace basecross {
 	Enemy::Enemy(const shared_ptr<Stage>& obj,const Vec3& pos,const Quat& qt,const Vec3& scale,const shared_ptr<CheckPoint>& startCheckPoint, const shared_ptr<Actor>& trackingObj):
-		FighterAircraftBase(obj,pos,qt,scale,startCheckPoint),
+		FighterAircraftBase(obj,pos,qt,scale,startCheckPoint, Col4(0.0f, 1.0f, 1.0f, 1.0f)),
 		m_trackingObj(trackingObj)
 	{
 
@@ -44,12 +44,12 @@ namespace basecross {
 		//ptrCol->SetAfterCollision(AfterCollision::None);
 
 		// ドロー処理
-		auto ptrDraw = AddComponent<PNTStaticDraw>();
-		ptrDraw->SetMeshResource(L"Sentouki");
-		ptrDraw->SetTextureResource(L"diffuse_TX");
-		ptrDraw->SetMeshToTransformMatrix(spanMat);
-		ptrDraw->SetDiffuse(Col4(0.0f, 1.0f, 1.0f, 1.0f));
-		ptrDraw->SetEmissive(Col4(0.0f, 1.0f, 1.0f, 1.0f));
+		m_draw = AddComponent<PNTStaticDraw>();
+		m_draw->SetMeshResource(L"Sentouki");
+		m_draw->SetTextureResource(L"diffuse_TX");
+		m_draw->SetMeshToTransformMatrix(spanMat);
+		m_draw->SetDiffuse(m_color);
+		m_draw->SetEmissive(m_color);
 		SetAlphaActive(true);
 
 		// ステートマシン作成
@@ -77,7 +77,6 @@ namespace basecross {
 		// ステートマシン作成
 		m_stateMachine = unique_ptr<StateEnemyMachine>(new StateEnemyMachine(GetThis<MyGameObject>()));
 		m_stateMachine->ChangeState(L"Tracking"); // 仮で最初のステートはベースステートに変更する
-
 	}
 
 	void Enemy::OnUpdate()
@@ -141,12 +140,20 @@ namespace basecross {
 		m_qt *= Quat(0.0f, (sin(m_yawAngle / 2.0f)), 0.0f, cos((m_yawAngle / 2.0f))); // Y軸回転
 
 
+		// 無敵時用の処理
+		Invincible();
+
 		// Transform反映
 		m_trans->SetQuaternion(m_qt); // qt反映
 		m_trans->SetPosition(m_pos + m_moveVec); // pos反映
 
 		// 位置取得
 		m_pos = GetComponent<Transform>()->GetPosition();
+
+		// カラー適応
+		m_draw->SetEmissive(m_color);
+		m_draw->SetDiffuse(m_color);
+
 
 		//////デバック用
 		//wstringstream wss(L"");
@@ -176,6 +183,10 @@ namespace basecross {
 		if (bullet)
 		{
 			bool bulletAffiliation = bullet->GetAffiliation();
+			GetStage()->RemoveGameObject<Bullet>(bullet);
+
+			// 無敵フラグがオンならダメージ関係の処理はしない
+			if (m_invincibleFlag) return;
 
 			// 弾の所属がプレイヤーならダメージを受ける
 			if (bulletAffiliation == true)
@@ -190,7 +201,6 @@ namespace basecross {
 				ChangeState(L"Respawn");
 			}
 
-			GetStage()->RemoveGameObject<Bullet>(bullet);
 		}
 	}
 
@@ -318,6 +328,53 @@ namespace basecross {
 
 	}
 
+	// 無敵時の処理
+	void Enemy::Invincible()
+	{
+		if (m_invincibleFlag)
+		{
+
+			m_countTimeOfInvincible += m_delta;
+			if (m_timeOfInvincible < m_countTimeOfInvincible)
+			{
+				// 無敵が切れる
+				m_invincibleFlag = false;
+				m_countTimeOfInvincible = 0.0f;
+
+				// 点滅用の数値も初期化する
+				m_color.w = 1.0f;
+				m_countTimeOfBlinking = 0.0f;
+			}
+
+			// 無敵状態の時自分自身は点滅する
+			DrawBlinking();
+		}
+
+		return;
+	}
+
+	// 無敵時の点滅処理
+	void Enemy::DrawBlinking()
+	{
+		// 無敵状態の時自分自身は点滅する
+		m_countTimeOfBlinking += m_delta;
+		if (0.3f < m_countTimeOfBlinking)
+		{
+			if (m_color.w > 0.0f)
+			{
+				m_color.w = 0.0f;
+			}
+			else if (m_color.w <= 0.0f)
+			{
+				m_color.w = 1.0f;
+			}
+
+			m_countTimeOfBlinking = 0.0f;
+		}
+
+		return;
+	}
+
 	// 障害物を避けるルートを考える処理
 	shared_ptr<ObstaclesDodge> Enemy::DodgeRoute()
 	{
@@ -380,6 +437,19 @@ namespace basecross {
 		}
 
 		return trackingObjLock;
+	}
+
+	// 無敵フラグのゲッタ
+	bool Enemy::GetInvincibleFlag()
+	{
+		return m_invincibleFlag;
+	}
+
+	// 無敵フラグをオンにする処理
+	void Enemy::OnInvincibleFlag()
+	{
+		m_invincibleFlag = true;
+		return;
 	}
 
 
