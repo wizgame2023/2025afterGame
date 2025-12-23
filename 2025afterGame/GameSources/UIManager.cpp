@@ -84,7 +84,7 @@ namespace basecross
 
 		if (m_createUI == false)
 		{	
-			// CreateUI();
+			CreateUI();
 		}
 
 		if (!m_initialized)

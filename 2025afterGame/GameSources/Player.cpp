@@ -232,6 +232,7 @@ namespace basecross {
 		}
 		else
 		{
+			// 減速
 			m_yawSpeed = lerp(m_yawSpeed, 0.0f, deltaTime * 2.5f);
 		}
 
@@ -256,6 +257,50 @@ namespace basecross {
 		ptrTrans->SetQuaternion(finalQuat);
 	}
 
+	void Player::Flight(float deltaTime)
+	{
+		if (!m_gravity) return;
+
+		// ワールド座標
+		Vec3 worldUp = Vec3(0, 1, 0);
+		// 空気密度
+		float rho = 1.2f;
+		// 前進速度
+		float v = m_speedCurrent;
+		// 面積パラメーター
+		float s = 5.0f;
+		// 揚力係数
+		float cl = 0.0581;
+
+		// 揚力の大きさを計算
+		// ここが9.8より小さいとーが蓄積されて最終的に落ちてしまう
+		float liftMag = 0.5f * rho * v * v * s * cl;
+
+		// 加速度 // 9.8に近い数字になればいい
+		Vec3 liftAcc = worldUp * liftMag;
+
+		// 重力加速度を取得
+		auto vel = m_gravity->GetGravityVelocity();
+
+		// 重力に勝つためvelを足す、重力はーでliftAccは+で量で勝ったら浮く
+		vel += liftAcc * deltaTime;
+
+		float maxFallSpeed = -3.0f;
+
+		// Aボタンを離しても直ぐには落ちないように制限を付けている
+		if (m_recoveryTime < 5.0f)
+		{
+			maxFallSpeed = -3.0;
+		}
+		else
+		{
+			maxFallSpeed = -20.0f;
+		}
+
+		vel.y = max(vel.y, maxFallSpeed);
+
+		m_gravity->SetGravityVerocity(vel);
+	}
 
 	//void Player::CreateBarrier()
 	//{
@@ -308,50 +353,6 @@ namespace basecross {
 		prevTrigger = nowTrigger;
 	}
 
-	void Player::Flight(float deltaTime)
-	{
-		if (!m_gravity) return;
-		
-		// ワールド座標
-		Vec3 worldUp = Vec3(0, 1, 0);
-		// 空気密度
-		float rho = 1.2f;
-		// 前進速度
-		float v = m_speedCurrent;
-		// 面積パラメーター
-		float s = 5.0f;
-		// 揚力係数
-		float cl = 0.0581;
-
-		// 揚力の大きさを計算
-		// ここが9.8より小さいとーが蓄積されて最終的に落ちてしまう
-		float liftMag = 0.5f * rho * v * v * s * cl;
-
-		// 加速度 // 9.8に近い数字になればいい
-		Vec3 liftAcc = worldUp * liftMag;
-
-		// 重力加速度を取得
-		auto vel = m_gravity->GetGravityVelocity();
-
-		// 重力に勝つためvelを足す、重力はーでliftAccは+で量で勝ったら浮く
-		vel += liftAcc * deltaTime;
-
-		float maxFallSpeed = -3.0f;
-
-		// Aボタンを離しても直ぐには落ちないように制限を付けている
-		if (m_recoveryTime < 5.0f)
-		{
-			maxFallSpeed = -3.0;
-		}
-		else
-		{
-			maxFallSpeed = -20.0f;
-		}
-
-		vel.y = max(vel.y, maxFallSpeed);
-
-		m_gravity->SetGravityVerocity(vel);
-	}
 
 	// プレイヤーのコントローラ番号をセッタ
 	void Player::SetPlayerIndex(int index)
