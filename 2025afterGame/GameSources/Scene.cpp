@@ -92,7 +92,12 @@ namespace basecross{
 		auto pauseMenuMain = uiMenuPath + L"PauseMenuMain.png";
 		App::GetApp()->RegisterTexture(L"PauseMenuMain_TX", pauseMenuMain);
 
+		auto pauseMenuVolume = uiMenuPath + L"PauseMenuVolume.png";
+		App::GetApp()->RegisterTexture(L"PauseMenuVolume_TX", pauseMenuVolume);
     
+		auto buttonsTex = uiMenuPath + L"Buttons.png";
+		App::GetApp()->RegisterTexture(L"Buttons_TX", buttonsTex);
+
 		// Effect /////////////////////////////////////////////
 		EffectManager::Instance().CreateEfkInterface();
 		EffectManager::Instance().RegisterEffect(L"Fire", efkPath + L"Sword.efk");
