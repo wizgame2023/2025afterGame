@@ -28,6 +28,12 @@ namespace basecross {
 		// ヨー方向に向いている方向
 		float m_yawAngle;
 
+		// 無敵フラグ
+		bool m_invincibleFlag;
+		float m_timeOfInvincible = 5.0f; // 無敵になる時間
+		float m_countTimeOfInvincible; // どのくらい無敵になっているか計測する変数
+		float m_countTimeOfBlinking; // 点滅している時間計測変数
+
 		// 進みたいベクトル
 		Vec3 m_moveVec;
 
@@ -61,8 +67,25 @@ namespace basecross {
 		// 追いかける対象に向かってY軸回転方向で向く処理
 		void TrackingYawQt(const Vec3& posPlayerDifference);
 
+		// 障害物を避ける処理
+		void DodgeObstacles(const Vec3& posPlayerDifference);
+
+		// 無敵時の処理
+		void Invincible();
+
+		// 無敵時の点滅処理
+		void DrawBlinking();
+
+		// 障害物を避けるルートを考える処理
+		shared_ptr<ObstaclesDodge> DodgeRoute();
+
 		// 追いかける対象ポインタのゲッタ
 		shared_ptr<Actor> GetTrackingObj();
+
+		// 無敵フラグのゲッタ
+		bool GetInvincibleFlag();
+		// 無敵フラグをオンにする処理
+		void OnInvincibleFlag();
 	};
 
 }

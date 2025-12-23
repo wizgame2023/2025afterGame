@@ -44,7 +44,11 @@ namespace basecross {
 		~StateMachineBase();
 
 		// ステート変更用の関数
-		void ChangeState(wstring stateName);
+		shared_ptr<StateBase> ChangeState(wstring stateName);
+		// 現在ステートのゲッタ
+		shared_ptr<StateBase> GetCurrentState();
+		// 現在ステート文字列のゲッタ
+		wstring GetCurrentStateWString();
 
 		void Update(); // 更新
 	};

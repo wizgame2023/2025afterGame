@@ -23,6 +23,7 @@
 #include "TestCsv.h"
 #include "DashRing.h"
 #include "ScoreObject.h"
+#include "ScoreObjectManager.h"
 
 // 殿堂入りMyGameObject本体
 #include "MyGameObject.h";
@@ -47,6 +48,8 @@
 #include "Barrier.h"
 #include "DisableBarrier.h"
 #include "CheckPoint.h"
+#include "ObstaclesDodge.h"
+#include "InvisibleCollision.h"
 ///////////////////////////////////////////////////
 
 //親クラスがFighterAircraftBase////////////////////
@@ -58,6 +61,7 @@
 // 親クラスがSprite////////////////////////////////
 #include "HpSprite.h"
 #include "NumberSprite.h"
+#include "PauseMenu.h"
 ///////////////////////////////////////////////////
 
 // 親クラスがBillBoard////////////////////////////////
