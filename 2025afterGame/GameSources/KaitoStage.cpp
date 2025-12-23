@@ -91,7 +91,7 @@ namespace basecross {
 	void KaitoStage::OnUpdate()
 	{		
 		auto& scrMana = ScoreManager::GetScoreManager();
-		scrMana->SetPlScore(scrMana->GetPlScore() + 1);
+		//scrMana->SetPlScore(scrMana->GetPlScore() + 1);
 		DebugLog(L"\n\n\n\n\nPLScore : ", scrMana->GetPlScore());
 		//DebugLog(L"Enemy1Score : ", scrMana->GetScore(L"Enemy1"));
 		//DebugLog(L"fileScore : ", scrMana->LoadHighScoreBinary());

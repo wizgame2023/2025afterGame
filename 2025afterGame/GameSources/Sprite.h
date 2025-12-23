@@ -33,6 +33,18 @@ namespace basecross {
 
 
 	public:
+
+		// コンストラクタ群
+
+		// 基礎的な情報だけ
+		Sprite(
+			const shared_ptr<Stage>& stagePtr,
+			const wstring& texturePtr,
+			const Vec2& size,
+			const Vec3& pos,
+			int layer
+		);
+
 		Sprite(
 			const shared_ptr<Stage>& stagePtr,
 			const wstring& textureName,
@@ -56,7 +68,8 @@ namespace basecross {
 
 		void SetPosition(Vec3 pos);
 		void SetRotate(Vec3 rotate);
-		Vec3 GetPosition();
+		void SetScale(Vec3 scl);
+		Vec3 GetPosition() const;
 		void SetUVRect(Vec2 topLeft, Vec2 botRight);
 
 
