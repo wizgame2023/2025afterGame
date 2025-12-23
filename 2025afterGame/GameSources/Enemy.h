@@ -70,6 +70,12 @@ namespace basecross {
 		// 障害物を避ける処理
 		void DodgeObstacles(const Vec3& posPlayerDifference);
 
+		// 無敵時の処理
+		void Invincible();
+
+		// 無敵時の点滅処理
+		void DrawBlinking();
+
 		// 障害物を避けるルートを考える処理
 		shared_ptr<ObstaclesDodge> DodgeRoute();
 
