@@ -48,6 +48,9 @@ namespace basecross{
 		// ステージ
 		shared_ptr<Stage> m_stage;
 
+		// ポーズ中か否か
+		bool m_isPause = false;
+
 		// ==============================================================================
 		// メンバ関数
 		// ==============================================================================
@@ -59,8 +62,11 @@ namespace basecross{
 		PauseMenu(const shared_ptr<Stage>& stage);
 		~PauseMenu() {};
 
-		void IsVisibleAllMenuSprites(const bool flag); // 全メニューのスプライトを表示・非表示にする
-		void IsVisibleMainMenuSprites(const vector<shared_ptr<Sprite>>& spVec, const bool flag); // メニューのスプライトを表示・非表示にする
+		// 全メニューのスプライトを表示するか
+		void IsVisibleAllMenuSprites(const bool flag); 
+
+		// メニュー別でスプライトを表示するか
+		void IsVisibleMenuSprites(const vector<shared_ptr<Sprite>>& spVec, const bool flag);
 
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
