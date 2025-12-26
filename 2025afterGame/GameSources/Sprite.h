@@ -70,7 +70,7 @@ namespace basecross {
 		void SetRotate(Vec3 rotate);
 		void SetScale(Vec3 scl);
 		Vec3 GetPosition() const;
-		void SetUVRect(Vec2 topLeft, Vec2 botRight);
+		void SetUVRect(const Vec2& topLeft, const Vec2& botRight);
 
 
 	};

@@ -148,7 +148,7 @@ namespace basecross {
 		return m_trans->GetPosition();
 	}
 
-	void Sprite::SetUVRect(Vec2 topLeft, Vec2 botRight)
+	void Sprite::SetUVRect(const Vec2& topLeft, const Vec2& botRight)
 	{
 		vector<VertexPositionColorTexture> vertices = {
 		{Vec3(-m_size.x * 0.5f, +m_size.y * 0.5f, 0), m_color, topLeft},
