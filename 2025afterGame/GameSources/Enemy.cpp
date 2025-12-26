@@ -303,27 +303,31 @@ namespace basecross {
 			{
 				auto ptrDraw = obstacles->GetComponent<SmBaseDraw>();
 				auto endPoint = m_pos + (posPlayerDifference * 5);
-				ptrDraw->HitTestStaticMeshSegmentTriangles(m_pos, endPoint, hitPos, triangle, triangleNumber);
+				if (ptrDraw)
+				{
+					ptrDraw->HitTestStaticMeshSegmentTriangles(m_pos, endPoint, hitPos, triangle, triangleNumber);
+				}
 			}
 
 			// 現在のステートの文字列を受け取る
 			auto currentStateWstring = m_stateMachine->GetCurrentStateWString();
 
-			// レイが当たったら動かないようにする (障害物を避けるステートに移行するための物なので連続して同じステートに変更しないようにしてます)
-			if (hitPos != Vec3(0.0f) && currentStateWstring != L"ObstaclesDodge")
-			{
-				// ここを動かないようにじゃなくて迂回するルートを考える処理にする
-				m_moveVec = Vec3(0.0f);
+			// どのように回避するかのアンカーを付けたら復活させます
+			//// レイが当たったら動かないようにする (障害物を避けるステートに移行するための物なので連続して同じステートに変更しないようにしてます)
+			//if (hitPos != Vec3(0.0f) && currentStateWstring != L"ObstaclesDodge")
+			//{
+			//	// ここを動かないようにじゃなくて迂回するルートを考える処理にする
+			//	m_moveVec = Vec3(0.0f);
 
-				// 障害物を避けるために進むルートを決める ポインタの関係でエラー吐く
-				auto obstaclesDodgeObj = DodgeRoute();
+			//	// 障害物を避けるために進むルートを決める ポインタの関係でエラー吐く
+			//	auto obstaclesDodgeObj = DodgeRoute();
 
-				// 変更したステートに障害物を避けるためにこのオブジェクトを目印にしてほしいと伝える
-				ChangeState(L"ObstaclesDodge");
-				auto currentState = m_stateMachine->GetCurrentState(); // 現在のステート取得
-				auto obstaclesDodgeState = dynamic_pointer_cast<StateObstaclesDodgeEnemy>(currentState);
-				obstaclesDodgeState->SetObstaclesDodge(obstaclesDodgeObj);
-			}
+			//	// 変更したステートに障害物を避けるためにこのオブジェクトを目印にしてほしいと伝える
+			//	ChangeState(L"ObstaclesDodge");
+			//	auto currentState = m_stateMachine->GetCurrentState(); // 現在のステート取得
+			//	auto obstaclesDodgeState = dynamic_pointer_cast<StateObstaclesDodgeEnemy>(currentState);
+			//	obstaclesDodgeState->SetObstaclesDodge(obstaclesDodgeObj);
+			//}
 		}
 
 	}
