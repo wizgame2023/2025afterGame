@@ -9,7 +9,8 @@
 namespace basecross{
 	PauseMenu::PauseMenu(const shared_ptr<Stage>& stage) :
 		MyGameObject(stage),
-		m_crntSelect(PauseMenuState::Resume)
+		m_crntSelect(PauseMainMenuSelect::Resume),
+		m_pauseState(PauseMenuState::False)
 	{
 	}
 
@@ -27,7 +28,7 @@ namespace basecross{
 		spInfo.size = Vec2(700.0f, 700.0f);
 		spInfo.pos = Vec3(0.0f, 0.0f, 0.0f);
 
-		m_stage->AddGameObject<Sprite>(
+        m_pauseBackGroundSprite = m_stage->AddGameObject<Sprite>(
 			spInfo.textureName,
 			spInfo.size,
 			spInfo.pos,
@@ -62,7 +63,7 @@ namespace basecross{
 
         // ボタン群 ------
         spInfo.textureName = L"Buttons_TX";
-        spInfo.size = Vec2(80.0f, 80.0f); // ボタンは少し小さくする、などの変更が楽！
+        spInfo.size = Vec2(80.0f, 80.0f);
         constexpr float buttonsUV = 1.0f / 4.0f;
 
         for (int i = 0; i < 4; i++)
@@ -89,16 +90,36 @@ namespace basecross{
         auto& input = InputManager::GetInputManager();
 		bool isStartButtonDown = input->GetNowUpdateButton(L"Start"); // スタートボタンを押した瞬間を取る
 
-        if (isStartButtonDown)
+		// ポーズ開始の処理
+        if (isStartButtonDown && m_pauseState == PauseMenuState::False)
         {
-			m_isPause = !m_isPause;
-			IsVisibleAllMenuSprites(m_isPause);
+			m_crntSelect = PauseMainMenuSelect::Resume;
+			m_pauseState = PauseMenuState::MainMenu;
+			IsVisibleMenuSprites(m_pauseMainMenuSprites, true);
+			m_pauseBackGroundSprite->OnClear(false);
+        }
+
+		// 非ポーズ中は全メニュー非表示
+        if (m_pauseState == PauseMenuState::False)
+        {
+            IsVisibleAllMenuSprites(false);
+            return;
         }
 
 		// ポーズ中の処理
-        if (m_isPause)
+        if (m_pauseState != PauseMenuState::False)
         {
+			bool isAButtonDown = input->GetNowUpdateButton(L"A"); // Aボタンを押した瞬間を取る
+			bool isBButtonDown = input->GetNowUpdateButton(L"B"); // Bボタンを押した瞬間を取る
 
+			// メインメニューでBボタン、もしくは再開を選択している状態でAボタンを押した場合
+            if ((isBButtonDown && m_pauseState == PauseMenuState::MainMenu) || 
+                (isAButtonDown && m_crntSelect == PauseMainMenuSelect::Resume))
+            {
+				m_pauseState = PauseMenuState::False;
+            }
+
+            //if()
         }
 	}
 
@@ -122,6 +143,7 @@ namespace basecross{
 
 	void PauseMenu::IsVisibleAllMenuSprites(const bool flag)
 	{
+		m_pauseBackGroundSprite->OnClear(!flag);
 		IsVisibleMenuSprites(m_pauseMainMenuSprites,flag);
 		IsVisibleMenuSprites(m_pauseVolumeMenuSprites, flag);
 		IsVisibleMenuSprites(m_pauseButtonsSprites, flag);

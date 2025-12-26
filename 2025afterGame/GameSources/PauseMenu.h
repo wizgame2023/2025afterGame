@@ -9,13 +9,32 @@
 namespace basecross{
 	class PauseMenu : public MyGameObject
 	{
-		enum class PauseMenuState
+		// メインメニューでの選択肢
+		enum class PauseMainMenuSelect
 		{
 			Resume,		// 再開
 			Restart,	// リスタート
 			Volume,		// ボリューム
 			Exit,		// タイトルへ戻る
 			Max			// 項目の最大数
+		};
+
+		// セッティングメニューの選択肢
+		enum class PauseSettingMenuSelect
+		{
+			Volume,			// ボリューム
+			KeyConfig,		// キーコンフィグ
+			Max				// 項目の最大数
+		};
+
+		// ポーズメニューの状態
+		enum class PauseMenuState
+		{
+			False,
+			MainMenu,
+			VolumeMenu,
+			KeyConfigMenu,
+			Max
 		};
 
 		struct SpriteInfo
@@ -39,17 +58,18 @@ namespace basecross{
 		vector<shared_ptr<Sprite>> m_pauseVolumeMenuSprites;		// 音量メニューのスプライトの数
 		vector<shared_ptr<Sprite>> m_pauseKeyConfigMenuSprites;		// キーコンフィグメニューのスプライトの数
 		vector<shared_ptr<Sprite>> m_pauseButtonsSprites;			// ボタンのスプライトの数
+		shared_ptr<Sprite> m_pauseBackGroundSprite;					// ポーズメニューの背景スプライト
 
 		// ============================
 
 		// 現在の選択肢
-		PauseMenuState m_crntSelect;
+		PauseMainMenuSelect m_crntSelect;
+
+		// ポーズメニューの状態
+		PauseMenuState m_pauseState;
 
 		// ステージ
 		shared_ptr<Stage> m_stage;
-
-		// ポーズ中か否か
-		bool m_isPause = false;
 
 		// ==============================================================================
 		// メンバ関数
