@@ -9,7 +9,7 @@
 namespace basecross{
 	PauseMenu::PauseMenu(const shared_ptr<Stage>& stage) :
 		MyGameObject(stage),
-		m_crntSelect(PauseMainMenuSelect::Resume),
+		m_crntMainSelect(PauseMainMenuSelect::Resume),
 		m_pauseState(PauseMenuState::False)
 	{
 	}
@@ -49,15 +49,18 @@ namespace basecross{
         }
 
         // ボリュームメニュー ------
-        spInfo.textureName = L"PauseMenuVolume_TX";
+        spInfo.textureName = L"PauseMenuSetting_TX";
         spInfo.size = Vec2(200.0f, 100.0f);
-        constexpr float volumeUVHeight = 1.0f / 3.0f;
+        constexpr float SettingUVHeight = 1.0f / 4.0f;
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 2; i++)
         {
             spInfo.pos = Vec3(0.0f, 300.0f + (i * -100), 0.0f);
-            spInfo.leftTopUV = Vec2(0.0f, volumeUVHeight * i);
-            spInfo.rightBotUV = Vec2(1.0f, volumeUVHeight * (i + 1));
+            spInfo.leftTopUV = Vec2(0.0f, SettingUVHeight * i);
+            spInfo.rightBotUV = Vec2(1.0f, SettingUVHeight * (i + 1));
+			PushBackPauseMenuSprite(m_pauseSettingMenuSprites, spInfo);
+            spInfo.leftTopUV = Vec2(0.0f, SettingUVHeight * i + 0.5f);
+            spInfo.rightBotUV = Vec2(1.0f, SettingUVHeight * (i + 1) + 0.5f);
             PushBackPauseMenuSprite(m_pauseVolumeMenuSprites, spInfo);
         }
 
@@ -93,10 +96,7 @@ namespace basecross{
 		// ポーズ開始の処理
         if (isStartButtonDown && m_pauseState == PauseMenuState::False)
         {
-			m_crntSelect = PauseMainMenuSelect::Resume;
-			m_pauseState = PauseMenuState::MainMenu;
-			IsVisibleMenuSprites(m_pauseMainMenuSprites, true);
-			m_pauseBackGroundSprite->OnClear(false);
+			StartPause();
         }
 
 		// 非ポーズ中は全メニュー非表示
@@ -109,23 +109,153 @@ namespace basecross{
 		// ポーズ中の処理
         if (m_pauseState != PauseMenuState::False)
         {
+			// Lスティックの上下入力で選択肢を変更
+			UpdateSelection();
+
 			bool isAButtonDown = input->GetNowUpdateButton(L"A"); // Aボタンを押した瞬間を取る
 			bool isBButtonDown = input->GetNowUpdateButton(L"B"); // Bボタンを押した瞬間を取る
 
-			// メインメニューでBボタン、もしくは再開を選択している状態でAボタンを押した場合
-            if ((isBButtonDown && m_pauseState == PauseMenuState::MainMenu) || 
-                (isAButtonDown && m_crntSelect == PauseMainMenuSelect::Resume))
+            if (isAButtonDown)
             {
-				m_pauseState = PauseMenuState::False;
+				SelectDecisionAButton();
             }
 
-            //if()
+			if (isBButtonDown)
+			{
+				BackBButton();
+			}
+
         }
+
+		DebugLogs();
+        FlushDebugLog();
 	}
 
 	// =============================================================================================
 	// 関数群
 	// =============================================================================================
+
+    void PauseMenu::DebugLogs()
+    {
+		DebugLog(L"\n\n\nPauseState : ", to_wstring(static_cast<int>(m_pauseState)));
+
+        switch (m_crntMainSelect)
+        {
+		case PauseMainMenuSelect::Resume:
+			DebugLog(L" Current Select: Resume ", to_wstring(static_cast<int>(m_crntMainSelect)));
+			break;
+		case PauseMainMenuSelect::Restart:
+			DebugLog(L" Current Select: Restart ", to_wstring(static_cast<int>(m_crntMainSelect)));
+			break;
+		case PauseMainMenuSelect::Setting:
+			DebugLog(L" Current Select: Setting ", to_wstring(static_cast<int>(m_crntMainSelect)));
+			break;
+		case PauseMainMenuSelect::Exit:
+			DebugLog(L" Current Select: Exit ", to_wstring(static_cast<int>(m_crntMainSelect)));
+			break;
+
+        }
+    }
+
+	void PauseMenu::SelectDecisionAButton()
+	{
+		switch (m_crntMainSelect)
+		{
+		case PauseMainMenuSelect::Resume:
+			m_pauseState = PauseMenuState::False;
+			break;
+		case PauseMainMenuSelect::Restart:
+			m_pauseState = PauseMenuState::False;
+			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToGameStage");
+			break;
+		case PauseMainMenuSelect::Setting:
+			m_pauseState = PauseMenuState::SettingMenu;
+			m_crntSettingSelect = PauseSettingMenuSelect::Volume;
+			IsVisibleMenuSprites(m_pauseMainMenuSprites, false);
+			IsVisibleMenuSprites(m_pauseVolumeMenuSprites, true);
+			break;
+		}
+	}
+
+	void PauseMenu::BackBButton()
+	{
+		switch (m_pauseState)
+		{
+		case PauseMenuState::MainMenu:
+			// メインメニューでBボタンが押された場合はポーズ解除
+			m_pauseState = PauseMenuState::False;
+			break;
+		case PauseMenuState::SettingMenu:
+			// 設定メニューでBボタンが押された場合はメインメニューへ戻る
+			m_pauseState = PauseMenuState::MainMenu;
+			IsVisibleMenuSprites(m_pauseSettingMenuSprites, false);
+			IsVisibleMenuSprites(m_pauseVolumeMenuSprites, false);
+			IsVisibleMenuSprites(m_pauseMainMenuSprites, true);
+			break;
+		case PauseMenuState::VolumeMenu:
+			// ボリュームメニューでBボタンが押された場合は設定メニューへ戻る
+			m_pauseState = PauseMenuState::SettingMenu;
+			IsVisibleMenuSprites(m_pauseVolumeMenuSprites, false);
+			IsVisibleMenuSprites(m_pauseSettingMenuSprites, true);
+			break;
+		case PauseMenuState::KeyConfigMenu:
+			// キーコンフィグメニューでBボタンが押された場合は設定メニューへ戻る
+			m_pauseState = PauseMenuState::SettingMenu;
+			IsVisibleMenuSprites(m_pauseKeyConfigMenuSprites, false);
+			IsVisibleMenuSprites(m_pauseSettingMenuSprites, true);
+			break;
+		default:
+			m_pauseState = PauseMenuState::False;
+			break;
+		}
+	}
+
+	void PauseMenu::StartPause()
+	{
+		m_crntMainSelect = PauseMainMenuSelect::Resume;
+		m_pauseState = PauseMenuState::MainMenu;
+		IsVisibleMenuSprites(m_pauseMainMenuSprites, true);
+		m_pauseBackGroundSprite->OnClear(false);
+	}
+
+	void PauseMenu::UpdateSelection()
+	{
+		auto& input = InputManager::GetInputManager();
+		auto& leftStick = input->GetLStick();
+
+        // スティックが中央付近に戻ったら、フラグをリセット（連続移動防止）
+        if (abs(leftStick.y) < 0.5f)
+        {
+            m_selectChanged = false;
+            return;
+        }
+
+        // 既に移動していたら何もしない
+		if (m_selectChanged) return;
+
+		// スティックの上下入力で選択肢を変更
+        int move = 0;
+
+		// 上下の入力検出
+		if (leftStick.y < -0.8f) move = 1;
+		else if (leftStick.y > 0.8f) move = -1;
+
+        // 入力していなかったら何もしない
+        if (move == 0) return;
+		else if (m_pauseState == PauseMenuState::MainMenu)
+        {
+			// 次の選択肢を計算
+			int next = static_cast<int>(m_crntMainSelect) + move;
+			int max = static_cast<int>(PauseMainMenuSelect::Max) - 1;
+
+			// 範囲外に行かないように補正
+			if (next < 0) next = 0;
+			else if (next >= max) next = max;
+
+			m_crntMainSelect = static_cast<PauseMainMenuSelect>(next);
+			m_selectChanged = true;
+        }
+	}
 
 	void PauseMenu::PushBackPauseMenuSprite(vector<shared_ptr<Sprite>>& vecSprite, const SpriteInfo& spInfo)
 	{
@@ -145,6 +275,7 @@ namespace basecross{
 	{
 		m_pauseBackGroundSprite->OnClear(!flag);
 		IsVisibleMenuSprites(m_pauseMainMenuSprites,flag);
+		IsVisibleMenuSprites(m_pauseSettingMenuSprites, flag);
 		IsVisibleMenuSprites(m_pauseVolumeMenuSprites, flag);
 		IsVisibleMenuSprites(m_pauseButtonsSprites, flag);
 	}

@@ -14,7 +14,7 @@ namespace basecross{
 		{
 			Resume,		// 再開
 			Restart,	// リスタート
-			Volume,		// ボリューム
+			Setting,		// 設定
 			Exit,		// タイトルへ戻る
 			Max			// 項目の最大数
 		};
@@ -32,6 +32,7 @@ namespace basecross{
 		{
 			False,
 			MainMenu,
+			SettingMenu,
 			VolumeMenu,
 			KeyConfigMenu,
 			Max
@@ -54,7 +55,7 @@ namespace basecross{
 		// ポーズメニュー群============
 
 		vector<shared_ptr<Sprite>> m_pauseMainMenuSprites;			// メインメニューのスプライトの数
-		//vector<shared_ptr<Sprite>> m_pauseSettingMenuSprites;		// 設定メニューのスプライトの数
+		vector<shared_ptr<Sprite>> m_pauseSettingMenuSprites;		// 設定メニューのスプライトの数
 		vector<shared_ptr<Sprite>> m_pauseVolumeMenuSprites;		// 音量メニューのスプライトの数
 		vector<shared_ptr<Sprite>> m_pauseKeyConfigMenuSprites;		// キーコンフィグメニューのスプライトの数
 		vector<shared_ptr<Sprite>> m_pauseButtonsSprites;			// ボタンのスプライトの数
@@ -62,8 +63,11 @@ namespace basecross{
 
 		// ============================
 
-		// 現在の選択肢
-		PauseMainMenuSelect m_crntSelect;
+		// 現在の選択肢(Main)
+		PauseMainMenuSelect m_crntMainSelect;
+
+		// 現在の選択肢(Setting)
+		PauseSettingMenuSelect m_crntSettingSelect;
 
 		// ポーズメニューの状態
 		PauseMenuState m_pauseState;
@@ -71,12 +75,30 @@ namespace basecross{
 		// ステージ
 		shared_ptr<Stage> m_stage;
 
+		// 選択が変わったかどうか
+		bool m_selectChanged = false;
+
 		// ==============================================================================
 		// メンバ関数
 		// ==============================================================================
 
 		// メインメニューのスプライトを追加する
 		void PushBackPauseMenuSprite(vector<shared_ptr<Sprite>>& vecSprite, const SpriteInfo& spInfo);
+
+		// 選択肢が変わったかどうか
+		void UpdateSelection();
+
+		// ポーズ開始
+		void StartPause();
+
+		// Aボタン選択肢決定処理
+		void SelectDecisionAButton();
+
+		// Bボタン戻る処理
+		void BackBButton();
+
+		// デバッグログ群
+		void DebugLogs();
 
 	public : 
 		PauseMenu(const shared_ptr<Stage>& stage);
