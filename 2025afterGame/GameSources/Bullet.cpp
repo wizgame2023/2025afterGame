@@ -48,6 +48,7 @@ namespace basecross {
 		// 弾の所属を登録
 		shared_ptr<Player> player = dynamic_pointer_cast<Player>(m_parent.lock());
 		shared_ptr<Enemy> enemy = dynamic_pointer_cast<Enemy>(m_parent.lock());
+		
 		if (player) // 味方
 		{
 			m_affiliation = true;
@@ -114,6 +115,15 @@ namespace basecross {
 		return m_damage;
 	}
 
+	// 親オブジェクトのゲッタ
+	weak_ptr<Actor> Bullet::GetParentObj()
+	{
+		return m_parent;
+	}
+
+
+
+
 	TestCube::TestCube(const shared_ptr<Stage>& stagePtr,Vec3 pos,Quat qt,Vec3 scale) :
 		Actor(stagePtr,pos,qt,scale)
 	{
@@ -152,7 +162,5 @@ namespace basecross {
 	{
 
 	}
-
-
 }
 //end basecross
