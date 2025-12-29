@@ -107,6 +107,29 @@ namespace basecross {
 		GetStage()->AddGameObject<Bullet>(GetThis<FighterAircraftBase>());
 	}
 
+	// 倒された場合のスコア譲渡処理
+	// 第一引数　ぶつかった弾のポインタ 第二引数  譲渡する割合(0.0f~1.0f)
+	void FighterAircraftBase::DownTransferScore(const shared_ptr<Bullet>& bullet, float magnification)
+	{
+		// 球を打ったオブジェクトを確認する
+		auto bulletParent = bullet->GetParentObj();
+		auto bulletParentlock = bulletParent.lock();
+
+		if (bulletParentlock)
+		{
+			auto bulletParentFighter = dynamic_pointer_cast<FighterAircraftBase>(bulletParentlock);
+
+			// 譲渡するスコアの計算(基本的には10%譲渡する)
+			float transferScore = m_scoreCurrent * magnification;
+			m_scoreCurrent -= transferScore;
+
+			if (bulletParentFighter)
+			{
+				bulletParentFighter->AddScoreCurrent(transferScore);
+			}
+		}
+	}
+
 	// 当たり判定(当たった時)
 	// 引数１ ぶつかったオブジェクト
 	void FighterAircraftBase::OnCollisionEnter(shared_ptr<GameObject>& obj)

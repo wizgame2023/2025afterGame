@@ -11,6 +11,7 @@
 namespace basecross{
 	class Barrier;
 	class DisableBarrier;
+	class Bullet;
 	class FighterAircraftBase : public Actor
 	{
 	protected:
@@ -74,6 +75,9 @@ namespace basecross{
 		void UseDisableShield();
 		// ’e”­ËŠÖ”
 		void UseBullet();
+
+		// “|‚³‚ê‚½ê‡‚ÌƒXƒRƒA÷“nˆ—
+		void DownTransferScore(const shared_ptr<Bullet>& bullet,float magnification);
 
 		// “–‚½‚è”»’è(“–‚½‚Á‚½)
 		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
