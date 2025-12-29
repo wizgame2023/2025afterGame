@@ -45,6 +45,9 @@ namespace basecross {
 		// ダメージのゲッタ
 		int GetDamage();
 
+		// 親オブジェクトのゲッタ
+		weak_ptr<Actor> GetParentObj();
+
 	};
 
 	class TestCube :public Actor
