@@ -30,6 +30,9 @@ namespace basecross {
 		m_trans->SetQuaternion(m_qt);
 		m_trans->SetScale(Vec3(1.0f));
 
+		// 回転度取得
+		m_rot = m_trans->GetRotation();
+
 		Mat4x4 spanMat;
 		spanMat.affineTransformation(
 			Vec3(0.25f, 0.25f, 0.25f),
@@ -73,6 +76,7 @@ namespace basecross {
 		m_hpCurrent = 30;
 		m_hpMax = 30;
 		m_timeOfReturn = 3.0f;
+		m_scoreCurrent = 10;
 
 		// ステートマシン作成
 		m_stateMachine = unique_ptr<StateEnemyMachine>(new StateEnemyMachine(GetThis<MyGameObject>()));
@@ -101,50 +105,31 @@ namespace basecross {
 			return;
 		}
 
+		// ピッチヨーロールをrotateに変換
+		Vec3 rotVec = Vec3(m_pitchAngle, m_yawAngle, m_rollAngle);
 
-		//// 自分と追尾対象の座標の差を計算する
-		//auto goalPos = m_trakingObjLock->GetComponent<Transform>()->GetPosition();
-		//Vec3 posPlayerDifference = goalPos - m_pos; // ゴールと敵の位置の差を求める
-		//posPlayerDifference.normalize(); // 正規化
+		Vec3 differenceRotVec = rotVec - m_rot;
+		Vec3 addRotVec = differenceRotVec;
+		addRotVec.normalize();//正規化
 
-		//// 目的地の角度を取得
-		//m_yawAngle = atan2f(posPlayerDifference.x, posPlayerDifference.z);
-		//m_rollAngle = atan2f(posPlayerDifference.y, -posPlayerDifference.x);
+		auto test = differenceRotVec.length();
 
-
-		//// 角度がマイナスつかないように変更
-		//m_yawAngle = AdjustmentAngle(m_yawAngle);
-		//m_rollAngle = AdjustmentAngle(m_rollAngle);
-
-		//// 追いかけるときのロール回転処理(デバック用処理しか書いていない)
-		//TrackingRollQt();
-		//// 追いかける対象にX軸に向く処理
-		//TrackingPitchQt(posPlayerDifference);
-		//// 追いかける対象に向かってヨーを回転させる処理
-		//TrackingYawQt(posPlayerDifference);
-
-		// この処理はいったん保留
-		//// 敵が追いかける際反転するか決める処理
-		//auto forward = GetComponent<Transform>()->GetForward();
-		//// 向いているZX平面の角度を計算
-		//auto forwardAngle = atan2f(forward.z, forward.x); 
-		//forwardAngle = AdjustmentAngle(forwardAngle);
-
-		// 対象に向かって追いかける処理
-		//TrackingMove(posPlayerDifference);
-
-		// Qt回転
-		// 個別の軸ずつ回転計算をしています
-		m_qt = Quat(0.0f, 0.0f, (sin(m_rollAngle / 2.0f)), cos((m_rollAngle / 2.0f))); // Z軸回転
-		m_qt *= Quat((sin(m_pitchAngle / 2.0f)), 0.0f, 0.0f, cos((m_pitchAngle / 2.0f))); // X軸回転
-		m_qt *= Quat(0.0f, (sin(m_yawAngle / 2.0f)), 0.0f, cos((m_yawAngle / 2.0f))); // Y軸回転
-
+		// 少しずつ回転する処理
+		if (differenceRotVec.length() > 0.05f)
+		{
+			m_rot += addRotVec * m_delta;
+		}
+		else if (differenceRotVec.length() <= 0.05f)
+		{
+			m_rot = rotVec;
+		}
 
 		// 無敵時用の処理
 		Invincible();
 
 		// Transform反映
-		m_trans->SetQuaternion(m_qt); // qt反映
+		//m_trans->SetQuaternion(m_qt); // qt反映
+		m_trans->SetRotation(m_rot);
 		m_trans->SetPosition(m_pos + m_moveVec); // pos反映
 
 		// 位置取得
@@ -160,14 +145,11 @@ namespace basecross {
 		//auto scene = App::GetApp()->GetScene<Scene>();
 
 		//wss /* << L"デバッグ用文字列 "*/
-		//	<< L"\ngoalAngle : " << XMConvertToDegrees(m_yawAngle)
-		//	<< L"\ngoalAngleYX : " << XMConvertToDegrees(m_pitchAngle)
+		//	<< L"\n\n\n\n\n\ngoalAngle : " << XMConvertToDegrees(m_yawAngle)
+		//	<< L"\nm_pitchAngle : " << m_pitchAngle
 		//	<< endl;
 
 		//scene->SetDebugString(wss.str());
-
-
-
 	}
 
 	// 当たり判定
@@ -197,6 +179,9 @@ namespace basecross {
 			// HPが０になったらリスポーンする
 			if (m_hpCurrent <= 0)
 			{
+				// スコアを10%倒した敵に譲渡する
+				DownTransferScore(bullet, 0.1f);
+
 				// リスポーンステートに遷移する
 				ChangeState(L"Respawn");
 			}
@@ -246,8 +231,15 @@ namespace basecross {
 		auto posPlayerDifferenceZY = posPlayerDifference;
 		posPlayerDifferenceZY.y = 0.0f;
 
+		// ゼロベクトル対策
+		if (posPlayerDifference == Vec3(0.0f))
+		{
+			return;
+		}
+
 		// 内積
 		float dotf = posPlayerDifference.dot(posPlayerDifferenceZY);
+		dotf = clamp(dotf, -1.0f, 1.0f); // acosfの引数範囲内になるように制限
 		// なす角を求める
 		m_pitchAngle = acosf(dotf);
 
@@ -256,6 +248,8 @@ namespace basecross {
 		{
 			m_pitchAngle = -m_pitchAngle;
 		}
+
+		auto a = 0.0f;
 	}
 
 	// 追いかける対象に向かってZ軸回転方向で向く処理
@@ -303,27 +297,31 @@ namespace basecross {
 			{
 				auto ptrDraw = obstacles->GetComponent<SmBaseDraw>();
 				auto endPoint = m_pos + (posPlayerDifference * 5);
-				ptrDraw->HitTestStaticMeshSegmentTriangles(m_pos, endPoint, hitPos, triangle, triangleNumber);
+				if (ptrDraw)
+				{
+					ptrDraw->HitTestStaticMeshSegmentTriangles(m_pos, endPoint, hitPos, triangle, triangleNumber);
+				}
 			}
 
 			// 現在のステートの文字列を受け取る
 			auto currentStateWstring = m_stateMachine->GetCurrentStateWString();
 
+			// どのように回避するかのアンカーを付けたら復活させます
 			// レイが当たったら動かないようにする (障害物を避けるステートに移行するための物なので連続して同じステートに変更しないようにしてます)
-			if (hitPos != Vec3(0.0f) && currentStateWstring != L"ObstaclesDodge")
-			{
-				// ここを動かないようにじゃなくて迂回するルートを考える処理にする
-				m_moveVec = Vec3(0.0f);
+			//if (hitPos != Vec3(0.0f) && currentStateWstring != L"ObstaclesDodge")
+			//{
+			//	// ここを動かないようにじゃなくて迂回するルートを考える処理にする
+			//	m_moveVec = Vec3(0.0f);
 
-				// 障害物を避けるために進むルートを決める ポインタの関係でエラー吐く
-				auto obstaclesDodgeObj = DodgeRoute();
+			//	// 障害物を避けるために進むルートを決める ポインタの関係でエラー吐く
+			//	auto obstaclesDodgeObj = DodgeRoute();
 
-				// 変更したステートに障害物を避けるためにこのオブジェクトを目印にしてほしいと伝える
-				ChangeState(L"ObstaclesDodge");
-				auto currentState = m_stateMachine->GetCurrentState(); // 現在のステート取得
-				auto obstaclesDodgeState = dynamic_pointer_cast<StateObstaclesDodgeEnemy>(currentState);
-				obstaclesDodgeState->SetObstaclesDodge(obstaclesDodgeObj);
-			}
+			//	// 変更したステートに障害物を避けるためにこのオブジェクトを目印にしてほしいと伝える
+			//	ChangeState(L"ObstaclesDodge");
+			//	auto currentState = m_stateMachine->GetCurrentState(); // 現在のステート取得
+			//	auto obstaclesDodgeState = dynamic_pointer_cast<StateObstaclesDodgeEnemy>(currentState);
+			//	obstaclesDodgeState->SetObstaclesDodge(obstaclesDodgeObj);
+			//}
 		}
 
 	}
