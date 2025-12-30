@@ -61,7 +61,7 @@ namespace basecross {
 
 			CreateWallObject();
 
-			CreateScoreObject();
+			//CreateScoreObject();
 
 			CreateInvisibleCollision();
 		}
@@ -91,6 +91,8 @@ namespace basecross {
 
 		auto scene = app->GetScene<Scene>();
 		scene->SetDebugString(wss.str());
+
+		CreateScoreObject();
 	}
 
 	void ErionStage::CreateTestObject()
@@ -232,6 +234,8 @@ namespace basecross {
 
 			//wstring Tag = Tokens[10];
 			int Tag = (int)_wtof(Tokens[10].c_str());
+
+			//int count = ObjectLine.size();
 
 			score->CreateScoreObject(Pos, Rot, Siz, Tag);
 		}

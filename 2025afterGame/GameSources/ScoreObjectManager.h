@@ -28,6 +28,11 @@ namespace basecross{
 		virtual void OnCreate();
 
 		void CreateScoreObject(Vec3 pos, Vec3 rot, Vec3 siz, int tag = 0);
+
+		void RemoveObject();
+
+		int m_count;
+		bool m_currentID[];
 	};
 }
 //end basecross

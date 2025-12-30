@@ -56,6 +56,8 @@ namespace basecross{
 		auto body = dynamic_pointer_cast<FighterAircraftBase>(obj);
 		if (body)
 		{
+			auto& score = ScoreObjectManager::GetScoreObjectManager();
+			score->RemoveObject();
 			body->AddScoreCurrent(m_score);
 			GetStage()->RemoveGameObject<ScoreObject>(GetThis<ScoreObject>());
 		}
