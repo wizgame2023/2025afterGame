@@ -104,6 +104,14 @@ namespace basecross{
 		void Flight(float deltaTime);	
 		
 		/*
+		@brief プレイヤーの飛行処理
+		@details グラビティがある状態の時にさせる処理
+		@return なし
+		*/
+		void PlayerGravity(float deltaTime);
+
+
+		/*
 		@brief プレイヤーのバリア生成処理
 		@details Xボタン入力時にバリアオブジェクトを生成・有効化する。
 		@return なし
