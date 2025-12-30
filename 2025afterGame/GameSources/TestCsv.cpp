@@ -76,7 +76,7 @@ namespace basecross {
 
 		if (m_tag == L"Desk")
 		{
-			AddTag(L"CameraObsNotDiffuse");
+			AddTag(L"CameraObsDiffuse");
 			SetAlphaActive(true);
 
 			ptrDraw->SetMeshResource(L"Desk");
@@ -85,7 +85,7 @@ namespace basecross {
 		}
 		else if (m_tag == L"Chair")
 		{
-			AddTag(L"CameraObsNotDiffuse");
+			AddTag(L"CameraObsDiffuse");
 			SetAlphaActive(true);
 
 			ptrDraw->SetMeshResource(L"Chair");
@@ -94,7 +94,7 @@ namespace basecross {
 		}
 		else if (m_tag == L"Bed")
 		{
-			AddTag(L"CameraObsNotDiffuse");
+			AddTag(L"CameraObsDiffuse");
 			SetAlphaActive(true);
 
 			ptrDraw->SetMeshResource(L"Bed");
@@ -107,7 +107,7 @@ namespace basecross {
 		}
 		else
 		{
-			AddTag(L"CameraObsNotDiffuse");
+			AddTag(L"CameraObsDiffuse");
 			SetAlphaActive(true);
 
 			ptrDraw->SetMeshResource(L"DEFAULT_CUBE");

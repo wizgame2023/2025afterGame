@@ -162,10 +162,10 @@ namespace basecross{
 	// ==============================================================================
 
 	void MainCameraManager::UpdateUpHistory(const Vec3& up, const int historyMax) {
-		// ï¿½ï¿½ï¿½ï¿½É’Ç‰ï¿½
+		// E½E½E½E½É’Ç‰ï¿½
 		m_plUpHistory.push_back(up);
 
-		// ï¿½Å‘ï¿½lï¿½ð’´‚ï¿½ï¿½ï¿½ï¿½ï¿½æ“ªï¿½ï¿½íœ
+		// E½Å‘ï¿½lE½ð’´‚ï¿½E½E½E½E½æ“ªE½E½ú«E
 		if (m_plUpHistory.size() > historyMax)
 			m_plUpHistory.pop_front();
 	}
@@ -173,33 +173,33 @@ namespace basecross{
 	// ==============================================================================
 
 	Vec3 MainCameraManager::CalcUpHistoryAverage() const {
-		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½ÆƒGï¿½ï¿½ï¿½[ï¿½ÅŽï¿½ï¿½ï¿½(ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½É‚È‚ï¿½ï¿½ï¿½ï¿½á‚¤ï¿½ï¿½ï¿½ï¿½)
+		// E½E½E½E½E½E½E½È‚ï¿½E½ÆƒGE½E½E½[E½ÅŽï¿½E½E½(E½[E½E½E½E½E½ZE½É‚È‚ï¿½E½E½E½á‚¤E½E½E½E½)
 		if (m_plUpHistory.empty())
 			return Vec3(0.0f, 1.0f, 0.0f);
 
-		// ï¿½ï¿½ï¿½ï¿½Ì•ï¿½ï¿½Ï‚ï¿½ï¿½ï¿½
+		// E½E½E½E½Ì•ï¿½E½Ï‚ï¿½E½E½
 		Vec3 sum(0.0f, 0.0f, 0.0f);
 		for (const auto& v : m_plUpHistory)
 			sum += v;
 
-		// ï¿½Lï¿½ï¿½ï¿½[ï¿½É“ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½é—šï¿½ï¿½Ìï¿½ï¿½Å•ï¿½ï¿½Ï‚ï¿½ï¿½ï¿½
+		// E½LE½E½E½[E½É“ï¿½E½E½E½Ä‚ï¿½E½é—šï¿½E½Ìï¿½E½Å•ï¿½E½Ï‚ï¿½E½E½
 		Vec3 avg = sum / static_cast<float>(m_plUpHistory.size());
 
-		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0ï¿½É‹ß‚ï¿½ï¿½Æ‚ï¿½ï¿½Í‹ï¿½ï¿½ï¿½ï¿½Iï¿½Éï¿½ï¿½ï¿½ï¿½ï¿½É‚ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½Îï¿½)
+		// E½E½E½E½E½E½0E½É‹ß‚ï¿½E½Æ‚ï¿½E½Í‹ï¿½E½E½E½IE½Éï¿½E½E½E½E½É‚ï¿½E½E½(E½E½E½E½E½E½E½E½[E½E½E½E½E½ZE½Îï¿½)
 		if (avg.length() < 0.00001f)
 			avg = Vec3(0.0f, 1.0f, 0.0f);
 
-		// ï¿½ï¿½ï¿½Kï¿½ï¿½ï¿½ï¿½ï¿½Ä•Ô‚ï¿½
+		// E½E½E½KE½E½E½E½E½Ä•Ô‚ï¿½
 		return avg.normalize();
 	}
 
 	// ==============================================================================
 
 	Vec3 MainCameraManager::GetSmoothedUp(const Vec3& currentUp, const int historyMax) {
-		// ï¿½ï¿½ï¿½ï¿½ÌXï¿½V
+		// E½E½E½E½ÌXE½V
 		UpdateUpHistory(currentUp, historyMax);
 
-		// ï¿½ï¿½ï¿½Ï‚ï¿½vï¿½Zï¿½ï¿½ï¿½Ä•Ô‚ï¿½
+		// E½E½E½Ï‚ï¿½vE½ZE½E½E½Ä•Ô‚ï¿½
 		return CalcUpHistoryAverage();
 	}
 
