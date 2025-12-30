@@ -122,6 +122,8 @@ namespace basecross
 		auto score = stage->AddGameObject<NumberSprite>(Vec2(50.0f,50.0f),Vec3(600.0f, 370.0f, 0.0f));
 		score->SetMyType(NumberType::Score);
 
+		auto pauseMenu = stage->AddGameObject<PauseMenu>();
+
 		m_createUI = true;
 	}
 

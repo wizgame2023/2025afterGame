@@ -159,31 +159,47 @@ namespace basecross{
 			m_target = m_stage->GetSharedGameObject<Actor>(sharedName);
 	}
 
+	// ==============================================================================
+
 	void MainCameraManager::UpdateUpHistory(const Vec3& up, const int historyMax) {
+		// ・ｽ・ｽ・ｽ・ｽﾉ追会ｿｽ
 		m_plUpHistory.push_back(up);
+
+		// ・ｽﾅ托ｿｽl・ｽｴゑｿｽ・ｽ・ｽ・ｽ・ｽ謫ｪ・ｽ・ｽ尞・
 		if (m_plUpHistory.size() > historyMax)
 			m_plUpHistory.pop_front();
 	}
 
+	// ==============================================================================
+
 	Vec3 MainCameraManager::CalcUpHistoryAverage() const {
+		// ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽﾈゑｿｽ・ｽﾆエ・ｽ・ｽ・ｽ[・ｽﾅ趣ｿｽ・ｽ・ｽ(・ｽ[・ｽ・ｽ・ｽ・ｽ・ｽZ・ｽﾉなゑｿｽ・ｽ・ｽ・ｽ痰､・ｽ・ｽ・ｽ・ｽ)
 		if (m_plUpHistory.empty())
 			return Vec3(0.0f, 1.0f, 0.0f);
 
+		// ・ｽ・ｽ・ｽ・ｽﾌ包ｿｽ・ｽﾏゑｿｽ・ｽ・ｽ
 		Vec3 sum(0.0f, 0.0f, 0.0f);
 		for (const auto& v : m_plUpHistory)
 			sum += v;
 
+		// ・ｽL・ｽ・ｽ・ｽ[・ｽﾉ難ｿｽ・ｽ・ｽ・ｽﾄゑｿｽ・ｽ髣夲ｿｽ・ｽﾌ撰ｿｽ・ｽﾅ包ｿｽ・ｽﾏゑｿｽ・ｽ・ｽ
 		Vec3 avg = sum / static_cast<float>(m_plUpHistory.size());
+
+		// ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ0・ｽﾉ近ゑｿｽ・ｽﾆゑｿｽ・ｽﾍ具ｿｽ・ｽ・ｽ・ｽI・ｽﾉ擾ｿｽ・ｽ・ｽ・ｽ・ｽﾉゑｿｽ・ｽ・ｽ(・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ[・ｽ・ｽ・ｽ・ｽ・ｽZ・ｽﾎ搾ｿｽ)
 		if (avg.length() < 0.00001f)
 			avg = Vec3(0.0f, 1.0f, 0.0f);
 
+		// ・ｽ・ｽ・ｽK・ｽ・ｽ・ｽ・ｽ・ｽﾄ返ゑｿｽ
 		return avg.normalize();
 	}
 
 	// ==============================================================================
 
 	Vec3 MainCameraManager::GetSmoothedUp(const Vec3& currentUp, const int historyMax) {
+		// ・ｽ・ｽ・ｽ・ｽﾌ更・ｽV
 		UpdateUpHistory(currentUp, historyMax);
+
+		// ・ｽ・ｽ・ｽﾏゑｿｽv・ｽZ・ｽ・ｽ・ｽﾄ返ゑｿｽ
 		return CalcUpHistoryAverage();
 	}
 

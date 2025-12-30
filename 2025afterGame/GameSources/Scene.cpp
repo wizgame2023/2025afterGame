@@ -21,12 +21,13 @@ namespace basecross{
 	{
 		// 各種フォルダパスを取得
 		auto& app = App::GetApp();
-		wstring path = app->GetDataDirWString();
-		wstring modelPath = path + L"Models/";
-		wstring texPath = path + L"Textures/";
-		wstring uiPlayerPath = path + L"UI/Player/";
-		wstring uiTitlePath = path + L"UI/Title/";
-		wstring efkPath = path + L"Effects/";
+		const wstring path = app->GetDataDirWString();
+		const wstring& modelPath = path + L"Models/";
+		const wstring& texPath = path + L"Textures/";
+		const wstring& uiPlayerPath = path + L"UI/Player/";
+		const wstring& uiTitlePath = path + L"UI/Title/";
+		const wstring& uiMenuPath = path + L"UI/Menu/";
+		const wstring& efkPath = path + L"Effects/";
 
 		//Textures //////////////////////////////////////////////
 		auto modelTex = modelPath + L"diffuse.png";
@@ -86,7 +87,20 @@ namespace basecross{
 
 		auto remainingRounds = uiPlayerPath + L"RemainingRounds.png";
 		App::GetApp()->RegisterTexture(L"RemainingRounds", remainingRounds);
+
+		// MenuUI ///////////////////////
+		auto pauseMenuMain = uiMenuPath + L"PauseMenuMain.png";
+		App::GetApp()->RegisterTexture(L"PauseMenuMain_TX", pauseMenuMain);
+
+		auto pauseMenuVolume = uiMenuPath + L"PauseMenuSetting.png";
+		App::GetApp()->RegisterTexture(L"PauseMenuSetting_TX", pauseMenuVolume);
     
+		auto buttonsTex = uiMenuPath + L"Buttons.png";
+		App::GetApp()->RegisterTexture(L"Buttons_TX", buttonsTex);
+
+		auto menuBackground = uiMenuPath + L"PauseMenuBackGround.png";
+		App::GetApp()->RegisterTexture(L"PauseMenuBackGround_TX", menuBackground);
+
 		// Effect /////////////////////////////////////////////
 		EffectManager::Instance().CreateEfkInterface();
 		EffectManager::Instance().RegisterEffect(L"Fire", efkPath + L"Sword.efk");
