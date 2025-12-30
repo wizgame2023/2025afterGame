@@ -59,6 +59,7 @@ namespace basecross{
             spInfo.leftTopUV = Vec2(0.0f, SettingUVHeight * i);
             spInfo.rightBotUV = Vec2(1.0f, SettingUVHeight * (i + 1));
 			PushBackPauseMenuSprite(m_pauseSettingMenuSprites, spInfo);
+
             spInfo.leftTopUV = Vec2(0.0f, SettingUVHeight * i + 0.5f);
             spInfo.rightBotUV = Vec2(1.0f, SettingUVHeight * (i + 1) + 0.5f);
             PushBackPauseMenuSprite(m_pauseVolumeMenuSprites, spInfo);
@@ -139,6 +140,7 @@ namespace basecross{
     {
 		DebugLog(L"\n\n\nPauseState : ", to_wstring(static_cast<int>(m_pauseState)));
 
+		if (m_pauseState == PauseMenuState::MainMenu)
         switch (m_crntMainSelect)
         {
 		case PauseMainMenuSelect::Resume:
@@ -155,27 +157,82 @@ namespace basecross{
 			break;
 
         }
+		if (m_pauseState == PauseMenuState::SettingMenu)
+		{
+			switch (m_crntSettingSelect)
+			{
+			case PauseSettingMenuSelect::Volume:
+				DebugLog(L" Current Select: Volume ", to_wstring(static_cast<int>(m_crntSettingSelect)));
+				break;
+			case PauseSettingMenuSelect::KeyConfig:
+				DebugLog(L" Current Select: KeyConfig ", to_wstring(static_cast<int>(m_crntSettingSelect)));
+				break;
+			}
+		}
     }
+
+	// ==============================================================================
 
 	void PauseMenu::SelectDecisionAButton()
 	{
-		switch (m_crntMainSelect)
+		bool test = false;
+		if (m_pauseState == PauseMenuState::MainMenu)
 		{
-		case PauseMainMenuSelect::Resume:
-			m_pauseState = PauseMenuState::False;
-			break;
-		case PauseMainMenuSelect::Restart:
-			m_pauseState = PauseMenuState::False;
-			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToGameStage");
-			break;
-		case PauseMainMenuSelect::Setting:
-			m_pauseState = PauseMenuState::SettingMenu;
-			m_crntSettingSelect = PauseSettingMenuSelect::Volume;
-			IsVisibleMenuSprites(m_pauseMainMenuSprites, false);
-			IsVisibleMenuSprites(m_pauseVolumeMenuSprites, true);
-			break;
+			switch (m_crntMainSelect)
+			{
+			case PauseMainMenuSelect::Resume:
+				// 再開が選択された場合はポーズ解除
+				m_pauseState = PauseMenuState::False;
+				break;
+
+			case PauseMainMenuSelect::Restart:
+				m_pauseState = PauseMenuState::False;
+				// リスタートが選択された場合はゲームステージへ遷移(現在はエラーが出ます)
+				PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToGameStage");
+				break;
+
+			case PauseMainMenuSelect::Setting:
+				// 設定が選択された場合は設定メニューへ遷移
+				m_pauseState = PauseMenuState::SettingMenu;
+				m_crntSettingSelect = PauseSettingMenuSelect::Volume;
+				test = true;
+				// メインは非表示、設定メニューは表示
+				IsVisibleMenuSprites(m_pauseMainMenuSprites, false);
+				IsVisibleMenuSprites(m_pauseSettingMenuSprites, true);
+				break;
+
+			case PauseMainMenuSelect::Exit:
+				m_pauseState = PauseMenuState::False;
+				// 終了が選択された場合はタイトルステージへ遷移
+				PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");
+				break;
+
+			default:
+				m_pauseState = PauseMenuState::False;
+				break;
+			}
+		}
+		else if (m_pauseState == PauseMenuState::SettingMenu && test == false)
+		{
+			switch (m_crntSettingSelect)
+			{
+			case PauseSettingMenuSelect::Volume:
+				// ボリュームメニューへ遷移
+				m_pauseState = PauseMenuState::VolumeMenu;
+				IsVisibleMenuSprites(m_pauseSettingMenuSprites, false);
+				IsVisibleMenuSprites(m_pauseVolumeMenuSprites, true);
+				break;
+			case PauseSettingMenuSelect::KeyConfig:
+				// キーコンフィグメニューへ遷移
+				m_pauseState = PauseMenuState::KeyConfigMenu;
+				IsVisibleMenuSprites(m_pauseSettingMenuSprites, false);
+				//IsVisibleMenuSprites(m_pauseKeyConfigMenuSprites, true);
+				break;
+			}
 		}
 	}
+
+	// ==============================================================================
 
 	void PauseMenu::BackBButton()
 	{
@@ -185,6 +242,7 @@ namespace basecross{
 			// メインメニューでBボタンが押された場合はポーズ解除
 			m_pauseState = PauseMenuState::False;
 			break;
+
 		case PauseMenuState::SettingMenu:
 			// 設定メニューでBボタンが押された場合はメインメニューへ戻る
 			m_pauseState = PauseMenuState::MainMenu;
@@ -192,23 +250,28 @@ namespace basecross{
 			IsVisibleMenuSprites(m_pauseVolumeMenuSprites, false);
 			IsVisibleMenuSprites(m_pauseMainMenuSprites, true);
 			break;
+
 		case PauseMenuState::VolumeMenu:
 			// ボリュームメニューでBボタンが押された場合は設定メニューへ戻る
 			m_pauseState = PauseMenuState::SettingMenu;
 			IsVisibleMenuSprites(m_pauseVolumeMenuSprites, false);
 			IsVisibleMenuSprites(m_pauseSettingMenuSprites, true);
 			break;
+
 		case PauseMenuState::KeyConfigMenu:
 			// キーコンフィグメニューでBボタンが押された場合は設定メニューへ戻る
 			m_pauseState = PauseMenuState::SettingMenu;
 			IsVisibleMenuSprites(m_pauseKeyConfigMenuSprites, false);
 			IsVisibleMenuSprites(m_pauseSettingMenuSprites, true);
 			break;
+
 		default:
 			m_pauseState = PauseMenuState::False;
 			break;
 		}
 	}
+
+	// ==============================================================================
 
 	void PauseMenu::StartPause()
 	{
@@ -217,6 +280,8 @@ namespace basecross{
 		IsVisibleMenuSprites(m_pauseMainMenuSprites, true);
 		m_pauseBackGroundSprite->OnClear(false);
 	}
+
+	// ==============================================================================
 
 	void PauseMenu::UpdateSelection()
 	{
@@ -257,6 +322,8 @@ namespace basecross{
         }
 	}
 
+	// ==============================================================================
+
 	void PauseMenu::PushBackPauseMenuSprite(vector<shared_ptr<Sprite>>& vecSprite, const SpriteInfo& spInfo)
 	{
 		auto sprite = m_stage->AddGameObject<Sprite>(
@@ -271,6 +338,8 @@ namespace basecross{
 		vecSprite.push_back(sprite);
 	}
 
+	// ==============================================================================
+
 	void PauseMenu::IsVisibleAllMenuSprites(const bool flag)
 	{
 		m_pauseBackGroundSprite->OnClear(!flag);
@@ -279,6 +348,8 @@ namespace basecross{
 		IsVisibleMenuSprites(m_pauseVolumeMenuSprites, flag);
 		IsVisibleMenuSprites(m_pauseButtonsSprites, flag);
 	}
+
+	// ==============================================================================
 
     void PauseMenu::IsVisibleMenuSprites(const vector<shared_ptr<Sprite>>& spVec, const bool flag)
     {
