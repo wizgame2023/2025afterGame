@@ -15,6 +15,7 @@ namespace basecross {
 		shared_ptr<AttackCollision> m_attackCol;
 
 		shared_ptr<Transform> m_trans; // Transform
+		shared_ptr<PNTStaticDraw> m_draw;
 
 		Vec3 m_pos;		// 位置
 		Vec3 m_scale;	// サイズ

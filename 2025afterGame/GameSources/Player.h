@@ -33,7 +33,8 @@ namespace basecross{
 	private:
 		shared_ptr<Barrier> m_barrier;
 		shared_ptr<Bullet> m_bullet;
-
+		shared_ptr<Gravity> m_gravity;
+		shared_ptr<PNTStaticDraw> m_model;
 		// 速度ベクトル
 		Vec3 m_velocity;
 		// 弾が当たった時の位置
@@ -54,18 +55,21 @@ namespace basecross{
 		float m_bankRoll;
 		// 傾きから生じる旋回パワー
 		float m_turnPower;
-
-		// クラス全体
-		// で共有される定数
-		// 何度も関数内でローカル変数で読むのは悪いなのでここで初期化、コンパイル時に値を決定
-		static constexpr float DEAD_ZONE = 0.1f;
-		static constexpr float DEAD_ZONE_PITCH = 0.4f;
-		static constexpr float MAX_SPEED = 7.0f;
-		static constexpr float MAX_GAUGE = 100.0f;
-		static constexpr float GAUGE_CONSUMPTION_RATE = 1.0f;
-		static constexpr float GAUGE_RECOVERY_RATE = 3.0f;
+		// 上下上がる時
+		float m_pitchSpeed;
+		// 旋回する時のスピード
+		float m_yawSpeed;
+		// 一度ボタン離して復帰までの時間
+		float m_recoveryTime;
 		
+		bool m_yawMoveFlag;
+		bool m_pitchMoveFlag;
 
+		float m_pitchAngle; // ラジアン
+		float m_yawAngle;
+		float m_rollAngle;
+
+		Mat4x4 m_baseMeshMat;
 	public:
 		Player::Player(const shared_ptr<Stage>& ptrStage);
 		Player::~Player();
@@ -91,7 +95,14 @@ namespace basecross{
 		@return なし
 		*/
 		void TurnUpdate(float deltaTime);
-
+		
+		/*
+		@brief プレイヤーの飛行処理
+		@details グラビティがある状態の時にさせる処理
+		@return なし
+		*/
+		void Flight(float deltaTime);	
+		
 		/*
 		@brief プレイヤーのバリア生成処理
 		@details Xボタン入力時にバリアオブジェクトを生成・有効化する。
@@ -124,6 +135,8 @@ namespace basecross{
 		@brief プレイヤーの切り替え
 		*/
 		void ChangePlayer(Vec2 lstick);
+
+		void GetPlayerScore();
 	};
 }
 //end basecross
