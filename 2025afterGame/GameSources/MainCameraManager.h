@@ -26,6 +26,7 @@ namespace basecross{
 			Vec3 fwrd;	// 前方向ベクトル
 		};
 
+		// 障害物ヒット結果(構造体)
 		struct ObstructionHitResult{
 			Vec3 hitPos;
 			float hitLength;

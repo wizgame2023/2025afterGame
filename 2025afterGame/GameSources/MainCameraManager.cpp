@@ -159,31 +159,47 @@ namespace basecross{
 			m_target = m_stage->GetSharedGameObject<Actor>(sharedName);
 	}
 
+	// ==============================================================================
+
 	void MainCameraManager::UpdateUpHistory(const Vec3& up, const int historyMax) {
+		// ����ɒǉ�
 		m_plUpHistory.push_back(up);
+
+		// �ő�l�𒴂�����擪��폜
 		if (m_plUpHistory.size() > historyMax)
 			m_plUpHistory.pop_front();
 	}
 
+	// ==============================================================================
+
 	Vec3 MainCameraManager::CalcUpHistoryAverage() const {
+		// �������Ȃ��ƃG���[�Ŏ���(�[�����Z�ɂȂ����Ⴄ����)
 		if (m_plUpHistory.empty())
 			return Vec3(0.0f, 1.0f, 0.0f);
 
+		// ����̕��ς���
 		Vec3 sum(0.0f, 0.0f, 0.0f);
 		for (const auto& v : m_plUpHistory)
 			sum += v;
 
+		// �L���[�ɓ����Ă��闚��̐��ŕ��ς���
 		Vec3 avg = sum / static_cast<float>(m_plUpHistory.size());
+
+		// ������0�ɋ߂��Ƃ��͋����I�ɏ�����ɂ���(��������[�����Z�΍�)
 		if (avg.length() < 0.00001f)
 			avg = Vec3(0.0f, 1.0f, 0.0f);
 
+		// ���K�����ĕԂ�
 		return avg.normalize();
 	}
 
 	// ==============================================================================
 
 	Vec3 MainCameraManager::GetSmoothedUp(const Vec3& currentUp, const int historyMax) {
+		// ����̍X�V
 		UpdateUpHistory(currentUp, historyMax);
+
+		// ���ς�v�Z���ĕԂ�
 		return CalcUpHistoryAverage();
 	}
 
