@@ -42,7 +42,7 @@ namespace basecross {
 		m_hpCurrent = m_hpMax;
 
 		auto ptrTrans = GetComponent<Transform>();
-		ptrTrans->SetPosition(Vec3(0.0f, 4.0f, -1.0f));
+		ptrTrans->SetPosition(Vec3(0.0f, -14.0f, -1.0f));
 
 		m_model = AddComponent<PNTStaticDraw>();
 		m_model->SetMeshResource(L"Sentouki");
@@ -275,6 +275,8 @@ namespace basecross {
 		// -----------------------------
 		else if (m_yawMoveFlag)
 		{
+			m_pitchSpeed = 0.0f;
+
 			Vec3 forward = ptrTrans->GetForward();
 			Vec3 forwardXZ(forward.x, 0.0f, forward.z);
 
