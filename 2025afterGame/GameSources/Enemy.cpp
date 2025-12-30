@@ -32,6 +32,7 @@ namespace basecross {
 
 		// 回転度取得
 		m_rot = m_trans->GetRotation();
+		m_rot = Vec3(AdjustmentAngle(m_rot.x), AdjustmentAngle(m_rot.y), AdjustmentAngle(m_rot.z));
 
 		Mat4x4 spanMat;
 		spanMat.affineTransformation(
@@ -54,10 +55,6 @@ namespace basecross {
 		m_draw->SetDiffuse(m_color);
 		m_draw->SetEmissive(m_color);
 		SetAlphaActive(true);
-
-		// ステートマシン作成
-		//m_stateMachine = unique_ptr<StateBarrierMachine>(new StateBarrierMachine(GetThis<MyGameObject>()));
-		//m_stateMachine->ChangeState(L"Default");
 
 		// 敵タグ追加
 		AddTag(L"Enemy");
@@ -105,24 +102,8 @@ namespace basecross {
 			return;
 		}
 
-		// ピッチヨーロールをrotateに変換
-		Vec3 rotVec = Vec3(m_pitchAngle, m_yawAngle, m_rollAngle);
-
-		Vec3 differenceRotVec = rotVec - m_rot;
-		Vec3 addRotVec = differenceRotVec;
-		addRotVec.normalize();//正規化
-
-		auto test = differenceRotVec.length();
-
-		// 少しずつ回転する処理
-		if (differenceRotVec.length() > 0.05f)
-		{
-			m_rot += addRotVec * m_delta;
-		}
-		else if (differenceRotVec.length() <= 0.05f)
-		{
-			m_rot = rotVec;
-		}
+		// ヨーピッチロールに沿って回転する処理
+		MoveRotate();
 
 		// 無敵時用の処理
 		Invincible();
@@ -140,16 +121,15 @@ namespace basecross {
 		m_draw->SetDiffuse(m_color);
 
 
-		//////デバック用
-		//wstringstream wss(L"");
-		//auto scene = App::GetApp()->GetScene<Scene>();
+		//デバック用
+		wstringstream wss(L"");
+		auto scene = App::GetApp()->GetScene<Scene>();
 
-		//wss /* << L"デバッグ用文字列 "*/
-		//	<< L"\n\n\n\n\n\ngoalAngle : " << XMConvertToDegrees(m_yawAngle)
-		//	<< L"\nm_pitchAngle : " << m_pitchAngle
-		//	<< endl;
+		wss /* << L"デバッグ用文字列 "*/
+			<< L"\nm_pitchAngle : " << m_pitchAngle
+			<< endl;
 
-		//scene->SetDebugString(wss.str());
+		scene->SetDebugString(wss.str());
 	}
 
 	// 当たり判定
@@ -276,6 +256,45 @@ namespace basecross {
 	void Enemy::TrackingYawQt(const Vec3& posPlayerDifference)
 	{
 		m_yawAngle = atan2f(posPlayerDifference.x, posPlayerDifference.z);
+		return;
+	}
+
+	// ヨーピッチロールに沿って回転する処理
+	void Enemy::MoveRotate()
+	{
+		// 進みたい方向に回転
+		// ピッチヨーロールをrotateに変換
+		Vec3 rotVec = Vec3(AdjustmentAngle(m_pitchAngle), AdjustmentAngle(m_yawAngle), AdjustmentAngle(m_rollAngle));
+		Vec3 differenceRotVec = rotVec - m_rot;
+
+		//角度の差が181以上ならマイナスにして計算したほうが進む方向として早い
+		if (differenceRotVec.y >= XMConvertToRadians(181.0f))
+		{
+			rotVec.y -= XMConvertToRadians(360.0f);
+			differenceRotVec.y = rotVec.y - m_rot.y;
+		}
+		if (differenceRotVec.y <= XMConvertToRadians(-181.0f))
+		{
+			rotVec.y += XMConvertToRadians(360.0f);
+			differenceRotVec.y = rotVec.y - m_rot.y;
+		}
+
+		Vec3 addRotVec = differenceRotVec;
+		addRotVec.normalize();//正規化
+
+		auto differenceRotVecLenght = differenceRotVec.length();
+		// 少しずつ回転する処理
+		if (differenceRotVec.length() > 0.05f)
+		{
+			m_rot += addRotVec * m_delta;
+		}
+		else if (differenceRotVec.length() <= 0.05f)
+		{
+			m_rot = rotVec;
+		}
+		// 回転度の整理
+		m_rot = Vec3(AdjustmentAngle(m_rot.x), AdjustmentAngle(m_rot.y), AdjustmentAngle(m_rot.z));
+
 		return;
 	}
 

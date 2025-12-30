@@ -67,6 +67,9 @@ namespace basecross {
 		// 追いかける対象に向かってY軸回転方向で向く処理
 		void TrackingYawQt(const Vec3& posPlayerDifference);
 
+		// ヨーピッチロールに沿って回転する処理
+		void MoveRotate();
+
 		// 障害物を避ける処理
 		void DodgeObstacles(const Vec3& posPlayerDifference);
 
