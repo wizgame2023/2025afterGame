@@ -43,7 +43,10 @@ namespace basecross {
 		unique_ptr<StateEnemyMachine> m_stateMachine; // ステートマシン
 
 	public:
-		Enemy(const shared_ptr<Stage>& obj,const Vec3& pos,const Quat& qt,const Vec3& scale, const shared_ptr<CheckPoint>& startCheckPoint,const shared_ptr<Actor>& trackingObj);
+		// 今後は使わない
+		Enemy(const shared_ptr<Stage>& obj, const Vec3& pos, const Quat& qt, const Vec3& scale, const shared_ptr<CheckPoint>& startCheckPoint, const shared_ptr<Actor>& trackingObj);
+		// 今後はこちらを使う
+		Enemy(const shared_ptr<Stage>& obj, const Vec3& pos, const Vec3& rot, const Vec3& scale, const shared_ptr<CheckPoint>& startCheckPoint, const shared_ptr<Actor>& trackingObj);
 		~Enemy();
 
 		void OnCreate()override;

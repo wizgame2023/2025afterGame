@@ -9,8 +9,15 @@
 #include "Enemy.h"
 
 namespace basecross {
-	Enemy::Enemy(const shared_ptr<Stage>& obj,const Vec3& pos,const Quat& qt,const Vec3& scale,const shared_ptr<CheckPoint>& startCheckPoint, const shared_ptr<Actor>& trackingObj):
-		FighterAircraftBase(obj,pos,qt,scale,startCheckPoint, Col4(0.0f, 1.0f, 1.0f, 1.0f)),
+	Enemy::Enemy(const shared_ptr<Stage>& obj, const Vec3& pos, const Vec3& rot, const Vec3& scale, const shared_ptr<CheckPoint>& startCheckPoint, const shared_ptr<Actor>& trackingObj) :
+		FighterAircraftBase(obj, pos, rot, scale, startCheckPoint, Col4(0.0f, 1.0f, 1.0f, 1.0f)),
+		m_trackingObj(trackingObj)
+	{
+
+	}
+
+	Enemy::Enemy(const shared_ptr<Stage>& obj, const Vec3& pos, const Quat& qt, const Vec3& scale, const shared_ptr<CheckPoint>& startCheckPoint, const shared_ptr<Actor>& trackingObj) :
+		FighterAircraftBase(obj, pos, qt, scale, startCheckPoint, Col4(0.0f, 1.0f, 1.0f, 1.0f)),
 		m_trackingObj(trackingObj)
 	{
 
@@ -27,11 +34,12 @@ namespace basecross {
 		// Transèàóùí«â¡
 		m_trans = GetComponent<Transform>();
 		m_trans->SetPosition(m_pos);
-		m_trans->SetQuaternion(m_qt);
+		//m_trans->SetQuaternion(m_qt);
+		m_trans->SetRotation(m_rot);
 		m_trans->SetScale(Vec3(1.0f));
 
-		// âÒì]ìxéÊìæ
-		m_rot = m_trans->GetRotation();
+		//// âÒì]ìxéÊìæ
+		//m_rot = m_trans->GetRotation();
 		m_rot = Vec3(AdjustmentAngle(m_rot.x), AdjustmentAngle(m_rot.y), AdjustmentAngle(m_rot.z));
 
 		Mat4x4 spanMat;
