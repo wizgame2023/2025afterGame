@@ -121,15 +121,15 @@ namespace basecross {
 		m_draw->SetDiffuse(m_color);
 
 
-		//デバック用
-		wstringstream wss(L"");
-		auto scene = App::GetApp()->GetScene<Scene>();
+		////デバック用
+		//wstringstream wss(L"");
+		//auto scene = App::GetApp()->GetScene<Scene>();
 
-		wss /* << L"デバッグ用文字列 "*/
-			<< L"\nm_pitchAngle : " << m_pitchAngle
-			<< endl;
+		//wss /* << L"デバッグ用文字列 "*/
+		//	<< L"\nm_pitchAngle : " << m_pitchAngle
+		//	<< endl;
 
-		scene->SetDebugString(wss.str());
+		//scene->SetDebugString(wss.str());
 	}
 
 	// 当たり判定
@@ -196,9 +196,8 @@ namespace basecross {
 	void Enemy::TrackingMove(const Vec3& posPlayerDifference)
 	{
 		// 移動ベクトル加算
-		m_moveVec.x = posPlayerDifference.x * m_delta;
-		m_moveVec.y = posPlayerDifference.y * m_delta;
-		m_moveVec.z = posPlayerDifference.z * m_delta;
+		auto forward = m_trans->GetForward();
+		m_moveVec = forward * m_delta;
 
 		return;
 	}
@@ -267,6 +266,7 @@ namespace basecross {
 		Vec3 rotVec = Vec3(AdjustmentAngle(m_pitchAngle), AdjustmentAngle(m_yawAngle), AdjustmentAngle(m_rollAngle));
 		Vec3 differenceRotVec = rotVec - m_rot;
 
+		// y ここ関数化させたい
 		//角度の差が181以上ならマイナスにして計算したほうが進む方向として早い
 		if (differenceRotVec.y >= XMConvertToRadians(181.0f))
 		{
@@ -278,6 +278,20 @@ namespace basecross {
 			rotVec.y += XMConvertToRadians(360.0f);
 			differenceRotVec.y = rotVec.y - m_rot.y;
 		}
+
+		// x
+		// m_rot.xは下方向だと0~から90の間、上方向だと270~360の間で移動しており分かりにくいのですべて-90~から90の間で移動しているように変更
+		if (differenceRotVec.x >= XMConvertToRadians(181.0f))
+		{
+			rotVec.x -= XMConvertToRadians(360.0f);
+			differenceRotVec.x = rotVec.x - m_rot.x;
+		}
+		if (differenceRotVec.x <= XMConvertToRadians(-181.0f))
+		{
+			rotVec.x += XMConvertToRadians(360.0f);
+			differenceRotVec.x = rotVec.x - m_rot.x;
+		}
+
 
 		Vec3 addRotVec = differenceRotVec;
 		addRotVec.normalize();//正規化
@@ -292,8 +306,25 @@ namespace basecross {
 		{
 			m_rot = rotVec;
 		}
+
 		// 回転度の整理
-		m_rot = Vec3(AdjustmentAngle(m_rot.x), AdjustmentAngle(m_rot.y), AdjustmentAngle(m_rot.z));
+		// m_rot.xは-90~から90の間で移動しているこれは変えないほうが処理的に良い
+		m_rot = Vec3(m_rot.x, AdjustmentAngle(m_rot.y), m_rot.z);
+
+
+		////デバック用
+		//wstringstream wss(L"");
+		//auto scene = App::GetApp()->GetScene<Scene>();
+
+		//wss /* << L"デバッグ用文字列 "*/
+		//	//<< L"\ndifferenceRotVec.x : " << differenceRotVec.x
+		//	<< L"\n\n\n\nrotVec.x : " << XMConvertToDegrees(m_rot.x)
+		//	<< L"\nrotVec.y : " << XMConvertToDegrees(m_rot.y)
+		//	<< L"\nrotVec.z : " << XMConvertToDegrees(m_rot.z)
+		//	<< endl;
+
+		//scene->SetDebugString(wss.str());
+
 
 		return;
 	}
