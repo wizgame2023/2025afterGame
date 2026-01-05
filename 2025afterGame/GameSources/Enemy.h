@@ -28,6 +28,9 @@ namespace basecross {
 		// ヨー方向に向いている方向
 		float m_yawAngle;
 
+		// 回転の目的地
+		Vec3 m_goalRotVec;
+
 		// 無敵フラグ
 		bool m_invincibleFlag;
 		float m_timeOfInvincible = 5.0f; // 無敵になる時間
@@ -51,6 +54,9 @@ namespace basecross {
 
 		// 角度の調整0~360度までしか出ないようにする
 		float AdjustmentAngle(float angle);
+
+		// 角度移動する際に0から350度に移動する際の差の大きさがでかくなりすぎないようにする
+		float CorrectRotationDirection(float differenceAngle);
 
 		// ステートの変更処理
 		void ChangeState(wstring stateName);
