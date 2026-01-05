@@ -9,8 +9,15 @@
 #include "Enemy.h"
 
 namespace basecross {
-	Enemy::Enemy(const shared_ptr<Stage>& obj,const Vec3& pos,const Quat& qt,const Vec3& scale,const shared_ptr<CheckPoint>& startCheckPoint, const shared_ptr<Actor>& trackingObj):
-		FighterAircraftBase(obj,pos,qt,scale,startCheckPoint, Col4(0.0f, 1.0f, 1.0f, 1.0f)),
+	Enemy::Enemy(const shared_ptr<Stage>& obj, const Vec3& pos, const Vec3& rot, const Vec3& scale, const shared_ptr<CheckPoint>& startCheckPoint, const shared_ptr<Actor>& trackingObj) :
+		FighterAircraftBase(obj, pos, rot, scale, startCheckPoint, Col4(0.0f, 1.0f, 1.0f, 1.0f)),
+		m_trackingObj(trackingObj)
+	{
+
+	}
+
+	Enemy::Enemy(const shared_ptr<Stage>& obj, const Vec3& pos, const Quat& qt, const Vec3& scale, const shared_ptr<CheckPoint>& startCheckPoint, const shared_ptr<Actor>& trackingObj) :
+		FighterAircraftBase(obj, pos, qt, scale, startCheckPoint, Col4(0.0f, 1.0f, 1.0f, 1.0f)),
 		m_trackingObj(trackingObj)
 	{
 
@@ -27,11 +34,12 @@ namespace basecross {
 		// Trans処理追加
 		m_trans = GetComponent<Transform>();
 		m_trans->SetPosition(m_pos);
-		m_trans->SetQuaternion(m_qt);
+		//m_trans->SetQuaternion(m_qt);
+		m_trans->SetRotation(m_rot);
 		m_trans->SetScale(Vec3(1.0f));
 
-		// 回転度取得
-		m_rot = m_trans->GetRotation();
+		//// 回転度取得
+		//m_rot = m_trans->GetRotation();
 		m_rot = Vec3(AdjustmentAngle(m_rot.x), AdjustmentAngle(m_rot.y), AdjustmentAngle(m_rot.z));
 
 		Mat4x4 spanMat;
@@ -121,15 +129,15 @@ namespace basecross {
 		m_draw->SetDiffuse(m_color);
 
 
-		//デバック用
-		wstringstream wss(L"");
-		auto scene = App::GetApp()->GetScene<Scene>();
+		////デバック用
+		//wstringstream wss(L"");
+		//auto scene = App::GetApp()->GetScene<Scene>();
 
-		wss /* << L"デバッグ用文字列 "*/
-			<< L"\nm_pitchAngle : " << m_pitchAngle
-			<< endl;
+		//wss /* << L"デバッグ用文字列 "*/
+		//	<< L"\nm_pitchAngle : " << m_pitchAngle
+		//	<< endl;
 
-		scene->SetDebugString(wss.str());
+		//scene->SetDebugString(wss.str());
 	}
 
 	// 当たり判定
@@ -185,6 +193,23 @@ namespace basecross {
 		return angle;
 	}
 
+	// 角度の差が大きいときに別方向に進んだ角度の差を求める処理
+	float Enemy::CorrectRotationDirection(float differenceAngle)
+	{
+		if (differenceAngle >= XMConvertToRadians(181.0f))
+		{
+			m_goalRotVec.y -= XMConvertToRadians(360.0f);
+			differenceAngle = m_goalRotVec.y - m_rot.y;
+		}
+		if (differenceAngle <= XMConvertToRadians(-181.0f))
+		{
+			m_goalRotVec.y += XMConvertToRadians(360.0f);
+			differenceAngle = m_goalRotVec.y - m_rot.y;
+		}
+
+		return differenceAngle;
+	}
+
 
 	// ステートの変更処理
 	void Enemy::ChangeState(wstring stateName)
@@ -196,9 +221,8 @@ namespace basecross {
 	void Enemy::TrackingMove(const Vec3& posPlayerDifference)
 	{
 		// 移動ベクトル加算
-		m_moveVec.x = posPlayerDifference.x * m_delta;
-		m_moveVec.y = posPlayerDifference.y * m_delta;
-		m_moveVec.z = posPlayerDifference.z * m_delta;
+		auto forward = m_trans->GetForward();
+		m_moveVec = forward * m_delta;
 
 		return;
 	}
@@ -264,37 +288,42 @@ namespace basecross {
 	{
 		// 進みたい方向に回転
 		// ピッチヨーロールをrotateに変換
-		Vec3 rotVec = Vec3(AdjustmentAngle(m_pitchAngle), AdjustmentAngle(m_yawAngle), AdjustmentAngle(m_rollAngle));
-		Vec3 differenceRotVec = rotVec - m_rot;
+		m_goalRotVec = Vec3(AdjustmentAngle(m_pitchAngle), AdjustmentAngle(m_yawAngle), AdjustmentAngle(m_rollAngle));
+		Vec3 differenceRotVec = m_goalRotVec - m_rot;
 
-		//角度の差が181以上ならマイナスにして計算したほうが進む方向として早い
-		if (differenceRotVec.y >= XMConvertToRadians(181.0f))
-		{
-			rotVec.y -= XMConvertToRadians(360.0f);
-			differenceRotVec.y = rotVec.y - m_rot.y;
-		}
-		if (differenceRotVec.y <= XMConvertToRadians(-181.0f))
-		{
-			rotVec.y += XMConvertToRadians(360.0f);
-			differenceRotVec.y = rotVec.y - m_rot.y;
-		}
+		// 回転度の差が別の方向に回転したほうが小さいなら逆にする
+		differenceRotVec.y = CorrectRotationDirection(differenceRotVec.y);
+		differenceRotVec.x = CorrectRotationDirection(differenceRotVec.x);
 
 		Vec3 addRotVec = differenceRotVec;
 		addRotVec.normalize();//正規化
 
-		auto differenceRotVecLenght = differenceRotVec.length();
 		// 少しずつ回転する処理
-		if (differenceRotVec.length() > 0.05f)
+		if (differenceRotVec.length() > 0.01f)
 		{
 			m_rot += addRotVec * m_delta;
 		}
-		else if (differenceRotVec.length() <= 0.05f)
+		else if (differenceRotVec.length() <= 0.01f)
 		{
-			m_rot = rotVec;
+			m_rot = m_goalRotVec;
 		}
-		// 回転度の整理
-		m_rot = Vec3(AdjustmentAngle(m_rot.x), AdjustmentAngle(m_rot.y), AdjustmentAngle(m_rot.z));
 
+		// 回転度の整理
+		m_rot = Vec3(AdjustmentAngle(m_rot.x), AdjustmentAngle(m_rot.y), m_rot.z);
+
+
+		////デバック用
+		//wstringstream wss(L"");
+		//auto scene = App::GetApp()->GetScene<Scene>();
+
+		//wss /* << L"デバッグ用文字列 "*/
+		//	//<< L"\ndifferenceRotVec.x : " << differenceRotVec.x
+		//	<< L"\n\n\n\nrotVec.x : " << XMConvertToDegrees(m_rot.x)
+		//	<< L"\nrotVec.y : " << XMConvertToDegrees(m_rot.y)
+		//	<< L"\nrotVec.z : " << XMConvertToDegrees(m_rot.z)
+		//	<< endl;
+
+		//scene->SetDebugString(wss.str());
 		return;
 	}
 
