@@ -55,7 +55,7 @@ namespace basecross {
 		// 角度の調整0~360度までしか出ないようにする
 		float AdjustmentAngle(float angle);
 
-		// 角度移動する際に0から350度に移動する際の差の大きさがでかくなりすぎないようにする
+		// 角度の差が大きいときに別方向に進んだ角度の差を求める処理
 		float CorrectRotationDirection(float differenceAngle);
 
 		// ステートの変更処理

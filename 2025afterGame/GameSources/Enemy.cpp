@@ -185,7 +185,7 @@ namespace basecross {
 		return angle;
 	}
 
-	// 角度移動する際に0から350度に移動する際の差の大きさがでかくなりすぎないようにする
+	// 角度の差が大きいときに別方向に進んだ角度の差を求める処理
 	float Enemy::CorrectRotationDirection(float differenceAngle)
 	{
 		if (differenceAngle >= XMConvertToRadians(181.0f))
@@ -283,42 +283,13 @@ namespace basecross {
 		m_goalRotVec = Vec3(AdjustmentAngle(m_pitchAngle), AdjustmentAngle(m_yawAngle), AdjustmentAngle(m_rollAngle));
 		Vec3 differenceRotVec = m_goalRotVec - m_rot;
 
+		// 回転度の差が別の方向に回転したほうが小さいなら逆にする
 		differenceRotVec.y = CorrectRotationDirection(differenceRotVec.y);
 		differenceRotVec.x = CorrectRotationDirection(differenceRotVec.x);
-
-
-		//// y ここ関数化させたい
-		////角度の差が181以上ならマイナスにして計算したほうが進む方向として早い
-		//if (differenceRotVec.y >= XMConvertToRadians(181.0f))
-		//{
-		//	m_goalRotVec.y -= XMConvertToRadians(360.0f);
-		//	differenceRotVec.y = m_goalRotVec.y - m_rot.y;
-		//}
-		//if (differenceRotVec.y <= XMConvertToRadians(-181.0f))
-		//{
-		//	m_goalRotVec.y += XMConvertToRadians(360.0f);
-		//	differenceRotVec.y = m_goalRotVec.y - m_rot.y;
-		//}
-
-		//// x
-		//// m_rot.xは下方向だと0~から90の間、上方向だと270~360の間で移動しており分かりにくいのですべて-90~から90の間で移動しているように変更
-		//if (differenceRotVec.x >= XMConvertToRadians(181.0f))
-		//{
-		//	m_goalRotVec.x -= XMConvertToRadians(360.0f);
-		//	differenceRotVec.x = m_goalRotVec.x - m_rot.x;
-		//}
-		//if (differenceRotVec.x <= XMConvertToRadians(-181.0f))
-		//{
-		//	m_goalRotVec.x += XMConvertToRadians(360.0f);
-		//	differenceRotVec.x = m_goalRotVec.x - m_rot.x;
-		//}
-
 
 		Vec3 addRotVec = differenceRotVec;
 		addRotVec.normalize();//正規化
 
-		auto differenceRotVecLenght = differenceRotVec.length();
-		auto test = differenceRotVec.length();
 		// 少しずつ回転する処理
 		if (differenceRotVec.length() > 0.01f)
 		{
@@ -330,24 +301,21 @@ namespace basecross {
 		}
 
 		// 回転度の整理
-		// m_rot.xは-90~から90の間で移動しているこれは変えないほうが処理的に良い
 		m_rot = Vec3(AdjustmentAngle(m_rot.x), AdjustmentAngle(m_rot.y), m_rot.z);
 
 
-		//デバック用
-		wstringstream wss(L"");
-		auto scene = App::GetApp()->GetScene<Scene>();
+		////デバック用
+		//wstringstream wss(L"");
+		//auto scene = App::GetApp()->GetScene<Scene>();
 
-		wss /* << L"デバッグ用文字列 "*/
-			//<< L"\ndifferenceRotVec.x : " << differenceRotVec.x
-			<< L"\n\n\n\nrotVec.x : " << XMConvertToDegrees(m_rot.x)
-			<< L"\nrotVec.y : " << XMConvertToDegrees(m_rot.y)
-			<< L"\nrotVec.z : " << XMConvertToDegrees(m_rot.z)
-			<< endl;
+		//wss /* << L"デバッグ用文字列 "*/
+		//	//<< L"\ndifferenceRotVec.x : " << differenceRotVec.x
+		//	<< L"\n\n\n\nrotVec.x : " << XMConvertToDegrees(m_rot.x)
+		//	<< L"\nrotVec.y : " << XMConvertToDegrees(m_rot.y)
+		//	<< L"\nrotVec.z : " << XMConvertToDegrees(m_rot.z)
+		//	<< endl;
 
-		scene->SetDebugString(wss.str());
-
-
+		//scene->SetDebugString(wss.str());
 		return;
 	}
 
