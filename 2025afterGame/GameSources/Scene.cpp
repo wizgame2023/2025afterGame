@@ -28,6 +28,7 @@ namespace basecross{
 		const wstring& uiTitlePath = path + L"UI/Title/";
 		const wstring& uiMenuPath = path + L"UI/Menu/";
 		const wstring& efkPath = path + L"Effects/";
+    const wstring& soundPath = path + L"Sounds/";
 
 		//Textures //////////////////////////////////////////////
 		auto modelTex = modelPath + L"diffuse.png";
@@ -105,6 +106,21 @@ namespace basecross{
 		EffectManager::Instance().CreateEfkInterface();
 		EffectManager::Instance().RegisterEffect(L"Fire", efkPath + L"Sword.efk");
 		
+
+		//BGM
+		wstring BGMPath = soundPath + L"BGM/";
+		app->RegisterWav(L"TitleBGM", BGMPath + L"Title.wav");
+		app->RegisterWav(L"StageBGM", BGMPath + L"Stage.wav");
+
+		//SE
+		wstring SEPath = soundPath + L"SE/";
+		app->RegisterWav(L"ButtonPushSE", SEPath + L"ButtonPush.wav");
+		app->RegisterWav(L"CoundDownSE", SEPath + L"CoundDown.wav");
+		app->RegisterWav(L"DengerSE", SEPath + L"Denger.wav");
+		app->RegisterWav(L"HealSE", SEPath + L"Heal.wav");
+		app->RegisterWav(L"ReloadSE", SEPath + L"Reload.wav");
+		app->RegisterWav(L"ResultSE", SEPath + L"Result.wav");
+		app->RegisterWav(L"SpeedUpSE", SEPath + L"SpeedUp.wav");
 	}
 	
 	void Scene::OnCreate(){
