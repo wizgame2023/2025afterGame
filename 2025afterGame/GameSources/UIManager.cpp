@@ -20,7 +20,8 @@ namespace basecross
 		m_minute(0),
 		m_second(0),
 		m_bulletNumCurrentNow(0),
-		m_bulletNumMax(0)
+		m_bulletNumMax(0),
+		m_playerScoreCurrent(0)
 	{
 
 	}
@@ -94,6 +95,8 @@ namespace basecross
 		}
 
 		UpdateTime(limit);
+
+		GetPlayerScore();
 	}
 
 	// Ž©•ªŽ©g‚Ì”jŠüˆ—
@@ -118,6 +121,8 @@ namespace basecross
 		
 		auto score = stage->AddGameObject<NumberSprite>(Vec2(50.0f,50.0f),Vec3(600.0f, 370.0f, 0.0f));
 		score->SetMyType(NumberType::Score);
+
+		auto pauseMenu = stage->AddGameObject<PauseMenu>();
 
 		m_createUI = true;
 	}
@@ -153,6 +158,7 @@ namespace basecross
 				m_playerHpMax = player->GetHpMax();
 				m_bulletNumCurrentNow = player->GetBulletNumCurrentNow();
 				m_bulletNumMax = player->GetBulletNumMax();
+				m_playerScoreCurrent = player->GetScoreCurrent();
 			}
 		}
 	}
@@ -225,6 +231,11 @@ namespace basecross
 	int UIManager::GetBulletNumMax()
 	{
 		return m_bulletNumMax;
+	}
+
+	int UIManager::GetPlayerScore()
+	{
+		return m_playerScoreCurrent;
 	}
 }
 //end basecross

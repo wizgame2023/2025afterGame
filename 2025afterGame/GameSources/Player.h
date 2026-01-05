@@ -34,7 +34,7 @@ namespace basecross{
 		shared_ptr<Barrier> m_barrier;
 		shared_ptr<Bullet> m_bullet;
 		shared_ptr<Gravity> m_gravity;
-
+		shared_ptr<PNTStaticDraw> m_model;
 		// 速度ベクトル
 		Vec3 m_velocity;
 		// 弾が当たった時の位置
@@ -61,7 +61,15 @@ namespace basecross{
 		float m_yawSpeed;
 		// 一度ボタン離して復帰までの時間
 		float m_recoveryTime;
+		
+		bool m_yawMoveFlag;
+		bool m_pitchMoveFlag;
 
+		float m_pitchAngle; // ラジアン
+		float m_yawAngle;
+		float m_rollAngle;
+
+		Mat4x4 m_baseMeshMat;
 	public:
 		Player::Player(const shared_ptr<Stage>& ptrStage);
 		Player::~Player();
@@ -96,6 +104,14 @@ namespace basecross{
 		void Flight(float deltaTime);	
 		
 		/*
+		@brief プレイヤーの飛行処理
+		@details グラビティがある状態の時にさせる処理
+		@return なし
+		*/
+		void PlayerGravity(float deltaTime);
+
+
+		/*
 		@brief プレイヤーのバリア生成処理
 		@details Xボタン入力時にバリアオブジェクトを生成・有効化する。
 		@return なし
@@ -127,6 +143,8 @@ namespace basecross{
 		@brief プレイヤーの切り替え
 		*/
 		void ChangePlayer(Vec2 lstick);
+
+		void GetPlayerScore();
 	};
 }
 //end basecross

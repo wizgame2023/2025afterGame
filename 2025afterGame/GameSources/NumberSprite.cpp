@@ -40,7 +40,7 @@ namespace basecross {
         auto& gameManger = GameManager::GetGameManager();
         auto& uiManager = UIManager::GetUIManager();
         auto currentHP = uiManager->GetCurrentPlayerHP();
-        auto currentScore = ScoreManager::GetScoreManager()->GetPlScore();
+        auto& scoreManager = ScoreManager::GetScoreManager();
 
         int value = 0;
 
@@ -59,7 +59,7 @@ namespace basecross {
             value = uiManager->GetBulletNumMax();
             break;
         case NumberType::Score:
-			value = currentScore;
+			value = uiManager->GetPlayerScore();
 			break;
         }
 
