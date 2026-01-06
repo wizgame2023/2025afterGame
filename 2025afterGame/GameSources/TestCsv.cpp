@@ -43,7 +43,7 @@ namespace basecross {
 		//ƒRƒŠƒWƒ‡ƒ“
 		auto ptrCol = AddComponent<CollisionObb>();
 		ptrCol->SetFixed(true);
-		ptrCol->SetDrawActive(true);
+		ptrCol->SetDrawActive(false);
 		ptrCol->SetAfterCollision(AfterCollision::Auto);
 
 		Mat4x4 spanMat1;
