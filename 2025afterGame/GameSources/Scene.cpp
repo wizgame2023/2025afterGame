@@ -118,9 +118,10 @@ namespace basecross{
 		app->RegisterWav(L"CoundDownSE", SEPath + L"CoundDown.wav");
 		app->RegisterWav(L"DengerSE", SEPath + L"Denger.wav");
 		app->RegisterWav(L"HealSE", SEPath + L"Heal.wav");
-		app->RegisterWav(L"ReloadSE", SEPath + L"Reload.wav");
+		app->RegisterWav(L"ReloadSE", SEPath + L"Reload.wav"); 
 		app->RegisterWav(L"ResultSE", SEPath + L"Result.wav");
 		app->RegisterWav(L"SpeedUpSE", SEPath + L"SpeedUp.wav");
+		app->RegisterWav(L"GetScoreSE", SEPath + L"GetScore.wav");
 	}
 	
 	void Scene::OnCreate(){
