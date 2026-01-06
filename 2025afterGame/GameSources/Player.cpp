@@ -522,6 +522,7 @@ namespace basecross {
 		auto& input = InputManager::GetInputManager();
 		// 前フレームのTrigger値
 		static BYTE prevTrigger = 0;
+		auto ptrMana = App::GetApp()->GetXAudio2Manager();
 
 		BYTE nowTrigger = input->GetRightTrigger();
 		BYTE threshold = 30;
@@ -529,6 +530,8 @@ namespace basecross {
 		//「押した瞬間」だけ発射する
 		if (prevTrigger <= threshold && nowTrigger > threshold)
 		{
+			ptrMana->Start(L"ShotSE", 0, 1.0f);
+
 			if (m_bulletNumCurrentNow > 0)
 			{
 				m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
