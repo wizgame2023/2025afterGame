@@ -5,9 +5,10 @@
 
 #pragma once
 #include "stdafx.h"
+#include "MyGameObject.h"
 
 namespace basecross{
-	class ScoreObject : public GameObject {
+	class ScoreObject : public Actor {
 		Vec3 m_pos;
 		Vec3 m_rot;
 		Vec3 m_siz;

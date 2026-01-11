@@ -32,6 +32,7 @@ namespace basecross {
 			auto& app = App::GetApp();
 			auto path = app->GetDataDirWString();
 			auto& game = GameManager::GetGameManager();
+			m_count = 0;
 
 			auto backgroundPath = path + L"Backgrounds/";
 			for (const auto& keyName : Background::pairs) {
@@ -92,7 +93,10 @@ namespace basecross {
 		auto scene = app->GetScene<Scene>();
 		scene->SetDebugString(wss.str());
 
-		CreateScoreObject();
+		if (m_count < 3)
+		{
+			CreateScoreObject();
+		}
 	}
 
 	void ErionStage::CreateTestObject()
@@ -206,6 +210,7 @@ namespace basecross {
 		vector<wstring> ObjectLine;
 
 		auto& score = ScoreObjectManager::GetScoreObjectManager();
+		int select = rand() % 5;
 
 		//”²‚«o‚µ
 		m_objectFile.GetSelect(ObjectLine, 0, L"ScoreObjectAnchor");
@@ -235,9 +240,11 @@ namespace basecross {
 			//wstring Tag = Tokens[10];
 			int Tag = (int)_wtof(Tokens[10].c_str());
 
-			//int count = ObjectLine.size();
-
-			score->CreateScoreObject(Pos, Rot, Siz, Tag);
+			if (Tag == select)
+			{
+				score->CreateScoreObject(Pos, Rot, Siz, Tag);
+				m_count++;
+			}
 		}
 	}
 
@@ -274,6 +281,11 @@ namespace basecross {
 
 			AddGameObject<InvisibleCollision>(Pos, Rot, Siz);
 		}
+	}
+
+	void ErionStage::RemoveObject()
+	{
+		m_count--;
 	}
 }
 //end basecross

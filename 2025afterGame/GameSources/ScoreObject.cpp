@@ -13,7 +13,7 @@ namespace basecross{
 		const Vec3& Siz,
 		const int& ID
 	) :
-		GameObject(StagePtr),
+		Actor(StagePtr),
 		m_pos(Pos),
 		m_rot(Rot),
 		m_siz(Siz),
@@ -36,6 +36,8 @@ namespace basecross{
 
 	void ScoreObject::OnCreate()
 	{
+		Actor::OnCreate();
+
 		auto PtrTrans = GetComponent<Transform>();
 		PtrTrans->SetScale(m_siz);
 		PtrTrans->SetRotation(m_rot);
@@ -57,7 +59,7 @@ namespace basecross{
 		if (body)
 		{
 			auto& score = ScoreObjectManager::GetScoreObjectManager();
-			score->RemoveObject();
+			//score->RemoveObject();
 			body->AddScoreCurrent(m_score);
 			GetStage()->RemoveGameObject<ScoreObject>(GetThis<ScoreObject>());
 		}
