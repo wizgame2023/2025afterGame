@@ -7,6 +7,7 @@
 #include "stdafx.h"
 
 namespace basecross{
+	class InputManager;
 	class PauseMenu : public MyGameObject
 	{
 		// メインメニューでの選択肢
@@ -24,6 +25,13 @@ namespace basecross{
 		{
 			Volume,			// ボリューム
 			KeyConfig,		// キーコンフィグ
+			Max				// 項目の最大数
+		};
+
+		enum class PauseVolumeMenuSelect
+		{
+			BGMVolume,		// BGM音量
+			SEVolume,		// SE音量
 			Max				// 項目の最大数
 		};
 
@@ -69,6 +77,9 @@ namespace basecross{
 		// 現在の選択肢(Setting)
 		PauseSettingMenuSelect m_crntSettingSelect;
 
+		// 現在の選択肢(Volume)
+		PauseVolumeMenuSelect m_crntVolumeSelect;
+
 		// ポーズメニューの状態
 		PauseMenuState m_pauseState;
 
@@ -96,6 +107,18 @@ namespace basecross{
 
 		// Bボタン戻る処理
 		void BackBButton();
+
+		// メニューの可視管理
+		void MenuVisibleManagement();
+
+		// ポーズメニューの更新
+		void UpdatePauseMenu();
+
+		// 各メニューの更新
+		void UpdateMainMenu(InputManager& input);
+		void UpdateSettingMenu();
+		void UpdateVolumeMenu();
+		void UpdateKeyConfigMenu();
 
 		// デバッグログ群
 		void DebugLogs();
