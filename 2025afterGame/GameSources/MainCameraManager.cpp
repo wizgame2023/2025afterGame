@@ -162,10 +162,10 @@ namespace basecross{
 	// ==============================================================================
 
 	void MainCameraManager::UpdateUpHistory(const Vec3& up, const int historyMax) {
-		// ・ｽ・ｽ・ｽ・ｽﾉ追会ｿｽ
+		// 履歴に追加
 		m_plUpHistory.push_back(up);
 
-		// ・ｽﾅ托ｿｽl・ｽｴゑｿｽ・ｽ・ｽ・ｽ・ｽ謫ｪ・ｽ・ｽ尞・
+		// 最大値を超えたら先頭を削除
 		if (m_plUpHistory.size() > historyMax)
 			m_plUpHistory.pop_front();
 	}
@@ -173,33 +173,33 @@ namespace basecross{
 	// ==============================================================================
 
 	Vec3 MainCameraManager::CalcUpHistoryAverage() const {
-		// ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽﾈゑｿｽ・ｽﾆエ・ｽ・ｽ・ｽ[・ｽﾅ趣ｿｽ・ｽ・ｽ(・ｽ[・ｽ・ｽ・ｽ・ｽ・ｽZ・ｽﾉなゑｿｽ・ｽ・ｽ・ｽ痰､・ｽ・ｽ・ｽ・ｽ)
+		// こうしないとエラーで死ぬ(ゼロ除算になるから)
 		if (m_plUpHistory.empty())
 			return Vec3(0.0f, 1.0f, 0.0f);
 
-		// ・ｽ・ｽ・ｽ・ｽﾌ包ｿｽ・ｽﾏゑｿｽ・ｽ・ｽ
+		// 履歴の平均を取る
 		Vec3 sum(0.0f, 0.0f, 0.0f);
 		for (const auto& v : m_plUpHistory)
 			sum += v;
 
-		// ・ｽL・ｽ・ｽ・ｽ[・ｽﾉ難ｿｽ・ｽ・ｽ・ｽﾄゑｿｽ・ｽ髣夲ｿｽ・ｽﾌ撰ｿｽ・ｽﾅ包ｿｽ・ｽﾏゑｿｽ・ｽ・ｽ
+		// キューに入っている数で割る
 		Vec3 avg = sum / static_cast<float>(m_plUpHistory.size());
 
-		// ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ0・ｽﾉ近ゑｿｽ・ｽﾆゑｿｽ・ｽﾍ具ｿｽ・ｽ・ｽ・ｽI・ｽﾉ擾ｿｽ・ｽ・ｽ・ｽ・ｽﾉゑｿｽ・ｽ・ｽ(・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ[・ｽ・ｽ・ｽ・ｽ・ｽZ・ｽﾎ搾ｿｽ)
+		// 長さが0に近いときは強制的に上向き(こっちもゼロ除算対策)
 		if (avg.length() < 0.00001f)
 			avg = Vec3(0.0f, 1.0f, 0.0f);
 
-		// ・ｽ・ｽ・ｽK・ｽ・ｽ・ｽ・ｽ・ｽﾄ返ゑｿｽ
+		// 正規化して返す
 		return avg.normalize();
 	}
 
 	// ==============================================================================
 
 	Vec3 MainCameraManager::GetSmoothedUp(const Vec3& currentUp, const int historyMax) {
-		// ・ｽ・ｽ・ｽ・ｽﾌ更・ｽV
+		// 履歴の更新
 		UpdateUpHistory(currentUp, historyMax);
 
-		// ・ｽ・ｽ・ｽﾏゑｿｽv・ｽZ・ｽ・ｽ・ｽﾄ返ゑｿｽ
+		// 平均を計算して返す
 		return CalcUpHistoryAverage();
 	}
 
