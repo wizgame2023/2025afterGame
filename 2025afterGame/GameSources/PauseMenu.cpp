@@ -241,8 +241,8 @@ namespace basecross{
 				m_pauseState = PauseMenuState::SettingMenu;
 				m_crntSettingSelect = PauseSettingMenuSelect::Volume;
 				// メインは非表示、設定メニューは表示
-				IsVisibleMenuSprites(m_pauseMainMenuSprites, false);
-				IsVisibleMenuSprites(m_pauseSettingMenuSprites, true);
+				//IsVisibleMenuSprites(m_pauseMainMenuSprites, false);
+				//IsVisibleMenuSprites(m_pauseSettingMenuSprites, true);
 				break;
 
 			case PauseMainMenuSelect::Exit:
@@ -264,6 +264,76 @@ namespace basecross{
 		{
 			// メインメニューでBボタンが押された場合はポーズ解除
 			m_pauseState = PauseMenuState::False;
+		}
+	}
+
+	// ==============================================================================
+
+	void PauseMenu::UpdateSettingMenu(InputManager& input)
+	{
+		// Lスティックの上下入力で選択肢を変更
+		if (UpdateSelection(m_crntSettingSelect, PauseSettingMenuSelect::Max))
+		{
+			// 選択肢が変わった場合の処理
+			// 音を鳴らすなど
+
+		}
+
+		// メインメニューの更新処理
+		bool pressAButton = input.GetDownButton(L"A");
+		bool pressBButton = input.GetDownButton(L"B");
+
+		if (pressAButton)
+		{
+			switch (m_crntSettingSelect)
+			{
+			case PauseSettingMenuSelect::Volume:
+				// ボリュームメニューへ遷移
+				m_pauseState = PauseMenuState::VolumeMenu;
+				//IsVisibleMenuSprites(m_pauseSettingMenuSprites, false);
+				//IsVisibleMenuSprites(m_pauseVolumeMenuSprites, true);
+				break;
+
+			case PauseSettingMenuSelect::KeyConfig:
+				// キーコンフィグメニューへ遷移
+				m_pauseState = PauseMenuState::KeyConfigMenu;
+				//IsVisibleMenuSprites(m_pauseSettingMenuSprites, false);
+				//IsVisibleMenuSprites(m_pauseKeyConfigMenuSprites, true);
+				break;
+			}
+		}
+		else if (pressBButton)
+		{
+			m_pauseState = PauseMenuState::MainMenu;
+		}
+	}
+
+	// ==============================================================================
+
+	void PauseMenu::UpdateVolumeMenu(InputManager& input)
+	{
+		// Lスティックの上下入力で選択肢を変更
+		if (UpdateSelection(m_crntVolumeSelect, PauseVolumeMenuSelect::Max))
+		{
+			// 選択肢が変わった場合の処理
+			// 音を鳴らすなど
+
+		}
+
+		// メインメニューの更新処理
+		bool pressAButton = input.GetDownButton(L"A");
+		bool pressBButton = input.GetDownButton(L"B");
+
+		if (pressAButton)
+		{
+			switch (m_crntVolumeSelect)
+			{
+				case PauseVolumeMenuSelect::BGMVolume:
+					break;
+
+				case PauseVolumeMenuSelect::SEVolume:
+					break;
+			}
 		}
 	}
 
