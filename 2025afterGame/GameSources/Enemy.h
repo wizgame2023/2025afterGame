@@ -28,6 +28,9 @@ namespace basecross {
 		// ヨー方向に向いている方向
 		float m_yawAngle;
 
+		// 回転の目的地
+		Vec3 m_goalRotVec;
+
 		// 無敵フラグ
 		bool m_invincibleFlag;
 		float m_timeOfInvincible = 5.0f; // 無敵になる時間
@@ -40,7 +43,10 @@ namespace basecross {
 		unique_ptr<StateEnemyMachine> m_stateMachine; // ステートマシン
 
 	public:
-		Enemy(const shared_ptr<Stage>& obj,const Vec3& pos,const Quat& qt,const Vec3& scale, const shared_ptr<CheckPoint>& startCheckPoint,const shared_ptr<Actor>& trackingObj);
+		// 今後は使わない
+		Enemy(const shared_ptr<Stage>& obj, const Vec3& pos, const Quat& qt, const Vec3& scale, const shared_ptr<CheckPoint>& startCheckPoint, const shared_ptr<Actor>& trackingObj);
+		// 今後はこちらを使う
+		Enemy(const shared_ptr<Stage>& obj, const Vec3& pos, const Vec3& rot, const Vec3& scale, const shared_ptr<CheckPoint>& startCheckPoint, const shared_ptr<Actor>& trackingObj);
 		~Enemy();
 
 		void OnCreate()override;
@@ -51,6 +57,9 @@ namespace basecross {
 
 		// 角度の調整0~360度までしか出ないようにする
 		float AdjustmentAngle(float angle);
+
+		// 角度の差が大きいときに別方向に進んだ角度の差を求める処理
+		float CorrectRotationDirection(float differenceAngle);
 
 		// ステートの変更処理
 		void ChangeState(wstring stateName);

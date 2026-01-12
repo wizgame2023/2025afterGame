@@ -63,7 +63,7 @@ namespace basecross {
 		m_baseMeshMat = spanMat;
 		m_model->SetMeshToTransformMatrix(spanMat);
 
-		m_gravity = AddComponent<Gravity>();
+		// m_gravity = AddComponent<Gravity>();
 	}
 
 	void Player::OnUpdate()
@@ -78,9 +78,10 @@ namespace basecross {
 		// プレイヤーの挙動
 		PlayerMove();
 		TurnUpdate(deltaTime);
+		PlayerGravity(deltaTime);
 
 		// プレイヤーの装備
-		//CreateBarrier();
+		// CreateBarrier();
 		CreateBullet();
 		
 		// dpadでコントローラーを変える
@@ -167,7 +168,7 @@ namespace basecross {
 			m_speedCurrent -= speedBrake * deltaTime;
 		}
 
-		Flight(deltaTime);
+		// Flight(deltaTime);
 
 		// 現在のスピードをclampで0.0f以下m_speedMax以上にならないよう
 		m_speedCurrent = clamp(m_speedCurrent, 0.0f, m_speedMax);
@@ -299,7 +300,7 @@ namespace basecross {
 		else
 		{
 			m_yawSpeed = 0.0f;
-
+			m_pitchSpeed = 0.0f;
 		}
 
 		ptrTrans->SetQuaternion(m_currentQuat);
@@ -332,7 +333,6 @@ namespace basecross {
 		// 描画用に反映
 		m_model->SetMeshToTransformMatrix(finalMeshMat);
 	}
-
 
 	void Player::Flight(float deltaTime)
 	{
@@ -434,6 +434,61 @@ namespace basecross {
 		m_gravity->SetGravityVerocity(vel);
 	}
 
+	void Player::PlayerGravity(float deltaTime)
+	{
+		auto& input = InputManager::GetInputManager();
+		auto transform = GetComponent<Transform>();
+
+		Vec3 pos = transform->GetPosition();
+
+		// ----------------------------
+		// Y方向速度
+		// ----------------------------
+		static float verticalVelocity = 0.0f;
+		static float fallTimer = 0.0f;
+
+		// ----------------------------
+		// 入力判定（Aボタン）
+		// ----------------------------
+		bool isFlyInput = input->GetButton(L"A");
+
+		// ----------------------------
+		// 落下制御
+		// ----------------------------
+		const float slowFallSpeed = -3.0f;   // 最初の落下速度
+		const float fastFallSpeed = -9.0f;   // 後半の落下速度
+		const float slowFallTime = 4.0f;    // ゆっくり落ちる時間（秒）
+
+		if (isFlyInput)
+		{
+			// Aを押している間は高度維持
+			verticalVelocity = 0.0f;
+			fallTimer = 0.0f; // タイマーリセット
+		}
+		else
+		{
+			// Aを離したらタイマー進行
+			fallTimer += deltaTime;
+
+			if (fallTimer < slowFallTime)
+			{
+				// 最初はゆっくり落ちる
+				verticalVelocity = slowFallSpeed;
+			}
+			else
+			{
+				// 一定時間後に急落下
+				verticalVelocity = fastFallSpeed;
+			}
+		}
+
+		// ----------------------------
+		// 位置に反映
+		// ----------------------------
+		pos.y += verticalVelocity * deltaTime;
+		transform->SetPosition(pos);
+	}
+
 	//void Player::CreateBarrier()
 	//{
 	//	auto stage = GetStage();
@@ -467,6 +522,7 @@ namespace basecross {
 		auto& input = InputManager::GetInputManager();
 		// 前フレームのTrigger値
 		static BYTE prevTrigger = 0;
+		auto ptrMana = App::GetApp()->GetXAudio2Manager();
 
 		BYTE nowTrigger = input->GetRightTrigger();
 		BYTE threshold = 30;
@@ -474,6 +530,8 @@ namespace basecross {
 		//「押した瞬間」だけ発射する
 		if (prevTrigger <= threshold && nowTrigger > threshold)
 		{
+			ptrMana->Start(L"ShotSE", 0, 1.0f);
+
 			if (m_bulletNumCurrentNow > 0)
 			{
 				m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());

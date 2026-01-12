@@ -52,12 +52,12 @@ namespace basecross {
 			int max = 0;
 
 
-			for (int i = 0; i < 3; i++)
-			{
-				game->AddCheckPoint();
+			//for (int i = 0; i < 3; i++)
+			//{
+			//	game->AddCheckPoint();
 
-				max++;
-			}
+			//	max++;
+			//}
 
 			auto player = AddGameObject<Player>();
 			player->SetPlayerIndex(0);
@@ -79,7 +79,7 @@ namespace basecross {
 
 			CreateTestObject();
 
-			CreateRingObject();
+			//CreateRingObject();
 
 			CreateWallObject();
 
@@ -87,7 +87,9 @@ namespace basecross {
 
 			CreateInvisibleCollision();
 
-
+			// BGM、SE用のマネージャー作成
+			m_AudioManager = App::GetApp()->GetXAudio2Manager();
+			m_bgm = m_AudioManager->Start(L"StageBGM", XAUDIO2_LOOP_INFINITE, 0.6f);
 
 			auto& gameManager = GameManager::GetGameManager();
 			gameManager->AddCheckPoint();
@@ -103,6 +105,12 @@ namespace basecross {
 
 		auto mainCamMana = AddGameObject<MainCameraManager>();
 		SetSharedGameObject(L"MainCameraManager", mainCamMana);
+	}
+
+	// 消去される際の処理
+	void GameStage::OnDestroy()
+	{
+		m_AudioManager->Stop(m_bgm);
 	}
 
 

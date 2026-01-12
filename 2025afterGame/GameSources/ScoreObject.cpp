@@ -45,7 +45,7 @@ namespace basecross{
 
 		//コリジョンの設定
 		auto ptrCol = AddComponent<CollisionObb>();
-		ptrCol->SetDrawActive(true);
+		ptrCol->SetDrawActive(false);
 		ptrCol->SetAfterCollision(AfterCollision::None); // 物理判定無し
 	}
 
@@ -54,6 +54,10 @@ namespace basecross{
 		auto body = dynamic_pointer_cast<FighterAircraftBase>(obj);
 		if (body)
 		{
+			// BGM、SE用のマネージャー作成
+			auto m_AudioManager = App::GetApp()->GetXAudio2Manager();
+			m_AudioManager->Start(L"GetScoreSE", 1, 1.0f);
+
 			body->AddScoreCurrent(m_score);
 			GetStage()->RemoveGameObject<ScoreObject>(GetThis<ScoreObject>());
 		}

@@ -26,6 +26,9 @@ namespace basecross {
 		bool m_Transparent;
 		float m_elapsedTime;
 
+		// BGMASE—p
+		shared_ptr<XAudio2Manager> m_AudioManager;
+		shared_ptr<SoundItem> m_bgm;
 	public:
 		//\’z‚Æ”jŠü
 		TitleStage();
@@ -33,6 +36,8 @@ namespace basecross {
 		//‰Šú‰»
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
+
+		virtual void OnDestroy()override;
 
 		void BlinkUI(shared_ptr<Sprite> blinksprite);
 	};

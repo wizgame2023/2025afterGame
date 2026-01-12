@@ -17,12 +17,17 @@ namespace basecross {
 
 		CsvFile m_objectFile;
 
+		// BGMASE—p
+		shared_ptr<XAudio2Manager> m_AudioManager;
+		shared_ptr<SoundItem> m_bgm;
 	public:
 		//\’z‚Æ”jŠü
 		GameStage() :Stage() {}
 		virtual ~GameStage() {}
 		//‰Šú‰»
 		virtual void OnCreate()override;
+
+		virtual void OnDestroy()override;
 
 		void CreateTestObject();
 		void CreateRingObject();
