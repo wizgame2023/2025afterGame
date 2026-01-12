@@ -339,6 +339,38 @@ namespace basecross{
 
 	// ==============================================================================
 
+	void PauseMenu::UpdateKeyConfigMenu(InputManager& input)
+	{
+		// Lスティックの上下入力で選択肢を変更
+		if (UpdateSelection(m_crntVolumeSelect, PauseVolumeMenuSelect::Max))
+		{
+			// 選択肢が変わった場合の処理
+			// 音を鳴らすなど
+
+		}
+
+		// メインメニューの更新処理
+		bool pressAButton = input.GetDownButton(L"A");
+		bool pressBButton = input.GetDownButton(L"B");
+
+		if (pressAButton)
+		{
+			switch (m_crntKeyConfigSelect)
+			{
+			case PauseKeyConfigMenuSelect::UpDownSwap:
+				break;
+
+			case PauseKeyConfigMenuSelect::Bullet:
+				break;
+
+			case PauseKeyConfigMenuSelect::ViewBehind:
+				break;
+			}
+		}
+	}
+
+	// ==============================================================================
+
 	void PauseMenu::SelectDecisionAButton()
 	{
 		bool test = false;

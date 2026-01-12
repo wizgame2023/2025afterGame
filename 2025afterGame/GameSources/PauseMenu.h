@@ -88,6 +88,9 @@ namespace basecross{
 		// 現在の選択肢(Volume)
 		PauseVolumeMenuSelect m_crntVolumeSelect;
 
+		// 現在の選択肢(KeyConfig)
+		PauseKeyConfigMenuSelect m_crntKeyConfigSelect;
+
 		// ポーズメニューの状態
 		PauseMenuState m_pauseState;
 
@@ -109,7 +112,7 @@ namespace basecross{
 		bool UpdateSelection(T& crntSelect, T maxEnum)
 		{
 			auto& input = InputManager::GetInputManager();
-			auto leftStick = input->GetLeftStick();
+			auto leftStick = input->GetLStick();
 
 			// スティックが中立に戻ったらフラグをリセット
 			if (abs(leftStick.y) < 0.5f) {
