@@ -16,8 +16,7 @@ namespace basecross {
 		void CreateViewLight();
 
 		CsvFile m_objectFile;
-		//オブジェクトのテスト作成
-		void CreateTestObject();
+		int m_count;
 		//リングオブジェクトを作成
 		void CreateRingObject();
 		//壁オブジェクトを作成
@@ -26,6 +25,8 @@ namespace basecross {
 		void CreateScoreObject();
 		//見えないオブジェクト
 		void CreateInvisibleCollision();
+
+		void RemoveObject();
 
 	public:
 		//構築と破棄

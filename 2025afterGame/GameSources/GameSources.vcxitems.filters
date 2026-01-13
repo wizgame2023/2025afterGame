@@ -147,7 +147,12 @@
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)ObstaclesDodge.cpp" />
+    <Filter>Sources</Filter>
+    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)PauseMenu.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)StageCreateManager.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -301,7 +306,12 @@
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)ObstaclesDodge.h" />
+    <Filter>Header</Filter>
+    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)PauseMenu.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)StageCreateManager.h">
       <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>
