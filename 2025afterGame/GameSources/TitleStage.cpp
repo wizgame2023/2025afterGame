@@ -74,12 +74,12 @@ namespace basecross {
 			return;
 		}
 
-		//デバッグ用文字
-		wstringstream wss(L"");
-		wss << "CurrentStage : TitleStage" << endl;
+		////デバッグ用文字
+		//wstringstream wss(L"");
+		//wss << "CurrentStage : TitleStage" << endl;
 
-		auto scene = app->GetScene<Scene>();
-		scene->SetDebugString(wss.str());
+		//auto scene = app->GetScene<Scene>();
+		//scene->SetDebugString(wss.str());
 	}
 
 	// 消去される際の処理

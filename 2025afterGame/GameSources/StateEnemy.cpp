@@ -111,6 +111,22 @@ namespace basecross {
 		// そのまま進むと障害物にぶつかるかレイを使用して判断する
 		m_enemyLock->DodgeObstacles(posPlayerDifference);
 
+		// 追いかけようとしているオブジェクトよりもスコアが高いものが近くにあるならそっちを追いかける
+		auto stage = App::GetApp()->GetScene<Scene>()->GetActiveStage();
+		auto gameObjVec = stage->GetGameObjectVec();
+
+		for (auto obj : gameObjVec)
+		{
+			// スコアと飛行機の距離を確認して今追いかけている物よりもスコアが高い又は近ければ追いかける
+			auto fighter = dynamic_pointer_cast<FighterAircraftBase>(obj);
+			auto scoreObj = dynamic_pointer_cast<ScoreObject>(obj);
+
+			if (scoreObj)
+			{
+				
+			}
+		}
+
 	}
 
 	// 自分と追尾対象の座標の差を計算する
