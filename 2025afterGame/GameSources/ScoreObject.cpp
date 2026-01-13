@@ -1,0 +1,66 @@
+/*!
+@file Character.cpp
+@brief キャラクターなど実体
+*/
+
+#include "stdafx.h"
+#include "Project.h"
+
+namespace basecross{
+		ScoreObject::ScoreObject(const shared_ptr<Stage>& StagePtr,
+		const Vec3& Pos,
+		const Vec3& Rot,
+		const Vec3& Siz
+	) :
+		GameObject(StagePtr),
+		m_pos(Pos),
+		m_rot(Rot),
+		m_siz(Siz),
+		m_score(10)
+	{
+		try
+		{
+
+		}
+		catch (...)
+		{
+			throw;
+		}
+	}
+
+	ScoreObject::~ScoreObject(){
+
+	}
+
+	void ScoreObject::OnCreate()
+	{
+		auto PtrTrans = GetComponent<Transform>();
+		PtrTrans->SetScale(m_siz);
+		PtrTrans->SetRotation(m_rot);
+		PtrTrans->SetPosition(m_pos);
+
+		//メッシュの描画
+		auto ptrDraw = AddComponent<PNTStaticDraw>();
+		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+
+		//コリジョンの設定
+		auto ptrCol = AddComponent<CollisionObb>();
+		ptrCol->SetDrawActive(false);
+		ptrCol->SetAfterCollision(AfterCollision::None); // 物理判定無し
+	}
+
+	void ScoreObject::OnCollisionEnter(shared_ptr<GameObject>& obj)
+	{
+		auto body = dynamic_pointer_cast<FighterAircraftBase>(obj);
+		if (body)
+		{
+			// BGM、SE用のマネージャー作成
+			auto m_AudioManager = App::GetApp()->GetXAudio2Manager();
+			m_AudioManager->Start(L"GetScoreSE", 1, 1.0f);
+
+			body->AddScoreCurrent(m_score);
+			GetStage()->RemoveGameObject<ScoreObject>(GetThis<ScoreObject>());
+		}
+	}
+}
+//end basecross

@@ -11,12 +11,21 @@ namespace basecross {
 	Player::Player(const shared_ptr<Stage>& ptrStage) :
 		FighterAircraftBase(ptrStage),
 		m_velocity(Vec3(0.0f)),
-		m_angleSpeed(2.0f),
+		m_angleSpeed(1.5f),
 		m_playerIndex(0),
 		m_respawnPos(Vec3(0.0f)),
 		m_visualRoll(0.0f),
 		m_bankRoll(0.0f),
-		m_turnPower(2.0f)
+		m_turnPower(1.0f),
+		m_pitchSpeed(0.0f),
+		m_yawSpeed(0.0f),
+		m_recoveryTime(0.0f),
+		m_yawMoveFlag(false),
+		m_pitchMoveFlag(false),
+		m_pitchAngle(0.0f),
+		m_yawAngle(0.0f),
+		m_rollAngle(0.0f),
+		m_baseMeshMat()
 	{
 	}
 
@@ -29,12 +38,15 @@ namespace basecross {
 	{
 		FighterAircraftBase::OnCreate();
 
-		auto ptrTrans = GetComponent<Transform>();
-		ptrTrans->SetPosition(Vec3(0.0f, 0.0f, -1.0f));
+		m_hpMax = 100;
+		m_hpCurrent = m_hpMax;
 
-		auto ptrDraw = AddComponent<PNTStaticDraw>();
-		ptrDraw->SetMeshResource(L"Sentouki");
-		ptrDraw->SetTextureResource(L"diffuse_TX");
+		auto ptrTrans = GetComponent<Transform>();
+		ptrTrans->SetPosition(Vec3(0.0f, -14.0f, -1.0f));
+
+		m_model = AddComponent<PNTStaticDraw>();
+		m_model->SetMeshResource(L"Sentouki");
+		m_model->SetTextureResource(L"diffuse_TX");
 
 		auto ptrCol = AddComponent<CollisionObb>();
 		ptrCol->SetDrawActive(false);
@@ -48,7 +60,10 @@ namespace basecross {
 			Vec3(0.0f, -0.59f, 0.0f)
 		);
 
-		ptrDraw->SetMeshToTransformMatrix(spanMat);	
+		m_baseMeshMat = spanMat;
+		m_model->SetMeshToTransformMatrix(spanMat);
+
+		// m_gravity = AddComponent<Gravity>();
 	}
 
 	void Player::OnUpdate()
@@ -57,17 +72,17 @@ namespace basecross {
 
 		auto& app = App::GetApp();
 		auto deltaTime = app->GetElapsedTime();
-		auto nowPos = GetComponent<Transform>()->GetPosition();
-		auto nowRot = GetComponent<Transform>()->GetRotation();
-		auto& input = InputManager::GetInputManager();
+		
+		auto pos = GetComponent<Transform>()->GetPosition();
 
 		// プレイヤーの挙動
 		PlayerMove();
 		TurnUpdate(deltaTime);
+		PlayerGravity(deltaTime);
 
 		// プレイヤーの装備
-		//CreateBarrier();
-		//CreateBullet();
+		// CreateBarrier();
+		CreateBullet();
 		
 		// dpadでコントローラーを変える
 		ChangController();
@@ -81,8 +96,21 @@ namespace basecross {
 
 		if (bullet)
 		{
-			auto trans = GetComponent<Transform>();
-			trans->SetPosition(m_respawnPos);
+			bool bulletAffiliation = bullet->GetAffiliation();
+			GetStage()->RemoveGameObject<Bullet>(bullet);
+
+			// 弾の所属がエネミーならダメージを受ける
+			if (bulletAffiliation == false)
+			{
+				m_hpCurrent -= bullet->GetDamage();
+			}
+
+			// HPが０になったらリスポーンする
+			if (m_hpCurrent <= 0)
+			{
+				// スコアを10%倒した敵に譲渡する
+				DownTransferScore(bullet, 0.1f);
+			}
 		}
 	}
 
@@ -97,19 +125,26 @@ namespace basecross {
 		float deltaTime = game->GetDeltaTime();
 		Vec3 currentPos = ptrTrans->GetPosition();
 
+		Vec3 worldup = Vec3(0,1,0);
 		Vec3 forward = ptrTrans->GetForward();
-		float damping = 0.9f;
+		forward.normalize();
+		Vec3 moveDir = forward;
 
 		Vec2 lstick = input->GetLStick();
+		float pitchInput = 0.0f;
 
-		if (m_playerIndex == 0)
+		// 入力の確保
+		if (fabs(lstick.y) > fabs(lstick.x) * 1.1f)
 		{
-			lstick = input->GetLStick();
+			pitchInput = lstick.y;
 		}
-		else if (m_playerIndex == 1)
-		{
-			lstick = input->GetLStick2();
-		}
+
+		auto speedBrake = 1.0f;
+
+		m_speedAdd = 3.0f;
+		m_speedMax = 7.5f;
+
+		ChangePlayer(lstick);
 
 		if (m_playerIndex == 0)
 		{
@@ -123,15 +158,25 @@ namespace basecross {
 		// Aボタンを押して加速移動
 		if (m_aButton)
 		{
-			Vec3 forward = ptrTrans->GetForward();
-			forward.normalize();
-
-			Vec3 moveDir = forward;
-
-			// --- 移動処理 ---
-			m_velocity = moveDir * m_speedCurrent;
-			currentPos += m_velocity * deltaTime;
+			m_recoveryTime = 0.0f;
+			// 現在のスピードに加速度を足して動かす
+			m_speedCurrent += m_speedAdd * deltaTime;
 		}
+		else
+		{
+			m_recoveryTime += deltaTime;
+			m_speedCurrent -= speedBrake * deltaTime;
+		}
+
+		// Flight(deltaTime);
+
+		// 現在のスピードをclampで0.0f以下m_speedMax以上にならないよう
+		m_speedCurrent = clamp(m_speedCurrent, 0.0f, m_speedMax);
+
+
+		// --- 移動処理 ---
+		m_velocity = moveDir * m_speedCurrent;
+		currentPos += m_velocity * deltaTime;
 
 		// 移動反映
 		ptrTrans->SetPosition(currentPos);
@@ -139,95 +184,310 @@ namespace basecross {
 
 	void Player::TurnUpdate(float deltaTime)
 	{
-		auto& app = App::GetApp();
-		auto& game = GameManager::GetGameManager();
-		auto pads = app->GetInputDevice();
 		auto& input = InputManager::GetInputManager();
 		Vec2 lstick = input->GetLStick();
 		auto ptrTrans = GetComponent<Transform>();
-		bool hasInput = (fabs(lstick.x) > 0.01f || fabs(lstick.y) > 0.01f);
 
-		wstringstream wss;
+		const float deadZone = 0.1f;
+		const float resetFactor = 0.5f;
 
-		if (m_playerIndex == 0)
+		float stickMagnitude = lstick.length();
+
+		m_pitchMoveFlag = false;
+		m_yawMoveFlag = false;
+
+		// -----------------------------
+		// 入力方向判定
+		// -----------------------------
+		if (stickMagnitude > deadZone)
 		{
-			lstick = input->GetLStick();
+			float stickAngle = atan2(lstick.y, lstick.x);
+			float angleDeg = fabs(XMConvertToDegrees(stickAngle));
+
+			// Pitch優先
+			if (angleDeg > 60.0f && angleDeg < 120.0f)
+			{
+				m_pitchMoveFlag = true;
+				m_yawSpeed *= resetFactor;
+			}
+			// Yaw優先
+			else if (angleDeg < 30.0f || angleDeg > 150.0f)
+			{
+				m_yawMoveFlag = true;
+				m_pitchSpeed *= resetFactor;
+			}
+			else
+			{
+				m_yawMoveFlag = true;
+				m_pitchMoveFlag = true;
+			}
+		}
+
+		// -----------------------------
+		// Yaw 更新
+		// -----------------------------
+		if (m_yawMoveFlag)
+		{
+			if (fabs(lstick.x) > deadZone)
+			{
+				m_yawSpeed += lstick.x * m_turnPower * deltaTime;
+			}
+			else
+			{
+				m_yawSpeed = lerp(m_yawSpeed, 0.0f, deltaTime * 2.5f);
+			}
+
+			float maxYawSpeed = XMConvertToRadians(90.0f);
+			m_yawSpeed = clamp(m_yawSpeed, -maxYawSpeed, maxYawSpeed);
+
+			Quat yawDelta;
+			yawDelta.rotationAxisAngle(Vec3(0, 1, 0), m_yawSpeed * deltaTime);
+
+			m_currentQuat = yawDelta * m_currentQuat;
+			m_currentQuat.normalize();
+		}
+
+		// -----------------------------
+		// Pitch 更新
+		// -----------------------------
+		if (m_pitchMoveFlag && !m_yawMoveFlag)
+		{
+			m_yawSpeed = 0.0f;
+
+			float accel = 0.7f;
+
+			if (fabs(lstick.y) > deadZone)
+			{
+				m_pitchSpeed += lstick.y * accel * deltaTime;
+			}
+
+			float maxPitchSpeed = XMConvertToRadians(60.0f);
+			m_pitchSpeed = clamp(m_pitchSpeed, -maxPitchSpeed, maxPitchSpeed);
+
+			Quat pitchDelta;
+			pitchDelta.rotationAxisAngle(Vec3(1, 0, 0), m_pitchSpeed * deltaTime);
+
+			m_currentQuat = pitchDelta * m_currentQuat;
+			m_currentQuat.normalize();
+		}
+
+		// -----------------------------
+		// Yaw中は Pitch を消す（Yaw保持水平化）
+		// -----------------------------
+		else if (m_yawMoveFlag)
+		{
+			m_pitchSpeed = 0.0f;
+
+			Vec3 forward = ptrTrans->GetForward();
+			Vec3 forwardXZ(forward.x, 0.0f, forward.z);
+
+			if (forwardXZ.lengthSqr() > 0.0001f)
+			{
+				forwardXZ.normalize();
+			}
+
+			float yaw = atan2f(forwardXZ.x, forwardXZ.z);
+
+			Quat yawOnly;
+			yawOnly.rotationAxisAngle(Vec3(0, 1, 0), yaw);
+
+			float returnSpeed = 1.0f;
+			float t = clamp(deltaTime * returnSpeed, 0.0f, 1.0f);
+
+			m_currentQuat = m_currentQuat.Slerp(m_currentQuat, yawOnly, t);
+			m_currentQuat.normalize();
 		}
 		else
 		{
-			lstick = input->GetLStick2();
+			m_yawSpeed = 0.0f;
+			m_pitchSpeed = 0.0f;
 		}
 
-		//----------------------------------------
-		// Pitch
-		//----------------------------------------
-		float pitchInput = 0.0f;
+		ptrTrans->SetQuaternion(m_currentQuat);
 
-		if (fabs(lstick.y) > fabs(lstick.x) * 1.1f)
-		{
-			pitchInput = lstick.y * m_angleSpeed * deltaTime;
-			wss << "pitch" << endl;
-		}
+		float leanScale = 0.4f;
+		float maxRoll = XMConvertToRadians(30.0f);
 
-		Quat pitchQuat;
-		pitchQuat.rotationAxisAngle(Vec3(1, 0, 0), pitchInput);
+		float targetRollAngle = -m_yawSpeed * leanScale;
+		targetRollAngle = clamp(targetRollAngle, -maxRoll, maxRoll);
 
-
-		//----------------------------------------
-		// Roll
-		//----------------------------------------
-		float maxRoll = XMConvertToRadians(45.0f);
-		float rollInput = 0.0f;
-
-		// 
-		if (fabs(lstick.x) > fabs(lstick.y) * 1.1f)
-		{
-			rollInput = lstick.x * m_angleSpeed * deltaTime;
-			wss << "Roll" << endl;
-		}
-
-		m_bankRoll = clamp(m_bankRoll + rollInput, -maxRoll, maxRoll);
+		float rollReturnSpeed = 5.0f;
 		
+		m_rollAngle = lerp(
+			m_rollAngle,        // 現在の傾き
+			targetRollAngle,    // 目標の傾き
+			deltaTime * rollReturnSpeed
+		);
+
+		// Roll行列
 		Quat rollQuat;
-		rollQuat.rotationAxisAngle(Vec3(0, 0, 1), -m_bankRoll);
+		rollQuat.rotationAxisAngle(Vec3(0, 0, 1), m_rollAngle);
 
+		Mat4x4 rollMat;
+		rollMat.identity();
+		rollMat.rotation(rollQuat);
 
-		//----------------------------------------
-		// BankTurnによるYaw
-		//----------------------------------------
-		float yawInput = lstick.x * m_turnPower * deltaTime;
-		if (yawInput)
-		{
-			wss << "Yaw" << endl;
-		}
-		Quat yawQuat;
-		yawQuat.rotationAxisAngle(Vec3(0, 1, 0), yawInput);
+		// 初期行列 × Roll
+		Mat4x4 finalMeshMat = m_baseMeshMat * rollMat;
 
-
-		//----------------------------------------
-		// 姿勢として累積するのは Pitch + Yawのみ
-		//----------------------------------------
-		m_currentQuat = yawQuat * pitchQuat * m_currentQuat;
-		m_currentQuat.normalize();
-
-		if (!hasInput)
-		{
-			m_bankRoll = lerp(m_bankRoll, 0.0f, deltaTime * 4.0f);
-		}
-
-		//----------------------------------------
-		// Rollはルック（見た目）だけ後から合成
-		//----------------------------------------
-		Quat finalQuat = rollQuat * m_currentQuat;
-		finalQuat.normalize();
-
-		ptrTrans->SetQuaternion(finalQuat);
-
-		auto scene = App::GetApp()->GetScene<Scene>();
-		scene->SetDebugString(wss.str());
-
+		// 描画用に反映
+		m_model->SetMeshToTransformMatrix(finalMeshMat);
 	}
 
+	void Player::Flight(float deltaTime)
+	{
+		if (!m_gravity) return;
+
+		// ワールド座標
+		Vec3 transUp = Vec3(0.0f,1.0f,0.0f);
+		// 空気密度
+		float rho = 1.2f;
+		// 前進速度
+		float v = m_speedCurrent;
+		// 面積パラメーター
+		float s = 5.0f;
+
+		// --- 追加：迎角（AoA）の計算 ---
+		Vec3 forward = GetComponent<Transform>()->GetForward();
+		// 重力コンポーネント等から現在の速度ベクトルを取得（仮にvelocityとする）
+		Vec3 velocity = m_gravity->GetGravityVelocity();
+		float aoa = 0.0f;
+
+		if (velocity.lengthSqr() > 0.001f)
+		{
+			Vec3 vNorm = velocity; vNorm.normalize();
+			// 進行方向と機首方向の角度差を求める
+			float dot = forward.dot(vNorm);
+			aoa = acos(clamp(dot, -1.0f, 1.0f));
+
+			// 進行方向より機首が上を向いていれば正（プラス）の角度にする
+			if (forward.y < vNorm.y)
+			{
+				aoa *= -1.0f;
+			}
+		}
+
+		// --- 背面判定 ---
+		// 機体のローカル上ベクトルが地面（マイナス方向）を向いているか
+		bool isInverted = (GetComponent<Transform>()->GetUp().y < 0);
+
+		// --- 揚力係数 cl の動的決定 ---
+		float liftSlope = 1.5f; // どのくらい機敏に揚力が変わるかの係数
+		float cl = aoa * liftSlope;
+
+		// --- 背面飛行時：揚力を弱める ---
+		if (isInverted)
+		{
+			cl *= 0.5f;
+		}
+
+		// 失速：角度が大きすぎたら揚力をゼロにする
+		if (abs(aoa) > XMConvertToRadians(20.0f))
+		{
+			cl = 0.0f;
+		}
+
+		Vec3 liftDir = GetComponent<Transform>()->GetUp();
+
+		// ----------------------------
+		// Yaw中の高度維持補正（重要）
+		// ----------------------------
+		if (m_yawMoveFlag)
+		{
+			// 0.0 = 完全リアル（落ちる）
+			// 1.0 = 完全ゲーム（絶対落ちない）
+			float yawLiftAssist = 0.7f;
+
+			Vec3 worldUp(0.0f, 1.0f, 0.0f);
+			liftDir = liftDir * (1.0f - yawLiftAssist) + worldUp * yawLiftAssist;
+
+			liftDir.normalize();
+		}
+
+		// --- 揚力の大きさを計算 ---
+		// ここが9.8より小さいとーが蓄積されて最終的に落ちてしまう
+		float liftMag = 0.5f * rho * v * v * s * cl;
+
+		// --- 加速度 --- // 9.8に近い数字になればいい
+		Vec3 liftAcc = liftDir * liftMag;
+
+		//  ---重力加速度を取得 ---
+		auto vel = m_gravity->GetGravityVelocity();
+
+		// --- 重力に勝つためvelを足す、重力はーでliftAccは+で量で勝ったら浮く ---
+		vel += liftAcc * deltaTime;
+
+		float maxFallSpeed = -3.0f;
+
+		//  --- Aボタンを離しても直ぐには落ちないように制限を付けている ---
+		if (m_recoveryTime < 5.0f)
+		{
+			maxFallSpeed = -3.0;
+		}
+		else
+		{
+			maxFallSpeed = -20.0f;
+		}
+
+		vel.y = max(vel.y, maxFallSpeed);
+
+		m_gravity->SetGravityVerocity(vel);
+	}
+
+	void Player::PlayerGravity(float deltaTime)
+	{
+		auto& input = InputManager::GetInputManager();
+		auto transform = GetComponent<Transform>();
+
+		Vec3 pos = transform->GetPosition();
+
+		// ----------------------------
+		// Y方向速度
+		// ----------------------------
+		static float verticalVelocity = 0.0f;
+		static float fallTimer = 0.0f;
+
+		// ----------------------------
+		// 入力判定（Aボタン）
+		// ----------------------------
+		bool isFlyInput = input->GetButton(L"A");
+
+		// ----------------------------
+		// 落下制御
+		// ----------------------------
+		const float slowFallSpeed = -3.0f;   // 最初の落下速度
+		const float fastFallSpeed = -9.0f;   // 後半の落下速度
+		const float slowFallTime = 4.0f;    // ゆっくり落ちる時間（秒）
+
+		if (isFlyInput)
+		{
+			// Aを押している間は高度維持
+			verticalVelocity = 0.0f;
+			fallTimer = 0.0f; // タイマーリセット
+		}
+		else
+		{
+			// Aを離したらタイマー進行
+			fallTimer += deltaTime;
+
+			if (fallTimer < slowFallTime)
+			{
+				// 最初はゆっくり落ちる
+				verticalVelocity = slowFallSpeed;
+			}
+			else
+			{
+				// 一定時間後に急落下
+				verticalVelocity = fastFallSpeed;
+			}
+		}
+
+		// ----------------------------
+		// 位置に反映
+		// ----------------------------
+		pos.y += verticalVelocity * deltaTime;
+		transform->SetPosition(pos);
+	}
 
 	//void Player::CreateBarrier()
 	//{
@@ -256,18 +516,33 @@ namespace basecross {
 	//	}
 	//}
 
-	//void Player::CreateBullet()
-	//{
-	//	auto stage = GetStage();
-	//	auto& input = InputManager::GetInputManager();
+	void Player::CreateBullet()
+	{
+		auto stage = GetStage();
+		auto& input = InputManager::GetInputManager();
+		// 前フレームのTrigger値
+		static BYTE prevTrigger = 0;
+		auto ptrMana = App::GetApp()->GetXAudio2Manager();
 
-	//	if (input->GetDownButton(L"B", m_playerIndex))
-	//	{
-	//		m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
-	//	}
-	//}
+		BYTE nowTrigger = input->GetRightTrigger();
+		BYTE threshold = 30;
 
-	// フラグのゲッタ、セッタ
+		//「押した瞬間」だけ発射する
+		if (prevTrigger <= threshold && nowTrigger > threshold)
+		{
+			ptrMana->Start(L"ShotSE", 0, 1.0f);
+
+			if (m_bulletNumCurrentNow > 0)
+			{
+				m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
+				m_bulletNumCurrentNow -= 1;
+			}
+		}
+
+		// 前フレーム値の更新を忘れない
+		prevTrigger = nowTrigger;
+	}
+
 	// プレイヤーのコントローラ番号をセッタ
 	void Player::SetPlayerIndex(int index)
 	{
@@ -296,6 +571,22 @@ namespace basecross {
 		// 次フレーム用に状態を保存
 		m_prevDDown = dDown;
 	}
+
+	void Player::ChangePlayer(Vec2 lstick)
+	{
+		auto& input = InputManager::GetInputManager();
+
+		if (m_playerIndex == 0)
+		{
+			lstick = input->GetLStick();
+		}
+		else if (m_playerIndex == 1)
+		{
+			lstick = input->GetLStick2();
+		}
+	}
+
+
 }
 //end basecross
 

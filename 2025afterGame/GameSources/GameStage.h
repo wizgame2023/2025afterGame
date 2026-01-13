@@ -14,12 +14,26 @@ namespace basecross {
 	class GameStage : public Stage {
 		//ビューの作成
 		void CreateViewLight();
+
+		CsvFile m_objectFile;
+
+		// BGM、SE用
+		shared_ptr<XAudio2Manager> m_AudioManager;
+		shared_ptr<SoundItem> m_bgm;
 	public:
 		//構築と破棄
 		GameStage() :Stage() {}
 		virtual ~GameStage() {}
 		//初期化
 		virtual void OnCreate()override;
+
+		virtual void OnDestroy()override;
+
+		void CreateTestObject();
+		void CreateRingObject();
+		void CreateWallObject();
+		void CreateScoreObject();
+		void CreateInvisibleCollision();
 	};
 
 

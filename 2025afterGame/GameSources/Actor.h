@@ -15,6 +15,7 @@ namespace basecross {
 		shared_ptr<AttackCollision> m_attackCol;
 
 		shared_ptr<Transform> m_trans; // Transform
+		shared_ptr<PNTStaticDraw> m_draw;
 
 		Vec3 m_pos;		// 位置
 		Vec3 m_scale;	// サイズ
@@ -32,8 +33,8 @@ namespace basecross {
 
 	public:
 		Actor(const shared_ptr<Stage>& stagePtr);
-		Actor(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 rot, Vec3 scale, Col4 color = Col4(1.0f));
-		Actor(const shared_ptr<Stage>& stagePtr, Vec3 pos, Quat qt, Vec3 scale, Col4 color = Col4(1.0f));
+		Actor(const shared_ptr<Stage>& stagePtr, const Vec3& pos, const Vec3& rot, const Vec3& scale, const Col4& color = Col4(1.0f));
+		Actor(const shared_ptr<Stage>& stagePtr, const Vec3& pos, const Quat& qt, const Vec3& scale, const Col4& color = Col4(1.0f));
 		~Actor();
 
 		virtual void OnCreate() override;

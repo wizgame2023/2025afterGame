@@ -18,6 +18,14 @@ namespace basecross {
 		CsvFile m_objectFile;
 		//オブジェクトのテスト作成
 		void CreateTestObject();
+		//リングオブジェクトを作成
+		void CreateRingObject();
+		//壁オブジェクトを作成
+		void CreateWallObject();
+		//スコアオブジェクト用の作成関数
+		void CreateScoreObject();
+		//見えないオブジェクト
+		void CreateInvisibleCollision();
 
 	public:
 		//構築と破棄

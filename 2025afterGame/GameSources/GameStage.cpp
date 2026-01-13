@@ -35,6 +35,7 @@ namespace basecross {
 			auto& app = App::GetApp();
 			auto path = app->GetDataDirWString();
 			auto& game = GameManager::GetGameManager();
+			game->SetGameStartFlag(true);
 			game->ResetCheckPoint();
 
 			auto backgroundPath = path + L"Backgrounds/";
@@ -51,44 +52,50 @@ namespace basecross {
 			int max = 0;
 
 
-			for (int i = 0; i < 3; i++)
-			{
-				game->AddCheckPoint();
+			//for (int i = 0; i < 3; i++)
+			//{
+			//	game->AddCheckPoint();
 
-				max++;
-			}
+			//	max++;
+			//}
 
 			auto player = AddGameObject<Player>();
 			player->SetPlayerIndex(0);
 			SetSharedGameObject(L"Player", player);
 
 
-			auto player2 = AddGameObject<Player>();
-			player2->SetPlayerIndex(1);
-			SetSharedGameObject(L"Player2", player2);
-			player2->GetComponent<Transform>()->SetPosition(Vec3(10.0f, 0.0f, 0.0f));
+			//auto player2 = AddGameObject<Player>();
+			//player2->SetPlayerIndex(1);
+			//SetSharedGameObject(L"Player2", player2);
+			//player2->GetComponent<Transform>()->SetPosition(Vec3(10.0f, 0.0f, 0.0f));
 
-			//壁の仮生成
-			auto wall1 = AddGameObject<StageWall>();
-			wall1->GetComponent<Transform>()->SetPosition(0.0f, 0.0f, 55.0f);
+			// ステージオブジ
+			wstring DataDir;
+			App::GetApp()->GetDataDirectory(DataDir);
+			DataDir += L"Stage/";
+			//CSVファイルの読み込み
+			m_objectFile.SetFileName(DataDir + L"positions.csv");
+			m_objectFile.ReadCsv();
 
-			auto wall2 = AddGameObject<StageWall>();
-			wall2->GetComponent<Transform>()->SetPosition(0.0f, 0.0f, -55.0f);
+			CreateTestObject();
 
-			auto wall3 = AddGameObject<StageWall>();
-			wall3->GetComponent<Transform>()->SetPosition(0.0f, 55.0f, 0.0f);
-			wall3->GetComponent<Transform>()->SetRotation(XMConvertToRadians(90.0f), 0.0f, 0.0f);
+			//CreateRingObject();
 
-			auto wall4 = AddGameObject<StageWall>();
-			wall4->GetComponent<Transform>()->SetPosition(0.0f, -55.0f, 0.0f);
-			wall4->GetComponent<Transform>()->SetRotation(XMConvertToRadians(90.0f), 0.0f, 0.0f);
+			CreateWallObject();
 
-			auto wall5 = AddGameObject<StageWall>();
-			wall5->GetComponent<Transform>()->SetPosition(55.0f, 0.0f, 0.0f);
-			wall5->GetComponent<Transform>()->SetRotation(0.0f, XMConvertToRadians(90.0f), 0.0f);
+			CreateScoreObject();
 
-			auto wall6 = AddGameObject<StageWall>();
-			wall6->GetComponent<Transform>()->SetPosition(-55.0f, 0.0f, 0.0f);
+			CreateInvisibleCollision();
+
+			// BGM、SE用のマネージャー作成
+			m_AudioManager = App::GetApp()->GetXAudio2Manager();
+			m_bgm = m_AudioManager->Start(L"StageBGM", XAUDIO2_LOOP_INFINITE, 0.6f);
+
+			auto& gameManager = GameManager::GetGameManager();
+			gameManager->AddCheckPoint();
+			auto startCheckPoint = gameManager->GetCheckPoint(0);
+
+			auto enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
 
 
 		}
@@ -98,6 +105,191 @@ namespace basecross {
 
 		auto mainCamMana = AddGameObject<MainCameraManager>();
 		SetSharedGameObject(L"MainCameraManager", mainCamMana);
+	}
+
+	// 消去される際の処理
+	void GameStage::OnDestroy()
+	{
+		m_AudioManager->Stop(m_bgm);
+	}
+
+
+	void GameStage::CreateTestObject()
+	{
+		//オブジェクトの配列
+		vector<wstring> ObjectLine;
+		//抜き出し
+		m_objectFile.GetSelect(ObjectLine, 0, L"Object");
+		for (auto& v : ObjectLine)
+		{
+			//オブジェクトの作成
+			vector<wstring> Tokens;
+			Util::WStrToTokenVector(Tokens, v, L',');
+			Vec3 Pos(
+				(float)_wtof(Tokens[1].c_str()),
+				(float)_wtof(Tokens[2].c_str()),
+				(float)_wtof(Tokens[3].c_str())
+			);
+
+
+			Vec3 Rot;
+			Rot.x = (Tokens[4] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[4].c_str());
+			Rot.y = (Tokens[5] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[5].c_str());
+			Rot.z = (Tokens[6] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[6].c_str());
+
+			Vec3 Siz(
+				(float)_wtof(Tokens[7].c_str()),
+				(float)_wtof(Tokens[8].c_str()),
+				(float)_wtof(Tokens[9].c_str())
+			);
+
+			wstring Tag = Tokens[10];
+
+			AddGameObject<TestCsv>(Pos, Rot, Siz, Tag);
+		}
+	}
+
+	void GameStage::CreateRingObject()
+	{
+		//オブジェクトの配列
+		vector<wstring> ObjectLine;
+		//抜き出し
+		m_objectFile.GetSelect(ObjectLine, 0, L"DashRing");
+		for (auto& v : ObjectLine)
+		{
+			//オブジェクトの作成
+			vector<wstring> Tokens;
+			Util::WStrToTokenVector(Tokens, v, L',');
+			Vec3 Pos(
+				(float)_wtof(Tokens[1].c_str()),
+				(float)_wtof(Tokens[2].c_str()),
+				(float)_wtof(Tokens[3].c_str())
+			);
+
+
+			Vec3 Rot;
+			Rot.x = (Tokens[4] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[4].c_str());
+			Rot.y = (Tokens[5] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[5].c_str());
+			Rot.z = (Tokens[6] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[6].c_str());
+
+			Vec3 Siz(
+				(float)_wtof(Tokens[7].c_str()),
+				(float)_wtof(Tokens[8].c_str()),
+				(float)_wtof(Tokens[9].c_str())
+			);
+
+			wstring tag = Tokens[10];
+
+			AddGameObject<DashRing>(Pos, Rot, Siz);
+		}
+	}
+
+	void GameStage::CreateWallObject()
+	{
+		//オブジェクトの配列
+		vector<wstring> ObjectLine;
+		//抜き出し
+		m_objectFile.GetSelect(ObjectLine, 0, L"StageWall");
+		for (auto& v : ObjectLine)
+		{
+			//オブジェクトの作成
+			vector<wstring> Tokens;
+			Util::WStrToTokenVector(Tokens, v, L',');
+			Vec3 Pos(
+				(float)_wtof(Tokens[1].c_str()),
+				(float)_wtof(Tokens[2].c_str()),
+				(float)_wtof(Tokens[3].c_str())
+			);
+
+
+			Vec3 Rot;
+			Rot.x = (Tokens[4] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[4].c_str());
+			Rot.y = (Tokens[5] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[5].c_str());
+			Rot.z = (Tokens[6] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[6].c_str());
+
+			Vec3 Siz(
+				(float)_wtof(Tokens[7].c_str()),
+				(float)_wtof(Tokens[8].c_str()),
+				(float)_wtof(Tokens[9].c_str())
+			);
+
+			wstring Tag = Tokens[10];
+
+			AddGameObject<StageWall>(Pos, Rot, Siz, Tag);
+		}
+	}
+
+	void GameStage::CreateScoreObject()
+	{
+		//オブジェクトの配列
+		vector<wstring> ObjectLine;
+
+		auto& score = ScoreObjectManager::GetScoreObjectManager();
+
+		//抜き出し
+		m_objectFile.GetSelect(ObjectLine, 0, L"ScoreObjectAnchor");
+		for (auto& v : ObjectLine)
+		{
+			//オブジェクトの作成
+			vector<wstring> Tokens;
+			Util::WStrToTokenVector(Tokens, v, L',');
+			Vec3 Pos(
+				(float)_wtof(Tokens[1].c_str()),
+				(float)_wtof(Tokens[2].c_str()),
+				(float)_wtof(Tokens[3].c_str())
+			);
+
+
+			Vec3 Rot;
+			Rot.x = (Tokens[4] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[4].c_str());
+			Rot.y = (Tokens[5] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[5].c_str());
+			Rot.z = (Tokens[6] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[6].c_str());
+
+			Vec3 Siz(
+				(float)_wtof(Tokens[7].c_str()),
+				(float)_wtof(Tokens[8].c_str()),
+				(float)_wtof(Tokens[9].c_str())
+			);
+
+			//wstring Tag = Tokens[10];
+
+			score->CreateScoreObject(Pos, Rot, Siz);
+		}
+	}
+
+	void GameStage::CreateInvisibleCollision()
+	{
+		//オブジェクトの配列
+		vector<wstring> ObjectLine;
+		//抜き出し
+		m_objectFile.GetSelect(ObjectLine, 0, L"InvisibleCollision");
+		for (auto& v : ObjectLine)
+		{
+			//オブジェクトの作成
+			vector<wstring> Tokens;
+			Util::WStrToTokenVector(Tokens, v, L',');
+			Vec3 Pos(
+				(float)_wtof(Tokens[1].c_str()),
+				(float)_wtof(Tokens[2].c_str()),
+				(float)_wtof(Tokens[3].c_str())
+			);
+
+
+			Vec3 Rot;
+			Rot.x = (Tokens[4] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[4].c_str());
+			Rot.y = (Tokens[5] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[5].c_str());
+			Rot.z = (Tokens[6] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[6].c_str());
+
+			Vec3 Siz(
+				(float)_wtof(Tokens[7].c_str()),
+				(float)_wtof(Tokens[8].c_str()),
+				(float)_wtof(Tokens[9].c_str())
+			);
+
+			//wstring Tag = Tokens[10];
+
+			AddGameObject<InvisibleCollision>(Pos, Rot, Siz);
+		}
 	}
 
 }

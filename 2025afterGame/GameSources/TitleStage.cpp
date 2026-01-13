@@ -8,7 +8,10 @@
 
 namespace basecross {
 
-	TitleStage::TitleStage()
+	TitleStage::TitleStage() :
+		m_Transparency(1.0f),
+		m_Transparent(true),
+		m_elapsedTime(0.0f)
 	{
 	}
 
@@ -34,12 +37,22 @@ namespace basecross {
 		PtrMultiLight->SetDefaultLighting();
 	}
 
-
+	//UI作成
+	void TitleStage::CreateUI()
+	{
+		m_testTitle = AddGameObject<Sprite>(L"Start_TX", Vec2(412.0f, 128.0f), Vec3(0.0f, -210.0f, 0.0f));
+	}
 
 	void TitleStage::OnCreate() {
+		// BGM、SE用のマネージャー作成
+		m_AudioManager = App::GetApp()->GetXAudio2Manager();
+		m_bgm = m_AudioManager->Start(L"TitleBGM", XAUDIO2_LOOP_INFINITE, 0.9f);
+
 		try {
 			//ビューとライトの作成
 			CreateViewLight();
+
+			CreateUI();
 		}
 		catch (...) {
 			throw;
@@ -50,6 +63,9 @@ namespace basecross {
 	{
 		auto& app = App::GetApp();
 		auto& inputMgr=InputManager::GetInputManager();
+		m_elapsedTime = App::GetApp()->GetElapsedTime();
+
+		BlinkUI(m_testTitle);
 
 		//Aボタンを押すとシーン遷移
 		if (inputMgr->GetDownButton(L"A"))
@@ -58,12 +74,43 @@ namespace basecross {
 			return;
 		}
 
-		//デバッグ用文字
-		wstringstream wss(L"");
-		wss << "CurrentStage : TitleStage" << endl;
+		////デバッグ用文字
+		//wstringstream wss(L"");
+		//wss << "CurrentStage : TitleStage" << endl;
 
-		auto scene = app->GetScene<Scene>();
-		scene->SetDebugString(wss.str());
+		//auto scene = app->GetScene<Scene>();
+		//scene->SetDebugString(wss.str());
+	}
+
+	// 消去される際の処理
+	void TitleStage::OnDestroy()
+	{
+		m_AudioManager->Stop(m_bgm);
+	}
+
+	void TitleStage::BlinkUI(shared_ptr<Sprite> blinksprite)
+	{
+		//透明度を上げる、下げる
+		if (m_Transparency > 0.0f && !m_Transparent)
+		{
+			m_Transparency -= 1.0f * m_elapsedTime;
+		}
+		if (m_Transparency < 1.0f && m_Transparent)
+		{
+			m_Transparency += 1.0f * m_elapsedTime;
+		}
+
+		//透明度がしきい値を超えた時上がるか下がるかを変更
+		if (m_Transparency <= 0.0f)
+		{
+			m_Transparent = true;
+		}
+		if (m_Transparency >= 1.0f)
+		{
+			m_Transparent = false;
+		}
+
+		blinksprite->SetColor(Col4(1.0f, 1.0f, 1.0f, m_Transparency));
 	}
 }
 //end basecross

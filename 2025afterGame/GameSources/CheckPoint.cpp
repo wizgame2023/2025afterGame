@@ -8,7 +8,7 @@
 
 namespace basecross{
 	CheckPoint::CheckPoint(const shared_ptr<Stage>& stageptr) :
-		Actor(stageptr,Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(3.0f, 3.0f, 0.3f)),
+		Actor(stageptr,Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.0f, 0.0f, 0.0f)),
 		m_raceTime(0.0f),
 		m_previewTime(0.0f),
 		m_checkPointID(0)
@@ -37,7 +37,7 @@ namespace basecross{
 
 		//コリジョンの設定
 		auto ptrCol = AddComponent<CollisionObb>();
-		ptrCol->SetDrawActive(true);
+		ptrCol->SetDrawActive(false);
 		ptrCol->SetAfterCollision(AfterCollision::None);
 
 		//メッシュの描画

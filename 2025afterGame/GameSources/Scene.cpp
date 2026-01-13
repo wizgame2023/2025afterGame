@@ -1,7 +1,7 @@
 
 /*!
 @file Scene.cpp
-@brief ƒV[ƒ“À‘Ì
+@brief ã‚·ãƒ¼ãƒ³å®Ÿä½“
 */
 
 #include "stdafx.h"
@@ -10,7 +10,7 @@
 namespace basecross{
 
 	//--------------------------------------------------------------------------------------
-	///	ƒQ[ƒ€ƒV[ƒ“
+	///	ã‚²ãƒ¼ãƒ ã‚·ãƒ¼ãƒ³
 	//--------------------------------------------------------------------------------------
 	Scene::~Scene()
 	{
@@ -19,40 +19,127 @@ namespace basecross{
 
 	void Scene::CreateResource()
 	{
-		// ŠeíƒtƒHƒ‹ƒ_ƒpƒX‚ğæ“¾
+		// å„ç¨®ãƒ•ã‚©ãƒ«ãƒ€ãƒ‘ã‚¹ã‚’å–å¾—
 		auto& app = App::GetApp();
-		wstring path = app->GetDataDirWString();
-		wstring modelPath = path + L"Models/";
-		wstring texPath = path + L"Textures/";
+		const wstring path = app->GetDataDirWString();
+		const wstring& modelPath = path + L"Models/";
+		const wstring& texPath = path + L"Textures/";
+		const wstring& uiPlayerPath = path + L"UI/Player/";
+		const wstring& uiTitlePath = path + L"UI/Title/";
+		const wstring& uiMenuPath = path + L"UI/Menu/";
+		const wstring& efkPath = path + L"Effects/";
+    const wstring& soundPath = path + L"Sounds/";
 
-		auto Modeltex = modelPath + L"diffuse.png";
-		App::GetApp()->RegisterTexture(L"diffuse_TX", Modeltex);
+		//Textures //////////////////////////////////////////////
+		auto modelTex = modelPath + L"diffuse.png";
+		App::GetApp()->RegisterTexture(L"diffuse_TX", modelTex);
 
 		auto strTexture = texPath + L"TestTex.png";
 		App::GetApp()->RegisterTexture(L"TestTex", strTexture);
 
-		// Player
-		auto ModelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"Sentouki.bmf");
-		app->RegisterResource(L"Sentouki", ModelMesh);
+		modelTex = modelPath + L"desk.png";
+		App::GetApp()->RegisterTexture(L"DeskTex", modelTex);
 
+		modelTex = modelPath + L"Chair.png";
+		App::GetApp()->RegisterTexture(L"ChairTex", modelTex);
+
+		strTexture = texPath + L"StageWall.png";
+		App::GetApp()->RegisterTexture(L"StageWall", strTexture);
+
+		strTexture = texPath + L"StageCeiling.jpg";
+		App::GetApp()->RegisterTexture(L"StageCeiling", strTexture);
+
+		modelTex = modelPath + L"floar.png";
+		App::GetApp()->RegisterTexture(L"StageFloarTex", modelTex);
+
+		modelTex = modelPath + L"bed.png";
+		App::GetApp()->RegisterTexture(L"BedTex", modelTex);
+
+		// Model /////////////////////////////////////////////////
+		// Player
+		auto modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"PropellerPlane.bmf");
+		app->RegisterResource(L"Sentouki", modelMesh);
+
+		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"desk.bmf");
+		app->RegisterResource(L"Desk", modelMesh);
+
+		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"Chair.bmf");
+		app->RegisterResource(L"Chair", modelMesh);
+
+		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"floar.bmf");
+		app->RegisterResource(L"StageFloar", modelMesh);
+
+		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"bed.bmf");
+		app->RegisterResource(L"Bed", modelMesh);
+
+
+		// UI /////////////////////////////////////////////////
+		auto numberSprite = uiPlayerPath + L"Number.png";
+		App::GetApp()->RegisterTexture(L"Number", numberSprite);
+    
+		auto hp = uiPlayerPath + L"Hp.png";
+		App::GetApp()->RegisterTexture(L"HP", hp);
+    
+		auto colon = uiPlayerPath + L"Colon.png";
+		App::GetApp()->RegisterTexture(L"Colon", colon);
+    
+		auto startTex = uiTitlePath + L"PressA.png";
+		App::GetApp()->RegisterTexture(L"Start_TX", startTex);
+
+		auto remainingRounds = uiPlayerPath + L"RemainingRounds.png";
+		App::GetApp()->RegisterTexture(L"RemainingRounds", remainingRounds);
+
+		// MenuUI ///////////////////////
+		auto pauseMenuMain = uiMenuPath + L"PauseMenuMain.png";
+		App::GetApp()->RegisterTexture(L"PauseMenuMain_TX", pauseMenuMain);
+
+		auto pauseMenuVolume = uiMenuPath + L"PauseMenuSetting.png";
+		App::GetApp()->RegisterTexture(L"PauseMenuSetting_TX", pauseMenuVolume);
+    
+		auto buttonsTex = uiMenuPath + L"Buttons.png";
+		App::GetApp()->RegisterTexture(L"Buttons_TX", buttonsTex);
+
+		auto menuBackground = uiMenuPath + L"PauseMenuBackGround.png";
+		App::GetApp()->RegisterTexture(L"PauseMenuBackGround_TX", menuBackground);
+
+		// Effect /////////////////////////////////////////////
+		EffectManager::Instance().CreateEfkInterface();
+		EffectManager::Instance().RegisterEffect(L"Fire", efkPath + L"Sword.efk");
+		
+
+		//BGM
+		wstring BGMPath = soundPath + L"BGM/";
+		app->RegisterWav(L"TitleBGM", BGMPath + L"Title.wav");
+		app->RegisterWav(L"StageBGM", BGMPath + L"Stage.wav");
+
+		//SE
+		wstring SEPath = soundPath + L"SE/";
+		app->RegisterWav(L"ButtonPushSE", SEPath + L"ButtonPush.wav");
+		app->RegisterWav(L"CoundDownSE", SEPath + L"CoundDown.wav");
+		app->RegisterWav(L"DengerSE", SEPath + L"Denger.wav");
+		app->RegisterWav(L"HealSE", SEPath + L"Heal.wav");
+		app->RegisterWav(L"ReloadSE", SEPath + L"Reload.wav"); 
+		app->RegisterWav(L"ResultSE", SEPath + L"Result.wav");
+		app->RegisterWav(L"SpeedUpSE", SEPath + L"SpeedUp.wav");
+		app->RegisterWav(L"GetScoreSE", SEPath + L"GetScore.wav");
+		app->RegisterWav(L"ShotSE", SEPath + L"Shot.wav");
 	}
 	
 	void Scene::OnCreate(){
 		try {	
-			//ƒNƒŠƒA‚·‚éF‚ğİ’è
+			//ã‚¯ãƒªã‚¢ã™ã‚‹è‰²ã‚’è¨­å®š
 			Col4 Col;
 			Col.set(31.0f / 255.0f, 30.0f / 255.0f, 71.0f / 255.0f, 255.0f / 255.0f);
 			SetClearColor(Col);
-			//©•ª©g‚ÉƒCƒxƒ“ƒg‚ğ‘—‚é
-			//‚±‚ê‚É‚æ‚èŠeƒXƒe[ƒW‚âƒIƒuƒWƒFƒNƒg‚ªCreate‚ÉƒV[ƒ“‚ÉƒAƒNƒZƒX‚Å‚«‚é
+
+			//è‡ªåˆ†è‡ªèº«ã«ã‚¤ãƒ™ãƒ³ãƒˆã‚’é€ã‚‹
+			//ã“ã‚Œã«ã‚ˆã‚Šå„ã‚¹ãƒ†ãƒ¼ã‚¸ã‚„ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒCreateæ™‚ã«ã‚·ãƒ¼ãƒ³ã«ã‚¢ã‚¯ã‚»ã‚¹ã§ãã‚‹
 			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");			
 			
 			CreateResource();
 
-			// ƒQ[ƒ€ƒ}ƒl[ƒWƒƒ[ì¬
+			// ã‚²ãƒ¼ãƒ ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ä½œæˆ
 			GameManager::CreateGameManager();
-
-
 		}
 		catch (...) {
 			throw;
@@ -63,38 +150,37 @@ namespace basecross{
 	{
 		SceneBase::OnUpdate();
 
-		// ƒQ[ƒ€ƒ}ƒl[ƒWƒƒ[XV
+		// ã‚²ãƒ¼ãƒ ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼æ›´æ–°
 		GameManager::GetGameManager()->OnUpdate();
-
 	}
 
 
 
 	void Scene::OnEvent(const shared_ptr<Event>& event) {
 		if (event->m_MsgStr == L"ToGameStage") {
-			//Å‰‚ÌƒAƒNƒeƒBƒuƒXƒe[ƒW‚Ìİ’è
+			//æœ€åˆã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã‚¹ãƒ†ãƒ¼ã‚¸ã®è¨­å®š
 			ResetActiveStage<GameStage>();
 		}
 		if (event->m_MsgStr == L"ToMultiViewStage") {
-			//ƒ}ƒ‹ƒ`ƒrƒ…[‚ÌƒAƒNƒeƒBƒuƒXƒe[ƒWİ’è
+			//ãƒãƒ«ãƒãƒ“ãƒ¥ãƒ¼ã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã‚¹ãƒ†ãƒ¼ã‚¸è¨­å®š
 			ResetActiveStage<MultiViewStage>();
 		}
 		if (event->m_MsgStr == L"ToTitleStage") {
-			//ƒ^ƒCƒgƒ‹ƒXƒe[ƒW‚ÌƒAƒNƒeƒBƒuƒXƒe[ƒWİ’è
+			//ã‚¿ã‚¤ãƒˆãƒ«ã‚¹ãƒ†ãƒ¼ã‚¸ã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã‚¹ãƒ†ãƒ¼ã‚¸è¨­å®š
 			ResetActiveStage<TitleStage>();
 		}
 		if (event->m_MsgStr == L"ToSelectStage") {
-			//ƒZƒŒƒNƒgƒXƒe[ƒW‚ÌƒAƒNƒeƒBƒuƒXƒe[ƒWİ’è
+			//ã‚»ãƒ¬ã‚¯ãƒˆã‚¹ãƒ†ãƒ¼ã‚¸ã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã‚¹ãƒ†ãƒ¼ã‚¸è¨­å®š
 			ResetActiveStage<SelectStage>();
 		}
-		//ƒfƒoƒbƒO—pƒXƒe[ƒW
+		//ãƒ‡ãƒãƒƒã‚°ç”¨ã‚¹ãƒ†ãƒ¼ã‚¸
 		if (event->m_MsgStr == L"ToErionStage") {
-			//ƒZƒŒƒNƒgƒXƒe[ƒW‚ÌƒAƒNƒeƒBƒuƒXƒe[ƒWİ’è
+			//ã‚»ãƒ¬ã‚¯ãƒˆã‚¹ãƒ†ãƒ¼ã‚¸ã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã‚¹ãƒ†ãƒ¼ã‚¸è¨­å®š
 			ResetActiveStage<ErionStage>();
 		}
-		//ƒfƒoƒbƒO—pƒXƒe[ƒW
+		//ãƒ‡ãƒãƒƒã‚°ç”¨ã‚¹ãƒ†ãƒ¼ã‚¸
 		if (event->m_MsgStr == L"ToTomokiStage") {
-			//ƒZƒŒƒNƒgƒXƒe[ƒW‚ÌƒAƒNƒeƒBƒuƒXƒe[ƒWİ’è
+			//ã‚»ãƒ¬ã‚¯ãƒˆã‚¹ãƒ†ãƒ¼ã‚¸ã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã‚¹ãƒ†ãƒ¼ã‚¸è¨­å®š
 			ResetActiveStage<TomokiStage>();
 		}
 	}

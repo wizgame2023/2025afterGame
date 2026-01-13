@@ -6,6 +6,7 @@
 
 #include "stdafx.h"
 #include "Project.h"
+#include "FighterAircraftBase.h"
 
 namespace basecross {
 	FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& ptrStage) :
@@ -106,6 +107,29 @@ namespace basecross {
 		GetStage()->AddGameObject<Bullet>(GetThis<FighterAircraftBase>());
 	}
 
+	// 倒された場合のスコア譲渡処理
+	// 第一引数　ぶつかった弾のポインタ 第二引数  譲渡する割合(0.0f~1.0f)
+	void FighterAircraftBase::DownTransferScore(const shared_ptr<Bullet>& bullet, float magnification)
+	{
+		// 球を打ったオブジェクトを確認する
+		auto bulletParent = bullet->GetParentObj();
+		auto bulletParentlock = bulletParent.lock();
+
+		if (bulletParentlock)
+		{
+			auto bulletParentFighter = dynamic_pointer_cast<FighterAircraftBase>(bulletParentlock);
+
+			// 譲渡するスコアの計算(基本的には10%譲渡する)
+			float transferScore = m_scoreCurrent * magnification;
+			m_scoreCurrent -= transferScore;
+
+			if (bulletParentFighter)
+			{
+				bulletParentFighter->AddScoreCurrent(transferScore);
+			}
+		}
+	}
+
 	// 当たり判定(当たった時)
 	// 引数１ ぶつかったオブジェクト
 	void FighterAircraftBase::OnCollisionEnter(shared_ptr<GameObject>& obj)
@@ -191,6 +215,49 @@ namespace basecross {
 	//	m_nextCheckPointPos = nextCheckPointPos;
 	//	m_nextCheckPointID++;
 	//}
+
+	// 現在の弾数のゲッタ
+	int FighterAircraftBase::GetBulletNumCurrentNow()
+	{
+		return m_bulletNumCurrentNow;
+	}
+
+	// 最大の弾数のゲッタ
+	int FighterAircraftBase::GetBulletNumMax()
+	{
+		return m_bulletNumMax;
+	}
+
+	//  復活までの無敵付与時間のゲッタ
+	float FighterAircraftBase::GetTimeOfReturn()
+	{
+		return m_timeOfReturn;
+	}
+
+	// 復活までの無敵付与時間
+	float FighterAircraftBase::GetTimeOfReturnUnDamage()
+	{
+		return m_timeOfReturnUnDamage;
+	}
+
+	// 現在スコアのゲッタ
+	float FighterAircraftBase::GetScoreCurrent()
+	{
+		return m_scoreCurrent;
+	}
+
+	// スコアの追加処理
+	void FighterAircraftBase::AddScoreCurrent(int addScore)
+	{
+		m_scoreCurrent += addScore;
+		return;
+	}
+
+	// 現在HPのセッタ
+	void FighterAircraftBase::SetHPCurrent(float hp)
+	{
+		m_hpCurrent = hp;
+	}
 
 }
 //end basecross

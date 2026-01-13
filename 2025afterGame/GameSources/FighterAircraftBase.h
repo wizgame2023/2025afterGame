@@ -11,6 +11,7 @@
 namespace basecross{
 	class Barrier;
 	class DisableBarrier;
+	class Bullet;
 	class FighterAircraftBase : public Actor
 	{
 	protected:
@@ -26,6 +27,18 @@ namespace basecross{
 		float m_speedAdd = 0.0f;		// スピードの加速度
 		float m_speedCurrent = 3.0f;	// スピード
 		float m_speedMax = 0.0f;		// 最大スピード
+
+		// 弾関係
+		int m_bulletNumCurrentNow = 30; // 現在の球数
+		int m_bulletNumMax = 30;		// 最大の球数
+
+		// スコア関係
+		int m_scoreCurrent = 0;		 // スコアの現在値
+		int m_scoreMax = 99999999;   // スコアの最大値
+
+		// 復活関係
+		float m_timeOfReturnUnDamage = 0.0f; // 復活までの無敵付与時間
+		float m_timeOfReturn = 0.0f;		   // 倒されてからの復活の時間
 
 		////エネルギー
 		//float m_energyCurrent = 0.0f;				// 現在のエネルギー
@@ -63,6 +76,9 @@ namespace basecross{
 		// 弾発射関数
 		void UseBullet();
 
+		// 倒された場合のスコア譲渡処理
+		void DownTransferScore(const shared_ptr<Bullet>& bullet,float magnification);
+
 		// 当たり判定(当たった時)
 		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
 
@@ -92,6 +108,22 @@ namespace basecross{
 		//void SetTimeCheckPointDifferece(float timeCheckPointDifferece);
 		//// 次のチェックポイントの位置のセッタ
 		//void SetNextCheckPointPos(Vec3 nextCheckPointPos);
+
+		// 現在の弾数のゲッタ
+		int GetBulletNumCurrentNow();
+		// 最大の弾数のゲッタ
+		int GetBulletNumMax();
+		//  復活までの無敵付与時間のゲッタ
+		float GetTimeOfReturn();
+		// 復活までの無敵付与時間
+		float GetTimeOfReturnUnDamage();
+		// 現在スコアのゲッタ
+		float GetScoreCurrent();
+		// 現在スコアの追加処理
+		void AddScoreCurrent(int addScore);
+		// 現在HPのセッタ
+		void SetHPCurrent(float hp);
+
 	};
 }
 //end basecross

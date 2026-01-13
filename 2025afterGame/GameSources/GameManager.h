@@ -5,9 +5,15 @@
 
 #pragma once
 #include "stdafx.h"
-#include "MyGameObject.h"
 
 namespace basecross {
+
+	enum class GamePhase
+	{
+		Itme,
+		Score,
+		Result,
+	};
 
 	//--------------------------------------------------------------------------------------
 	//	ゲームステージクラス
@@ -29,6 +35,9 @@ namespace basecross {
 
 		bool m_gameStartFlag = false; // ゲームが開始しているかのフラグ
 		float m_timeGamePlaying = 0.0f; // ゲームの経過時間
+		float m_timeLimit = 180.0f;
+
+		GamePhase m_phase = GamePhase::Itme; // 最初はItmeフェーズから 
 
 	public:
 		//構築と破棄
@@ -82,6 +91,8 @@ namespace basecross {
 		// チェックポイント配列の初期化
 		void ResetCheckPoint();
 
+		// 残り時間の取得
+		float GetTimeLimit();
 	};
 
 

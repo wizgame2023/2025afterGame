@@ -41,21 +41,68 @@ namespace basecross {
 			//ビューとライトの作成
 			CreateViewLight();
 
+			// ゲームマネージャ
+			auto& game = GameManager::GetGameManager();
+			game->SetGameStartFlag(true);
+			game->ResetCheckPoint();
+
+			auto& scrMana = ScoreManager::CreateScoreManager();
+			
+			scrMana->CreateHighScoreBinary();
+			scrMana->SetID(L"Player");
+			scrMana->SetID(L"Enemy1");
+			scrMana->SetID(L"Enemy2");
+
+			scrMana->SetPlScore(scrMana->GetPlScore() + 200);
+			scrMana->SetScore(L"Enemy1", scrMana->GetScore(L"Enemy1") + 400);
+			scrMana->SetScore(L"Enemy2", scrMana->GetScore(L"Enemy2") + 100);
+
+			scrMana->SaveHighScoreBinary();
+
 			//背景
 			AddGameObject<Background>();
 
 			auto player = AddGameObject<Player>();
 			SetSharedGameObject(L"Player", player);
 
-			AddGameObject<TestCubeKaito>(Vec3(0.0f, 0.0f, 10.0f), Vec3(10.0f,10.0f,1.0f));
+			AddGameObject<TestCubeKaito>(Vec3(0.0f, 0.0f, 10.0f), Vec3(10.0f, 10.0f, 1.0f));
 
+			auto plPos = player->GetComponent<Transform>()->GetPosition();
+			EffectManager::Instance().PlayEffect(L"Fire", Vec3(plPos));
+
+			auto mainCamMana = AddGameObject<MainCameraManager>();
+			SetSharedGameObject(L"MainCameraManager", mainCamMana);
+
+			auto& gameManager = GameManager::GetGameManager();
+			gameManager->AddCheckPoint();
+			auto startCheckPoint = gameManager->GetCheckPoint(0);
+
+			auto enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+
+			// これがないとエフェクトが表示されない()
+			AddGameObject<EffectUpdateDrawManager>();
 		}
+
 		catch (...) {
 			throw;
 		}
+	}
 
-		auto mainCamMana = AddGameObject<MainCameraManager>();
-		SetSharedGameObject(L"MainCameraManager", mainCamMana);
+	void KaitoStage::OnUpdate()
+	{		
+		auto& scrMana = ScoreManager::GetScoreManager();
+		//scrMana->SetPlScore(scrMana->GetPlScore() + 1);
+		DebugLog(L"\n\n\n\n\nPLScore : ", scrMana->GetPlScore());
+		//DebugLog(L"Enemy1Score : ", scrMana->GetScore(L"Enemy1"));
+		//DebugLog(L"fileScore : ", scrMana->LoadHighScoreBinary());
+		auto SortedScores = scrMana->GetSortedScores();
+		for (size_t i = 0; i < SortedScores.size(); i++)
+		{
+			DebugLog(L"\nRank ", i + 1);
+			DebugLog(L" ID : ", SortedScores[i].id);
+			DebugLog(L" Score : ", SortedScores[i].crntScore);
+		}
+		FlushDebugLog();
 	}
 
 	// ==============================================================================
@@ -77,13 +124,16 @@ namespace basecross {
 		trans->SetPosition(m_pos);
 		trans->SetScale(m_scale);
 
-		auto ptrCol = AddComponent<CollisionSphere>();
-		ptrCol->SetDrawActive(true);
+		//auto ptrCol = AddComponent<CollisionObb>();
+		//ptrCol->SetDrawActive(true);
 
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 		
-		AddTag(L"CameraObstruction");
+		SetAlphaActive(true);
+
+		// カメラを邪魔しえるオブジェクトのタグ(透明化処理はしない)
+		AddTag(L"CameraObsDiffuse");
 	}
 }
 //end basecross

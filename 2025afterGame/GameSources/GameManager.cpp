@@ -57,6 +57,8 @@ namespace basecross {
 	{
 		// 入力マネージャーの作成
 		InputManager::CreateInputManager();
+		ScoreManager::CreateScoreManager();
+		UIManager::CreateUIManager();
 	}
 
 	// 更新
@@ -70,10 +72,13 @@ namespace basecross {
 		if (m_gameStartFlag)
 		{
 			m_timeGamePlaying += m_deltaTime;
+			m_timeLimit -= m_deltaTime;
 		}
 
 		// 入力マネージャーの更新
 		InputManager::GetInputManager()->Update();
+
+		UIManager::GetUIManager()->OnUpdate();
 	}
 
 	// 自分自身の破棄処理
@@ -174,6 +179,11 @@ namespace basecross {
 	void GameManager::ResetCheckPoint()
 	{
 		m_checkPoints.clear();
+	}
+
+	float GameManager::GetTimeLimit()
+	{
+		return m_timeLimit;
 	}
 
 }

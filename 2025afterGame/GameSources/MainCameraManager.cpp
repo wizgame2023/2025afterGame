@@ -159,31 +159,47 @@ namespace basecross{
 			m_target = m_stage->GetSharedGameObject<Actor>(sharedName);
 	}
 
+	// ==============================================================================
+
 	void MainCameraManager::UpdateUpHistory(const Vec3& up, const int historyMax) {
+		// 履歴に追加
 		m_plUpHistory.push_back(up);
+
+		// 最大値を超えたら先頭を削除
 		if (m_plUpHistory.size() > historyMax)
 			m_plUpHistory.pop_front();
 	}
 
+	// ==============================================================================
+
 	Vec3 MainCameraManager::CalcUpHistoryAverage() const {
+		// こうしないとエラーで死ぬ(ゼロ除算になるから)
 		if (m_plUpHistory.empty())
 			return Vec3(0.0f, 1.0f, 0.0f);
 
+		// 履歴の平均を取る
 		Vec3 sum(0.0f, 0.0f, 0.0f);
 		for (const auto& v : m_plUpHistory)
 			sum += v;
 
+		// キューに入っている数で割る
 		Vec3 avg = sum / static_cast<float>(m_plUpHistory.size());
+
+		// 長さが0に近いときは強制的に上向き(こっちもゼロ除算対策)
 		if (avg.length() < 0.00001f)
 			avg = Vec3(0.0f, 1.0f, 0.0f);
 
+		// 正規化して返す
 		return avg.normalize();
 	}
 
 	// ==============================================================================
 
 	Vec3 MainCameraManager::GetSmoothedUp(const Vec3& currentUp, const int historyMax) {
+		// 履歴の更新
 		UpdateUpHistory(currentUp, historyMax);
+
+		// 平均を計算して返す
 		return CalcUpHistoryAverage();
 	}
 
@@ -199,6 +215,7 @@ namespace basecross{
 		for (auto obj : objVec)
 		{
 			auto result = TestCameraObstruction(m_plInfo.pos, m_camPos, obj);
+
 			if (result.hit && result.hitLength < min)
 			{
 				min = result.hitLength;
@@ -220,9 +237,13 @@ namespace basecross{
 		result.hitPos = Vec3(0.0f);
 		result.hitLength = 9999999.9f;
 		result.hit = false;
-
+		result.diffuseColor = Col4(1.0f, 1.0f, 1.0f, 1.0f);
 		auto obstacles = dynamic_pointer_cast<GameObject>(obj);
-		if (!obstacles || !obstacles->FindTag(L"CameraObstruction"))
+		bool isCamObsDif = obstacles->FindTag(L"CameraObsDiffuse");
+		bool isCamObsNotDif = obstacles->FindTag(L"CameraObsNotDiffuse");
+
+		// タグが付いていない場合は無視
+		if (!obstacles || (!isCamObsDif && !isCamObsNotDif))
 			return result;
 
 		auto ptrDraw = obstacles->GetComponent<SmBaseDraw>();
@@ -230,15 +251,65 @@ namespace basecross{
 		size_t triangleNum;
 		ptrDraw->HitTestStaticMeshSegmentTriangles(from, to, result.hitPos, triangle, triangleNum); 
 
+		Col4 currentDiffuse = ptrDraw->GetDiffuse();
+		float currentAlpha = currentDiffuse.w;
+
 		if (result.hitPos != Vec3(0.0f))
 		{
-			Vec3 playerToHit = result.hitPos - from;
-			result.hitLength = abs(playerToHit.x) + abs(playerToHit.y) + abs(playerToHit.z);
-			result.hit = true;
+			if (isCamObsNotDif)
+			{
+				Vec3 playerToHit = result.hitPos - from;
+				result.hitLength = abs(playerToHit.x) + abs(playerToHit.y) + abs(playerToHit.z);
+				result.hit = true;
+			}
+			// 透明化処理をする場合はSetAlphaActioveを<<絶対に>>trueにすること
+			if (isCamObsDif)
+			{
+				float newAlpha = currentAlpha - 0.03f;
+				newAlpha = clamp(newAlpha, 0.3f, 1.0f);
+
+				result.diffuseColor = Col4(1.0f, 1.0f, 1.0f, newAlpha);
+			}
 		}
+		else
+		{
+			if (isCamObsDif)
+			{
+				result.diffuseColor = Col4(1.0f, 1.0f, 1.0f, 1.0f);
+			}
+		}
+
+		if (isCamObsDif)
+			ptrDraw->SetDiffuse(result.diffuseColor);
+
 
 		return result;
 	}
+
+	// ==============================================================================
+
+	//bool TestCameraDiffuseObj(const Vec3& from, const Vec3& to, const shared_ptr<GameObject>& obj)
+	//{
+	//	auto obstacles = dynamic_pointer_cast<GameObject>(obj);
+	//	Vec3 hitPos = Vec3(0.0f);
+
+	//	if (obstacles != nullptr || obstacles->FindTag(L"CameraObsNotDiffuse"))
+	//		return false;
+
+	//	auto ptrDraw = obstacles->GetComponent<SmBaseDraw>();
+	//	TRIANGLE triangle;
+	//	size_t triangleNum;
+	//	ptrDraw->HitTestStaticMeshSegmentTriangles(from, to, hitPos, triangle, triangleNum); 
+
+	//	if (hitPos != Vec3(0.0f))
+	//	{
+	//		Vec3 playerToHit = hitPos - from;
+	//		hitLength = abs(playerToHit.x) + abs(playerToHit.y) + abs(playerToHit.z);
+	//		result.hit = true;
+	//	}
+
+	//	return result;
+	//}
 
 	// ==============================================================================
 

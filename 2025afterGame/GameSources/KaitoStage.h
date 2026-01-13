@@ -14,12 +14,30 @@ namespace basecross {
 	class KaitoStage : public Stage {
 		//ビューの作成
 		void CreateViewLight();
+		wstringstream m_debugWss;
 	public:
 		//構築と破棄
 		KaitoStage() :Stage() {}
 		virtual ~KaitoStage() {}
 		//初期化
 		virtual void OnCreate()override;
+		virtual void OnUpdate() override;
+
+		template<typename T>
+		void DebugLog(const wstring& name, T debug)
+		{
+			m_debugWss << name << debug << "\n";
+		}
+
+		void FlushDebugLog()
+		{
+			auto& app = App::GetApp();
+			auto scene = app->GetScene<Scene>();
+			scene->SetDebugString(m_debugWss.str());
+			m_debugWss.str(L""); // ログをクリア
+			m_debugWss.clear();
+		}
+
 	};
 
 	class TestCubeKaito : public Actor

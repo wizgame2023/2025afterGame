@@ -6,44 +6,81 @@
 #include "stdafx.h"
 #include "Project.h"
 
-namespace basecross{
-	StageWall::StageWall(const shared_ptr<Stage>& stagePtr) :
-		Actor(stagePtr, Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(100.0f, 100.0f, 10.0f))
+namespace basecross {
+	StageWall::StageWall(const shared_ptr<Stage>& StagePtr,
+		const Vec3& Pos,
+		const Vec3& Rot,
+		const Vec3& Siz,
+		const wstring& Tag
+	) :
+		GameObject(StagePtr),
+		m_pos(Pos),
+		m_rot(Rot),
+		m_siz(Siz),
+		m_tag(Tag)
 	{
+		try
+		{
 
+		}
+		catch (...)
+		{
+			throw;
+		}
 	}
 
-	StageWall::~StageWall()
-	{
+	StageWall::~StageWall() {
 
 	}
 
 	void StageWall::OnCreate()
 	{
-		// 親クラス処理
-		Actor::OnCreate();
+		auto PtrTrans = GetComponent<Transform>();
+		PtrTrans->SetScale(m_siz);
+		PtrTrans->SetRotation(m_rot);
+		PtrTrans->SetPosition(m_pos);
 
-		// Trans処理追加
-		m_trans = GetComponent<Transform>();
-		m_trans->SetPosition(m_pos);
-		m_trans->SetQuaternion(m_qt);
-		m_trans->SetScale(m_scale);
-
-		// コリジョン追加
+		//コリジョン
 		auto ptrCol = AddComponent<CollisionObb>();
 		ptrCol->SetFixed(true);
 		ptrCol->SetDrawActive(false);
 		ptrCol->SetAfterCollision(AfterCollision::Auto);
 
-		// ドロー処理
-		/*auto ptrDraw = AddComponent<PNTStaticDraw>();
-		ptrDraw->SetMeshResource(L"DEFAULT_SQUARE");
-		SetAlphaActive(false);*/
-	}
+		//メッシュの描画
+		auto ptrDraw = AddComponent<PNTStaticDraw>();
 
-	void StageWall::OnUpdate()
-	{
+		AddTag(L"CameraObsNotDiffuse");
 
+		if (m_tag == L"StageWall")
+		{
+			ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+			ptrDraw->SetTextureResource(L"StageWall");
+		}
+		else if (m_tag == L"StageCeiling")
+		{
+			ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+			ptrDraw->SetTextureResource(L"StageCeiling");
+		}
+		else if (m_tag == L"StageFloar")
+		{
+			ptrDraw->SetMeshResource(L"StageFloar");
+			ptrDraw->SetTextureResource(L"StageFloarTex");
+			//インスタンスの行列を作成する
+			Mat4x4 matrix;
+			matrix.affineTransformation(
+				Vec3(0.065f, 0.1f, 0.065f),
+				Vec3(),
+				Vec3(),
+				Vec3()
+			);
+			//ブロックを表示
+			ptrDraw->SetMeshToTransformMatrix(matrix);
+		}
+		else
+		{
+			ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+			ptrDraw->SetTextureResource(L"TestTex");
+		}
 	}
 }
 //end basecross

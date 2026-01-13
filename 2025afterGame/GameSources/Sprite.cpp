@@ -24,7 +24,23 @@ namespace basecross {
 		m_layer(layer),
 		m_updateFlag(true)
 	{
+	}
 
+	Sprite::Sprite(
+		const shared_ptr<Stage>& stagePtr,
+		const wstring& textureName,
+		const Vec2& size,
+		const Vec3& pos,
+		int layer) :
+		MyGameObject(stagePtr),
+		m_textureName(textureName),
+		m_size(size),
+		m_pos(pos),
+		m_rot(0.0f),
+		m_color(1.0f),
+		m_layer(layer),
+		m_updateFlag(true)
+	{
 	}
 
 	Sprite::~Sprite()
@@ -122,12 +138,17 @@ namespace basecross {
 		m_trans->SetRotation(rotate);
 	}
 
-	Vec3 Sprite::GetPosition()
+	void Sprite::SetScale(Vec3 scl)
+	{
+		m_trans->SetScale(scl);
+	}
+
+	Vec3 Sprite::GetPosition() const
 	{
 		return m_trans->GetPosition();
 	}
 
-	void Sprite::SetUVRect(Vec2 topLeft, Vec2 botRight)
+	void Sprite::SetUVRect(const Vec2& topLeft, const Vec2& botRight)
 	{
 		vector<VertexPositionColorTexture> vertices = {
 		{Vec3(-m_size.x * 0.5f, +m_size.y * 0.5f, 0), m_color, topLeft},

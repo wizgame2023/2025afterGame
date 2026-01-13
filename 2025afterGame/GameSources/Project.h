@@ -11,7 +11,6 @@
 
 #pragma once
 
-
 #include "ProjectShader.h"
 #include "ProjectBehavior.h"
 #include "Scene.h"
@@ -19,11 +18,15 @@
 #include "InputManager.h"
 #include "Background.h"
 #include "Plane.h"
-#include "StateEnemy.h"
+#include "UIManager.h"
+#include "StageWall.h"
+#include "TestCsv.h"
+#include "DashRing.h"
+#include "ScoreObject.h"
+#include "ScoreObjectManager.h"
 
 // 殿堂入りMyGameObject本体
 #include "MyGameObject.h";
-
 
 // 親クラスがMyGameObject//////////////////////////
 #include "Actor.h";
@@ -31,7 +34,13 @@
 #include "MainCameraManager.h"
 #include "GameManager.h"
 #include "Sprite.h"
+#include "BillBoard.h"
+#include "ScoreManager.h"
 ///////////////////////////////////////////////////
+
+// EffectManager
+#include "EffectManager.h"
+#include "EffectUpdateDrawManager.h"
 
 // 親クラスがActor/////////////////////////////////
 #include "FighterAircraftBase.h"
@@ -39,14 +48,24 @@
 #include "Barrier.h"
 #include "DisableBarrier.h"
 #include "CheckPoint.h"
-#include "StageWall.h"
-#include "TestCsv.h"
+#include "ObstaclesDodge.h"
+#include "InvisibleCollision.h"
 ///////////////////////////////////////////////////
 
 //親クラスがFighterAircraftBase////////////////////
 #include "Player.h"
 #include "DebagPlayer.h"
 #include "Enemy.h"
+///////////////////////////////////////////////////
+
+// 親クラスがSprite////////////////////////////////
+#include "HpSprite.h"
+#include "NumberSprite.h"
+#include "PauseMenu.h"
+///////////////////////////////////////////////////
+
+// 親クラスがBillBoard////////////////////////////////
+#include "BillBoardGauge.h"
 ///////////////////////////////////////////////////
 
 // ステージ関係は一番下のブロックでインクルードしてください
@@ -63,5 +82,7 @@
 // ステートインクルード
 #include "StateBase.h";
 
+// 親クラスがStateBase
 #include "StateBarrier.h"
 #include "StateDisableBarrier.h"
+#include "StateEnemy.h"
