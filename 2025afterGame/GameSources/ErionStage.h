@@ -17,16 +17,6 @@ namespace basecross {
 
 		CsvFile m_objectFile;
 		int m_count;
-		//リングオブジェクトを作成
-		void CreateRingObject();
-		//壁オブジェクトを作成
-		void CreateWallObject();
-		//スコアオブジェクト用の作成関数
-		void CreateScoreObject();
-		//見えないオブジェクト
-		void CreateInvisibleCollision();
-
-		void RemoveObject();
 
 	public:
 		//構築と破棄
