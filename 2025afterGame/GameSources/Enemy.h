@@ -28,13 +28,25 @@ namespace basecross {
 		// ヨー方向に向いている方向
 		float m_yawAngle;
 
+		// 回転の目的地
+		Vec3 m_goalRotVec;
+
+		// 無敵フラグ
+		bool m_invincibleFlag;
+		float m_timeOfInvincible = 5.0f; // 無敵になる時間
+		float m_countTimeOfInvincible; // どのくらい無敵になっているか計測する変数
+		float m_countTimeOfBlinking; // 点滅している時間計測変数
+
 		// 進みたいベクトル
 		Vec3 m_moveVec;
 
 		unique_ptr<StateEnemyMachine> m_stateMachine; // ステートマシン
 
 	public:
-		Enemy(const shared_ptr<Stage>& obj,const Vec3& pos,const Quat& qt,const Vec3& scale, const shared_ptr<CheckPoint>& startCheckPoint,const shared_ptr<Actor>& trackingObj);
+		// 今後は使わない
+		Enemy(const shared_ptr<Stage>& obj, const Vec3& pos, const Quat& qt, const Vec3& scale, const shared_ptr<CheckPoint>& startCheckPoint, const shared_ptr<Actor>& trackingObj);
+		// 今後はこちらを使う
+		Enemy(const shared_ptr<Stage>& obj, const Vec3& pos, const Vec3& rot, const Vec3& scale, const shared_ptr<CheckPoint>& startCheckPoint, const shared_ptr<Actor>& trackingObj);
 		~Enemy();
 
 		void OnCreate()override;
@@ -45,6 +57,9 @@ namespace basecross {
 
 		// 角度の調整0~360度までしか出ないようにする
 		float AdjustmentAngle(float angle);
+
+		// 角度の差が大きいときに別方向に進んだ角度の差を求める処理
+		float CorrectRotationDirection(float differenceAngle);
 
 		// ステートの変更処理
 		void ChangeState(wstring stateName);
@@ -61,14 +76,28 @@ namespace basecross {
 		// 追いかける対象に向かってY軸回転方向で向く処理
 		void TrackingYawQt(const Vec3& posPlayerDifference);
 
+		// ヨーピッチロールに沿って回転する処理
+		void MoveRotate();
+
 		// 障害物を避ける処理
 		void DodgeObstacles(const Vec3& posPlayerDifference);
 
+		// 無敵時の処理
+		void Invincible();
+
+		// 無敵時の点滅処理
+		void DrawBlinking();
+
 		// 障害物を避けるルートを考える処理
-		shared_ptr<TestCube> DodgeRoute();
+		shared_ptr<ObstaclesDodge> DodgeRoute();
 
 		// 追いかける対象ポインタのゲッタ
 		shared_ptr<Actor> GetTrackingObj();
+
+		// 無敵フラグのゲッタ
+		bool GetInvincibleFlag();
+		// 無敵フラグをオンにする処理
+		void OnInvincibleFlag();
 	};
 
 }

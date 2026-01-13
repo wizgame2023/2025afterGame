@@ -44,6 +44,10 @@ namespace basecross {
 	}
 
 	void TitleStage::OnCreate() {
+		// BGM、SE用のマネージャー作成
+		m_AudioManager = App::GetApp()->GetXAudio2Manager();
+		m_bgm = m_AudioManager->Start(L"TitleBGM", XAUDIO2_LOOP_INFINITE, 0.9f);
+
 		try {
 			//ビューとライトの作成
 			CreateViewLight();
@@ -70,12 +74,18 @@ namespace basecross {
 			return;
 		}
 
-		//デバッグ用文字
-		wstringstream wss(L"");
-		wss << "CurrentStage : TitleStage" << endl;
+		////デバッグ用文字
+		//wstringstream wss(L"");
+		//wss << "CurrentStage : TitleStage" << endl;
 
-		auto scene = app->GetScene<Scene>();
-		scene->SetDebugString(wss.str());
+		//auto scene = app->GetScene<Scene>();
+		//scene->SetDebugString(wss.str());
+	}
+
+	// 消去される際の処理
+	void TitleStage::OnDestroy()
+	{
+		m_AudioManager->Stop(m_bgm);
 	}
 
 	void TitleStage::BlinkUI(shared_ptr<Sprite> blinksprite)

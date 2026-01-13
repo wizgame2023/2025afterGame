@@ -76,7 +76,7 @@ namespace basecross {
 
 	// ステート変更用の関数
 	// 引数1 移行したいステートの名前
-	void StateMachineBase::ChangeState(wstring stateName)
+	shared_ptr<StateBase> StateMachineBase::ChangeState(wstring stateName)
 	{
 		// フラグとしてステート変更ができているかをチェックする変数を作る
 		bool changeStateFlag = false;
@@ -99,6 +99,9 @@ namespace basecross {
 				m_stateCurrent = m_stateTypes[stateName];
 				m_stateCurrent->OnEnter(); // ステートの初期化処理をする
 				changeStateFlag = true; // ステート変更できているフラグにする
+
+				// 変更できたステートを渡す
+				return m_stateCurrent;
 			}
 			
 		}
@@ -113,6 +116,29 @@ namespace basecross {
 				L"StateMachineBase::ChangeState(wstring stateName)"
 			);
 		}
+
+		return nullptr;
+	}
+
+	// 現在ステートのゲッタ
+	shared_ptr<StateBase> StateMachineBase::GetCurrentState()
+	{
+		return m_stateCurrent;
+	}
+
+	// 現在ステート文字列のゲッタ
+	wstring StateMachineBase::GetCurrentStateWString()
+	{
+		// 現在のステートがどのような文字列で登録したか渡す
+		for (auto type : m_stateTypes)
+		{
+			if (type.second == m_stateCurrent)
+			{
+				return type.first;
+			}
+		}
+
+		return nullptr;
 	}
 
 	// 更新

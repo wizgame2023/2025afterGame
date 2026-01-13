@@ -49,6 +49,8 @@ namespace basecross {
 		//ƒƒbƒVƒ…‚Ì•`‰æ
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
 
+		AddTag(L"CameraObsNotDiffuse");
+
 		if (m_tag == L"StageWall")
 		{
 			ptrDraw->SetMeshResource(L"DEFAULT_CUBE");

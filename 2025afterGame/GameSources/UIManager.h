@@ -34,6 +34,7 @@ namespace basecross
 		int m_second;
 		int m_bulletNumCurrentNow;
 		int m_bulletNumMax;
+		int m_playerScoreCurrent;
 
 	public:
 		//構築と破棄
@@ -85,6 +86,10 @@ namespace basecross
 		//最大の弾数を取得
 		int GetBulletNumMax();
 
+		// ランキング
+
+		// 現在のPlayerのスコアを取得
+		int GetPlayerScore();
 
 	private:
 		//コピー禁止

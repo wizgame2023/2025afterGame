@@ -43,7 +43,7 @@ namespace basecross {
 		//コリジョン
 		auto ptrCol = AddComponent<CollisionObb>();
 		ptrCol->SetFixed(true);
-		ptrCol->SetDrawActive(true);
+		ptrCol->SetDrawActive(false);
 		ptrCol->SetAfterCollision(AfterCollision::Auto);
 
 		Mat4x4 spanMat1;
@@ -72,21 +72,31 @@ namespace basecross {
 
 		//メッシュの描画
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
+		
 
 		if (m_tag == L"Desk")
 		{
+			AddTag(L"CameraObsDiffuse");
+			SetAlphaActive(true);
+
 			ptrDraw->SetMeshResource(L"Desk");
 			ptrDraw->SetTextureResource(L"DeskTex");
 			ptrDraw->SetMeshToTransformMatrix(spanMat1);
 		}
 		else if (m_tag == L"Chair")
 		{
+			AddTag(L"CameraObsDiffuse");
+			SetAlphaActive(true);
+
 			ptrDraw->SetMeshResource(L"Chair");
 			ptrDraw->SetTextureResource(L"ChairTex");
 			ptrDraw->SetMeshToTransformMatrix(spanMat2);
 		}
 		else if (m_tag == L"Bed")
 		{
+			AddTag(L"CameraObsDiffuse");
+			SetAlphaActive(true);
+
 			ptrDraw->SetMeshResource(L"Bed");
 			ptrDraw->SetTextureResource(L"BedTex");
 			ptrDraw->SetMeshToTransformMatrix(spanMat3);
@@ -97,6 +107,9 @@ namespace basecross {
 		}
 		else
 		{
+			AddTag(L"CameraObsDiffuse");
+			SetAlphaActive(true);
+
 			ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 			ptrDraw->SetTextureResource(L"TestTex");
 		}

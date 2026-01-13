@@ -1,6 +1,6 @@
 /*!
 @file Character.cpp
-@brief ƒLƒƒƒ‰ƒNƒ^[‚È‚ÇÀ‘Ì
+@brief ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ãªã©å®Ÿä½“
 */
 
 #include "stdafx.h"
@@ -43,14 +43,14 @@ namespace basecross{
 		PtrTrans->SetRotation(m_rot);
 		PtrTrans->SetPosition(m_pos);
 
-		//ƒƒbƒVƒ…‚Ì•`‰æ
+		//ãƒ¡ãƒƒã‚·ãƒ¥ã®æç”»
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 
-		//ƒRƒŠƒWƒ‡ƒ“‚Ìİ’è
+		//ã‚³ãƒªã‚¸ãƒ§ãƒ³ã®è¨­å®š
 		auto ptrCol = AddComponent<CollisionObb>();
-		ptrCol->SetDrawActive(true);
-		ptrCol->SetAfterCollision(AfterCollision::None); // •¨—”»’è–³‚µ
+		ptrCol->SetDrawActive(false);
+		ptrCol->SetAfterCollision(AfterCollision::None); // ç‰©ç†åˆ¤å®šç„¡ã—
 	}
 
 	void ScoreObject::OnCollisionEnter(shared_ptr<GameObject>& obj)
@@ -58,6 +58,10 @@ namespace basecross{
 		auto body = dynamic_pointer_cast<FighterAircraftBase>(obj);
 		if (body)
 		{
+			// BGMã€SEç”¨ã®ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ä½œæˆ
+			auto m_AudioManager = App::GetApp()->GetXAudio2Manager();
+			m_AudioManager->Start(L"GetScoreSE", 1, 1.0f);
+
 			auto& score = ScoreObjectManager::GetScoreObjectManager();
 			//score->RemoveObject();
 			body->AddScoreCurrent(m_score);

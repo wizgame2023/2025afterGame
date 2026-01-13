@@ -77,14 +77,14 @@ namespace basecross {
 
 		// 追いかける対象の更新
 		m_trackingObj = m_enemyLock->GetTrackingObj();
-		auto trackingObjLock = m_trackingObj.lock();
+		m_trackingObjLock = m_trackingObj.lock();
 
-		if (!trackingObjLock)
+		if (!m_trackingObjLock)
 		{
 			throw BaseException
 			{
 				L"追いかける対象が存在しません",
-				L"if (trackingObjLock)",
+				L"if (m_trackingObjLock)",
 				L"void StateTrackingEnemy::OnUpdate()"
 			};
 		}
@@ -93,8 +93,8 @@ namespace basecross {
 		auto parentPos = m_enemyLock->GetComponent<Transform>()->GetPosition();
 
 		// 自分と追尾対象の座標の差を計算する
-		auto goalPos = trackingObjLock->GetComponent<Transform>()->GetPosition();
-		Vec3 posPlayerDifference = goalPos - parentPos; // ゴールと敵の位置の差を求める
+		auto goalPos = m_trackingObjLock->GetComponent<Transform>()->GetPosition();
+		Vec3 posPlayerDifference = CheckDifferencePos(goalPos);
 		posPlayerDifference.normalize(); // 正規化
 
 
@@ -108,10 +108,111 @@ namespace basecross {
 		// 対象に向かって追いかける処理
 		m_enemyLock->TrackingMove(posPlayerDifference);
 
+		// そのまま進むと障害物にぶつかるかレイを使用して判断する
 		m_enemyLock->DodgeObstacles(posPlayerDifference);
 
+		// 追いかけようとしているオブジェクトよりもスコアが高いものが近くにあるならそっちを追いかける
+		auto stage = App::GetApp()->GetScene<Scene>()->GetActiveStage();
+		auto gameObjVec = stage->GetGameObjectVec();
+
+		for (auto obj : gameObjVec)
+		{
+			// スコアと飛行機の距離を確認して今追いかけている物よりもスコアが高い又は近ければ追いかける
+			auto fighter = dynamic_pointer_cast<FighterAircraftBase>(obj);
+			auto scoreObj = dynamic_pointer_cast<ScoreObject>(obj);
+
+			if (scoreObj)
+			{
+				
+			}
+		}
+
+	}
+
+	// 自分と追尾対象の座標の差を計算する
+	Vec3 StateTrackingEnemy::CheckDifferencePos(Vec3 goalPos)
+	{
+		// 親オブジェクトの位置
+		auto parentPos = m_enemyLock->GetComponent<Transform>()->GetPosition();
+		Vec3 posPlayerDifference = goalPos - parentPos; // ゴールと敵の位置の差を求める
+
+		return posPlayerDifference;
 	}
 	//
+
+
+	// 障害物を回避するためのステート
+	StateObstaclesDodgeEnemy::StateObstaclesDodgeEnemy(const shared_ptr<MyGameObject>& parentObj):
+		StateTrackingEnemy(parentObj)
+	{
+
+	}
+
+	StateObstaclesDodgeEnemy::~StateObstaclesDodgeEnemy()
+	{
+	}
+
+	void StateObstaclesDodgeEnemy::OnEnter()
+	{
+		// 親クラスEnter処理
+		StateEnemy::OnEnter();
+
+		// (元々)追いかける対象を取得
+		m_trackingObj = m_enemyLock->GetTrackingObj();
+	}
+
+	void StateObstaclesDodgeEnemy::OnUpdate()
+	{
+		// 親クラスUpdate処理
+		StateEnemy::OnUpdate();
+
+		// 追いかける対象の更新
+		//m_trackingObj = m_enemyLock->GetTrackingObj();
+		m_obstaclesDodgeLock = m_obstaclesDodge.lock();
+
+
+		if (!m_obstaclesDodgeLock)
+		{
+			throw BaseException
+			{
+				L"追いかける対象が存在しません",
+				L"if (m_trackingObjLock)",
+				L"void StateTrackingEnemy::OnUpdate()"
+			};
+		}
+
+		// 目的地と現在地点の方向ベクトルを求める
+		auto goalPos = m_obstaclesDodgeLock->GetComponent<Transform>()->GetPosition();
+		Vec3 posPlayerDifference = CheckDifferencePos(goalPos);
+		float distanceVec = posPlayerDifference.length();
+		Vec3 playerDirectionVec = posPlayerDifference;
+		playerDirectionVec.normalize(); // 正規化
+
+		// 追いかけるときのロール回転処理(デバック用処理しか書いていない)
+		m_enemyLock->TrackingRollQt();
+		// 追いかける対象にX軸に向く処理
+		m_enemyLock->TrackingPitchQt(playerDirectionVec);
+		// 追いかける対象に向かってヨーを回転させる処理
+		m_enemyLock->TrackingYawQt(playerDirectionVec);
+
+		// 対象に向かって追いかける処理
+		m_enemyLock->TrackingMove(playerDirectionVec);
+
+		// ここを作業する
+		// ある程度目的地に着いたとみなせたら元の追跡対象を追いかける
+		if (distanceVec < 1.5f)
+		{
+			m_enemyLock->ChangeState(L"Tracking");
+		}
+	}
+
+	// 障害物を回避するためにここを通過点にしろと伝えるセッタ
+	void StateObstaclesDodgeEnemy::SetObstaclesDodge(weak_ptr<ObstaclesDodge> obstaclesDodge)
+	{
+		m_obstaclesDodge = obstaclesDodge;
+	}
+	///////////////////////////////////////////////////////////
+
 
 
 	// リスポーン待機ステート
@@ -139,6 +240,8 @@ namespace basecross {
 
 		// 自分が見えない状態に変更する
 		m_enemyLock->GetComponent<PNTStaticDraw>()->SetDrawActive(false);
+		// 無敵状態をオンにする
+		m_enemyLock->OnInvincibleFlag();
 	}
 
 	void StateRespawnEnemy::OnUpdate()
@@ -163,11 +266,11 @@ namespace basecross {
 			m_enemyLock->SetHPCurrent(maxHP);
 
 			// 通常ステートに戻る
-			m_enemyLock->ChangeState(L"Base");
-
+			m_enemyLock->ChangeState(L"Tracking");
 		}
 	}
 	//
+
 
 }
 //end basecross

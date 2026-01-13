@@ -159,31 +159,47 @@ namespace basecross{
 			m_target = m_stage->GetSharedGameObject<Actor>(sharedName);
 	}
 
+	// ==============================================================================
+
 	void MainCameraManager::UpdateUpHistory(const Vec3& up, const int historyMax) {
+		// 履歴に追加
 		m_plUpHistory.push_back(up);
+
+		// 最大値を超えたら先頭を削除
 		if (m_plUpHistory.size() > historyMax)
 			m_plUpHistory.pop_front();
 	}
 
+	// ==============================================================================
+
 	Vec3 MainCameraManager::CalcUpHistoryAverage() const {
+		// こうしないとエラーで死ぬ(ゼロ除算になるから)
 		if (m_plUpHistory.empty())
 			return Vec3(0.0f, 1.0f, 0.0f);
 
+		// 履歴の平均を取る
 		Vec3 sum(0.0f, 0.0f, 0.0f);
 		for (const auto& v : m_plUpHistory)
 			sum += v;
 
+		// キューに入っている数で割る
 		Vec3 avg = sum / static_cast<float>(m_plUpHistory.size());
+
+		// 長さが0に近いときは強制的に上向き(こっちもゼロ除算対策)
 		if (avg.length() < 0.00001f)
 			avg = Vec3(0.0f, 1.0f, 0.0f);
 
+		// 正規化して返す
 		return avg.normalize();
 	}
 
 	// ==============================================================================
 
 	Vec3 MainCameraManager::GetSmoothedUp(const Vec3& currentUp, const int historyMax) {
+		// 履歴の更新
 		UpdateUpHistory(currentUp, historyMax);
+
+		// 平均を計算して返す
 		return CalcUpHistoryAverage();
 	}
 
