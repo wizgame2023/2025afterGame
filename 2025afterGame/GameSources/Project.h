@@ -23,6 +23,7 @@
 #include "TestCsv.h"
 #include "DashRing.h"
 #include "ScoreObjectManager.h"
+#include "StageCreateManager.h"
 
 // 殿堂入りMyGameObject本体
 #include "MyGameObject.h";

@@ -17,8 +17,6 @@ namespace basecross {
 
 		CsvFile m_objectFile;
 		int m_count;
-		//オブジェクトのテスト作成
-		void CreateTestObject();
 		//リングオブジェクトを作成
 		void CreateRingObject();
 		//壁オブジェクトを作成

@@ -54,6 +54,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)ScoreObjectManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SelectStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Sprite.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)StageCreateManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StageWall.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StateBarrier.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StateBase.h" />
@@ -104,6 +105,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)ScoreObjectManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SelectStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Sprite.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)StageCreateManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StageWall.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StateBarrier.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StateBase.cpp" />
