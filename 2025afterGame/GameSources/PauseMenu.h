@@ -51,6 +51,8 @@ namespace basecross{
 			SettingMenu,
 			VolumeMenu,
 			KeyConfigMenu,
+			BGMSetting,
+			SESetting,
 			Max
 		};
 
@@ -150,12 +152,6 @@ namespace basecross{
 		// ポーズ開始
 		void StartPause();
 
-		// Aボタン選択肢決定処理
-		void SelectDecisionAButton();
-
-		// Bボタン戻る処理
-		void BackBButton();
-
 		// メニューの可視管理
 		void MenuVisibleManagement();
 
@@ -167,6 +163,7 @@ namespace basecross{
 		void UpdateSettingMenu(InputManager& input);
 		void UpdateVolumeMenu(InputManager& input);
 		void UpdateKeyConfigMenu(InputManager& input);
+		void UpdateVolumeSettingMenu(InputManager& input);
 
 		// デバッグログ群
 		void DebugLogs();
