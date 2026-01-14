@@ -75,6 +75,8 @@ namespace basecross {
 			m_timeLimit -= m_deltaTime;
 		}
 
+		NowPhase();
+
 		// 入力マネージャーの更新
 		InputManager::GetInputManager()->Update();
 
@@ -184,6 +186,74 @@ namespace basecross {
 	float GameManager::GetTimeLimit()
 	{
 		return m_timeLimit;
+	}
+
+	void GameManager::ChangePhase(GamePhase nowPhase)
+	{
+		m_phase = nowPhase;
+
+		if (m_phase == GamePhase::Score)
+		{
+			m_createScoreObj = false;
+			m_scoreObjecCout = 0;
+		}
+		else if (m_phase == GamePhase::Item)
+		{
+			m_ItemPhaseLimit = 5.0f;
+		}
+	}
+
+	void GameManager::NowPhase()
+	{
+		auto& app = App::GetApp();
+		auto scene = app->GetScene<Scene>();
+		auto stage = scene->GetActiveStage();
+
+		if (dynamic_pointer_cast<TitleStage>(stage) != nullptr || dynamic_pointer_cast<SelectStage>(stage) != nullptr) return;
+
+		if (m_phase == GamePhase::Score)
+		{	
+			if (!m_createScoreObj)
+			{
+				dynamic_pointer_cast<GameStage>(stage)->CreateScoreObject();
+				m_createScoreObj = true;
+			}
+
+			if (m_phase == GamePhase::Score && m_scoreObjecCout == 0)
+			{
+				ChangePhase(GamePhase::Item);
+			}
+		}
+
+		if(m_phase == GamePhase::Item)
+		{
+			m_ItemPhaseLimit -= 1.0f * m_deltaTime;
+
+			if (m_ItemPhaseLimit <= 0.0f)
+			{
+				ChangePhase(GamePhase::Score);
+			}
+		}
+	}
+
+	void GameManager::AddscoreObjecCout()
+	{
+		m_scoreObjecCout++;
+	}
+
+	void GameManager::RemoveScoreObjectCout()
+	{
+		m_scoreObjecCout--;
+	}
+
+	void GameManager::SetCreateScoreObjFlag(bool createFlag)
+	{
+		m_createScoreObj = createFlag;
+	}
+
+	bool GameManager::GetCreateScoreObjFlag()
+	{
+		return m_createScoreObj;
 	}
 
 }
