@@ -365,6 +365,7 @@ namespace basecross{
 			if (m_pauseState == PauseMenuState::BGMSetting)
 			{
 				gameManager->SetBGMVolume(clamp(volume + leftStick.x * 0.01f, 0.0f, 1.0f));
+
 			}
 			else if (m_pauseState == PauseMenuState::SESetting)
 			{

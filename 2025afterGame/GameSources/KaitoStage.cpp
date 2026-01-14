@@ -82,7 +82,7 @@ namespace basecross {
 			// BGM、SE用のマネージャー作成
 			m_AudioManager = App::GetApp()->GetXAudio2Manager();
 			m_bgm = m_AudioManager->Start(L"StageBGM", XAUDIO2_LOOP_INFINITE, gameManager->GetBGMVolume());
-
+			
 			// これがないとエフェクトが表示されない()
 			AddGameObject<EffectUpdateDrawManager>();
 		}
@@ -95,6 +95,9 @@ namespace basecross {
 	void KaitoStage::OnUpdate()
 	{		
 		auto& scrMana = ScoreManager::GetScoreManager();
+
+		m_bgm->m_SourceVoice->SetVolume(GameManager::GetGameManager()->GetBGMVolume());
+
 		//scrMana->SetPlScore(scrMana->GetPlScore() + 1);
 		//DebugLog(L"\n\n\n\n\nPLScore : ", scrMana->GetPlScore());
 		//DebugLog(L"Enemy1Score : ", scrMana->GetScore(L"Enemy1"));
