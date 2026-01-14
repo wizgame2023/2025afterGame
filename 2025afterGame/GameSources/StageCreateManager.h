@@ -21,6 +21,7 @@ namespace basecross{
 		StageCreateManager();
 		~StageCreateManager();
 
+
 		static unique_ptr<StageCreateManager, StageCreateManagerDeleter>& CreateStageCreateManager();
 
 		static unique_ptr<StageCreateManager, StageCreateManagerDeleter>& GetStageCreateManager();
@@ -30,6 +31,12 @@ namespace basecross{
 		void CreateStageObject();
 
 		void CreateWallObject();
+
+		void CreateInvisibleCollision();
+
+		void CreateRingObject();
+
+		void CreateScoreObject();
 	};
 }
 //end basecross
