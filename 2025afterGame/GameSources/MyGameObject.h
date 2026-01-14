@@ -11,6 +11,7 @@ namespace basecross {
 	class MyGameObject :public GameObject
 	{	
 	private:
+		bool m_PauseFlag = false;
 
 	protected:
 		float m_delta = 0.0f;
@@ -51,6 +52,10 @@ namespace basecross {
 
 		float GetSEVolume() const { return m_SEVolume; };
 		void SetSEVolume(const float volume) { m_SEVolume = volume; };
+
+		// ポーズフラグのゲッタセッタ
+		virtual bool GetPauseFlag();
+		virtual void SetPauseFlag(bool Pause);
 	};
 }
 //end basecross
