@@ -61,6 +61,9 @@ namespace basecross {
         case NumberType::Score:
 			value = uiManager->GetPlayerScore();
 			break;
+        case NumberType::Ranking:
+            value = 100;
+            break;
         }
 
         if (value >= 0)
@@ -103,7 +106,7 @@ namespace basecross {
         }
         else
         {
-            // 従来通り：そのまま文字列化
+            // そのまま文字列化
             str = to_wstring(number);
         }
 
@@ -139,13 +142,28 @@ namespace basecross {
         }
 
         // UVで数字部分を切り出す
-        for (int i = 0; i < str.size(); i++) {
+        for (int i = 0; i < str.size(); i++)
+        {
             int value = str[i] - L'0';
             value = clamp(value, 0, 9);
 
-            float piece = 1.0f / 10.0f;
-            float u0 = piece * value;
-            float u1 = piece * (value + 1);
+            const float texWidth = 512.0f;   // 数字テクスチャの横幅(px)
+            const float digitCount = 10.0f;
+
+            float digitWidth = texWidth / digitCount;   // 51.2px
+
+            // ピクセル境界にスナップ
+            float px0 = round(digitWidth * value);
+            float px1 = round(digitWidth * (value + 1));
+
+            // UVに正規化
+            float u0 = px0 / texWidth;
+            float u1 = px1 / texWidth;
+
+            // 隣の数字がにじまないように 0.5px 内側へ
+            float halfPixel = 1.0f / texWidth;
+            u0 += halfPixel;
+            u1 -= halfPixel;
 
             m_digits[i]->SetUVRect(Vec2(u0, 0.0f), Vec2(u1, 1.0f));
         }
