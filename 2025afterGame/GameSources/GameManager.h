@@ -10,9 +10,8 @@ namespace basecross {
 
 	enum class GamePhase
 	{
-		Itme,
+		Item,
 		Score,
-		Result,
 	};
 
 	//--------------------------------------------------------------------------------------
@@ -36,8 +35,11 @@ namespace basecross {
 		bool m_gameStartFlag = false; // ゲームが開始しているかのフラグ
 		float m_timeGamePlaying = 0.0f; // ゲームの経過時間
 		float m_timeLimit = 180.0f;
+		float m_ItemPhaseLimit = 5.0f;
+		int m_scoreObjecCout = 0;
+		bool m_createScoreObj = false;
 
-		GamePhase m_phase = GamePhase::Itme; // 最初はItmeフェーズから 
+		GamePhase m_phase = GamePhase::Score; // 最初はItmeフェーズから 
 
 		// BGM音量
 		float m_BGMVolume = 1.0f;
@@ -99,6 +101,26 @@ namespace basecross {
 
 		// 残り時間の取得
 		float GetTimeLimit();
+
+		// フェーズの切り替えに使う関数
+		void ChangePhase(GamePhase nowPhase);
+
+		// フェーズを切り替える条件
+		void NowPhase();
+
+		// ScoreObjectの生成した数を数える関数
+		void AddscoreObjecCout();
+
+		// ScoreObjectを取得した時の関数
+		void RemoveScoreObjectCout();
+
+		// m_createScoreObjのセッタ
+		void SetCreateScoreObjFlag(bool createFlag);
+
+		// m_createScoreObjのゲッタ
+		bool GetCreateScoreObjFlag();
+
+
 	};
 
 
