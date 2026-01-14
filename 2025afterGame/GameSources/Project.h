@@ -51,6 +51,7 @@
 #include "ObstaclesDodge.h"
 #include "InvisibleCollision.h"
 #include "ScoreObject.h"
+#include "ItemObject.h"
 ///////////////////////////////////////////////////
 
 //親クラスがFighterAircraftBase////////////////////

@@ -1,112 +1,332 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Actor.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)AttackCollision.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Barrier.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Background.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)BillBoard.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)BillBoardGauge.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Bullet.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)CheckPoint.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)DashRing.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)DebagPlayer.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)DisableBarrier.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)EffectManager.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)EffectUpdateDrawManager.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Enemy.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)ErionStage.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)FighterAircraftBase.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)GameManager.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)GameStage.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)HpSprite.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)InputManager.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)InvisibleCollision.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)KaitoStage.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)MainCameraManager.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)MultiViewStage.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)MyGameObject.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)NumberSprite.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)ObstaclesDodge.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)PauseMenu.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Plane.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Player.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)ProjectBehavior.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)ProjectShader.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)RankingUI.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Scene.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)ScoreManager.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)ScoreObject.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)ScoreObjectManager.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)SelectStage.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Sprite.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)StageCreateManager.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)StageWall.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)StateBarrier.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)StateBase.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)StateDisableBarrier.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)StateEnemy.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)TestCsv.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)TitleStage.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)TomokiStage.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)UIManager.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)WinMain.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)YuutaStage.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Actor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)AttackCollision.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Background.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Barrier.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)BillBoard.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)BillBoardGauge.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Bullet.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)CheckPoint.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)DashRing.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)DebagPlayer.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)DisableBarrier.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)EffectManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)EffectUpdateDrawManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Enemy.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)FighterAircraftBase.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameStage.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)HpSprite.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)InputManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)InvisibleCollision.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MainCameraManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MultiViewStage.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MyGameObject.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)NumberSprite.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ObstaclesDodge.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)PauseMenu.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Plane.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Player.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ProjectBehavior.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ProjectShader.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Scene.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ScoreManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ScoreObject.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ScoreObjectManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)SelectStage.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Sprite.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)StageCreateManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)StageWall.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)StateBarrier.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)StateBase.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)StateDisableBarrier.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)StateEnemy.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)TestCsv.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)TitleStage.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)UIManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)WinMain.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ErionStage.cpp">
+      <Filter>Sources\privateStage</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)KaitoStage.cpp">
+      <Filter>Sources\privateStage</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)TomokiStage.cpp">
+      <Filter>Sources\privateStage</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)YuutaStage.cpp">
+      <Filter>Sources\privateStage</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ItemObject.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Actor.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)AttackCollision.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Barrier.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Background.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)BillBoard.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)BillBoardGauge.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Bullet.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Camera.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Character.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)CheckPoint.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)DashRing.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)DebagPlayer.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)DisableBarrier.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)EffectManager.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)EffectUpdateDrawManager.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Enemy.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)ErionStage.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)FighterAircraftBase.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)GameManager.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)GameStage.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)HpSprite.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)InputManager.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)InvisibleCollision.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)MainCameraManager.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)MultiViewStage.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)MyGameObject.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)NumberSprite.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)ObstaclesDodge.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)PauseMenu.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Plane.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Player.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Project.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)ProjectBehavior.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)ProjectShader.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)KaitoStage.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)RankingUI.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Scene.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)ScoreManager.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)ScoreObject.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)ScoreObjectManager.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)SelectStage.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Sprite.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)StageCreateManager.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)StageWall.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)StateBarrier.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)StateBase.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)StateDisableBarrier.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)StateEnemy.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)TestCsv.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)TitleStage.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)TomokiStage.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)UIManager.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)YuutaStage.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TomokiStage.h">
+      <Filter>Header\privateStage</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)YuutaStage.h">
+      <Filter>Header\privateStage</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ErionStage.h">
+      <Filter>Header\privateStage</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)KaitoStage.h">
+      <Filter>Header\privateStage</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Actor.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)AttackCollision.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Background.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Barrier.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)BillBoard.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)BillBoardGauge.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Bullet.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Camera.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Character.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)CheckPoint.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)DashRing.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)DebagPlayer.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)DisableBarrier.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)EffectManager.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)EffectUpdateDrawManager.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Enemy.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)FighterAircraftBase.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameManager.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameStage.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)HpSprite.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)InputManager.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)InvisibleCollision.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MainCameraManager.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MultiViewStage.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MyGameObject.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)NumberSprite.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ObstaclesDodge.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)PauseMenu.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Plane.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Player.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Project.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ProjectBehavior.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ProjectShader.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Scene.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ScoreManager.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ScoreObject.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ScoreObjectManager.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)SelectStage.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sprite.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)StageCreateManager.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)StageWall.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)StateBarrier.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)StateBase.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)StateDisableBarrier.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)StateEnemy.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)TestCsv.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)TitleStage.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)UIManager.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ItemObject.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{f5f33a4a-3111-4b99-9ab8-b1ca304ca801}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header">
+      <UniqueIdentifier>{f62fbfbc-3870-4abe-815c-92948b141c6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\privateStage">
+      <UniqueIdentifier>{981a4086-41b6-412d-8949-69f89608d24f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\privateStage">
+      <UniqueIdentifier>{ba23daa3-4b7f-497f-9d99-fed37b9c8bb0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

@@ -11,6 +11,7 @@ namespace basecross {
 	class MyGameObject :public GameObject
 	{	
 	private:
+		bool m_PauseFlag = false;
 
 	protected:
 		float m_delta = 0.0f;
@@ -19,6 +20,9 @@ namespace basecross {
 
 		// デバッグ用文字列ストリーム
 		wstringstream m_debugWss;
+
+		// SE音量
+		float m_SEVolume = 1.0f;
 
 		// デバッグログ　
 		// 使う場合は必ずFlushDebugLogも呼び出すこと
@@ -34,6 +38,9 @@ namespace basecross {
 		// そうしないと画面に表示されません
 		void FlushDebugLog();
 
+		// バイナリパスの取得
+		wstring GetBinaryPath() const;
+
 		// =======================↑海斗作成↑========================== //
 
 	public:
@@ -43,6 +50,12 @@ namespace basecross {
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
 
+		float GetSEVolume() const { return m_SEVolume; };
+		void SetSEVolume(const float volume) { m_SEVolume = volume; };
+
+		// ポーズフラグのゲッタセッタ
+		virtual bool GetPauseFlag();
+		virtual void SetPauseFlag(bool Pause);
 	};
 }
 //end basecross

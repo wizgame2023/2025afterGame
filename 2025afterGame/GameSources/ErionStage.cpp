@@ -59,13 +59,11 @@ namespace basecross {
 
 			obj->CreateStageObject();
 
-			CreateRingObject();
+			obj->CreateRingObject();
 
 			obj->CreateWallObject();
 
-			//CreateScoreObject();
-
-			CreateInvisibleCollision();
+			obj->CreateInvisibleCollision();
 		}
 		catch (...) {
 			throw;
@@ -79,6 +77,8 @@ namespace basecross {
 	{
 		auto& app = App::GetApp();
 		auto& inputMgr = InputManager::GetInputManager();
+
+		auto& obj = StageCreateManager::GetStageCreateManager();
 
 		//十字キー下を押すとシーン遷移
 		if (inputMgr->GetDownButton(L"DDown"))
@@ -96,127 +96,10 @@ namespace basecross {
 
 		if (m_count < 3)
 		{
-			CreateScoreObject();
+			obj->CreateItemObject();
+			obj->CreateScoreObject();
+			m_count++;
 		}
-	}
-
-	void ErionStage::CreateRingObject()
-	{
-		//オブジェクトの配列
-		vector<wstring> ObjectLine;
-		//抜き出し
-		m_objectFile.GetSelect(ObjectLine, 0, L"DashRing");
-		for (auto& v : ObjectLine)
-		{
-			//オブジェクトの作成
-			vector<wstring> Tokens;
-			Util::WStrToTokenVector(Tokens, v, L',');
-			Vec3 Pos(
-				(float)_wtof(Tokens[1].c_str()),
-				(float)_wtof(Tokens[2].c_str()),
-				(float)_wtof(Tokens[3].c_str())
-			);
-
-
-			Vec3 Rot;
-			Rot.x = (Tokens[4] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[4].c_str());
-			Rot.y = (Tokens[5] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[5].c_str());
-			Rot.z = (Tokens[6] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[6].c_str());
-
-			Vec3 Siz(
-				(float)_wtof(Tokens[7].c_str()),
-				(float)_wtof(Tokens[8].c_str()),
-				(float)_wtof(Tokens[9].c_str())
-			);
-
-			//wstring tag = Tokens[10];
-
-			AddGameObject<DashRing>(Pos, Rot, Siz);
-		}
-	}
-
-	void ErionStage::CreateScoreObject()
-	{
-		//オブジェクトの配列
-		vector<wstring> ObjectLine;
-
-		auto& score = ScoreObjectManager::GetScoreObjectManager();
-		int select = rand() % 5;
-
-		//抜き出し
-		m_objectFile.GetSelect(ObjectLine, 0, L"ScoreObjectAnchor");
-		for (auto& v : ObjectLine)
-		{
-			//オブジェクトの作成
-			vector<wstring> Tokens;
-			Util::WStrToTokenVector(Tokens, v, L',');
-			Vec3 Pos(
-				(float)_wtof(Tokens[1].c_str()),
-				(float)_wtof(Tokens[2].c_str()),
-				(float)_wtof(Tokens[3].c_str())
-			);
-
-
-			Vec3 Rot;
-			Rot.x = (Tokens[4] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[4].c_str());
-			Rot.y = (Tokens[5] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[5].c_str());
-			Rot.z = (Tokens[6] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[6].c_str());
-
-			Vec3 Siz(
-				(float)_wtof(Tokens[7].c_str()),
-				(float)_wtof(Tokens[8].c_str()),
-				(float)_wtof(Tokens[9].c_str())
-			); 
-
-			//wstring Tag = Tokens[10];
-			int Tag = (int)_wtof(Tokens[10].c_str());
-
-			if (Tag == select)
-			{
-				score->CreateScoreObject(Pos, Rot, Siz, Tag);
-				m_count++;
-			}
-		}
-	}
-
-	void ErionStage::CreateInvisibleCollision()
-	{
-		//オブジェクトの配列
-		vector<wstring> ObjectLine;
-		//抜き出し
-		m_objectFile.GetSelect(ObjectLine, 0, L"InvisibleCollision");
-		for (auto& v : ObjectLine)
-		{
-			//オブジェクトの作成
-			vector<wstring> Tokens;
-			Util::WStrToTokenVector(Tokens, v, L',');
-			Vec3 Pos(
-				(float)_wtof(Tokens[1].c_str()),
-				(float)_wtof(Tokens[2].c_str()),
-				(float)_wtof(Tokens[3].c_str())
-			);
-
-
-			Vec3 Rot;
-			Rot.x = (Tokens[4] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[4].c_str());
-			Rot.y = (Tokens[5] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[5].c_str());
-			Rot.z = (Tokens[6] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[6].c_str());
-
-			Vec3 Siz(
-				(float)_wtof(Tokens[7].c_str()),
-				(float)_wtof(Tokens[8].c_str()),
-				(float)_wtof(Tokens[9].c_str())
-			);
-
-			//wstring Tag = Tokens[10];
-
-			AddGameObject<InvisibleCollision>(Pos, Rot, Siz);
-		}
-	}
-
-	void ErionStage::RemoveObject()
-	{
-		m_count--;
 	}
 }
 //end basecross

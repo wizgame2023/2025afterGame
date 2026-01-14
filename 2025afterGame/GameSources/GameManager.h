@@ -41,7 +41,13 @@ namespace basecross {
 
 		GamePhase m_phase = GamePhase::Score; // 最初はItmeフェーズから 
 
+		// BGM音量
+		float m_BGMVolume = 1.0f;
+
 	public:
+		float GetBGMVolume() const { return m_BGMVolume; };
+		void SetBGMVolume(const float volume) { m_BGMVolume = volume; };
+
 		//構築と破棄
 		GameManager();
 		virtual ~GameManager();

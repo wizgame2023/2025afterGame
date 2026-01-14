@@ -30,6 +30,12 @@ namespace basecross {
 		m_delta = App::GetApp()->GetElapsedTime();
 	}
 
+	wstring MyGameObject::GetBinaryPath() const
+	{
+		auto& app = App::GetApp();
+		wstring path = app->GetDataDirWString();
+		return path + L"Bin/";
+	}
 
 	void MyGameObject::FlushDebugLog()
 	{
@@ -38,6 +44,19 @@ namespace basecross {
 		scene->SetDebugString(m_debugWss.str());
 		m_debugWss.str(L""); // ログをクリア
 		m_debugWss.clear();
+	}
+
+	// ポーズフラグのゲッタ
+	bool MyGameObject::GetPauseFlag()
+	{
+		return m_PauseFlag;
+	}
+
+	// ポーズフラグのセッタ
+	void MyGameObject::SetPauseFlag(bool Pause)
+	{
+		m_PauseFlag = Pause;
+		return;
 	}
 
 }

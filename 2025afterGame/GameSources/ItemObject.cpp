@@ -7,7 +7,7 @@
 #include "Project.h"
 
 namespace basecross{
-		ScoreObject::ScoreObject(const shared_ptr<Stage>& StagePtr,
+		ItemObject::ItemObject(const shared_ptr<Stage>& StagePtr,
 		const Vec3& Pos,
 		const Vec3& Rot,
 		const Vec3& Siz,
@@ -18,7 +18,7 @@ namespace basecross{
 		m_rot(Rot),
 		m_siz(Siz),
 		m_id(ID),
-		m_score(10)
+		m_repair(10)
 	{
 		try
 		{
@@ -30,11 +30,11 @@ namespace basecross{
 		}
 	}
 
-	ScoreObject::~ScoreObject(){
+	ItemObject::~ItemObject(){
 
 	}
 
-	void ScoreObject::OnCreate()
+	void ItemObject::OnCreate()
 	{
 		Actor::OnCreate();
 
@@ -53,12 +53,11 @@ namespace basecross{
 		ptrCol->SetAfterCollision(AfterCollision::None); // 物理判定無し
 
 		//ビルボードの生成
-		m_billBoard = GetStage()->AddGameObject<BillBoard>(GetThis<GameObject>(), L"Bear", 2, 0, 0, Vec3(1.5f, 1.5f, 1.5f));
+		m_billBoard = GetStage()->AddGameObject<BillBoard>(GetThis<GameObject>(), L"Repair", 2, 0, 0, Vec3(1.5f, 1.5f, 1.5f));
 	}
 
-	void ScoreObject::OnCollisionEnter(shared_ptr<GameObject>& obj)
+	void ItemObject::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
-		auto& gameManager = GameManager::GetGameManager();
 		auto body = dynamic_pointer_cast<FighterAircraftBase>(obj);
 		if (body)
 		{
@@ -68,13 +67,11 @@ namespace basecross{
 
 			auto& score = ScoreObjectManager::GetScoreObjectManager();
 			//score->RemoveObject();
-			body->AddScoreCurrent(m_score);
-			gameManager->RemoveScoreObjectCout();
-			GetStage()->RemoveGameObject<ScoreObject>(GetThis<ScoreObject>());
+			GetStage()->RemoveGameObject<ItemObject>(GetThis<ItemObject>());
 		}
 	}
 
-	int ScoreObject::GetObjectID()
+	int ItemObject::GetObjectID()
 	{
 		return m_id;
 	}
