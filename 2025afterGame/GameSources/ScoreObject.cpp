@@ -55,6 +55,7 @@ namespace basecross{
 
 	void ScoreObject::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
+		auto& gameManager = GameManager::GetGameManager();
 		auto body = dynamic_pointer_cast<FighterAircraftBase>(obj);
 		if (body)
 		{
@@ -65,6 +66,7 @@ namespace basecross{
 			auto& score = ScoreObjectManager::GetScoreObjectManager();
 			//score->RemoveObject();
 			body->AddScoreCurrent(m_score);
+			gameManager->RemoveScoreObjectCout();
 			GetStage()->RemoveGameObject<ScoreObject>(GetThis<ScoreObject>());
 		}
 	}
