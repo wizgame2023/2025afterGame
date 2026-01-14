@@ -234,6 +234,13 @@ namespace basecross {
 				ChangePhase(GamePhase::Score);
 			}
 		}
+
+		wstringstream wss;
+		wss << m_createScoreObj << endl;
+		wss << m_scoreObjecCout;
+
+		scene->SetDebugString(wss.str());
+
 	}
 
 	void GameManager::AddscoreObjecCout()

@@ -119,11 +119,7 @@ namespace basecross {
 
 		// m_createScoreObj‚ÌƒQƒbƒ^
 		bool GetCreateScoreObjFlag();
-
-
 	};
-
-
 }
 //end basecross
 
