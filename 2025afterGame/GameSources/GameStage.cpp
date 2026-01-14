@@ -83,7 +83,7 @@ namespace basecross {
 
 			CreateWallObject();
 
-			CreateScoreObject();
+			// CreateScoreObject();
 
 			CreateInvisibleCollision();
 
