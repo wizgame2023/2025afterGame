@@ -98,6 +98,7 @@ namespace basecross {
 		{
 			obj->CreateItemObject();
 			obj->CreateScoreObject();
+			obj->CreateAmmoObject();
 			m_count++;
 		}
 	}
