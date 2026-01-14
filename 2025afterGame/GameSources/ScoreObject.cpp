@@ -43,6 +43,8 @@ namespace basecross{
 		PtrTrans->SetRotation(m_rot);
 		PtrTrans->SetPosition(m_pos);
 
+		auto& gameManager = GameManager::GetGameManager();
+		gameManager->AddscoreObjecCout();
 		//メッシュの描画
 		/*auto ptrDraw = AddComponent<PNTStaticDraw>();
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");*/
