@@ -27,6 +27,7 @@ namespace basecross{
 		const wstring& uiPlayerPath = path + L"UI/Player/";
 		const wstring& uiTitlePath = path + L"UI/Title/";
 		const wstring& uiMenuPath = path + L"UI/Menu/";
+		const wstring& uiScorePath = path + L"UI/Score/";
 		const wstring& efkPath = path + L"Effects/";
     const wstring& soundPath = path + L"Sounds/";
 
@@ -88,6 +89,9 @@ namespace basecross{
 
 		auto remainingRounds = uiPlayerPath + L"RemainingRounds.png";
 		App::GetApp()->RegisterTexture(L"RemainingRounds", remainingRounds);
+
+		auto ScoreLow = uiScorePath + L"bear.png";
+		App::GetApp()->RegisterTexture(L"Bear", ScoreLow);
 
 		// MenuUI ///////////////////////
 		auto pauseMenuMain = uiMenuPath + L"PauseMenuMain.png";

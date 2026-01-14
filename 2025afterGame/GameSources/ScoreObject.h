@@ -15,6 +15,8 @@ namespace basecross{
 		int m_id;
 		int m_score;
 
+		shared_ptr<BillBoard> m_billBoard;
+
 	public:
 		ScoreObject(const shared_ptr<Stage>& StagePtr,
 			const Vec3& Pos,

@@ -44,13 +44,16 @@ namespace basecross{
 		PtrTrans->SetPosition(m_pos);
 
 		//メッシュの描画
-		auto ptrDraw = AddComponent<PNTStaticDraw>();
-		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+		/*auto ptrDraw = AddComponent<PNTStaticDraw>();
+		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");*/
 
 		//コリジョンの設定
 		auto ptrCol = AddComponent<CollisionObb>();
 		ptrCol->SetDrawActive(false);
 		ptrCol->SetAfterCollision(AfterCollision::None); // 物理判定無し
+
+		//ビルボードの生成
+		m_billBoard = GetStage()->AddGameObject<BillBoard>(GetThis<GameObject>(), L"Bear", 2, 0, 0, Vec3(1.5f, 1.5f, 1.5f));
 	}
 
 	void ScoreObject::OnCollisionEnter(shared_ptr<GameObject>& obj)
