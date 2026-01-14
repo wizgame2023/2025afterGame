@@ -154,6 +154,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)YuutaStage.cpp">
       <Filter>Sources\privateStage</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ItemObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)TomokiStage.h">
@@ -312,6 +313,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)UIManager.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ItemObject.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sources">
