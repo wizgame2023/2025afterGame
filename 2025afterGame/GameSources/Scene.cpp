@@ -28,8 +28,9 @@ namespace basecross{
 		const wstring& uiTitlePath = path + L"UI/Title/";
 		const wstring& uiMenuPath = path + L"UI/Menu/";
 		const wstring& uiScorePath = path + L"UI/Score/";
+		const wstring& uiItemPath = path + L"UI/HealItem/";
 		const wstring& efkPath = path + L"Effects/";
-    const wstring& soundPath = path + L"Sounds/";
+		const wstring& soundPath = path + L"Sounds/";
 
 		//Textures //////////////////////////////////////////////
 		auto modelTex = modelPath + L"diffuse.png";
@@ -95,6 +96,9 @@ namespace basecross{
 
 		auto ScoreLow = uiScorePath + L"bear.png";
 		App::GetApp()->RegisterTexture(L"Bear", ScoreLow);
+
+		auto RepairItem = uiItemPath + L"HpRecovery.png";
+		App::GetApp()->RegisterTexture(L"Repair", RepairItem);
 
 		// MenuUI ///////////////////////
 		auto pauseMenuMain = uiMenuPath + L"PauseMenuMain.png";
