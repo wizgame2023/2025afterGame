@@ -183,7 +183,9 @@ namespace basecross{
 				break;
 			}
 		}
-		DebugLog(L"\nBGMVolume : ", m_BGMVolume);
+		auto& gameManager = GameManager::GetGameManager();
+		float BGMVolume = gameManager->GetBGMVolume();
+		DebugLog(L"\nBGMVolume : ", BGMVolume);
 		DebugLog(L"SEVolume : ", m_SEVolume);
 	}
 
@@ -340,11 +342,13 @@ namespace basecross{
 
 	void PauseMenu::UpdateVolumeSettingMenu(InputManager& input)
 	{
+		auto& gameManager = GameManager::GetGameManager();
+		float globalBGMVolume = gameManager->GetBGMVolume();
 		// 値を直接操作(BGMとSEで分岐)
 		float* volumePtr = nullptr;
 		if (m_pauseState == PauseMenuState::BGMSetting)
 		{
-			volumePtr = &m_BGMVolume;
+			volumePtr = &globalBGMVolume;
 		}
 		else if (m_pauseState == PauseMenuState::SESetting)
 		{
@@ -358,7 +362,14 @@ namespace basecross{
 		auto leftStick = input.GetLStick();
 		if (leftStick != Vec2(0.0f))
 		{
-			volume = clamp(volume + leftStick.x * 0.01f, 0.0f, 1.0f);
+			if (m_pauseState == PauseMenuState::BGMSetting)
+			{
+				gameManager->SetBGMVolume(clamp(volume + leftStick.x * 0.01f, 0.0f, 1.0f));
+			}
+			else if (m_pauseState == PauseMenuState::SESetting)
+			{
+				volume = clamp(volume + leftStick.x * 0.01f, 0.0f, 1.0f);
+			}
 		}
 
 		bool pressAButton = input.GetDownButton(L"A");
@@ -405,6 +416,32 @@ namespace basecross{
 		}
 
 	}
+
+	// ==============================================================================
+
+	//void PauseMenu::CreatePauseBinary()
+	//{
+	//	// バイナリパス取得
+	//	wstring binaryPath = GetBinaryPath() + L"PauseMenuData.bin";
+
+	//	// バイナリがあるかを確認
+	//	ifstream ifs(binaryPath, ios::binary);
+
+	//	// ないなら生成
+	//	if (!ifs)
+	//	{
+	//		// 初期化
+	//		m_pauseData.BGMVolume = m_BGMVolume;
+	//		m_pauseData.SEVolume = m_SEVolume;
+	//		m_pauseData.UpDownSwap = false;
+	//		m_pauseData.BulletKey = L"";
+
+	//		// ofstreamでファイルを生成
+	//		ofstream ofs(binaryPath, ios::binary);
+	//		ofs.write(reinterpret_cast<const char*>(&m_pauseData), sizeof(m_pauseData));
+	//	}
+
+	//}
 
 	// ==============================================================================
 

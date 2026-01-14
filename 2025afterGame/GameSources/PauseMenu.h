@@ -66,6 +66,15 @@ namespace basecross{
 			int layer;
 		};
 
+		struct PauseData
+		{
+			float BGMVolume;
+			float SEVolume;
+			bool UpDownSwap;
+			wstring BulletKey;
+			wstring ViewBehindKey;
+		};
+
 		// ==============================================================================
 		// メンバ変数
 		// ==============================================================================
@@ -95,6 +104,9 @@ namespace basecross{
 
 		// ポーズメニューの状態
 		PauseMenuState m_pauseState;
+
+		// 設定
+		PauseData m_pauseData;
 
 		// ステージ
 		shared_ptr<Stage> m_stage;
@@ -180,6 +192,10 @@ namespace basecross{
 
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
+
+		//void CreatePauseBinary();
+		//void SavePauseBinary();
+		//PauseData LoadPauseBinary();
 	};
 
 }
