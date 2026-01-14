@@ -20,6 +20,10 @@ namespace basecross {
 		// デバッグ用文字列ストリーム
 		wstringstream m_debugWss;
 
+		// 音量
+		float m_BGMVolume = 1.0f;
+		float m_SEVolume = 1.0f;
+
 		// デバッグログ　
 		// 使う場合は必ずFlushDebugLogも呼び出すこと
 		// name : ログの名前
