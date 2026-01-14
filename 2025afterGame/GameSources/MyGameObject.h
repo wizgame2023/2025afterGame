@@ -20,8 +20,7 @@ namespace basecross {
 		// デバッグ用文字列ストリーム
 		wstringstream m_debugWss;
 
-		// 音量
-		float m_BGMVolume = 1.0f;
+		// SE音量
 		float m_SEVolume = 1.0f;
 
 		// デバッグログ　
@@ -38,6 +37,9 @@ namespace basecross {
 		// そうしないと画面に表示されません
 		void FlushDebugLog();
 
+		// バイナリパスの取得
+		wstring GetBinaryPath() const;
+
 		// =======================↑海斗作成↑========================== //
 
 	public:
@@ -47,6 +49,8 @@ namespace basecross {
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
 
+		float GetSEVolume() const { return m_SEVolume; };
+		void SetSEVolume(const float volume) { m_SEVolume = volume; };
 	};
 }
 //end basecross
