@@ -100,8 +100,6 @@ namespace basecross{
 			//トランスフォーム取得
 			auto ptrTrans= GetComponent<Transform>();
 			auto pos = ptrTrans->GetPosition();
-			pos.y += m_pushY;
-			pos.x += m_pushX;
 			ptrTrans->SetPosition(pos);
 			ptrTrans->SetScale(m_scale);
 
