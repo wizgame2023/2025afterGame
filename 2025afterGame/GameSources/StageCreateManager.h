@@ -37,6 +37,8 @@ namespace basecross{
 		void CreateRingObject();
 
 		void CreateScoreObject();
+
+		void CreateItemObject();
 	};
 }
 //end basecross
