@@ -30,6 +30,12 @@ namespace basecross {
 		m_delta = App::GetApp()->GetElapsedTime();
 	}
 
+	wstring MyGameObject::GetBinaryPath() const
+	{
+		auto& app = App::GetApp();
+		wstring path = app->GetDataDirWString();
+		return path + L"Bin/";
+	}
 
 	void MyGameObject::FlushDebugLog()
 	{

@@ -79,6 +79,10 @@ namespace basecross {
 
 			auto enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
 
+			// BGM、SE用のマネージャー作成
+			m_AudioManager = App::GetApp()->GetXAudio2Manager();
+			m_bgm = m_AudioManager->Start(L"StageBGM", XAUDIO2_LOOP_INFINITE, gameManager->GetBGMVolume());
+
 			// これがないとエフェクトが表示されない()
 			AddGameObject<EffectUpdateDrawManager>();
 		}
@@ -92,17 +96,17 @@ namespace basecross {
 	{		
 		auto& scrMana = ScoreManager::GetScoreManager();
 		//scrMana->SetPlScore(scrMana->GetPlScore() + 1);
-		DebugLog(L"\n\n\n\n\nPLScore : ", scrMana->GetPlScore());
+		//DebugLog(L"\n\n\n\n\nPLScore : ", scrMana->GetPlScore());
 		//DebugLog(L"Enemy1Score : ", scrMana->GetScore(L"Enemy1"));
 		//DebugLog(L"fileScore : ", scrMana->LoadHighScoreBinary());
-		auto SortedScores = scrMana->GetSortedScores();
-		for (size_t i = 0; i < SortedScores.size(); i++)
-		{
-			DebugLog(L"\nRank ", i + 1);
-			DebugLog(L" ID : ", SortedScores[i].id);
-			DebugLog(L" Score : ", SortedScores[i].crntScore);
-		}
-		FlushDebugLog();
+		//auto SortedScores = scrMana->GetSortedScores();
+		//for (size_t i = 0; i < SortedScores.size(); i++)
+		//{
+		//	DebugLog(L"\nRank ", i + 1);
+		//	DebugLog(L" ID : ", SortedScores[i].id);
+		//	DebugLog(L" Score : ", SortedScores[i].crntScore);
+		//}
+		//FlushDebugLog();
 	}
 
 	// ==============================================================================

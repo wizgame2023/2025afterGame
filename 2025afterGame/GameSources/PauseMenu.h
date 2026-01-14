@@ -51,6 +51,8 @@ namespace basecross{
 			SettingMenu,
 			VolumeMenu,
 			KeyConfigMenu,
+			BGMSetting,
+			SESetting,
 			Max
 		};
 
@@ -62,6 +64,15 @@ namespace basecross{
 			Vec3 pos;
 			Vec2 size;
 			int layer;
+		};
+
+		struct PauseData
+		{
+			float BGMVolume;
+			float SEVolume;
+			bool UpDownSwap;
+			wstring BulletKey;
+			wstring ViewBehindKey;
 		};
 
 		// ==============================================================================
@@ -93,6 +104,9 @@ namespace basecross{
 
 		// ポーズメニューの状態
 		PauseMenuState m_pauseState;
+
+		// 設定
+		PauseData m_pauseData;
 
 		// ステージ
 		shared_ptr<Stage> m_stage;
@@ -150,12 +164,6 @@ namespace basecross{
 		// ポーズ開始
 		void StartPause();
 
-		// Aボタン選択肢決定処理
-		void SelectDecisionAButton();
-
-		// Bボタン戻る処理
-		void BackBButton();
-
 		// メニューの可視管理
 		void MenuVisibleManagement();
 
@@ -167,6 +175,7 @@ namespace basecross{
 		void UpdateSettingMenu(InputManager& input);
 		void UpdateVolumeMenu(InputManager& input);
 		void UpdateKeyConfigMenu(InputManager& input);
+		void UpdateVolumeSettingMenu(InputManager& input);
 
 		// デバッグログ群
 		void DebugLogs();
@@ -183,6 +192,10 @@ namespace basecross{
 
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
+
+		//void CreatePauseBinary();
+		//void SavePauseBinary();
+		//PauseData LoadPauseBinary();
 	};
 
 }
