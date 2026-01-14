@@ -27,6 +27,7 @@ namespace basecross{
 		const wstring& uiPlayerPath = path + L"UI/Player/";
 		const wstring& uiTitlePath = path + L"UI/Title/";
 		const wstring& uiMenuPath = path + L"UI/Menu/";
+		const wstring& uiScorePath = path + L"UI/Score/";
 		const wstring& efkPath = path + L"Effects/";
     const wstring& soundPath = path + L"Sounds/";
 
@@ -86,8 +87,14 @@ namespace basecross{
 		auto startTex = uiTitlePath + L"PressA.png";
 		App::GetApp()->RegisterTexture(L"Start_TX", startTex);
 
+		startTex = uiTitlePath + L"rogo.png";
+		App::GetApp()->RegisterTexture(L"rogo_TX", startTex);
+
 		auto remainingRounds = uiPlayerPath + L"RemainingRounds.png";
 		App::GetApp()->RegisterTexture(L"RemainingRounds", remainingRounds);
+
+		auto ScoreLow = uiScorePath + L"bear.png";
+		App::GetApp()->RegisterTexture(L"Bear", ScoreLow);
 
 		// MenuUI ///////////////////////
 		auto pauseMenuMain = uiMenuPath + L"PauseMenuMain.png";
@@ -159,7 +166,7 @@ namespace basecross{
 	void Scene::OnEvent(const shared_ptr<Event>& event) {
 		if (event->m_MsgStr == L"ToGameStage") {
 			//最初のアクティブステージの設定
-			ResetActiveStage<GameStage>();
+			ResetActiveStage<YuutaStage>();
 		}
 		if (event->m_MsgStr == L"ToMultiViewStage") {
 			//マルチビューのアクティブステージ設定
