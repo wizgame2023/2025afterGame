@@ -35,7 +35,7 @@ namespace basecross {
 
 		bool m_gameStartFlag = false; // ゲームが開始しているかのフラグ
 		float m_timeGamePlaying = 0.0f; // ゲームの経過時間
-		float m_timeLimit = 1.0f;
+		float m_timeLimit = 180.0f;
 		float m_ItemPhaseLimit = 5.0f;
 		int m_scoreObjecCout = 0;
 		bool m_createScoreObj = false;
