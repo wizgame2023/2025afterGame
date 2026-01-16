@@ -155,7 +155,14 @@
       <Filter>Sources\privateStage</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)ItemObject.cpp" />
+          <Filter>Sources</Filter>
+    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)RankingUI.cpp" />
+          <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)AmmoObject.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)TomokiStage.h">
@@ -315,7 +322,14 @@
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)ItemObject.h" />
+      <Filter>Header</Filter>
+    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)RankingUI.h" />
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)AmmoObject.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sources">

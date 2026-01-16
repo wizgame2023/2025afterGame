@@ -52,6 +52,7 @@
 #include "InvisibleCollision.h"
 #include "ScoreObject.h"
 #include "ItemObject.h"
+#include "AmmoObject.h"
 ///////////////////////////////////////////////////
 
 //親クラスがFighterAircraftBase////////////////////

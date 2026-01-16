@@ -39,6 +39,8 @@ namespace basecross{
 		void CreateScoreObject();
 
 		void CreateItemObject();
+
+		void CreateAmmoObject();
 	};
 }
 //end basecross

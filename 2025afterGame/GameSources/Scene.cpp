@@ -100,6 +100,9 @@ namespace basecross{
 		auto RepairItem = uiItemPath + L"HpRecovery.png";
 		App::GetApp()->RegisterTexture(L"Repair", RepairItem);
 
+		auto AmmoItem = uiItemPath + L"BulletRecovery.png";
+		App::GetApp()->RegisterTexture(L"Reload", AmmoItem);
+
 		// MenuUI ///////////////////////
 		auto pauseMenuMain = uiMenuPath + L"PauseMenuMain.png";
 		App::GetApp()->RegisterTexture(L"PauseMenuMain_TX", pauseMenuMain);
