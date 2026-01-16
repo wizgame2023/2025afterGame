@@ -59,6 +59,11 @@ namespace basecross {
 		return m_pos;
 	}
 
+	void Actor::SetPos(Vec3 pos)
+	{
+		m_pos = pos;
+	}
+
 	// m_qt‚ÌƒQƒbƒ^
 	Quat Actor::GetQt()
 	{
