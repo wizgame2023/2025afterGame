@@ -273,11 +273,16 @@ namespace basecross {
 		if (number > m_checkPoints.size() - 1 || number < 0)
 		{
 			throw BaseException
-			(
-				L"配列外の物を指定しようとしています。",
+			{
+				L"Array Out of range",
 				L"if(number > m_checkPoints.size() - 1 || number < 0)",
 				L"GameManager::GetCheckPoint(int number)"
-			);
+			};
+
+			// ↓これにしたいのにエラーが出てしまうため英文にしている
+				//L"配列外の物を指定しようとしています。",
+				//L"if(number > m_checkPoints.size() - 1 || number < 0)",
+				//L"GameManager::GetCheckPoint(int number)"
 		}
 
 		return m_checkPoints[number];

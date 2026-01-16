@@ -136,7 +136,6 @@ namespace basecross {
 		float GetTimeLimit();
 		// カウントダウンを開始するフラグのセッタ
 		void SetCountDown(bool onOff);
-	};
 
 		// フェーズの切り替えに使う関数
 		void ChangePhase(GamePhase nowPhase);
