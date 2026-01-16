@@ -28,8 +28,9 @@ namespace basecross{
 		const wstring& uiTitlePath = path + L"UI/Title/";
 		const wstring& uiMenuPath = path + L"UI/Menu/";
 		const wstring& uiScorePath = path + L"UI/Score/";
+		const wstring& uiStagePath = path + L"UI/Stage/";
 		const wstring& efkPath = path + L"Effects/";
-    const wstring& soundPath = path + L"Sounds/";
+		const wstring& soundPath = path + L"Sounds/";
 
 		//Textures //////////////////////////////////////////////
 		auto modelTex = modelPath + L"diffuse.png";
@@ -96,6 +97,7 @@ namespace basecross{
 		auto ScoreLow = uiScorePath + L"bear.png";
 		App::GetApp()->RegisterTexture(L"Bear", ScoreLow);
 
+
 		// MenuUI ///////////////////////
 		auto pauseMenuMain = uiMenuPath + L"PauseMenuMain.png";
 		App::GetApp()->RegisterTexture(L"PauseMenuMain_TX", pauseMenuMain);
@@ -108,6 +110,12 @@ namespace basecross{
 
 		auto menuBackground = uiMenuPath + L"PauseMenuBackGround.png";
 		App::GetApp()->RegisterTexture(L"PauseMenuBackGround_TX", menuBackground);
+
+		// StageUI////////////////////////
+
+		auto stageTex = uiStagePath + L"GameStart.png";
+		App::GetApp()->RegisterTexture(L"GameStart_TX", stageTex);
+
 
 		// Effect /////////////////////////////////////////////
 		EffectManager::Instance().CreateEfkInterface();
@@ -122,7 +130,7 @@ namespace basecross{
 		//SE
 		wstring SEPath = soundPath + L"SE/";
 		app->RegisterWav(L"ButtonPushSE", SEPath + L"ButtonPush.wav");
-		app->RegisterWav(L"CoundDownSE", SEPath + L"CoundDown.wav");
+		app->RegisterWav(L"CountDownSE", SEPath + L"CountDown.wav");
 		app->RegisterWav(L"DengerSE", SEPath + L"Denger.wav");
 		app->RegisterWav(L"HealSE", SEPath + L"Heal.wav");
 		app->RegisterWav(L"ReloadSE", SEPath + L"Reload.wav"); 
