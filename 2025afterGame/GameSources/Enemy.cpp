@@ -52,7 +52,7 @@ namespace basecross {
 
 		// コリジョン追加
 		auto ptrCol = AddComponent<CollisionObb>();
-		ptrCol->SetDrawActive(true);
+		ptrCol->SetDrawActive(false);
 		//ptrCol->SetAfterCollision(AfterCollision::None);
 
 		// ドロー処理
