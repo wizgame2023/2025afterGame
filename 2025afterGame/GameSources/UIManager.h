@@ -11,6 +11,7 @@ namespace basecross
 {
 	class Enemy;
 	class BillBoardGauge;
+	class NumberSprite;
 	class UIManager
 	{
 	private:
@@ -35,6 +36,9 @@ namespace basecross
 		int m_bulletNumMax;
 		int m_playerScoreCurrent;
 
+		bool m_createUIEnd;
+
+		shared_ptr<NumberSprite> m_score;
 	public:
 		//\’z‚Æ”jŠü
 		UIManager();
