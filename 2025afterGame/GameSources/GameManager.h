@@ -98,7 +98,7 @@ namespace basecross {
 		virtual void OnUpdate();
 
 		// ゲーム開始のカウントダウン
-		void GameStart();
+		void CountDown(bool StartEnd);
 
 		// ポーズ処理
 		void Pose(bool OnOff);

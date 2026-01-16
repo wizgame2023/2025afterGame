@@ -81,7 +81,7 @@ namespace basecross {
 		// カウントダウン処理
 		if (m_countDown && !m_gameStartFlag)
 		{
-			GameStart();
+			CountDown(true);
 		}
 
 		// 入力マネージャーの更新
@@ -91,7 +91,8 @@ namespace basecross {
 	}
 
 	// ゲーム開始のカウントダウン
-	void GameManager::GameStart()
+	// 引数１がどのときにカウントダウンをするかを伝える処理　tureがStart falseがEnd
+	void GameManager::CountDown(bool StartEnd)
 	{
 		m_countTimeGameStart += m_deltaTime;
 
@@ -138,7 +139,15 @@ namespace basecross {
 			if (m_countTimeGameStart > 4.0f)
 			{
 				//Startを出すフェーズに移動
-				m_startSprite = m_currentStage->AddGameObject<Sprite>(L"GameStart_TX",Vec2(500.0f,250.0f));
+				if (StartEnd)
+				{
+					m_startSprite = m_currentStage->AddGameObject<Sprite>(L"GameStart_TX", Vec2(500.0f, 250.0f));
+				}
+				else if(!StartEnd)
+				{
+					m_startSprite = m_currentStage->AddGameObject<Sprite>(L"GameEnd_TX", Vec2(500.0f, 250.0f));
+				}
+
 				m_gameStartPhase = GAMESTART_End;
 			}
 		}
