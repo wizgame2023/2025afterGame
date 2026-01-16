@@ -68,6 +68,8 @@ namespace basecross {
 
 	void Player::OnUpdate()
 	{
+		if (GetPauseFlag()) return;
+
 		FighterAircraftBase::OnUpdate();
 
 		auto& app = App::GetApp();
