@@ -11,14 +11,14 @@
 namespace basecross {
 	Enemy::Enemy(const shared_ptr<Stage>& obj, const Vec3& pos, const Vec3& rot, const Vec3& scale, const shared_ptr<CheckPoint>& startCheckPoint, const shared_ptr<Actor>& trackingObj) :
 		FighterAircraftBase(obj, pos, rot, scale, startCheckPoint, Col4(0.0f, 1.0f, 1.0f, 1.0f)),
-		m_trackingObj(trackingObj)
+		m_trackingObj(shared_ptr<ScoreObject>(nullptr))
 	{
 
 	}
 
 	Enemy::Enemy(const shared_ptr<Stage>& obj, const Vec3& pos, const Quat& qt, const Vec3& scale, const shared_ptr<CheckPoint>& startCheckPoint, const shared_ptr<Actor>& trackingObj) :
 		FighterAircraftBase(obj, pos, qt, scale, startCheckPoint, Col4(0.0f, 1.0f, 1.0f, 1.0f)),
-		m_trackingObj(trackingObj)
+		m_trackingObj(shared_ptr<ScoreObject>(nullptr))
 	{
 
 	}
@@ -52,7 +52,7 @@ namespace basecross {
 
 		// コリジョン追加
 		auto ptrCol = AddComponent<CollisionObb>();
-		ptrCol->SetDrawActive(false);
+		ptrCol->SetDrawActive(true);
 		//ptrCol->SetAfterCollision(AfterCollision::None);
 
 		// ドロー処理
@@ -92,6 +92,46 @@ namespace basecross {
 	{
 		FighterAircraftBase::OnUpdate();
 
+		auto& gameManager = GameManager::GetGameManager();
+		auto currentPhase = gameManager->GetCurrentPhase();//現在フェーズ取得
+
+		// 追跡対象がいなくなったら一番近いものを決めて追跡すると決める
+		if (!m_trackingObj.lock() && currentPhase == GamePhase::Score)
+		{
+			int minLenght = 999999.9f;
+			int minDefault = 999999.9f;
+			// MyGameObjectの物を全て停止する
+			auto objVec = GetStage()->GetGameObjectVec();
+			//アクターを継承しているものだけ取得
+			for (auto obj : objVec)
+			{
+				auto scoreObjectCast = dynamic_pointer_cast<ScoreObject>(obj);
+				//weak_ptr<ScoreObject> scoreObjectCast = dynamic_pointer_cast<ScoreObject>(obj);
+				//scoreObjectCast
+				//アクターを継承しているオブジェクト停止
+				if (scoreObjectCast)
+				{
+					auto scorePos = scoreObjectCast->GetComponent<Transform>()->GetPosition();
+
+					auto differenceVec = scorePos - m_pos;
+					float differenceLength = differenceVec.length();
+
+					if (minLenght >= differenceLength)
+					{
+						m_trackingObj = scoreObjectCast;
+					}
+				}
+			}
+			//if (!m_trackingObj.lock())
+			//{
+			//	m_trackingObj = GetStage()->GetSharedGameObject<Player>(L"Player");
+			//}
+		}
+		if (currentPhase == GamePhase::Item)
+		{
+			m_trackingObj = GetStage()->GetSharedGameObject<Player>(L"Player");
+		}
+
 		// ステートのUpdate
 		m_stateMachine->Update();
 
@@ -104,8 +144,7 @@ namespace basecross {
 		}
 
 		// 追いかけるものが消えていたらUpdateしないようにする
-		m_trakingObjLock = m_trackingObj.lock();
-		if (!m_trakingObjLock)
+		if (!m_trackingObj.lock())
 		{
 			return;
 		}
@@ -143,6 +182,8 @@ namespace basecross {
 	// 当たり判定
 	void Enemy::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
+		FighterAircraftBase::OnCollisionEnter(obj);
+
 		auto bullet = dynamic_pointer_cast<Bullet>(obj);
 
 		// 弾に当たった場合
@@ -222,7 +263,7 @@ namespace basecross {
 	{
 		// 移動ベクトル加算
 		auto forward = m_trans->GetForward();
-		m_moveVec = forward * m_delta;
+		m_moveVec = (forward * m_delta) * m_speed;
 
 		return;
 	}

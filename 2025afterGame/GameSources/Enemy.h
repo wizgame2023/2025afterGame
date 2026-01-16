@@ -17,9 +17,9 @@ namespace basecross {
 
 		// 追いかける目標のオブジェクト
 		weak_ptr<Actor> m_trackingObj;
-		shared_ptr<Actor> m_trakingObjLock;
+		//shared_ptr<Actor> m_trakingObjLock;
 
-		float m_speed = 1.5f; // スピード
+		float m_speed = 3.0f; // スピード
 
 		// X軸に向いている方向
 		float m_pitchAngle;
