@@ -1,6 +1,6 @@
 /*!
 @file GameManager.cpp
-@brief ƒQ[ƒ€“à•”‚ğŠÇ—‚·‚éƒ}ƒl[ƒWƒƒ[
+@brief ã‚²ãƒ¼ãƒ å†…éƒ¨ã‚’ç®¡ç†ã™ã‚‹ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼
 */
 
 #include "stdafx.h"
@@ -22,17 +22,17 @@ namespace basecross {
 
 	unique_ptr<GameManager, GameManager::GameManagerDeleter> GameManager::m_GameManager;
 
-	// ƒVƒ“ƒOƒ‹ƒgƒ“‚É‚æ‚é¶¬
+	// ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã«ã‚ˆã‚‹ç”Ÿæˆ
 	unique_ptr<GameManager, GameManager::GameManagerDeleter>& GameManager::CreateGameManager()
 	{
 		try
 		{
 			if (m_GameManager.get() == 0)
 			{
-				// ©•ª‚ğì¬
+				// è‡ªåˆ†ã‚’ä½œæˆ
 				m_GameManager.reset(new GameManager());
 
-				// ‰Šú‰»
+				// åˆæœŸåŒ–
 				m_GameManager->OnCreate();
 			}
 			return m_GameManager;
@@ -45,81 +45,82 @@ namespace basecross {
 		return m_GameManager;
 	}
 
-	// ©•ª‚ğ“n‚·
+	// è‡ªåˆ†ã‚’æ¸¡ã™
 	unique_ptr<GameManager, GameManager::GameManagerDeleter>& GameManager::GetGameManager()
 	{
 		return m_GameManager;
 	}
 
 
-	// ‰Šú‰»ˆ—
+	// åˆæœŸåŒ–å‡¦ç†
 	void GameManager::OnCreate()
 	{
-		// “ü—Íƒ}ƒl[ƒWƒƒ[‚Ìì¬
+		// å…¥åŠ›ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã®ä½œæˆ
 		InputManager::CreateInputManager();
 		ScoreManager::CreateScoreManager();
-		UIManager::CreateUIManager();
+		//UIManager::CreateUIManager();
 	}
 
-	// XV
+	// æ›´æ–°
 	void GameManager::OnUpdate()
 	{
-		// ƒfƒ‹ƒ^ƒ^ƒCƒ€æ“¾
+		// ãƒ‡ãƒ«ã‚¿ã‚¿ã‚¤ãƒ å–å¾—
 		auto& app = App::GetApp();
 		m_deltaTime = app->GetElapsedTime();
 
-		// Œ»İg—p‚µ‚Ä‚¢‚éƒXƒe[ƒW‚ğó‚¯æ‚é
+		// ç¾åœ¨ä½¿ç”¨ã—ã¦ã„ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¸ã‚’å—ã‘å–ã‚‹
 		m_currentStage = app->GetScene<Scene>()->GetActiveStage();
 
-		// ƒQ[ƒ€Œo‰ßŠÔ‚ğŒv‘ª
+		// ã‚²ãƒ¼ãƒ çµŒéæ™‚é–“ã‚’è¨ˆæ¸¬
 		if (m_gameStartFlag)
 		{
 			m_timeGamePlaying += m_deltaTime;
 			m_timeLimit -= m_deltaTime;
 		}
 
-		// ƒJƒEƒ“ƒgƒ_ƒEƒ“ˆ—
+		// ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³å‡¦ç†
 		if (m_countDown && !m_gameStartFlag)
 		{
 			CountDown(true);
 		}
+  
+		NowPhase();
 
-		// “ü—Íƒ}ƒl[ƒWƒƒ[‚ÌXV
+		// å…¥åŠ›ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã®æ›´æ–°
 		InputManager::GetInputManager()->Update();
 
-		UIManager::GetUIManager()->OnUpdate();
 	}
 
-	// ƒQ[ƒ€ŠJn‚ÌƒJƒEƒ“ƒgƒ_ƒEƒ“
-	// ˆø”‚P‚ª‚Ç‚Ì‚Æ‚«‚ÉƒJƒEƒ“ƒgƒ_ƒEƒ“‚ğ‚·‚é‚©‚ğ“`‚¦‚éˆ—@ture‚ªStart false‚ªEnd
+	// ã‚²ãƒ¼ãƒ é–‹å§‹ã®ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
+	// å¼•æ•°ï¼‘ãŒã©ã®ã¨ãã«ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³ã‚’ã™ã‚‹ã‹ã‚’ä¼ãˆã‚‹å‡¦ç†ã€€tureãŒStart falseãŒEnd
 	void GameManager::CountDown(bool StartEnd)
 	{
 		m_countTimeGameStart += m_deltaTime;
 
-		// ƒJƒEƒ“ƒgƒ_ƒEƒ“‚ªI‚í‚Á‚½‚çƒQ[ƒ€‚ğŠJn‚·‚é
+		// ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³ãŒçµ‚ã‚ã£ãŸã‚‰ã‚²ãƒ¼ãƒ ã‚’é–‹å§‹ã™ã‚‹
 		if (m_gameStartPhase == GAMESTART_Start)
 		{
-			// ƒ|[ƒYŠJn
+			// ãƒãƒ¼ã‚ºé–‹å§‹
 			Pose(true);
-			// 1‚ğ•\¦‚³‚¹‚éƒtƒF[ƒY‚ÉˆÚ“®
+			// 1ã‚’è¡¨ç¤ºã•ã›ã‚‹ãƒ•ã‚§ãƒ¼ã‚ºã«ç§»å‹•
 			m_gameStartPhase = GAMESTART_CountDown_One;
 		}
 
 		if (m_gameStartPhase == GAMESTART_CountDown_One)
 		{
-			// ˆê•b’u‚¢‚½Œã‚ÉSE‚ğ–Â‚ç‚·
+			// ä¸€ç§’ç½®ã„ãŸå¾Œã«SEã‚’é³´ã‚‰ã™
 			if (m_countTimeGameStart >= 1.0f && m_countDownSEFlag)
 			{
-				// BGMASE—p‚Ìƒ}ƒl[ƒWƒƒ[ì¬
+				// BGMã€SEç”¨ã®ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ä½œæˆ
 				m_AudioManager = App::GetApp()->GetXAudio2Manager();
 				m_se = m_AudioManager->Start(L"CountDownSE", 0, 0.6f);
-				m_countDownSEFlag = false;// ‚È‚ñ‚Ç‚àSE‚ğ–Â‚ç‚³‚È‚¢
+				m_countDownSEFlag = false;// ãªã‚“ã©ã‚‚SEã‚’é³´ã‚‰ã•ãªã„
 
 			}
 
 			if (m_countTimeGameStart >= 2.0f)
 			{
-				// 2‚ğ•\¦‚³‚¹‚éƒtƒF[ƒY‚ÉˆÚ“®
+				// 2ã‚’è¡¨ç¤ºã•ã›ã‚‹ãƒ•ã‚§ãƒ¼ã‚ºã«ç§»å‹•
 				m_gameStartPhase = GAMESTART_CountDown_Two;
 			}
 		}
@@ -129,7 +130,7 @@ namespace basecross {
 		{
 			if (m_countTimeGameStart >= 3.0f)
 			{
-				// 3‚ğ•\¦‚³‚¹‚éƒtƒF[ƒY‚ÉˆÚ“®
+				// 3ã‚’è¡¨ç¤ºã•ã›ã‚‹ãƒ•ã‚§ãƒ¼ã‚ºã«ç§»å‹•
 				m_gameStartPhase = GAMESTART_CountDown_Three;
 			}
 		}
@@ -138,7 +139,7 @@ namespace basecross {
 		{
 			if (m_countTimeGameStart > 4.0f)
 			{
-				//Start‚ğo‚·ƒtƒF[ƒY‚ÉˆÚ“®
+				//Startã‚’å‡ºã™ãƒ•ã‚§ãƒ¼ã‚ºã«ç§»å‹•
 				if (StartEnd)
 				{
 					m_startSprite = m_currentStage->AddGameObject<Sprite>(L"GameStart_TX", Vec2(500.0f, 250.0f));
@@ -155,54 +156,54 @@ namespace basecross {
 
 		if (m_gameStartPhase == GAMESTART_End)
 		{
-			//‚ ‚é’ö“xStart‚ÌƒeƒNƒXƒ`ƒƒ‚ğŒ©‚¹‚½‚ç
+			//ã‚ã‚‹ç¨‹åº¦Startã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’è¦‹ã›ãŸã‚‰
 			if (m_countTimeGameStart > 5.0f)
 			{
-				// ƒ|[ƒYó‘Ô‚ğ‰ğœ‚·‚é
+				// ãƒãƒ¼ã‚ºçŠ¶æ…‹ã‚’è§£é™¤ã™ã‚‹
 				auto test = 0;
-				m_countDown = false; // ƒJƒEƒ“ƒgƒ_ƒEƒ“‚Ìg—pó‘Ô‚ğ‰ğœ
-				m_countDownSEFlag = true; // SE‚àg—p‰Â”\‚É
+				m_countDown = false; // ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³ã®ä½¿ç”¨çŠ¶æ…‹ã‚’è§£é™¤
+				m_countDownSEFlag = true; // SEã‚‚ä½¿ç”¨å¯èƒ½ã«
 				
-				// ƒ|[ƒY‰ğœ
+				// ãƒãƒ¼ã‚ºè§£é™¤
 				Pose(false);
 
-				// StartƒXƒvƒ‰ƒCƒg‚Ìíœ
+				// Startã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å‰Šé™¤
 				m_currentStage->RemoveGameObject<Sprite>(m_startSprite);
 			}
 		}
 
 	}
 
-	// ƒ|[ƒYˆ—
-    // ˆø”‚P@ƒ|[ƒYó‘Ô‚É‚·‚é‚©‚ÌŠm”Ftrue‚ªƒ|[ƒY‚É‚·‚éfalse‚Å‰ğœ
+	// ãƒãƒ¼ã‚ºå‡¦ç†
+    // å¼•æ•°ï¼‘ã€€ãƒãƒ¼ã‚ºçŠ¶æ…‹ã«ã™ã‚‹ã‹ã®ç¢ºèªtrueãŒãƒãƒ¼ã‚ºã«ã™ã‚‹falseã§è§£é™¤
 	void GameManager::Pose(bool OnOff)
 	{
-		// ƒ|[ƒYŠJn
+		// ãƒãƒ¼ã‚ºé–‹å§‹
 		if (OnOff)
 		{
-			// MyGameObject‚Ì•¨‚ğ‘S‚Ä’â~‚·‚é
+			// MyGameObjectã®ç‰©ã‚’å…¨ã¦åœæ­¢ã™ã‚‹
 			auto objVec = m_currentStage->GetGameObjectVec();
-			//ƒAƒNƒ^[‚ğŒp³‚µ‚Ä‚¢‚é‚à‚Ì‚¾‚¯æ“¾
+			//ã‚¢ã‚¯ã‚¿ãƒ¼ã‚’ç¶™æ‰¿ã—ã¦ã„ã‚‹ã‚‚ã®ã ã‘å–å¾—
 			for (auto obj : objVec)
 			{
 				auto myGameObjectCast = dynamic_pointer_cast<MyGameObject>(obj);
 
-				//ƒAƒNƒ^[‚ğŒp³‚µ‚Ä‚¢‚éƒIƒuƒWƒFƒNƒg’â~
+				//ã‚¢ã‚¯ã‚¿ãƒ¼ã‚’ç¶™æ‰¿ã—ã¦ã„ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆåœæ­¢
 				if (myGameObjectCast)
 				{
-					myGameObjectCast->SetPauseFlag(true);// ƒ|[ƒYó‘Ô‚É‚·‚é
+					myGameObjectCast->SetPauseFlag(true);// ãƒãƒ¼ã‚ºçŠ¶æ…‹ã«ã™ã‚‹
 					m_myGameObjectVec.push_back(myGameObjectCast);
 				}
 			}
 		}
 
-		// ƒ|[ƒYI—¹
+		// ãƒãƒ¼ã‚ºçµ‚äº†
 		if (!OnOff)
 		{
 			for (auto obj : m_myGameObjectVec)
 			{
 				auto gameObjectCheck = obj.lock();
-				// ƒ|[ƒYó‘ÔI—¹‚É‚æ‚Á‚Ä“®‚¯‚é‚æ‚¤‚É‚È‚é
+				// ãƒãƒ¼ã‚ºçŠ¶æ…‹çµ‚äº†ã«ã‚ˆã£ã¦å‹•ã‘ã‚‹ã‚ˆã†ã«ãªã‚‹
 				if (gameObjectCheck)
 				{
 					gameObjectCheck->SetPauseFlag(false);
@@ -212,24 +213,24 @@ namespace basecross {
 
 	}
 
-	// ©•ª©g‚Ì”jŠüˆ—
+	// è‡ªåˆ†è‡ªèº«ã®ç ´æ£„å‡¦ç†
 	void GameManager::DeleteGameManager()
 	{	
-		// qƒNƒ‰ƒXƒ}ƒl[ƒWƒƒ[‚Ì”jŠü
+		// å­ã‚¯ãƒ©ã‚¹ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã®ç ´æ£„
 		DeleteChildManager();
 
-		// ©•ª©g‚Ì”jŠü
+		// è‡ªåˆ†è‡ªèº«ã®ç ´æ£„
 		m_GameManager.reset();
 	}
 
-	// qƒ}ƒl[ƒWƒƒ[‚Ì”jŠüˆ—
+	// å­ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã®ç ´æ£„å‡¦ç†
 	void GameManager::DeleteChildManager()
 	{
-		// “ü—Íƒ}ƒl[ƒWƒƒ[‚Ì”jŠü
+		// å…¥åŠ›ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã®ç ´æ£„
 		InputManager::DeleteInputManager();
 	}
 
-	// DeltaTime‚ÌƒQƒbƒ^
+	// DeltaTimeã®ã‚²ãƒƒã‚¿
 	float GameManager::GetDeltaTime()
 	{
 		return m_deltaTime;
@@ -245,35 +246,35 @@ namespace basecross {
 		m_gameStageNow = gameStageNow;
 	}
 
-	// m_gameStartFlag‚ÌƒQƒbƒ^
+	// m_gameStartFlagã®ã‚²ãƒƒã‚¿
 	bool GameManager::GetGameStartFlag()
 	{
 		return m_gameStartFlag;
 	}
 
-	// m_gameStartFlag‚ÌƒZƒbƒ^
-	// ‘æˆêˆø” ƒQ[ƒ€‚ªŠJn‚µ‚Ä‚¢‚é‚©‚Ìƒtƒ‰ƒO
+	// m_gameStartFlagã®ã‚»ãƒƒã‚¿
+	// ç¬¬ä¸€å¼•æ•° ã‚²ãƒ¼ãƒ ãŒé–‹å§‹ã—ã¦ã„ã‚‹ã‹ã®ãƒ•ãƒ©ã‚°
 	void GameManager::SetGameStartFlag(bool gameStartFlag)
 	{
 		m_gameStartFlag = gameStartFlag;
 	}
 
-	// timeGamePlaying‚ÌƒQƒbƒ^
+	// timeGamePlayingã®ã‚²ãƒƒã‚¿
 	float GameManager::GetTimeGamePlaying()
 	{
 		return m_timeGamePlaying;
 	}
 
-	// m_checkPoints‚ÌƒQƒbƒ^
-	// ‘æˆêˆø” ‰½”Ô–Ú‚Ìƒ`ƒFƒbƒNƒ|ƒCƒ“ƒg‚ğó‚¯æ‚é‚©‚Ì”Ô†
+	// m_checkPointsã®ã‚²ãƒƒã‚¿
+	// ç¬¬ä¸€å¼•æ•° ä½•ç•ªç›®ã®ãƒã‚§ãƒƒã‚¯ãƒã‚¤ãƒ³ãƒˆã‚’å—ã‘å–ã‚‹ã‹ã®ç•ªå·
 	shared_ptr<CheckPoint> GameManager::GetCheckPoint(int number)
 	{
-		// ‚à‚µA”z—ñŠO‚ğæ“¾‚µ‚æ‚¤‚Æ‚µ‚Ä‚¢‚½‚çŠÔˆá‚Á‚Ä‚¢‚é‚ÆƒGƒ‰[‚ğo‚·
+		// ã‚‚ã—ã€é…åˆ—å¤–ã‚’å–å¾—ã—ã‚ˆã†ã¨ã—ã¦ã„ãŸã‚‰é–“é•ã£ã¦ã„ã‚‹ã¨ã‚¨ãƒ©ãƒ¼ã‚’å‡ºã™
 		if (number > m_checkPoints.size() - 1 || number < 0)
 		{
 			throw BaseException
 			(
-				L"”z—ñŠO‚Ì•¨‚ğw’è‚µ‚æ‚¤‚Æ‚µ‚Ä‚¢‚Ü‚·B",
+				L"é…åˆ—å¤–ã®ç‰©ã‚’æŒ‡å®šã—ã‚ˆã†ã¨ã—ã¦ã„ã¾ã™ã€‚",
 				L"if(number > m_checkPoints.size() - 1 || number < 0)",
 				L"GameManager::GetCheckPoint(int number)"
 			);
@@ -282,10 +283,10 @@ namespace basecross {
 		return m_checkPoints[number];
 	}
 
-	// m_checkPoints‚Ì’Ç‰ÁŠÖ”
+	// m_checkPointsã®è¿½åŠ é–¢æ•°
 	void GameManager::AddCheckPoint()
 	{
-		// ƒXƒe[ƒW‚ğæ“¾‚µ‚Ä‚©‚ç¶¬‚·‚é
+		// ã‚¹ãƒ†ãƒ¼ã‚¸ã‚’å–å¾—ã—ã¦ã‹ã‚‰ç”Ÿæˆã™ã‚‹
 		auto stage = App::GetApp()->GetScene<Scene>()->GetActiveStage();
 		if (!dynamic_pointer_cast<GameStage>(stage))
 		{
@@ -293,20 +294,20 @@ namespace basecross {
 		}
 		auto addCheckPointObj = stage->AddGameObject<CheckPoint>();
 
-		// ƒ`ƒFƒbƒNƒ|ƒCƒ“ƒgŠÇ—”z—ñ‚É’Ç‰Á
+		// ãƒã‚§ãƒƒã‚¯ãƒã‚¤ãƒ³ãƒˆç®¡ç†é…åˆ—ã«è¿½åŠ 
 		m_checkPoints.push_back(addCheckPointObj);
 
-		// ¶¬‚µ‚½ƒIƒuƒWƒFƒNƒg‚É©•ª‚Ì”z—ñ”Ô†‚ğ“n‚·
+		// ç”Ÿæˆã—ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«è‡ªåˆ†ã®é…åˆ—ç•ªå·ã‚’æ¸¡ã™
 		addCheckPointObj->SetCheckPointID(m_checkPoints.size());
 	}
 
-	// m_chackPoints‚ÌƒTƒCƒYæ“¾
+	// m_chackPointsã®ã‚µã‚¤ã‚ºå–å¾—
 	int GameManager::GetChackPointsSize()
 	{
 		return m_checkPoints.size();
 	}
 
-	// ƒ`ƒFƒbƒNƒ|ƒCƒ“ƒg”z—ñ‚Ì‰Šú‰»
+	// ãƒã‚§ãƒƒã‚¯ãƒã‚¤ãƒ³ãƒˆé…åˆ—ã®åˆæœŸåŒ–
 	void GameManager::ResetCheckPoint()
 	{
 		m_checkPoints.clear();
@@ -317,10 +318,78 @@ namespace basecross {
 		return m_timeLimit;
 	}
 
-	// ƒJƒEƒ“ƒgƒ_ƒEƒ“‚ğŠJn‚·‚éƒtƒ‰ƒO‚ÌƒZƒbƒ^
+	// ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³ã‚’é–‹å§‹ã™ã‚‹ãƒ•ãƒ©ã‚°ã®ã‚»ãƒƒã‚¿
 	void GameManager::SetCountDown(bool onOff)
 	{
 		m_countDown = onOff;
+  }
+  
+	void GameManager::ChangePhase(GamePhase nowPhase)
+	{
+		m_phase = nowPhase;
+
+		if (m_phase == GamePhase::Score)
+		{
+			m_createScoreObj = false;
+			m_scoreObjecCout = 0;
+		}
+		else if (m_phase == GamePhase::Item)
+		{
+			m_ItemPhaseLimit = 5.0f;
+		}
+	}
+
+	void GameManager::NowPhase()
+	{
+		auto& app = App::GetApp();
+		auto scene = app->GetScene<Scene>();
+		auto stage = scene->GetActiveStage();
+
+		if (dynamic_pointer_cast<TitleStage>(stage) != nullptr || dynamic_pointer_cast<SelectStage>(stage) != nullptr) return;
+
+		if (m_phase == GamePhase::Score)
+		{	
+			if (!m_createScoreObj)
+			{
+				dynamic_pointer_cast<GameStage>(stage)->CreateScoreObject();
+				m_createScoreObj = true;
+			}
+
+			if (m_phase == GamePhase::Score && m_scoreObjecCout == 0)
+			{
+				ChangePhase(GamePhase::Item);
+			}
+		}
+
+		if(m_phase == GamePhase::Item)
+		{
+			m_ItemPhaseLimit -= 1.0f * m_deltaTime;
+
+			if (m_ItemPhaseLimit <= 0.0f)
+			{
+				ChangePhase(GamePhase::Score);
+			}
+		}
+	}
+
+	void GameManager::AddscoreObjecCout()
+	{
+		m_scoreObjecCout++;
+	}
+
+	void GameManager::RemoveScoreObjectCout()
+	{
+		m_scoreObjecCout--;
+	}
+
+	void GameManager::SetCreateScoreObjFlag(bool createFlag)
+	{
+		m_createScoreObj = createFlag;
+	}
+
+	bool GameManager::GetCreateScoreObjFlag()
+	{
+		return m_createScoreObj;
 	}
 
 }

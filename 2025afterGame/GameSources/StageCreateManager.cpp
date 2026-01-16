@@ -291,5 +291,114 @@ namespace basecross{
 			}
 		}
 	}
+
+	void StageCreateManager::CreateItemObject()
+	{
+		//オブジェクトの配列
+		vector<wstring> ObjectLine;
+
+		auto& score = ScoreObjectManager::GetScoreObjectManager();
+		int select = rand() % 5;
+
+		//CSVファイルの宣言
+		CsvFile objectFile;
+
+		//CSVファイルの読み込み
+		wstring DataDir;
+		App::GetApp()->GetDataDirectory(DataDir);
+		DataDir += L"Stage/";
+		objectFile.SetFileName(DataDir + L"positions.csv");
+		objectFile.ReadCsv();
+
+		//抜き出し
+		objectFile.GetSelect(ObjectLine, 0, L"ItemObjectAnchor");
+		for (auto& v : ObjectLine)
+		{
+			//オブジェクトの作成
+			vector<wstring> Tokens;
+			Util::WStrToTokenVector(Tokens, v, L',');
+			Vec3 Pos(
+				(float)_wtof(Tokens[1].c_str()),
+				(float)_wtof(Tokens[2].c_str()),
+				(float)_wtof(Tokens[3].c_str())
+			);
+
+
+			Vec3 Rot;
+			Rot.x = (Tokens[4] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[4].c_str());
+			Rot.y = (Tokens[5] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[5].c_str());
+			Rot.z = (Tokens[6] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[6].c_str());
+
+			Vec3 Siz(
+				(float)_wtof(Tokens[7].c_str()),
+				(float)_wtof(Tokens[8].c_str()),
+				(float)_wtof(Tokens[9].c_str())
+			);
+
+			//wstring Tag = Tokens[10];
+			int Tag = (int)_wtof(Tokens[10].c_str());
+
+			if (Tag == select)
+			{
+				auto stage = App::GetApp()->GetScene<Scene>()->GetActiveStage();
+				stage->AddGameObject<ItemObject>(Pos, Rot, Siz, Tag);
+			}
+		}
+	}
+
+	void StageCreateManager::CreateAmmoObject()
+	{
+		//オブジェクトの配列
+		vector<wstring> ObjectLine;
+
+		auto& score = ScoreObjectManager::GetScoreObjectManager();
+		int select = rand() % 5;
+
+		//CSVファイルの宣言
+		CsvFile objectFile;
+
+		//CSVファイルの読み込み
+		wstring DataDir;
+		App::GetApp()->GetDataDirectory(DataDir);
+		DataDir += L"Stage/";
+		objectFile.SetFileName(DataDir + L"positions.csv");
+		objectFile.ReadCsv();
+
+		//抜き出し
+		objectFile.GetSelect(ObjectLine, 0, L"AmmoObjectAnchor");
+		for (auto& v : ObjectLine)
+		{
+			//オブジェクトの作成
+			vector<wstring> Tokens;
+			Util::WStrToTokenVector(Tokens, v, L',');
+			Vec3 Pos(
+				(float)_wtof(Tokens[1].c_str()),
+				(float)_wtof(Tokens[2].c_str()),
+				(float)_wtof(Tokens[3].c_str())
+			);
+
+
+			Vec3 Rot;
+			Rot.x = (Tokens[4] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[4].c_str());
+			Rot.y = (Tokens[5] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[5].c_str());
+			Rot.z = (Tokens[6] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[6].c_str());
+
+			Vec3 Siz(
+				(float)_wtof(Tokens[7].c_str()),
+				(float)_wtof(Tokens[8].c_str()),
+				(float)_wtof(Tokens[9].c_str())
+			);
+
+			//wstring Tag = Tokens[10];
+			int Tag = (int)_wtof(Tokens[10].c_str());
+
+			if (Tag == select)
+			{
+				auto stage = App::GetApp()->GetScene<Scene>()->GetActiveStage();
+				stage->AddGameObject<AmmoObject>(Pos, Rot, Siz, Tag);
+			}
+		}
+	}
+
 }
 //end basecross

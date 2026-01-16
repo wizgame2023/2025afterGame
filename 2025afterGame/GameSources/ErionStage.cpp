@@ -96,7 +96,9 @@ namespace basecross {
 
 		if (m_count < 3)
 		{
+			obj->CreateItemObject();
 			obj->CreateScoreObject();
+			obj->CreateAmmoObject();
 			m_count++;
 		}
 	}
