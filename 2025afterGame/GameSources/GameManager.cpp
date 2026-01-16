@@ -68,6 +68,9 @@ namespace basecross {
 		auto& app = App::GetApp();
 		m_deltaTime = app->GetElapsedTime();
 
+		// 現在使用しているステージを受け取る
+		m_currentStage = app->GetScene<Scene>()->GetActiveStage();
+
 		// ゲーム経過時間を計測
 		if (m_gameStartFlag)
 		{
@@ -75,10 +78,129 @@ namespace basecross {
 			m_timeLimit -= m_deltaTime;
 		}
 
+		// カウントダウン処理
+		if (m_countDown && !m_gameStartFlag)
+		{
+			GameStart();
+		}
+
 		// 入力マネージャーの更新
 		InputManager::GetInputManager()->Update();
 
 		UIManager::GetUIManager()->OnUpdate();
+	}
+
+	// ゲーム開始のカウントダウン
+	void GameManager::GameStart()
+	{
+		m_countTimeGameStart += m_deltaTime;
+
+		// カウントダウンが終わったらゲームを開始する
+		if (m_gameStartPhase == GAMESTART_Start)
+		{
+			// ポーズ開始
+			Pose(true);
+			// 1を表示させるフェーズに移動
+			m_gameStartPhase = GAMESTART_CountDown_One;
+		}
+
+		if (m_gameStartPhase == GAMESTART_CountDown_One)
+		{
+			// 一秒置いた後にSEを鳴らす
+			if (m_countTimeGameStart >= 1.0f && m_countDownSEFlag)
+			{
+				// BGM、SE用のマネージャー作成
+				m_AudioManager = App::GetApp()->GetXAudio2Manager();
+				m_se = m_AudioManager->Start(L"CountDownSE", 0, 0.6f);
+				m_countDownSEFlag = false;// なんどもSEを鳴らさない
+
+			}
+
+			if (m_countTimeGameStart >= 2.0f)
+			{
+				// 2を表示させるフェーズに移動
+				m_gameStartPhase = GAMESTART_CountDown_Two;
+			}
+		}
+
+
+		if (m_gameStartPhase == GAMESTART_CountDown_Two)
+		{
+			if (m_countTimeGameStart >= 3.0f)
+			{
+				// 3を表示させるフェーズに移動
+				m_gameStartPhase = GAMESTART_CountDown_Three;
+			}
+		}
+
+		if (m_gameStartPhase == GAMESTART_CountDown_Three)
+		{
+			if (m_countTimeGameStart > 4.0f)
+			{
+				//Startを出すフェーズに移動
+				m_startSprite = m_currentStage->AddGameObject<Sprite>(L"GameStart_TX",Vec2(500.0f,250.0f));
+				m_gameStartPhase = GAMESTART_End;
+			}
+		}
+
+
+		if (m_gameStartPhase == GAMESTART_End)
+		{
+			//ある程度Startのテクスチャを見せたら
+			if (m_countTimeGameStart > 5.0f)
+			{
+				// ポーズ状態を解除する
+				auto test = 0;
+				m_countDown = false; // カウントダウンの使用状態を解除
+				m_countDownSEFlag = true; // SEも使用可能に
+				
+				// ポーズ解除
+				Pose(false);
+
+				// Startスプライトの削除
+				m_currentStage->RemoveGameObject<Sprite>(m_startSprite);
+			}
+		}
+
+	}
+
+	// ポーズ処理
+    // 引数１　ポーズ状態にするかの確認trueがポーズにするfalseで解除
+	void GameManager::Pose(bool OnOff)
+	{
+		// ポーズ開始
+		if (OnOff)
+		{
+			// MyGameObjectの物を全て停止する
+			auto objVec = m_currentStage->GetGameObjectVec();
+			//アクターを継承しているものだけ取得
+			for (auto obj : objVec)
+			{
+				auto myGameObjectCast = dynamic_pointer_cast<MyGameObject>(obj);
+
+				//アクターを継承しているオブジェクト停止
+				if (myGameObjectCast)
+				{
+					myGameObjectCast->SetPauseFlag(true);// ポーズ状態にする
+					m_myGameObjectVec.push_back(myGameObjectCast);
+				}
+			}
+		}
+
+		// ポーズ終了
+		if (!OnOff)
+		{
+			for (auto obj : m_myGameObjectVec)
+			{
+				auto gameObjectCheck = obj.lock();
+				// ポーズ状態終了によって動けるようになる
+				if (gameObjectCheck)
+				{
+					gameObjectCheck->SetPauseFlag(false);
+				}
+			}
+		}
+
 	}
 
 	// 自分自身の破棄処理
@@ -184,6 +306,12 @@ namespace basecross {
 	float GameManager::GetTimeLimit()
 	{
 		return m_timeLimit;
+	}
+
+	// カウントダウンを開始するフラグのセッタ
+	void GameManager::SetCountDown(bool onOff)
+	{
+		m_countDown = onOff;
 	}
 
 }
