@@ -19,6 +19,8 @@ namespace basecross {
 		// BGMASE—p
 		shared_ptr<XAudio2Manager> m_AudioManager;
 		shared_ptr<SoundItem> m_bgm;
+
+		shared_ptr<Player> m_player;
 	public:
 		//\’z‚Æ”jŠü
 		KaitoStage() :Stage() {}

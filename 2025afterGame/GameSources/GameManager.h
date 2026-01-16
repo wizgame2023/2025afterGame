@@ -39,6 +39,7 @@ namespace basecross {
 		float m_ItemPhaseLimit = 5.0f;
 		int m_scoreObjecCout = 0;
 		bool m_createScoreObj = false;
+		bool m_itemObj = true;
   
 		float m_countTimeGameStart = 0.0f; //カウントダウンの経過時間
 		GamePhase m_phase = GamePhase::Score; // 最初はItmeフェーズから 
