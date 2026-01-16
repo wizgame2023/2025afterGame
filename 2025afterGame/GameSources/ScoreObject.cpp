@@ -51,7 +51,7 @@ namespace basecross{
 
 		//コリジョンの設定
 		auto ptrCol = AddComponent<CollisionObb>();
-		ptrCol->SetDrawActive(true);
+		ptrCol->SetDrawActive(false);
 		ptrCol->SetAfterCollision(AfterCollision::None); // 物理判定無し
 
 		//ビルボードの生成

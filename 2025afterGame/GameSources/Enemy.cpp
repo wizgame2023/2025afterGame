@@ -52,7 +52,7 @@ namespace basecross {
 
 		// コリジョン追加
 		auto ptrCol = AddComponent<CollisionObb>();
-		ptrCol->SetDrawActive(true);
+		ptrCol->SetDrawActive(false);
 		//ptrCol->SetAfterCollision(AfterCollision::None);
 
 		// ドロー処理
@@ -186,15 +186,15 @@ namespace basecross {
 		m_draw->SetDiffuse(m_color);
 
 
-		//デバック用
-		wstringstream wss(L"");
-		auto scene = App::GetApp()->GetScene<Scene>();
+		////デバック用
+		//wstringstream wss(L"");
+		//auto scene = App::GetApp()->GetScene<Scene>();
 
-		wss /* << L"デバッグ用文字列 "*/
-			<< L"\nm_pitchAngle : " << (int)currentPhase
-			<< endl;
+		//wss /* << L"デバッグ用文字列 "*/
+		//	<< L"\nm_pitchAngle : " << (int)currentPhase
+		//	<< endl;
 
-		scene->SetDebugString(wss.str());
+		//scene->SetDebugString(wss.str());
 	}
 
 	// 当たり判定
