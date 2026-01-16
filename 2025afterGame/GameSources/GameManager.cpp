@@ -165,6 +165,7 @@ namespace basecross {
 				auto test = 0;
 				m_countDown = false; // カウントダウンの使用状態を解除
 				m_countDownSEFlag = true; // SEも使用可能に
+				m_gameStartFlag = true;
 				
 				// ポーズ解除
 				Pose(false);
