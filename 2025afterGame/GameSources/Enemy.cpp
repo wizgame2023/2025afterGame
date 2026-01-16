@@ -90,13 +90,19 @@ namespace basecross {
 
 	void Enemy::OnUpdate()
 	{
+		if (m_pauseFlag)
+		{
+			return;
+		}
+
+
 		FighterAircraftBase::OnUpdate();
 
 		auto& gameManager = GameManager::GetGameManager();
 		auto currentPhase = gameManager->GetCurrentPhase();//現在フェーズ取得
 
 		// 追跡対象がいなくなったら一番近いものを決めて追跡すると決める
-		if (!m_trackingObj.lock() && currentPhase == GamePhase::Score)
+		if (currentPhase == GamePhase::Score)
 		{
 			int minLenght = 999999.9f;
 			int minDefault = 999999.9f;
@@ -122,14 +128,26 @@ namespace basecross {
 					}
 				}
 			}
-			//if (!m_trackingObj.lock())
-			//{
-			//	m_trackingObj = GetStage()->GetSharedGameObject<Player>(L"Player");
-			//}
+			if (!m_trackingObj.lock())
+			{
+				m_trackingObj = GetStage()->GetSharedGameObject<Player>(L"Player");
+				m_playerLock = true;
+			}
 		}
 		if (currentPhase == GamePhase::Item)
 		{
 			m_trackingObj = GetStage()->GetSharedGameObject<Player>(L"Player");
+		}
+
+		if (m_playerLock)
+		{
+			m_timeOfPlayerLock += m_delta;
+		}
+		if (m_timeOfPlayerLock >= 6.0f)
+		{
+			//m_trackingObj.lock() = nullptr;
+			m_playerLock = false;
+			m_timeOfPlayerLock = 0.0f;
 		}
 
 		// ステートのUpdate
@@ -139,7 +157,7 @@ namespace basecross {
 		m_countDebagBulletTime += m_delta;
 		if (m_countDebagBulletTime >= 0.5f)
 		{
-			//GetStage()->AddGameObject<Bullet>(GetThis<Actor>());
+			GetStage()->AddGameObject<Bullet>(GetThis<Actor>());
 			m_countDebagBulletTime = 0.0f;
 		}
 
@@ -168,15 +186,15 @@ namespace basecross {
 		m_draw->SetDiffuse(m_color);
 
 
-		////デバック用
-		//wstringstream wss(L"");
-		//auto scene = App::GetApp()->GetScene<Scene>();
+		//デバック用
+		wstringstream wss(L"");
+		auto scene = App::GetApp()->GetScene<Scene>();
 
-		//wss /* << L"デバッグ用文字列 "*/
-		//	<< L"\nm_pitchAngle : " << m_pitchAngle
-		//	<< endl;
+		wss /* << L"デバッグ用文字列 "*/
+			<< L"\nm_pitchAngle : " << (int)currentPhase
+			<< endl;
 
-		//scene->SetDebugString(wss.str());
+		scene->SetDebugString(wss.str());
 	}
 
 	// 当たり判定

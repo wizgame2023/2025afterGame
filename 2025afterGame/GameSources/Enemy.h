@@ -42,6 +42,12 @@ namespace basecross {
 
 		unique_ptr<StateEnemyMachine> m_stateMachine; // ステートマシン
 
+
+		// 緊急処置
+		float m_timeOfPlayerLock;
+		bool m_playerLock;
+
+
 	public:
 		// 今後は使わない
 		Enemy(const shared_ptr<Stage>& obj, const Vec3& pos, const Quat& qt, const Vec3& scale, const shared_ptr<CheckPoint>& startCheckPoint, const shared_ptr<Actor>& trackingObj);
