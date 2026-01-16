@@ -37,7 +37,7 @@ namespace basecross {
 		m_trans->SetScale(Vec3(0.2f));
 
 		auto ptrCol = AddComponent<CollisionSphere>();
-		ptrCol->SetDrawActive(true);
+		ptrCol->SetDrawActive(false);
 		ptrCol->SetAfterCollision(AfterCollision::None); // •¨—”»’è–³‚µ
 
 		auto ptrDraw = AddComponent<PNTStaticDraw>();

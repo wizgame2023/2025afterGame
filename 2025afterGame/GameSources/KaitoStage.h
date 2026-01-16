@@ -15,6 +15,12 @@ namespace basecross {
 		//ビューの作成
 		void CreateViewLight();
 		wstringstream m_debugWss;
+
+		// BGM、SE用
+		shared_ptr<XAudio2Manager> m_AudioManager;
+		shared_ptr<SoundItem> m_bgm;
+
+		shared_ptr<Player> m_player;
 	public:
 		//構築と破棄
 		KaitoStage() :Stage() {}

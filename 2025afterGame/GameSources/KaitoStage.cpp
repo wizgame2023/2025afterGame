@@ -41,8 +41,10 @@ namespace basecross {
 			//ビューとライトの作成
 			CreateViewLight();
 
+			
+
 			// ゲームマネージャ
-			auto& game = GameManager::GetGameManager();
+			auto& game = GameManager::CreateGameManager();
 			game->SetGameStartFlag(true);
 			game->ResetCheckPoint();
 
@@ -62,12 +64,12 @@ namespace basecross {
 			//背景
 			AddGameObject<Background>();
 
-			auto player = AddGameObject<Player>();
-			SetSharedGameObject(L"Player", player);
+			m_player = AddGameObject<Player>();
+			SetSharedGameObject(L"Player", m_player);
 
 			AddGameObject<TestCubeKaito>(Vec3(0.0f, 0.0f, 10.0f), Vec3(10.0f, 10.0f, 1.0f));
 
-			auto plPos = player->GetComponent<Transform>()->GetPosition();
+			auto plPos = m_player->GetComponent<Transform>()->GetPosition();
 			EffectManager::Instance().PlayEffect(L"Fire", Vec3(plPos));
 
 			auto mainCamMana = AddGameObject<MainCameraManager>();
@@ -77,8 +79,12 @@ namespace basecross {
 			gameManager->AddCheckPoint();
 			auto startCheckPoint = gameManager->GetCheckPoint(0);
 
-			auto enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			auto enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, m_player);
 
+			// BGM、SE用のマネージャー作成
+			//m_AudioManager = App::GetApp()->GetXAudio2Manager();
+			//m_bgm = m_AudioManager->Start(L"StageBGM", XAUDIO2_LOOP_INFINITE, gameManager->GetBGMVolume());
+			
 			// これがないとエフェクトが表示されない()
 			AddGameObject<EffectUpdateDrawManager>();
 		}
@@ -91,18 +97,29 @@ namespace basecross {
 	void KaitoStage::OnUpdate()
 	{		
 		auto& scrMana = ScoreManager::GetScoreManager();
+
+		//m_bgm->m_SourceVoice->SetVolume(GameManager::GetGameManager()->GetBGMVolume());
+
+		auto& input = InputManager::GetInputManager();
+		auto ptrMana = App::GetApp()->GetXAudio2Manager();
+
+		if (input->GetDownButton(L"X"))
+		{
+			ptrMana->Start(L"ShotSE", 0, m_player->GetSEVolume());
+		}
+
 		//scrMana->SetPlScore(scrMana->GetPlScore() + 1);
-		DebugLog(L"\n\n\n\n\nPLScore : ", scrMana->GetPlScore());
+		//DebugLog(L"\n\n\n\n\nPLScore : ", scrMana->GetPlScore());
 		//DebugLog(L"Enemy1Score : ", scrMana->GetScore(L"Enemy1"));
 		//DebugLog(L"fileScore : ", scrMana->LoadHighScoreBinary());
-		auto SortedScores = scrMana->GetSortedScores();
-		for (size_t i = 0; i < SortedScores.size(); i++)
-		{
-			DebugLog(L"\nRank ", i + 1);
-			DebugLog(L" ID : ", SortedScores[i].id);
-			DebugLog(L" Score : ", SortedScores[i].crntScore);
-		}
-		FlushDebugLog();
+		//auto SortedScores = scrMana->GetSortedScores();
+		//for (size_t i = 0; i < SortedScores.size(); i++)
+		//{
+		//	DebugLog(L"\nRank ", i + 1);
+		//	DebugLog(L" ID : ", SortedScores[i].id);
+		//	DebugLog(L" Score : ", SortedScores[i].crntScore);
+		//}
+		//FlushDebugLog();
 	}
 
 	// ==============================================================================

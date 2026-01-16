@@ -9,7 +9,8 @@
 namespace basecross {
 
 	MyGameObject::MyGameObject(const shared_ptr<Stage>& stagePtr) :
-		GameObject(stagePtr)
+		GameObject(stagePtr),
+		m_SEVolume(1.0f)
 	{
 
 	}
@@ -30,6 +31,12 @@ namespace basecross {
 		m_delta = App::GetApp()->GetElapsedTime();
 	}
 
+	wstring MyGameObject::GetBinaryPath() const
+	{
+		auto& app = App::GetApp();
+		wstring path = app->GetDataDirWString();
+		return path + L"Bin/";
+	}
 
 	void MyGameObject::FlushDebugLog()
 	{
@@ -38,6 +45,34 @@ namespace basecross {
 		scene->SetDebugString(m_debugWss.str());
 		m_debugWss.str(L""); // ログをクリア
 		m_debugWss.clear();
+	}
+
+	void MyGameObject::SetSEVolume(const float volume)
+	{
+		//auto& gameManager = GameManager::GetGameManager();
+		//gameManager->SetSEVolume(volume);
+		m_SEVolume = volume;
+	}
+
+	float MyGameObject::GetSEVolume() const
+	{
+		//auto& gameManager = GameManager::GetGameManager();
+		//return gameManager->GetSEVolume();
+		return m_SEVolume;
+	}
+
+
+	// ポーズフラグのゲッタ
+	bool MyGameObject::GetPauseFlag()
+	{
+		return m_pauseFlag;
+	}
+
+	// ポーズフラグのセッタ
+	void MyGameObject::SetPauseFlag(bool Pause)
+	{
+		m_pauseFlag = Pause;
+		return;
 	}
 
 }

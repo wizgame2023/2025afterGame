@@ -15,6 +15,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Actor.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)AmmoObject.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)AttackCollision.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Barrier.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Background.h" />
@@ -37,6 +38,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)HpSprite.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)InputManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)InvisibleCollision.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ItemObject.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MainCameraManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MultiViewStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MyGameObject.h" />
@@ -49,12 +51,14 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)ProjectBehavior.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ProjectShader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)KaitoStage.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)RankingUI.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Scene.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ScoreManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ScoreObject.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ScoreObjectManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SelectStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Sprite.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)StageCreateManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StageWall.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StateBarrier.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StateBase.h" />
@@ -68,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Actor.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)AmmoObject.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)AttackCollision.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Barrier.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Background.cpp" />
@@ -89,6 +94,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)HpSprite.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)InputManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)InvisibleCollision.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ItemObject.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)KaitoStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MainCameraManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MultiViewStage.cpp" />
@@ -100,12 +106,14 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Player.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectBehavior.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectShader.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)RankingUI.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Scene.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ScoreManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ScoreObject.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ScoreObjectManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SelectStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Sprite.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)StageCreateManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StageWall.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StateBarrier.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StateBase.cpp" />

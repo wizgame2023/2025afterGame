@@ -70,6 +70,14 @@ namespace basecross {
 			Vec3(0.0f, -1.0f, 0.0f)
 		);
 
+		Mat4x4 spanMat4;
+		spanMat4.affineTransformation(
+			Vec3(0.11f, 0.16f, 0.2f),
+			Vec3(0.0f, 0.0f, 0.0f),
+			Vec3(0.0f, XMConvertToRadians(90.0f), 0.0f),
+			Vec3(0.0f, -0.54f, 0.0f)
+		);
+
 		//ƒƒbƒVƒ…‚Ì•`‰æ
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
 		
@@ -104,6 +112,15 @@ namespace basecross {
 		else if (m_tag == L"InvisibleCollision")
 		{
 
+		}
+		else if (m_tag == L"Shelf")
+		{
+			AddTag(L"CameraObsDiffuse");
+			SetAlphaActive(true);
+
+			ptrDraw->SetMeshResource(L"Shelf");
+			ptrDraw->SetTextureResource(L"ShelfTex");
+			ptrDraw->SetMeshToTransformMatrix(spanMat4);
 		}
 		else
 		{

@@ -8,9 +8,12 @@
 
 namespace basecross{
 	ScoreObjectManager::ScoreObjectManager()
+		:
+		m_count(0)
 	{
-
 	}
+
+
 
 	ScoreObjectManager::~ScoreObjectManager()
 	{
@@ -48,13 +51,18 @@ namespace basecross{
 
 	void ScoreObjectManager::OnCreate()
 	{
-
+		
 	}
 
-	void ScoreObjectManager::CreateScoreObject(Vec3 pos, Vec3 rot, Vec3 siz)
+	void ScoreObjectManager::CreateScoreObject(Vec3 pos, Vec3 rot, Vec3 siz, int tag)
 	{
 		auto stage = App::GetApp()->GetScene<Scene>()->GetActiveStage();
-		stage->AddGameObject<ScoreObject>(pos, rot, siz);
+		stage->AddGameObject<ScoreObject>(pos, rot, siz, tag);
+	}
+
+	void ScoreObjectManager::RemoveObject()
+	{
+
 	}
 }
 //end basecross

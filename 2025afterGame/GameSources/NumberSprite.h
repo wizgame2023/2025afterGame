@@ -13,7 +13,8 @@ namespace basecross{
 		Second,
 		Bullet,
 		MaxBullet,
-		Score
+		Score,
+		Ranking
 	};
 
 	class NumberSprite : public Sprite

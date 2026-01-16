@@ -61,6 +61,9 @@ namespace basecross {
 		gameManager->AddCheckPoint();
 		//gameManager->AddCheckPoint();
 		//gameManager->AddCheckPoint();
+		// テスト用にマネージャーにここはステージ1を知らせる
+		gameManager->SetGameStageNow(1); 
+		gameManager->SetCountDown(true);//カウントダウンしていいよと知らせる
 
 		auto startCheckPoint = gameManager->GetCheckPoint(0);
 		// 敵が出ているかテスト処理

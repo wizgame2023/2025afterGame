@@ -21,7 +21,6 @@ namespace basecross
 		
 		// Managerを一つだ保持
 		static unique_ptr<UIManager, UIManagerDeleter> m_UIManager;
-
 		vector<shared_ptr<Enemy>> m_enemies;
 		vector<shared_ptr<BillBoardGauge>> m_enemyGauges;
 		bool m_createUI;
@@ -61,7 +60,10 @@ namespace basecross
 		// 一つだけ生成した物
 		void CreateUI();
 		// 複数生成するもの
-		void GaugeUI();
+		void CreateGaugeUI();
+		// ランキング
+		void CreateRankingUI();
+
 		// プレイヤーHPを取得
 		void GetPlayerHP();
 		// ステージにいる敵の数を取得
@@ -85,8 +87,6 @@ namespace basecross
 		int GetBulletNumCurrentNow();
 		//最大の弾数を取得
 		int GetBulletNumMax();
-
-		// ランキング
 
 		// 現在のPlayerのスコアを取得
 		int GetPlayerScore();

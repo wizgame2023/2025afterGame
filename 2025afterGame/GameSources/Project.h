@@ -22,8 +22,8 @@
 #include "StageWall.h"
 #include "TestCsv.h"
 #include "DashRing.h"
-#include "ScoreObject.h"
 #include "ScoreObjectManager.h"
+#include "StageCreateManager.h"
 
 // 殿堂入りMyGameObject本体
 #include "MyGameObject.h";
@@ -50,6 +50,9 @@
 #include "CheckPoint.h"
 #include "ObstaclesDodge.h"
 #include "InvisibleCollision.h"
+#include "ScoreObject.h"
+#include "ItemObject.h"
+#include "AmmoObject.h"
 ///////////////////////////////////////////////////
 
 //親クラスがFighterAircraftBase////////////////////
@@ -62,6 +65,7 @@
 #include "HpSprite.h"
 #include "NumberSprite.h"
 #include "PauseMenu.h"
+#include "RankingUI.h"
 ///////////////////////////////////////////////////
 
 // 親クラスがBillBoard////////////////////////////////

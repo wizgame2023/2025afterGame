@@ -7,7 +7,7 @@
 #include "Project.h"
 
 namespace basecross{
-		ScoreObject::ScoreObject(const shared_ptr<Stage>& StagePtr,
+		AmmoObject::AmmoObject(const shared_ptr<Stage>& StagePtr,
 		const Vec3& Pos,
 		const Vec3& Rot,
 		const Vec3& Siz,
@@ -18,7 +18,7 @@ namespace basecross{
 		m_rot(Rot),
 		m_siz(Siz),
 		m_id(ID),
-		m_score(10)
+		m_reload(10)
 	{
 		try
 		{
@@ -30,11 +30,11 @@ namespace basecross{
 		}
 	}
 
-	ScoreObject::~ScoreObject(){
+	AmmoObject::~AmmoObject(){
 
 	}
 
-	void ScoreObject::OnCreate()
+	void AmmoObject::OnCreate()
 	{
 		Actor::OnCreate();
 
@@ -43,8 +43,6 @@ namespace basecross{
 		PtrTrans->SetRotation(m_rot);
 		PtrTrans->SetPosition(m_pos);
 
-		auto& gameManager = GameManager::GetGameManager();
-		gameManager->AddscoreObjecCout();
 		//メッシュの描画
 		/*auto ptrDraw = AddComponent<PNTStaticDraw>();
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");*/
@@ -55,31 +53,25 @@ namespace basecross{
 		ptrCol->SetAfterCollision(AfterCollision::None); // 物理判定無し
 
 		//ビルボードの生成
-		m_billBoard = GetStage()->AddGameObject<BillBoard>(GetThis<GameObject>(), L"Bear", 2, 0, 0, Vec3(1.5f, 1.5f, 1.5f));
+		m_billBoard = GetStage()->AddGameObject<BillBoard>(GetThis<GameObject>(), L"Reload", 2, 0, 0, Vec3(1.5f, 1.5f, 1.5f));
 	}
 
-	void ScoreObject::OnCollisionEnter(shared_ptr<GameObject>& obj)
+	void AmmoObject::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
-		auto& gameManager = GameManager::GetGameManager();
 		auto body = dynamic_pointer_cast<FighterAircraftBase>(obj);
 		if (body)
 		{
 			// BGM、SE用のマネージャー作成
 			auto m_AudioManager = App::GetApp()->GetXAudio2Manager();
-			m_AudioManager->Start(L"GetScoreSE", 0, 1.0f);
+			m_AudioManager->Start(L"GetScoreSE", 1, 1.0f);
 
 			auto& score = ScoreObjectManager::GetScoreObjectManager();
 			//score->RemoveObject();
-			body->AddScoreCurrent(m_score);
-			gameManager->RemoveScoreObjectCout();
-			GetStage()->RemoveGameObject<ScoreObject>(GetThis<ScoreObject>());
-			m_billBoard = nullptr;
-			//GetStage()->RemoveGameObject<BillBoard>(m_billBoard);
-
+			GetStage()->RemoveGameObject<AmmoObject>(GetThis<AmmoObject>());
 		}
 	}
 
-	int ScoreObject::GetObjectID()
+	int AmmoObject::GetObjectID()
 	{
 		return m_id;
 	}

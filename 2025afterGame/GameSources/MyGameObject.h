@@ -14,12 +14,17 @@ namespace basecross {
 
 	protected:
 		float m_delta = 0.0f;
+		bool m_pauseFlag = false;
 
 		// =======================↓海斗作成↓========================== //
-
+	private:
 		// デバッグ用文字列ストリーム
 		wstringstream m_debugWss;
 
+		// SE音量
+		float m_SEVolume;
+
+	protected:
 		// デバッグログ　
 		// 使う場合は必ずFlushDebugLogも呼び出すこと
 		// name : ログの名前
@@ -34,6 +39,12 @@ namespace basecross {
 		// そうしないと画面に表示されません
 		void FlushDebugLog();
 
+		// バイナリパスの取得
+		wstring GetBinaryPath() const;
+
+	public:
+		void SetSEVolume(const float volume);
+		float GetSEVolume() const;
 		// =======================↑海斗作成↑========================== //
 
 	public:
@@ -43,6 +54,9 @@ namespace basecross {
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
 
+		// ポーズフラグのゲッタセッタ
+		virtual bool GetPauseFlag();
+		virtual void SetPauseFlag(bool Pause);
 	};
 }
 //end basecross

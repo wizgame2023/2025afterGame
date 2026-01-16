@@ -26,14 +26,10 @@ namespace basecross {
 		virtual ~GameStage() {}
 		//èâä˙âª
 		virtual void OnCreate()override;
-
+		virtual void OnUpdate()override;
 		virtual void OnDestroy()override;
 
-		void CreateTestObject();
-		void CreateRingObject();
-		void CreateWallObject();
-		void CreateScoreObject();
-		void CreateInvisibleCollision();
+		int m_count;
 	};
 
 
