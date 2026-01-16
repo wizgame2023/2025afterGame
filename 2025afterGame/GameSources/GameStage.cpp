@@ -35,6 +35,7 @@ namespace basecross {
 			auto& app = App::GetApp();
 			auto path = app->GetDataDirWString();
 			auto& game = GameManager::GetGameManager();
+			game->SetCountDown(true);
 			//game->SetGameStartFlag(true);
 			game->ResetCheckPoint();
 			auto& obj = StageCreateManager::GetStageCreateManager();
