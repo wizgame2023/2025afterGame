@@ -49,14 +49,16 @@ namespace basecross {
 
 	void MyGameObject::SetSEVolume(const float volume)
 	{
-		auto& gameManager = GameManager::GetGameManager();
-		gameManager->SetSEVolume(volume);
+		//auto& gameManager = GameManager::GetGameManager();
+		//gameManager->SetSEVolume(volume);
+		m_SEVolume = volume;
 	}
 
 	float MyGameObject::GetSEVolume() const
 	{
-		auto& gameManager = GameManager::GetGameManager();
-		return gameManager->GetSEVolume();
+		//auto& gameManager = GameManager::GetGameManager();
+		//return gameManager->GetSEVolume();
+		return m_SEVolume;
 	}
 
 
