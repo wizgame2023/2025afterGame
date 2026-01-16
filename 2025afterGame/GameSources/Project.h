@@ -81,6 +81,7 @@
 #include "YuutaStage.h"
 #include "TitleStage.h"
 #include "SelectStage.h"
+#include "GameClearStage.h"
 ///////////////////////////////////////////////////
 
 // ステートインクルード

@@ -55,6 +55,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)UIManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WinMain.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)YuutaStage.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameClearStage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Actor.h" />
@@ -112,5 +113,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)TomokiStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)UIManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)YuutaStage.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameClearStage.h" />
   </ItemGroup>
 </Project>

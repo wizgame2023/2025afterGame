@@ -33,6 +33,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Enemy.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ErionStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FighterAircraftBase.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameClearStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)HpSprite.h" />
@@ -89,6 +90,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Enemy.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ErionStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FighterAircraftBase.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameClearStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)HpSprite.cpp" />

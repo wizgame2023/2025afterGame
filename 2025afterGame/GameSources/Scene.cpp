@@ -208,6 +208,10 @@ namespace basecross{
 			//セレクトステージのアクティブステージ設定
 			ResetActiveStage<SelectStage>();
 		}
+		if (event->m_MsgStr == L"ToGameClearStage") {
+			//ゲームクリアステージのアクティブステージ設定
+			ResetActiveStage<GameClearStage>();
+		}
 		//デバッグ用ステージ
 		if (event->m_MsgStr == L"ToErionStage") {
 			//セレクトステージのアクティブステージ設定
