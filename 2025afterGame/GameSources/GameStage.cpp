@@ -36,6 +36,7 @@ namespace basecross {
 			auto path = app->GetDataDirWString();
 			auto& game = GameManager::GetGameManager();
 			game->SetCountDown(true);
+			game->NowPhase();
 			//game->SetGameStartFlag(true);
 			game->ResetCheckPoint();
 			auto& obj = StageCreateManager::GetStageCreateManager();
@@ -87,6 +88,8 @@ namespace basecross {
 			obj->CreateWallObject();
 
 			obj->CreateInvisibleCollision();
+			//
+			//obj->CreateScoreObject();
 
 			// BGM、SE用のマネージャー作成
 			m_AudioManager = App::GetApp()->GetXAudio2Manager();
