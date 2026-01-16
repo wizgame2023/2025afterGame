@@ -237,7 +237,6 @@ namespace basecross {
 		// •œŠˆ‚Ü‚Å‚ÌŠÔæ“¾
 		m_timeOfReturn = m_enemyLock->GetTimeOfReturn();
 
-
 		// ©•ª‚ªŒ©‚¦‚È‚¢ó‘Ô‚É•ÏX‚·‚é
 		m_enemyLock->GetComponent<PNTStaticDraw>()->SetDrawActive(false);
 		// –³“Gó‘Ô‚ğƒIƒ“‚É‚·‚é
@@ -255,7 +254,7 @@ namespace basecross {
 		if (m_timeOfReturn <= m_countTimeOfReturn)
 		{
 			// •œŠˆˆ—
-			m_enemyLock->GetComponent<Transform>()->SetPosition(Vec3(0.0f, -10.0f, 0.0f));
+			m_enemyLock->SetPos(Vec3(0.0f, -10.0f, 0.0f));
 
 			// ©•ª‚ªŒ©‚¦‚éó‘Ô‚É•ÏX‚·‚é
 			m_enemyLock->GetComponent<PNTStaticDraw>()->SetDrawActive(true);
