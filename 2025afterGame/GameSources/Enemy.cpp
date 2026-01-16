@@ -52,7 +52,7 @@ namespace basecross {
 
 		// コリジョン追加
 		auto ptrCol = AddComponent<CollisionObb>();
-		ptrCol->SetDrawActive(false);
+		ptrCol->SetDrawActive(true);
 		//ptrCol->SetAfterCollision(AfterCollision::None);
 
 		// ドロー処理
@@ -80,8 +80,8 @@ namespace basecross {
 		// 初期化
 		m_hpCurrent = 30;
 		m_hpMax = 30;
-		m_timeOfReturn = 3.0f;
-		m_scoreCurrent = 10;
+		m_timeOfReturn = 5.0f;
+		m_scoreCurrent = 0;
 
 		// ステートマシン作成
 		m_stateMachine = unique_ptr<StateEnemyMachine>(new StateEnemyMachine(GetThis<MyGameObject>()));
@@ -155,10 +155,19 @@ namespace basecross {
 
 		// デバック用に弾を出す
 		m_countDebagBulletTime += m_delta;
+		auto stateName = m_stateMachine->GetCurrentStateWString();
+
 		if (m_countDebagBulletTime >= 0.5f)
 		{
-			GetStage()->AddGameObject<Bullet>(GetThis<Actor>());
+			if (stateName == L"Tracking")
+			{
+				GetStage()->AddGameObject<Bullet>(GetThis<Actor>());
+			}
 			m_countDebagBulletTime = 0.0f;
+		}
+		if (stateName == L"Respawn")
+		{
+			m_moveVec = Vec3(0.0f);
 		}
 
 		// 追いかけるものが消えていたらUpdateしないようにする
