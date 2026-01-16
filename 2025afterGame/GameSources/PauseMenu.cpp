@@ -186,7 +186,7 @@ namespace basecross{
 		auto& gameManager = GameManager::GetGameManager();
 		float BGMVolume = gameManager->GetBGMVolume();
 		DebugLog(L"\nBGMVolume : ", BGMVolume);
-		DebugLog(L"SEVolume : ", m_SEVolume);
+		DebugLog(L"SEVolume : ", GetSEVolume());
 	}
 
 	// ==============================================================================
@@ -378,6 +378,8 @@ namespace basecross{
 		if (pressAButton || pressBButton)
 		{
 			m_pauseState = PauseMenuState::VolumeMenu;
+
+			// SavePauseData();
 		}
 
 	}
@@ -490,6 +492,7 @@ namespace basecross{
 
 	void PauseMenu::StartPause()
 	{
+		SetPauseFlag(true);
 		m_crntMainSelect = PauseMainMenuSelect::Resume;
 		m_pauseState = PauseMenuState::MainMenu;
 		IsVisibleMenuSprites(m_pauseMainMenuSprites, true);
