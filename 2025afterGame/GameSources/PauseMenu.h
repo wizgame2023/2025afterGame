@@ -15,7 +15,7 @@ namespace basecross{
 		{
 			Resume,		// 再開
 			Restart,	// リスタート
-			Setting,		// 設定
+			Setting,	// 設定
 			Exit,		// タイトルへ戻る
 			Max			// 項目の最大数
 		};
