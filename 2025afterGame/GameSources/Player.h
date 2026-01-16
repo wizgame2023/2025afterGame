@@ -110,7 +110,6 @@ namespace basecross{
 		*/
 		void PlayerGravity(float deltaTime);
 
-
 		/*
 		@brief プレイヤーのバリア生成処理
 		@details Xボタン入力時にバリアオブジェクトを生成・有効化する。

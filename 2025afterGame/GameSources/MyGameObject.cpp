@@ -63,13 +63,13 @@ namespace basecross {
 	// ポーズフラグのゲッタ
 	bool MyGameObject::GetPauseFlag()
 	{
-		return m_PauseFlag;
+		return m_pauseFlag;
 	}
 
 	// ポーズフラグのセッタ
 	void MyGameObject::SetPauseFlag(bool Pause)
 	{
-		m_PauseFlag = Pause;
+		m_pauseFlag = Pause;
 		return;
 	}
 

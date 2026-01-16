@@ -28,33 +28,35 @@ namespace basecross{
 		const wstring& uiTitlePath = path + L"UI/Title/";
 		const wstring& uiMenuPath = path + L"UI/Menu/";
 		const wstring& uiScorePath = path + L"UI/Score/";
+		const wstring& uiStagePath = path + L"UI/Stage/";
+		const wstring& uiItemPath = path + L"UI/HealItem/";
 		const wstring& efkPath = path + L"Effects/";
-    const wstring& soundPath = path + L"Sounds/";
+		const wstring& soundPath = path + L"Sounds/";
 
 		//Textures //////////////////////////////////////////////
 		auto modelTex = modelPath + L"diffuse.png";
-		App::GetApp()->RegisterTexture(L"diffuse_TX", modelTex);
+		app->RegisterTexture(L"diffuse_TX", modelTex);
 
 		auto strTexture = texPath + L"TestTex.png";
-		App::GetApp()->RegisterTexture(L"TestTex", strTexture);
+		app->RegisterTexture(L"TestTex", strTexture);
 
 		modelTex = modelPath + L"desk.png";
-		App::GetApp()->RegisterTexture(L"DeskTex", modelTex);
+		app->RegisterTexture(L"DeskTex", modelTex);
 
 		modelTex = modelPath + L"Chair.png";
-		App::GetApp()->RegisterTexture(L"ChairTex", modelTex);
+		app->RegisterTexture(L"ChairTex", modelTex);
 
 		strTexture = texPath + L"StageWall.png";
-		App::GetApp()->RegisterTexture(L"StageWall", strTexture);
+		app->RegisterTexture(L"StageWall", strTexture);
 
 		strTexture = texPath + L"StageCeiling.jpg";
-		App::GetApp()->RegisterTexture(L"StageCeiling", strTexture);
+		app->RegisterTexture(L"StageCeiling", strTexture);
 
 		modelTex = modelPath + L"floar.png";
-		App::GetApp()->RegisterTexture(L"StageFloarTex", modelTex);
+		app->RegisterTexture(L"StageFloarTex", modelTex);
 
 		modelTex = modelPath + L"bed.png";
-		App::GetApp()->RegisterTexture(L"BedTex", modelTex);
+		app->RegisterTexture(L"BedTex", modelTex);
 
 		// Model /////////////////////////////////////////////////
 		// Player
@@ -76,25 +78,31 @@ namespace basecross{
 
 		// UI /////////////////////////////////////////////////
 		auto numberSprite = uiPlayerPath + L"Number.png";
-		App::GetApp()->RegisterTexture(L"Number", numberSprite);
+		app->RegisterTexture(L"Number", numberSprite);
     
 		auto hp = uiPlayerPath + L"Hp.png";
-		App::GetApp()->RegisterTexture(L"HP", hp);
+		app->RegisterTexture(L"HP", hp);
     
 		auto colon = uiPlayerPath + L"Colon.png";
-		App::GetApp()->RegisterTexture(L"Colon", colon);
+		app->RegisterTexture(L"Colon", colon);
     
 		auto startTex = uiTitlePath + L"PressA.png";
-		App::GetApp()->RegisterTexture(L"Start_TX", startTex);
+		app->RegisterTexture(L"Start_TX", startTex);
 
 		startTex = uiTitlePath + L"rogo.png";
 		App::GetApp()->RegisterTexture(L"rogo_TX", startTex);
 
 		auto remainingRounds = uiPlayerPath + L"RemainingRounds.png";
-		App::GetApp()->RegisterTexture(L"RemainingRounds", remainingRounds);
+		app->RegisterTexture(L"RemainingRounds", remainingRounds);
 
 		auto ScoreLow = uiScorePath + L"bear.png";
 		App::GetApp()->RegisterTexture(L"Bear", ScoreLow);
+
+		auto RepairItem = uiItemPath + L"HpRecovery.png";
+		App::GetApp()->RegisterTexture(L"Repair", RepairItem);
+
+		auto AmmoItem = uiItemPath + L"BulletRecovery.png";
+		App::GetApp()->RegisterTexture(L"Reload", AmmoItem);
 
 		// MenuUI ///////////////////////
 		auto pauseMenuMain = uiMenuPath + L"PauseMenuMain.png";
@@ -109,6 +117,15 @@ namespace basecross{
 		auto menuBackground = uiMenuPath + L"PauseMenuBackGround.png";
 		App::GetApp()->RegisterTexture(L"PauseMenuBackGround_TX", menuBackground);
 
+		// StageUI////////////////////////
+
+		auto stageTex = uiStagePath + L"GameStart.png";
+		App::GetApp()->RegisterTexture(L"GameStart_TX", stageTex);
+
+		uiStagePath + L"GameEnd.png";
+		App::GetApp()->RegisterTexture(L"GameEnd_TX", stageTex);
+
+
 		// Effect /////////////////////////////////////////////
 		EffectManager::Instance().CreateEfkInterface();
 		EffectManager::Instance().RegisterEffect(L"Fire", efkPath + L"Sword.efk");
@@ -122,7 +139,7 @@ namespace basecross{
 		//SE
 		wstring SEPath = soundPath + L"SE/";
 		app->RegisterWav(L"ButtonPushSE", SEPath + L"ButtonPush.wav");
-		app->RegisterWav(L"CoundDownSE", SEPath + L"CoundDown.wav");
+		app->RegisterWav(L"CountDownSE", SEPath + L"CountDown.wav");
 		app->RegisterWav(L"DengerSE", SEPath + L"Denger.wav");
 		app->RegisterWav(L"HealSE", SEPath + L"Heal.wav");
 		app->RegisterWav(L"ReloadSE", SEPath + L"Reload.wav"); 

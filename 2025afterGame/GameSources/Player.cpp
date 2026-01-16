@@ -68,6 +68,8 @@ namespace basecross {
 
 	void Player::OnUpdate()
 	{
+		if (GetPauseFlag()) return;
+
 		FighterAircraftBase::OnUpdate();
 
 		auto& app = App::GetApp();
@@ -457,33 +459,38 @@ namespace basecross {
 		// ----------------------------
 		const float slowFallSpeed = -3.0f;   // 最初の落下速度
 		const float fastFallSpeed = -9.0f;   // 後半の落下速度
-		const float slowFallTime = 4.0f;    // ゆっくり落ちる時間（秒）
+		const float slowFallTime = 4.0f;     // ゆっくり落ちる時間
+
 
 		if (isFlyInput)
 		{
-			// Aを押している間は高度維持
+			// A押下中は完全停止
 			verticalVelocity = 0.0f;
-			fallTimer = 0.0f; // タイマーリセット
+			fallTimer = 0.0f;
+		}
+		else if (pos.y <= -14.0f)
+		{
+			verticalVelocity = 0.0f;
+			fallTimer = 0.0f;
 		}
 		else
 		{
-			// Aを離したらタイマー進行
+			// タイマー進行
 			fallTimer += deltaTime;
 
-			if (fallTimer < slowFallTime)
-			{
-				// 最初はゆっくり落ちる
-				verticalVelocity = slowFallSpeed;
-			}
-			else
-			{
-				// 一定時間後に急落下
-				verticalVelocity = fastFallSpeed;
-			}
+			// 0〜1 に正規化
+			float t = fallTimer / slowFallTime;
+			t = clamp(t, 0.0f, 1.0f);
+
+			// 重力を徐々に強くする
+			float gravity = lerp(slowFallSpeed, fastFallSpeed, t);
+
+			// 重力加速
+			verticalVelocity += gravity * deltaTime;
 		}
 
 		// ----------------------------
-		// 位置に反映
+		// 位置反映
 		// ----------------------------
 		pos.y += verticalVelocity * deltaTime;
 		transform->SetPosition(pos);
@@ -530,10 +537,10 @@ namespace basecross {
 		//「押した瞬間」だけ発射する
 		if (prevTrigger <= threshold && nowTrigger > threshold)
 		{
-			ptrMana->Start(L"ShotSE", 0, 1.0f);
-
 			if (m_bulletNumCurrentNow > 0)
 			{
+				ptrMana->Start(L"ShotSE", 0, 0.1f);
+
 				m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
 				m_bulletNumCurrentNow -= 1;
 			}
@@ -585,8 +592,6 @@ namespace basecross {
 			lstick = input->GetLStick2();
 		}
 	}
-
-
 }
 //end basecross
 

@@ -1,6 +1,6 @@
 /*!
 @file GameManager.cpp
-@brief �Q�[���������Ǘ�����}�l�[�W���[
+@brief ゲーム内部を管理するマネージャー
 */
 
 #include "stdafx.h"
@@ -22,17 +22,17 @@ namespace basecross {
 
 	unique_ptr<GameManager, GameManager::GameManagerDeleter> GameManager::m_GameManager;
 
-	// �V���O���g���ɂ�鐶��
+	// シングルトンによる生成
 	unique_ptr<GameManager, GameManager::GameManagerDeleter>& GameManager::CreateGameManager()
 	{
 		try
 		{
 			if (m_GameManager.get() == 0)
 			{
-				// �������쐬
+				// 自分を作成
 				m_GameManager.reset(new GameManager());
 
-				// ������
+				// 初期化
 				m_GameManager->OnCreate();
 			}
 			return m_GameManager;
@@ -45,60 +45,192 @@ namespace basecross {
 		return m_GameManager;
 	}
 
-	// ������n��
+	// 自分を渡す
 	unique_ptr<GameManager, GameManager::GameManagerDeleter>& GameManager::GetGameManager()
 	{
 		return m_GameManager;
 	}
 
 
-	// ����������
+	// 初期化処理
 	void GameManager::OnCreate()
 	{
-		// ���̓}�l�[�W���[�̍쐬
+		// 入力マネージャーの作成
 		InputManager::CreateInputManager();
 		ScoreManager::CreateScoreManager();
-		UIManager::CreateUIManager();
+		//UIManager::CreateUIManager();
 	}
 
-	// �X�V
+	// 更新
 	void GameManager::OnUpdate()
 	{
-		// �f���^�^�C���擾
+		// デルタタイム取得
 		auto& app = App::GetApp();
 		m_deltaTime = app->GetElapsedTime();
 
-		// �Q�[���o�ߎ��Ԃ��v��
+		// 現在使用しているステージを受け取る
+		m_currentStage = app->GetScene<Scene>()->GetActiveStage();
+
+		// ゲーム経過時間を計測
 		if (m_gameStartFlag)
 		{
 			m_timeGamePlaying += m_deltaTime;
 			m_timeLimit -= m_deltaTime;
 		}
 
-		// ���̓}�l�[�W���[�̍X�V
+		// カウントダウン処理
+		if (m_countDown && !m_gameStartFlag)
+		{
+			CountDown(true);
+		}
+  
+		NowPhase();
+
+		// 入力マネージャーの更新
 		InputManager::GetInputManager()->Update();
 
-		UIManager::GetUIManager()->OnUpdate();
 	}
 
-	// �������g�̔j������
+	// ゲーム開始のカウントダウン
+	// 引数１がどのときにカウントダウンをするかを伝える処理　tureがStart falseがEnd
+	void GameManager::CountDown(bool StartEnd)
+	{
+		m_countTimeGameStart += m_deltaTime;
+
+		// カウントダウンが終わったらゲームを開始する
+		if (m_gameStartPhase == GAMESTART_Start)
+		{
+			// ポーズ開始
+			Pose(true);
+			// 1を表示させるフェーズに移動
+			m_gameStartPhase = GAMESTART_CountDown_One;
+		}
+
+		if (m_gameStartPhase == GAMESTART_CountDown_One)
+		{
+			// 一秒置いた後にSEを鳴らす
+			if (m_countTimeGameStart >= 1.0f && m_countDownSEFlag)
+			{
+				// BGM、SE用のマネージャー作成
+				m_AudioManager = App::GetApp()->GetXAudio2Manager();
+				m_se = m_AudioManager->Start(L"CountDownSE", 0, 0.6f);
+				m_countDownSEFlag = false;// なんどもSEを鳴らさない
+
+			}
+
+			if (m_countTimeGameStart >= 2.0f)
+			{
+				// 2を表示させるフェーズに移動
+				m_gameStartPhase = GAMESTART_CountDown_Two;
+			}
+		}
+
+
+		if (m_gameStartPhase == GAMESTART_CountDown_Two)
+		{
+			if (m_countTimeGameStart >= 3.0f)
+			{
+				// 3を表示させるフェーズに移動
+				m_gameStartPhase = GAMESTART_CountDown_Three;
+			}
+		}
+
+		if (m_gameStartPhase == GAMESTART_CountDown_Three)
+		{
+			if (m_countTimeGameStart > 4.0f)
+			{
+				//Startを出すフェーズに移動
+				if (StartEnd)
+				{
+					m_startSprite = m_currentStage->AddGameObject<Sprite>(L"GameStart_TX", Vec2(500.0f, 250.0f));
+				}
+				else if(!StartEnd)
+				{
+					m_startSprite = m_currentStage->AddGameObject<Sprite>(L"GameEnd_TX", Vec2(500.0f, 250.0f));
+				}
+
+				m_gameStartPhase = GAMESTART_End;
+			}
+		}
+
+
+		if (m_gameStartPhase == GAMESTART_End)
+		{
+			//ある程度Startのテクスチャを見せたら
+			if (m_countTimeGameStart > 5.0f)
+			{
+				// ポーズ状態を解除する
+				auto test = 0;
+				m_countDown = false; // カウントダウンの使用状態を解除
+				m_countDownSEFlag = true; // SEも使用可能に
+				
+				// ポーズ解除
+				Pose(false);
+
+				// Startスプライトの削除
+				m_currentStage->RemoveGameObject<Sprite>(m_startSprite);
+			}
+		}
+
+	}
+
+	// ポーズ処理
+    // 引数１　ポーズ状態にするかの確認trueがポーズにするfalseで解除
+	void GameManager::Pose(bool OnOff)
+	{
+		// ポーズ開始
+		if (OnOff)
+		{
+			// MyGameObjectの物を全て停止する
+			auto objVec = m_currentStage->GetGameObjectVec();
+			//アクターを継承しているものだけ取得
+			for (auto obj : objVec)
+			{
+				auto myGameObjectCast = dynamic_pointer_cast<MyGameObject>(obj);
+
+				//アクターを継承しているオブジェクト停止
+				if (myGameObjectCast)
+				{
+					myGameObjectCast->SetPauseFlag(true);// ポーズ状態にする
+					m_myGameObjectVec.push_back(myGameObjectCast);
+				}
+			}
+		}
+
+		// ポーズ終了
+		if (!OnOff)
+		{
+			for (auto obj : m_myGameObjectVec)
+			{
+				auto gameObjectCheck = obj.lock();
+				// ポーズ状態終了によって動けるようになる
+				if (gameObjectCheck)
+				{
+					gameObjectCheck->SetPauseFlag(false);
+				}
+			}
+		}
+
+	}
+
+	// 自分自身の破棄処理
 	void GameManager::DeleteGameManager()
 	{	
-		// �q�N���X�}�l�[�W���[�̔j��
+		// 子クラスマネージャーの破棄
 		DeleteChildManager();
 
-		// �������g�̔j��
+		// 自分自身の破棄
 		m_GameManager.reset();
 	}
 
-	// �q�}�l�[�W���[�̔j������
+	// 子マネージャーの破棄処理
 	void GameManager::DeleteChildManager()
 	{
-		// ���̓}�l�[�W���[�̔j��
+		// 入力マネージャーの破棄
 		InputManager::DeleteInputManager();
 	}
 
-	// DeltaTime�̃Q�b�^
+	// DeltaTimeのゲッタ
 	float GameManager::GetDeltaTime()
 	{
 		return m_deltaTime;
@@ -114,47 +246,52 @@ namespace basecross {
 		m_gameStageNow = gameStageNow;
 	}
 
-	// m_gameStartFlag�̃Q�b�^
+	// m_gameStartFlagのゲッタ
 	bool GameManager::GetGameStartFlag()
 	{
 		return m_gameStartFlag;
 	}
 
-	// m_gameStartFlag�̃Z�b�^
-	// ������ �Q�[�����J�n���Ă��邩�̃t���O
+	// m_gameStartFlagのセッタ
+	// 第一引数 ゲームが開始しているかのフラグ
 	void GameManager::SetGameStartFlag(bool gameStartFlag)
 	{
 		m_gameStartFlag = gameStartFlag;
 	}
 
-	// timeGamePlaying�̃Q�b�^
+	// timeGamePlayingのゲッタ
 	float GameManager::GetTimeGamePlaying()
 	{
 		return m_timeGamePlaying;
 	}
 
-	// m_checkPoints�̃Q�b�^
-	// ������ ���Ԗڂ̃`�F�b�N�|�C���g���󂯎�邩�̔ԍ�
+	// m_checkPointsのゲッタ
+	// 第一引数 何番目のチェックポイントを受け取るかの番号
 	shared_ptr<CheckPoint> GameManager::GetCheckPoint(int number)
 	{
-		// �����A�z��O���擾���悤�Ƃ��Ă�����Ԉ���Ă���ƃG���[���o��
+		// もし、配列外を取得しようとしていたら間違っているとエラーを出す
 		if (number > m_checkPoints.size() - 1 || number < 0)
 		{
 			throw BaseException
-			(
-				L"�z��O�̕����w�肵�悤�Ƃ��Ă��܂��B",
+			{
+				L"Array Out of range",
 				L"if(number > m_checkPoints.size() - 1 || number < 0)",
 				L"GameManager::GetCheckPoint(int number)"
-			);
+			};
+
+			// ↓これにしたいのにエラーが出てしまうため英文にしている
+				//L"配列外の物を指定しようとしています。",
+				//L"if(number > m_checkPoints.size() - 1 || number < 0)",
+				//L"GameManager::GetCheckPoint(int number)"
 		}
 
 		return m_checkPoints[number];
 	}
 
-	// m_checkPoints�̒ǉ��֐�
+	// m_checkPointsの追加関数
 	void GameManager::AddCheckPoint()
 	{
-		// �X�e�[�W���擾���Ă��琶������
+		// ステージを取得してから生成する
 		auto stage = App::GetApp()->GetScene<Scene>()->GetActiveStage();
 		if (!dynamic_pointer_cast<GameStage>(stage))
 		{
@@ -162,20 +299,20 @@ namespace basecross {
 		}
 		auto addCheckPointObj = stage->AddGameObject<CheckPoint>();
 
-		// �`�F�b�N�|�C���g�Ǘ��z��ɒǉ�
+		// チェックポイント管理配列に追加
 		m_checkPoints.push_back(addCheckPointObj);
 
-		// ���������I�u�W�F�N�g�Ɏ����̔z��ԍ���n��
+		// 生成したオブジェクトに自分の配列番号を渡す
 		addCheckPointObj->SetCheckPointID(m_checkPoints.size());
 	}
 
-	// m_chackPoints�̃T�C�Y�擾
+	// m_chackPointsのサイズ取得
 	int GameManager::GetChackPointsSize()
 	{
 		return m_checkPoints.size();
 	}
 
-	// �`�F�b�N�|�C���g�z��̏�����
+	// チェックポイント配列の初期化
 	void GameManager::ResetCheckPoint()
 	{
 		m_checkPoints.clear();
@@ -184,6 +321,89 @@ namespace basecross {
 	float GameManager::GetTimeLimit()
 	{
 		return m_timeLimit;
+	}
+
+	// カウントダウンを開始するフラグのセッタ
+	void GameManager::SetCountDown(bool onOff)
+	{
+		m_countDown = onOff;
+  }
+  
+	void GameManager::ChangePhase(GamePhase nowPhase)
+	{
+		m_phase = nowPhase;
+
+		if (m_phase == GamePhase::Score)
+		{
+			m_createScoreObj = false;
+			m_scoreObjecCout = 0;
+		}
+		else if (m_phase == GamePhase::Item)
+		{
+			m_ItemPhaseLimit = 5.0f;
+		}
+	}
+
+	void GameManager::NowPhase()
+	{
+		auto& app = App::GetApp();
+		auto scene = app->GetScene<Scene>();
+		auto stage = scene->GetActiveStage();
+		auto& obj = StageCreateManager::GetStageCreateManager();
+
+		if (dynamic_pointer_cast<TitleStage>(stage) != nullptr || dynamic_pointer_cast<SelectStage>(stage) != nullptr) return;
+
+		if (m_phase == GamePhase::Score)
+		{	
+			if (!m_createScoreObj)
+			{
+				obj->CreateScoreObject();
+				m_createScoreObj = true;
+			}
+
+			if (m_phase == GamePhase::Score && m_scoreObjecCout == 0)
+			{
+				ChangePhase(GamePhase::Item);
+			}
+		}
+
+		if(m_phase == GamePhase::Item)
+		{
+			if (m_itemObj)
+			{
+				obj->CreateAmmoObject();
+				obj->CreateItemObject();
+				m_itemObj = false;
+			}
+
+			m_ItemPhaseLimit -= 1.0f * m_deltaTime;
+
+			if (m_ItemPhaseLimit <= 0.0f)
+			{
+				m_itemObj = true;
+				ChangePhase(GamePhase::Score);
+			}
+		}
+	}
+
+	void GameManager::AddscoreObjecCout()
+	{
+		m_scoreObjecCout++;
+	}
+
+	void GameManager::RemoveScoreObjectCout()
+	{
+		m_scoreObjecCout--;
+	}
+
+	void GameManager::SetCreateScoreObjFlag(bool createFlag)
+	{
+		m_createScoreObj = createFlag;
+	}
+
+	bool GameManager::GetCreateScoreObjFlag()
+	{
+		return m_createScoreObj;
 	}
 
 }
