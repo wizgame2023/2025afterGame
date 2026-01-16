@@ -349,6 +349,7 @@ namespace basecross {
 		auto& app = App::GetApp();
 		auto scene = app->GetScene<Scene>();
 		auto stage = scene->GetActiveStage();
+		auto& obj = StageCreateManager::GetStageCreateManager();
 
 		if (dynamic_pointer_cast<TitleStage>(stage) != nullptr || dynamic_pointer_cast<SelectStage>(stage) != nullptr) return;
 
@@ -356,7 +357,7 @@ namespace basecross {
 		{	
 			if (!m_createScoreObj)
 			{
-				dynamic_pointer_cast<GameStage>(stage)->CreateScoreObject();
+				obj->CreateScoreObject();
 				m_createScoreObj = true;
 			}
 
@@ -368,10 +369,18 @@ namespace basecross {
 
 		if(m_phase == GamePhase::Item)
 		{
+			if (m_itemObj)
+			{
+				obj->CreateAmmoObject();
+				obj->CreateItemObject();
+				m_itemObj = false;
+			}
+
 			m_ItemPhaseLimit -= 1.0f * m_deltaTime;
 
 			if (m_ItemPhaseLimit <= 0.0f)
 			{
+				m_itemObj = true;
 				ChangePhase(GamePhase::Score);
 			}
 		}
