@@ -73,6 +73,7 @@ namespace basecross {
 
 		// m_posのゲッタ
 		Vec3 GetPos();
+		void SetPos(Vec3 pos);
 		// m_qtのゲッタ
 		Quat GetQt();
 		// m_rotのゲッタ
