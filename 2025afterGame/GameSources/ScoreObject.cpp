@@ -51,7 +51,7 @@ namespace basecross{
 
 		//コリジョンの設定
 		auto ptrCol = AddComponent<CollisionObb>();
-		ptrCol->SetDrawActive(false);
+		ptrCol->SetDrawActive(true);
 		ptrCol->SetAfterCollision(AfterCollision::None); // 物理判定無し
 
 		//ビルボードの生成
@@ -66,13 +66,16 @@ namespace basecross{
 		{
 			// BGM、SE用のマネージャー作成
 			auto m_AudioManager = App::GetApp()->GetXAudio2Manager();
-			m_AudioManager->Start(L"GetScoreSE", 1, 1.0f);
+			m_AudioManager->Start(L"GetScoreSE", 0, 1.0f);
 
 			auto& score = ScoreObjectManager::GetScoreObjectManager();
 			//score->RemoveObject();
 			body->AddScoreCurrent(m_score);
 			gameManager->RemoveScoreObjectCout();
 			GetStage()->RemoveGameObject<ScoreObject>(GetThis<ScoreObject>());
+			m_billBoard = nullptr;
+			//GetStage()->RemoveGameObject<BillBoard>(m_billBoard);
+
 		}
 	}
 

@@ -17,9 +17,9 @@ namespace basecross {
 
 		// 追いかける目標のオブジェクト
 		weak_ptr<Actor> m_trackingObj;
-		shared_ptr<Actor> m_trakingObjLock;
+		//shared_ptr<Actor> m_trakingObjLock;
 
-		float m_speed = 1.5f; // スピード
+		float m_speed = 3.0f; // スピード
 
 		// X軸に向いている方向
 		float m_pitchAngle;
@@ -41,6 +41,12 @@ namespace basecross {
 		Vec3 m_moveVec;
 
 		unique_ptr<StateEnemyMachine> m_stateMachine; // ステートマシン
+
+
+		// 緊急処置
+		float m_timeOfPlayerLock;
+		bool m_playerLock;
+
 
 	public:
 		// 今後は使わない

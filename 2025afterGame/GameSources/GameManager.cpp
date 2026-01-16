@@ -59,6 +59,8 @@ namespace basecross {
 		InputManager::CreateInputManager();
 		ScoreManager::CreateScoreManager();
 		//UIManager::CreateUIManager();
+
+		m_gameStartFlag = false;
 	}
 
 	// 更新
@@ -113,7 +115,7 @@ namespace basecross {
 			{
 				// BGM、SE用のマネージャー作成
 				m_AudioManager = App::GetApp()->GetXAudio2Manager();
-				m_se = m_AudioManager->Start(L"CountDownSE", 0, 0.6f);
+				m_se = m_AudioManager->Start(L"CountDownSE", 0, 1.0f);
 				m_countDownSEFlag = false;// なんどもSEを鳴らさない
 
 			}
@@ -163,6 +165,7 @@ namespace basecross {
 				auto test = 0;
 				m_countDown = false; // カウントダウンの使用状態を解除
 				m_countDownSEFlag = true; // SEも使用可能に
+				m_gameStartFlag = true;
 				
 				// ポーズ解除
 				Pose(false);
@@ -274,7 +277,7 @@ namespace basecross {
 		{
 			throw BaseException
 			{
-				L"Array Out of range",
+				L"配列外の物を指定しようとしています。\",
 				L"if(number > m_checkPoints.size() - 1 || number < 0)",
 				L"GameManager::GetCheckPoint(int number)"
 			};
@@ -327,7 +330,7 @@ namespace basecross {
 	void GameManager::SetCountDown(bool onOff)
 	{
 		m_countDown = onOff;
-  }
+	}
   
 	void GameManager::ChangePhase(GamePhase nowPhase)
 	{
@@ -384,6 +387,11 @@ namespace basecross {
 				ChangePhase(GamePhase::Score);
 			}
 		}
+	}
+
+	GamePhase GameManager::GetCurrentPhase()
+	{
+		return m_phase;
 	}
 
 	void GameManager::AddscoreObjecCout()
