@@ -113,18 +113,25 @@ namespace basecross {
         float totalWidth = m_size.x * str.size();
 
         // 桁数が変わったらスプライト作り直し
-        if (m_digits.size() != str.size()) {
+        if (m_digits.size() != str.size())
+        {
             // 既存の桁を削除
-            for (auto& obj : m_digits) {
+            for (auto& obj : m_digits)
+            {
                 obj->MyDestroy();
             }
             m_digits.clear();
             m_digits.reserve(str.size());
 
             // 新しい桁Spriteを生成
-            for (int i = 0; i < str.size(); i++) {
+            for (int i = 0; i < str.size(); i++) 
+            {
+                float x = m_pos.x + (i * m_size.x) - totalWidth + m_size.x;
+
+                x = round(x);
+
                 Vec3 digitPos = Vec3(
-                    m_pos.x + (i * m_size.x) - totalWidth + m_size.x,
+                    x,
                     m_pos.y,
                     m_pos.z
                 );
@@ -145,39 +152,9 @@ namespace basecross {
         for (int i = 0; i < str.size(); i++)
         {
             int value = str[i] - L'0';
-            value = clamp(value, 0, 9);
 
-            const float texWidth = 512.0f;   // 数字テクスチャの横幅(px)
-            const float digitCount = 10.0f;
-
-            float digitWidth = texWidth / digitCount;   // 51.2px
-
-            // ピクセル境界にスナップ
-            float px0 = round(digitWidth * value);
-            float px1 = round(digitWidth * (value + 1));
-
-            // UVに正規化
-            float u0 = px0 / texWidth;
-            float u1 = px1 / texWidth;
-
-            // 隣の数字がにじまないように 0.5px 内側へ
-            float halfPixel = 1.0f / texWidth;
-            u0 += halfPixel;
-            u1 -= halfPixel;
-
-            m_digits[i]->SetUVRect(Vec2(u0, 0.0f), Vec2(u1, 1.0f));
+            m_digits[i]->SetDigit(value);
         }
-    }
-
-    void NumberSprite::SetDigit(int digit)
-    {
-        digit = clamp(digit, 0, 9);
-
-        float piece = 1.0f / 10.0f;
-        float u0 = piece * digit;
-        float u1 = piece * (digit + 1);
-
-      SetUVRect(Vec2(u0, 0.0f), Vec2(u1, 1.0f));
     }
 
     void NumberSprite::SetMyType(NumberType type)

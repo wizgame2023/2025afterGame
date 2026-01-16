@@ -66,6 +66,8 @@ namespace basecross
 	// 初期化処理
 	void UIManager::OnCreate()
 	{
+		CreateUI();
+		CreateGaugeUI();
 	}
 
 	// 更新
@@ -77,22 +79,8 @@ namespace basecross
 		auto& gameManager = GameManager::GetGameManager();
 		auto limit  = gameManager->GetTimeLimit();
 
-		// OnCreateだとSceneより速いのでエラーが上の方だと出る
-		if (dynamic_pointer_cast<TitleStage>(stage) != nullptr || dynamic_pointer_cast<SelectStage>(stage) != nullptr) return;
-
 		GetPlayerHP();
 		GetEnemies();
-
-		if (m_createUI == false)
-		{	
-			CreateUI();
-		}
-
-		if (!m_initialized)
-		{
-			CreateGaugeUI();
-			m_initialized = true;
-		}
 
 		// CreateRankingUI();
 
