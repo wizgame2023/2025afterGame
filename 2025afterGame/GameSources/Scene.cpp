@@ -116,6 +116,9 @@ namespace basecross{
 		auto stageTex = uiStagePath + L"GameStart.png";
 		App::GetApp()->RegisterTexture(L"GameStart_TX", stageTex);
 
+		uiStagePath + L"GameEnd.png";
+		App::GetApp()->RegisterTexture(L"GameEnd_TX", stageTex);
+
 
 		// Effect /////////////////////////////////////////////
 		EffectManager::Instance().CreateEfkInterface();
