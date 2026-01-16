@@ -11,10 +11,10 @@ namespace basecross {
 	class MyGameObject :public GameObject
 	{	
 	private:
-		bool m_PauseFlag = false;
 
 	protected:
 		float m_delta = 0.0f;
+		bool m_pauseFlag = false;
 
 		// =======================«ŠC“lì¬«========================== //
 
