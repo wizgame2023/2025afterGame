@@ -35,7 +35,7 @@ namespace basecross {
 			auto& app = App::GetApp();
 			auto path = app->GetDataDirWString();
 			auto& game = GameManager::GetGameManager();
-			game->SetGameStartFlag(true);
+			//game->SetGameStartFlag(true);
 			game->ResetCheckPoint();
 
 			auto backgroundPath = path + L"Backgrounds/";
@@ -83,7 +83,7 @@ namespace basecross {
 
 			CreateWallObject();
 
-			// CreateScoreObject();
+			CreateScoreObject();
 
 			CreateInvisibleCollision();
 
@@ -93,6 +93,8 @@ namespace basecross {
 
 			auto& gameManager = GameManager::GetGameManager();
 			gameManager->AddCheckPoint();
+			gameManager->SetCountDown(true);
+			gameManager->SetGameStageNow(1);
 			auto startCheckPoint = gameManager->GetCheckPoint(0);
 
 			auto enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
