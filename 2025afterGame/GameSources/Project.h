@@ -65,6 +65,7 @@
 #include "HpSprite.h"
 #include "NumberSprite.h"
 #include "PauseMenu.h"
+#include "RankingUI.h"
 ///////////////////////////////////////////////////
 
 // 親クラスがBillBoard////////////////////////////////

@@ -14,6 +14,7 @@ namespace basecross {
 
 	protected:
 		float m_delta = 0.0f;
+		bool m_pauseFlag = false;
 
 		// =======================↓海斗作成↓========================== //
 
@@ -51,6 +52,10 @@ namespace basecross {
 
 		float GetSEVolume() const { return m_SEVolume; };
 		void SetSEVolume(const float volume) { m_SEVolume = volume; };
+
+		// ポーズフラグのゲッタセッタ
+		virtual bool GetPauseFlag();
+		virtual void SetPauseFlag(bool Pause);
 	};
 }
 //end basecross

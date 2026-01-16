@@ -46,5 +46,18 @@ namespace basecross {
 		m_debugWss.clear();
 	}
 
+	// ポーズフラグのゲッタ
+	bool MyGameObject::GetPauseFlag()
+	{
+		return m_pauseFlag;
+	}
+
+	// ポーズフラグのセッタ
+	void MyGameObject::SetPauseFlag(bool Pause)
+	{
+		m_pauseFlag = Pause;
+		return;
+	}
+
 }
 //end basecross

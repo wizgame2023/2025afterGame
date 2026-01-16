@@ -43,6 +43,8 @@ namespace basecross{
 		PtrTrans->SetRotation(m_rot);
 		PtrTrans->SetPosition(m_pos);
 
+		auto& gameManager = GameManager::GetGameManager();
+		gameManager->AddscoreObjecCout();
 		//メッシュの描画
 		/*auto ptrDraw = AddComponent<PNTStaticDraw>();
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");*/
@@ -58,6 +60,7 @@ namespace basecross{
 
 	void ScoreObject::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
+		auto& gameManager = GameManager::GetGameManager();
 		auto body = dynamic_pointer_cast<FighterAircraftBase>(obj);
 		if (body)
 		{
@@ -68,6 +71,7 @@ namespace basecross{
 			auto& score = ScoreObjectManager::GetScoreObjectManager();
 			//score->RemoveObject();
 			body->AddScoreCurrent(m_score);
+			gameManager->RemoveScoreObjectCout();
 			GetStage()->RemoveGameObject<ScoreObject>(GetThis<ScoreObject>());
 		}
 	}

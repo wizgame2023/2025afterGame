@@ -66,6 +66,8 @@ namespace basecross
 	// 初期化処理
 	void UIManager::OnCreate()
 	{
+		CreateUI();
+		CreateGaugeUI();
 	}
 
 	// 更新
@@ -77,22 +79,10 @@ namespace basecross
 		auto& gameManager = GameManager::GetGameManager();
 		auto limit  = gameManager->GetTimeLimit();
 
-		// OnCreateだとSceneより速いのでエラーが上の方だと出る
-		if (dynamic_pointer_cast<TitleStage>(stage) != nullptr || dynamic_pointer_cast<SelectStage>(stage) != nullptr) return;
-
 		GetPlayerHP();
 		GetEnemies();
 
-		if (m_createUI == false)
-		{	
-			CreateUI();
-		}
-
-		if (!m_initialized)
-		{
-			GaugeUI();
-			m_initialized = true;
-		}
+		// CreateRankingUI();
 
 		UpdateTime(limit);
 
@@ -117,7 +107,7 @@ namespace basecross
 		auto bullet = stage->AddGameObject<NumberSprite>(Vec2(40.0f, 40.0f),Vec3(-550.0f, 330.0f, 0.0f));
 		bullet->SetMyType(NumberType::Bullet);
 
-		auto maxBullet = stage->AddGameObject<Sprite>(L"RemainingRounds",Vec2(200.0f, 60.0f), Vec3(-510.0f, 330.0f, 0.0f));
+		auto maxBullet = stage->AddGameObject<Sprite>(L"RemainingRounds",Vec2(200.0f, 60.0f), Vec3(-480.0f, 330.0f, 0.0f));
 		
 		auto score = stage->AddGameObject<NumberSprite>(Vec2(50.0f,50.0f),Vec3(600.0f, 370.0f, 0.0f));
 		score->SetMyType(NumberType::Score);
@@ -127,7 +117,7 @@ namespace basecross
 		m_createUI = true;
 	}
 
-	void UIManager::GaugeUI()
+	void UIManager::CreateGaugeUI()
 	{
 		auto& app = App::GetApp();
 		auto scene = app->GetScene<Scene>();
@@ -138,7 +128,21 @@ namespace basecross
 			auto enemyBillBoard = stage->AddGameObject<BillBoardGauge>(m_enemies[i], L"HP", 3, 2.0f, 1.5f, Vec3(2.0f, 0.2f, 5.0f),Col4(1.0f),i);
 			m_enemyGauges.push_back(enemyBillBoard);
 		}
+	}
 
+	void UIManager::CreateRankingUI()
+	{
+		auto& app = App::GetApp();
+		auto scene = app->GetScene<Scene>();
+		auto stage = scene->GetActiveStage();
+		const int playerCount = 1;
+
+		// auto rankingUI = stage->AddGameObject<RankingUI>(Vec2(50.0f, 50.0f), Vec3(0.0f, 100.0f, 0.0f), m_enemies.size() + playerCount);
+
+		wstringstream wss;
+		wss << m_enemies.size() + playerCount;
+
+		scene->SetDebugString(wss.str());
 	}
 
 	void UIManager::GetPlayerHP()

@@ -71,7 +71,7 @@ namespace basecross {
 		void SetScale(Vec3 scl);
 		Vec3 GetPosition() const;
 		void SetUVRect(const Vec2& topLeft, const Vec2& botRight);
-
+		void SetDigit(int digit);
 
 	};
 

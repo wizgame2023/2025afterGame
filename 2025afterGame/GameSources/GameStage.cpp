@@ -83,7 +83,7 @@ namespace basecross {
 
 			CreateWallObject();
 
-			CreateScoreObject();
+			// CreateScoreObject();
 
 			CreateInvisibleCollision();
 
@@ -103,8 +103,15 @@ namespace basecross {
 			throw;
 		}
 
+		UIManager::CreateUIManager();
 		auto mainCamMana = AddGameObject<MainCameraManager>();
 		SetSharedGameObject(L"MainCameraManager", mainCamMana);
+	}
+
+	void GameStage::OnUpdate()
+	{
+		UIManager::GetUIManager()->OnUpdate();
+
 	}
 
 	// Á‹Ž‚³‚ê‚éÛ‚Ìˆ—
@@ -254,6 +261,7 @@ namespace basecross {
 			//wstring Tag = Tokens[10];
 
 			score->CreateScoreObject(Pos, Rot, Siz);
+
 		}
 	}
 
