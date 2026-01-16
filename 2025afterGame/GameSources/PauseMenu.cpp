@@ -352,7 +352,7 @@ namespace basecross{
 		}
 		else if (m_pauseState == PauseMenuState::SESetting)
 		{
-			volumePtr = &m_SEVolume;
+			//volumePtr = &m_SEVolume;
 		}
 
 		// nullptrチェック
