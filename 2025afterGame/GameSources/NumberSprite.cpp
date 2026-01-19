@@ -20,7 +20,8 @@ namespace basecross {
         m_number(0),
         m_digit(0),
         m_prevNumber(-1),
-        m_pos(pos)
+        m_pos(pos),
+        m_layer(layer)
     {
     }
 
@@ -33,6 +34,9 @@ namespace basecross {
         Sprite::OnCreate();
         m_trans->SetPosition(m_pos.x, m_pos.y,m_pos.z);
         SetDrawActive(false);
+        SetLayer(99);
+
+        SetDrawLayer(m_layer);
     }
 
     void NumberSprite::OnUpdate()
@@ -41,6 +45,8 @@ namespace basecross {
         auto& uiManager = UIManager::GetUIManager();
         auto currentHP = uiManager->GetCurrentPlayerHP();
         auto& scoreManager = ScoreManager::GetScoreManager();
+
+        auto countDown = gameManger->GetGameStartCountDown();
 
         int value = 0;
 
@@ -63,6 +69,9 @@ namespace basecross {
 			break;
         case NumberType::Ranking:
             value = 100;
+            break;
+        case NumberType::Count:
+            value = countDown;
             break;
         }
 
@@ -165,6 +174,16 @@ namespace basecross {
     void NumberSprite::SetDigitCount(int digitCount)
     {
         m_digit = digitCount;   // ←桁数を指定（最低桁数）
+    }
+
+    void NumberSprite::OnDestory()
+    {
+        GetStage()->RemoveGameObject<NumberSprite>(GetThis<NumberSprite>());
+    }
+
+    void NumberSprite::SetLayer(int layer)
+    {
+        m_layer = layer;
     }
 }
 //end basecross

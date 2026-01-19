@@ -14,7 +14,8 @@ namespace basecross{
 		Bullet,
 		MaxBullet,
 		Score,
-		Ranking
+		Ranking,
+		Count,
 	};
 
 	class NumberSprite : public Sprite
@@ -26,6 +27,7 @@ namespace basecross{
 		int m_digit;          // 桁(0〜9)
 		int m_prevNumber;     // 初期値はありえない値にしておく
 		Vec3 m_pos;
+		int m_layer;
 		
 	public:
 		NumberSprite(
@@ -57,6 +59,10 @@ namespace basecross{
 
 		// 数字の固定表示桁数を設定する。桁数が不足する場合はゼロ埋めする
 		void SetDigitCount(int digitCount);
+
+		virtual void OnDestory();
+
+		void SetLayer(int layer);
 	};
 }
 //end basecross

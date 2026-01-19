@@ -80,6 +80,11 @@ namespace basecross {
 			m_timeLimit -= m_deltaTime;
 		}
 
+		if (m_timeLimit < 0.0f)
+		{
+			SetGameEnd(true);
+		}
+
 		// カウントダウン処理
 		if (m_countDown && !m_gameStartFlag)
 		{
@@ -117,7 +122,7 @@ namespace basecross {
 				m_AudioManager = App::GetApp()->GetXAudio2Manager();
 				m_se = m_AudioManager->Start(L"CountDownSE", 0, 1.0f);
 				m_countDownSEFlag = false;// なんどもSEを鳴らさない
-
+				SetCountEnd(true);
 			}
 
 			if (m_countTimeGameStart >= 2.0f)
@@ -413,7 +418,7 @@ namespace basecross {
 	{
 		return m_createScoreObj;
 	}
-
+	 
 }
 
 //end basecross
