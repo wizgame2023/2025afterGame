@@ -47,11 +47,20 @@ namespace basecross{
 		modelTex = modelPath + L"Chair.png";
 		app->RegisterTexture(L"ChairTex", modelTex);
 
+		modelTex = modelPath + L"tansu.png";
+		app->RegisterTexture(L"ShelfTex", modelTex);
+
 		strTexture = texPath + L"StageWall.png";
 		app->RegisterTexture(L"StageWall", strTexture);
 
+		strTexture = texPath + L"cloudwall.jpg";
+		app->RegisterTexture(L"CloudWall", strTexture);
+
 		strTexture = texPath + L"StageCeiling.jpg";
 		app->RegisterTexture(L"StageCeiling", strTexture);
+
+		strTexture = texPath + L"cloudceiling.jpg";
+		app->RegisterTexture(L"CloudCeiling", strTexture);
 
 		modelTex = modelPath + L"floar.png";
 		app->RegisterTexture(L"StageFloarTex", modelTex);
@@ -76,6 +85,8 @@ namespace basecross{
 		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"bed.bmf");
 		app->RegisterResource(L"Bed", modelMesh);
 
+		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"tansu.bmf");
+		app->RegisterResource(L"Shelf", modelMesh);
 
 		// UI /////////////////////////////////////////////////
 		auto numberSprite = uiPlayerPath + L"Number.png";

@@ -33,7 +33,7 @@ namespace basecross {
 		float m_deltaTime = 0.0f; // 次のフレームに移動するまでの時間
 		int m_gameStageNow = 0; // 現在のゲームステージの変数
 
-		bool m_gameStartFlag = false; // ゲームが開始しているかのフラグ
+		bool m_gameStartFlag; // ゲームが開始しているかのフラグ
 		float m_timeGamePlaying = 0.0f; // ゲームの経過時間
 		float m_timeLimit = 180.0f;
 		float m_ItemPhaseLimit = 5.0f;
@@ -65,7 +65,7 @@ namespace basecross {
 		};
 
 		// カウントダウンの状態
-		bool m_countDown = false;
+		bool m_countDown;
 		bool m_countDownSEFlag = true;
 		int m_gameStartPhase = GAMESTART_Start;
 		shared_ptr<Sprite> m_startSprite; // カウントダウン時のStartスプライト
@@ -144,6 +144,9 @@ namespace basecross {
 
 		// フェーズを切り替える条件
 		void NowPhase();
+
+		// 現在フェーズの取得
+		GamePhase GetCurrentPhase();
 
 		// ScoreObjectの生成した数を数える関数
 		void AddscoreObjecCout();

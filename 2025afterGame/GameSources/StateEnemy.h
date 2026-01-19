@@ -28,7 +28,7 @@ namespace basecross {
 	{
 	private:
 		weak_ptr<Actor> m_trackingObj; // 追いかける対象のポインタ
-		shared_ptr<Actor> m_trackingObjLock; // ロック解除した追いかける対象のポインタ
+		//shared_ptr<Actor> m_trackingObjLock; // ロック解除した追いかける対象のポインタ
 
 	public:
 		StateTrackingEnemy(const shared_ptr<MyGameObject>& parentObj);

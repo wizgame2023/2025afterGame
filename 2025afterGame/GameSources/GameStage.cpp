@@ -1,6 +1,6 @@
 /*!
 @file GameStage.cpp
-@brief ƒQ[ƒ€ƒXƒe[ƒWÀ‘Ì
+@brief ã‚²ãƒ¼ãƒ ã‚¹ãƒ†ãƒ¼ã‚¸å®Ÿä½“
 */
 
 #include "stdafx.h"
@@ -11,20 +11,20 @@
 namespace basecross {
 
 	//--------------------------------------------------------------------------------------
-	//	ƒQ[ƒ€ƒXƒe[ƒWƒNƒ‰ƒXÀ‘Ì
+	//	ã‚²ãƒ¼ãƒ ã‚¹ãƒ†ãƒ¼ã‚¸ã‚¯ãƒ©ã‚¹å®Ÿä½“
 	//--------------------------------------------------------------------------------------
 	void GameStage::CreateViewLight() {
 		const Vec3 eye(0.0f, 5.0f, -5.0f);
 		const Vec3 at(0.0f);
 		auto PtrView = CreateView<SingleView>();
-		//ƒrƒ…[‚ÌƒJƒƒ‰‚Ìİ’è
+		//ãƒ“ãƒ¥ãƒ¼ã®ã‚«ãƒ¡ãƒ©ã®è¨­å®š
 		auto PtrCamera = ObjectFactory::Create<Camera>();
 		PtrView->SetCamera(PtrCamera);
 		PtrCamera->SetEye(eye);
 		PtrCamera->SetAt(at);
-		//ƒ}ƒ‹ƒ`ƒ‰ƒCƒg‚Ìì¬
+		//ãƒãƒ«ãƒãƒ©ã‚¤ãƒˆã®ä½œæˆ
 		auto PtrMultiLight = CreateLight<MultiLight>();
-		//ƒfƒtƒHƒ‹ƒg‚Ìƒ‰ƒCƒeƒBƒ“ƒO‚ğw’è
+		//ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ãƒ©ã‚¤ãƒ†ã‚£ãƒ³ã‚°ã‚’æŒ‡å®š
 		PtrMultiLight->SetDefaultLighting();
 	}
 
@@ -35,7 +35,9 @@ namespace basecross {
 			auto& app = App::GetApp();
 			auto path = app->GetDataDirWString();
 			auto& game = GameManager::GetGameManager();
-			game->SetGameStartFlag(true);
+			game->SetCountDown(true);
+			game->NowPhase();
+			//game->SetGameStartFlag(true);
 			game->ResetCheckPoint();
 			auto& obj = StageCreateManager::GetStageCreateManager();
 			m_count = 0;
@@ -45,10 +47,10 @@ namespace basecross {
 				app->RegisterTexture(keyName.first, backgroundPath + keyName.first + L".bmp");
 			}
 
-			//ƒrƒ…[‚Æƒ‰ƒCƒg‚Ìì¬
+			//ãƒ“ãƒ¥ãƒ¼ã¨ãƒ©ã‚¤ãƒˆã®ä½œæˆ
 			CreateViewLight();
 
-			//”wŒi
+			//èƒŒæ™¯
 			AddGameObject<Background>();
 
 			int max = 0;
@@ -71,11 +73,11 @@ namespace basecross {
 			//SetSharedGameObject(L"Player2", player2);
 			//player2->GetComponent<Transform>()->SetPosition(Vec3(10.0f, 0.0f, 0.0f));
 
-			// ƒXƒe[ƒWƒIƒuƒW
+			// ã‚¹ãƒ†ãƒ¼ã‚¸ã‚ªãƒ–ã‚¸
 			wstring DataDir;
 			App::GetApp()->GetDataDirectory(DataDir);
 			DataDir += L"Stage/";
-			//CSVƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
+			//CSVãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿
 			m_objectFile.SetFileName(DataDir + L"positions.csv");
 			m_objectFile.ReadCsv();
 
@@ -86,13 +88,17 @@ namespace basecross {
 			obj->CreateWallObject();
 
 			obj->CreateInvisibleCollision();
+			//
+			//obj->CreateScoreObject();
 
-			// BGMASE—p‚Ìƒ}ƒl[ƒWƒƒ[ì¬
+			// BGMã€SEç”¨ã®ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ä½œæˆ
 			m_AudioManager = App::GetApp()->GetXAudio2Manager();
 			m_bgm = m_AudioManager->Start(L"StageBGM", XAUDIO2_LOOP_INFINITE, 0.6f);
 
 			auto& gameManager = GameManager::GetGameManager();
 			gameManager->AddCheckPoint();
+			gameManager->SetCountDown(true);
+			gameManager->SetGameStageNow(1);
 			auto startCheckPoint = gameManager->GetCheckPoint(0);
 
 			auto enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
@@ -114,7 +120,7 @@ namespace basecross {
 		auto& obj = StageCreateManager::GetStageCreateManager();
 	}
 
-	// Á‹‚³‚ê‚éÛ‚Ìˆ—
+	// æ¶ˆå»ã•ã‚Œã‚‹éš›ã®å‡¦ç†
 	void GameStage::OnDestroy()
 	{
 		m_AudioManager->Stop(m_bgm);
