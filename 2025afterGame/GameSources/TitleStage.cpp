@@ -72,7 +72,7 @@ namespace basecross {
 		//Aボタンを押すとシーン遷移
 		if (inputMgr->GetDownButton(L"A"))
 		{
-			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToSelectStage");
+			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
 			return;
 		}
 

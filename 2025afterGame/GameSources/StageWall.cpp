@@ -54,12 +54,13 @@ namespace basecross {
 		if (m_tag == L"StageWall")
 		{
 			ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
-			ptrDraw->SetTextureResource(L"StageWall");
+			ptrDraw->SetTextureResource(L"CloudWall");
 		}
 		else if (m_tag == L"StageCeiling")
 		{
 			ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 			ptrDraw->SetTextureResource(L"StageCeiling");
+			//ptrDraw->SetTextureResource(L"CloudCeiling");
 		}
 		else if (m_tag == L"StageFloar")
 		{

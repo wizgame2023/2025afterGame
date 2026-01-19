@@ -67,7 +67,7 @@ namespace basecross {
 		StateEnemy::OnEnter();
 
 		// 追いかける対象を取得
-		m_trackingObj = m_enemyLock->GetTrackingObj();
+		//m_trackingObj = m_enemyLock->GetTrackingObj();
 	}
 
 	void StateTrackingEnemy::OnUpdate()
@@ -77,9 +77,9 @@ namespace basecross {
 
 		// 追いかける対象の更新
 		m_trackingObj = m_enemyLock->GetTrackingObj();
-		m_trackingObjLock = m_trackingObj.lock();
+		auto trackingObjLock = m_trackingObj.lock();
 
-		if (!m_trackingObjLock)
+		if (!m_trackingObj.lock())
 		{
 			throw BaseException
 			{
@@ -93,7 +93,7 @@ namespace basecross {
 		auto parentPos = m_enemyLock->GetComponent<Transform>()->GetPosition();
 
 		// 自分と追尾対象の座標の差を計算する
-		auto goalPos = m_trackingObjLock->GetComponent<Transform>()->GetPosition();
+		auto goalPos = trackingObjLock->GetComponent<Transform>()->GetPosition();
 		Vec3 posPlayerDifference = CheckDifferencePos(goalPos);
 		posPlayerDifference.normalize(); // 正規化
 
@@ -237,7 +237,6 @@ namespace basecross {
 		// 復活までの時間取得
 		m_timeOfReturn = m_enemyLock->GetTimeOfReturn();
 
-
 		// 自分が見えない状態に変更する
 		m_enemyLock->GetComponent<PNTStaticDraw>()->SetDrawActive(false);
 		// 無敵状態をオンにする
@@ -255,7 +254,7 @@ namespace basecross {
 		if (m_timeOfReturn <= m_countTimeOfReturn)
 		{
 			// 復活処理
-			m_enemyLock->GetComponent<Transform>()->SetPosition(Vec3(0.0f, -10.0f, 0.0f));
+			m_enemyLock->SetPos(Vec3(0.0f, -10.0f, 0.0f));
 
 			// 自分が見える状態に変更する
 			m_enemyLock->GetComponent<PNTStaticDraw>()->SetDrawActive(true);

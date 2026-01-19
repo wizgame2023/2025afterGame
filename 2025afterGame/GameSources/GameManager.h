@@ -1,6 +1,6 @@
 /*!
 @file GameManaegr.h
-@brief ƒQ[ƒ€“à•”‚ğŠÇ—‚·‚éƒ}ƒl[ƒWƒƒ[
+@brief ã‚²ãƒ¼ãƒ å†…éƒ¨ã‚’ç®¡ç†ã™ã‚‹ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼
 */
 
 #pragma once
@@ -15,13 +15,14 @@ namespace basecross {
 	};
 
 	//--------------------------------------------------------------------------------------
-	//	ƒQ[ƒ€ƒXƒe[ƒWƒNƒ‰ƒX
+	//	ã‚²ãƒ¼ãƒ ã‚¹ãƒ†ãƒ¼ã‚¸ã‚¯ãƒ©ã‚¹
 	//--------------------------------------------------------------------------------------
 	class CheckPoint;
+	class Sprite;
 	class GameManager
 	{
 	private:
-		// íœˆ—
+		// å‰Šé™¤å‡¦ç†
 		struct GameManagerDeleter
 		{
 			void operator()(GameManager* p) { delete p; };
@@ -29,96 +30,160 @@ namespace basecross {
 
 		static unique_ptr<GameManager, GameManagerDeleter> m_GameManager;
 
-		float m_deltaTime = 0.0f; // Ÿ‚ÌƒtƒŒ[ƒ€‚ÉˆÚ“®‚·‚é‚Ü‚Å‚ÌŠÔ
-		int m_gameStageNow = 0; // Œ»İ‚ÌƒQ[ƒ€ƒXƒe[ƒW‚Ì•Ï”
+		float m_deltaTime = 0.0f; // æ¬¡ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã«ç§»å‹•ã™ã‚‹ã¾ã§ã®æ™‚é–“
+		int m_gameStageNow = 0; // ç¾åœ¨ã®ã‚²ãƒ¼ãƒ ã‚¹ãƒ†ãƒ¼ã‚¸ã®å¤‰æ•°
 
-		bool m_gameStartFlag = false; // ƒQ[ƒ€‚ªŠJn‚µ‚Ä‚¢‚é‚©‚Ìƒtƒ‰ƒO
-		float m_timeGamePlaying = 0.0f; // ƒQ[ƒ€‚ÌŒo‰ßŠÔ
+		bool m_gameStartFlag; // ã‚²ãƒ¼ãƒ ãŒé–‹å§‹ã—ã¦ã„ã‚‹ã‹ã®ãƒ•ãƒ©ã‚°
+		float m_timeGamePlaying = 0.0f; // ã‚²ãƒ¼ãƒ ã®çµŒéæ™‚é–“
 		float m_timeLimit = 180.0f;
 		float m_ItemPhaseLimit = 5.0f;
 		int m_scoreObjecCout = 0;
 		bool m_createScoreObj = false;
+		bool m_itemObj = true;
+		bool m_countEnd = false;
+		bool m_gameEnd = false;
+		float m_countTimeGameStart = 0.0f; //ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³ã®çµŒéæ™‚é–“
+		GamePhase m_phase = GamePhase::Score; // æœ€åˆã¯Itmeãƒ•ã‚§ãƒ¼ã‚ºã‹ã‚‰ 
 
-		GamePhase m_phase = GamePhase::Score; // Å‰‚ÍItmeƒtƒF[ƒY‚©‚ç 
+		shared_ptr<Stage> m_currentStage; // ç¾åœ¨ã‚¹ãƒ†ãƒ¼ã‚¸
 
-		// BGM‰¹—Ê
+		// BGMéŸ³é‡
 		float m_BGMVolume = 1.0f;
 
+		// ç¾åœ¨ãƒãƒ¼ã‚ºã—ã¦ã„ã‚‹MyGameObjectã‚’ä¿å­˜ã™ã‚‹é…åˆ—
+		vector<weak_ptr<MyGameObject>> m_myGameObjectVec;
+
+		//GameStartã®æµã‚Œ
+		enum GameStartCount
+		{
+			GAMESTART_Start,
+			GAMESTART_CountDown_One,
+			GAMESTART_CountDown_Two,
+			GAMESTART_CountDown_Three,
+			GAMESTART_CountDown_Start,
+			GAMESTART_End
+		};
+
+		// ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³ã®çŠ¶æ…‹
+		bool m_countDown;
+		bool m_countDownSEFlag = true;
+		int m_gameStartPhase = GAMESTART_Start;
+		shared_ptr<Sprite> m_startSprite; // ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³æ™‚ã®Startã‚¹ãƒ—ãƒ©ã‚¤ãƒˆ
+
+		// BGMã€SEç”¨
+		shared_ptr<XAudio2Manager> m_AudioManager;
+		shared_ptr<SoundItem> m_se;
 	public:
 		float GetBGMVolume() const { return m_BGMVolume; };
 		void SetBGMVolume(const float volume) { m_BGMVolume = volume; };
 
-		//\’z‚Æ”jŠü
+		//æ§‹ç¯‰ã¨ç ´æ£„
 		GameManager();
 		virtual ~GameManager();
 
-		// ƒQ[ƒ€ƒ}ƒl[ƒWƒƒ[‚ğì¬
+		// ã‚²ãƒ¼ãƒ ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã‚’ä½œæˆ
 		static unique_ptr<GameManager, GameManagerDeleter>& CreateGameManager();
 
-		// ƒQ[ƒ€ƒ}ƒl[ƒWƒƒ[‚ğæ“¾
+		// ã‚²ãƒ¼ãƒ ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã‚’å–å¾—
 		static unique_ptr<GameManager, GameManagerDeleter>& GetGameManager();
 
-		// ƒ`ƒFƒbƒNƒ|ƒCƒ“ƒg‚ğŠÇ—‚·‚éƒƒ“ƒo”z—ñ
+		// ãƒã‚§ãƒƒã‚¯ãƒã‚¤ãƒ³ãƒˆã‚’ç®¡ç†ã™ã‚‹ãƒ¡ãƒ³ãƒé…åˆ—
 		vector<shared_ptr<CheckPoint>> m_checkPoints;
 
-		// ”jŠüˆ—
+		// ç ´æ£„å‡¦ç†
 		void DeleteGameManager();
 
-		// qƒ}ƒl[ƒWƒƒ[”jŠüˆ—
+		// å­ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ç ´æ£„å‡¦ç†
 		void DeleteChildManager();
 
 
-		//‰Šú‰»
+		//åˆæœŸåŒ–
 		virtual void OnCreate();
-		virtual void OnUpdate();	
+		virtual void OnUpdate();
+
+		// ã‚²ãƒ¼ãƒ é–‹å§‹ã®ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
+		void CountDown(bool StartEnd);
+
+		// ãƒãƒ¼ã‚ºå‡¦ç†
+		void Pose(bool OnOff);
 		
-		// ƒfƒ‹ƒ^ƒ^ƒCƒ€‚ÌƒQƒbƒ^
+		// ãƒ‡ãƒ«ã‚¿ã‚¿ã‚¤ãƒ ã®ã‚²ãƒƒã‚¿
 		float GetDeltaTime();
 
-		// gameStageNow‚ÌƒQƒbƒ^
+		// gameStageNowã®ã‚²ãƒƒã‚¿
 		int GetGameStageNow();
-		// gameStageNow‚ÌƒZƒbƒ^
+		// gameStageNowã®ã‚»ãƒƒã‚¿
 		void SetGameStageNow(int gameStageNow);
 
-		// m_gameStartFlag‚ÌƒQƒbƒ^
+		// m_gameStartFlagã®ã‚²ãƒƒã‚¿
 		bool GetGameStartFlag();
-		// m_gameStartFlag‚ÌƒZƒbƒ^
+		// m_gameStartFlagã®ã‚»ãƒƒã‚¿
 		void SetGameStartFlag(bool gameStartFlag);
 
-		// m_timeGamePlaying‚ÌƒQƒbƒ^
+		// m_timeGamePlayingã®ã‚²ãƒƒã‚¿
 		float GetTimeGamePlaying();
 
-		// m_checkPoints‚ÌƒQƒbƒ^
+		// m_checkPointsã®ã‚²ãƒƒã‚¿
 		shared_ptr<CheckPoint> GetCheckPoint(int number);
-		// m_checkPoints‚Ì’Ç‰ÁŠÖ”
-		void AddCheckPoint();// ŒãXAƒ`ƒFƒbƒNƒ|ƒCƒ“ƒg‚ÌˆÊ’u‚Æ‚©‚ğw’è‚·‚éˆø”“ü‚ê‚½‚¢
+		// m_checkPointsã®è¿½åŠ é–¢æ•°
+		void AddCheckPoint();// å¾Œã€…ã€ãƒã‚§ãƒƒã‚¯ãƒã‚¤ãƒ³ãƒˆã®ä½ç½®ã¨ã‹ã‚’æŒ‡å®šã™ã‚‹å¼•æ•°å…¥ã‚ŒãŸã„
 
-		// m_chackPoints‚ÌƒTƒCƒYæ“¾
+		// m_chackPointsã®ã‚µã‚¤ã‚ºå–å¾—
 		int GetChackPointsSize();
 
-		// ƒ`ƒFƒbƒNƒ|ƒCƒ“ƒg”z—ñ‚Ì‰Šú‰»
+		// ãƒã‚§ãƒƒã‚¯ãƒã‚¤ãƒ³ãƒˆé…åˆ—ã®åˆæœŸåŒ–
 		void ResetCheckPoint();
 
-		// c‚èŠÔ‚Ìæ“¾
+		// æ®‹ã‚Šæ™‚é–“ã®å–å¾—
 		float GetTimeLimit();
+		// ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³ã‚’é–‹å§‹ã™ã‚‹ãƒ•ãƒ©ã‚°ã®ã‚»ãƒƒã‚¿
+		void SetCountDown(bool onOff);
 
-		// ƒtƒF[ƒY‚ÌØ‚è‘Ö‚¦‚Ég‚¤ŠÖ”
+		// ãƒ•ã‚§ãƒ¼ã‚ºã®åˆ‡ã‚Šæ›¿ãˆã«ä½¿ã†é–¢æ•°
 		void ChangePhase(GamePhase nowPhase);
 
-		// ƒtƒF[ƒY‚ğØ‚è‘Ö‚¦‚éğŒ
+		// ãƒ•ã‚§ãƒ¼ã‚ºã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹æ¡ä»¶
 		void NowPhase();
 
-		// ScoreObject‚Ì¶¬‚µ‚½”‚ğ”‚¦‚éŠÖ”
+		// ç¾åœ¨ãƒ•ã‚§ãƒ¼ã‚ºã®å–å¾—
+		GamePhase GetCurrentPhase();
+
+		// ScoreObjectã®ç”Ÿæˆã—ãŸæ•°ã‚’æ•°ãˆã‚‹é–¢æ•°
 		void AddscoreObjecCout();
 
-		// ScoreObject‚ğæ“¾‚µ‚½‚ÌŠÖ”
+		// ScoreObjectã‚’å–å¾—ã—ãŸæ™‚ã®é–¢æ•°
 		void RemoveScoreObjectCout();
 
-		// m_createScoreObj‚ÌƒZƒbƒ^
+		// m_createScoreObjã®ã‚»ãƒƒã‚¿
 		void SetCreateScoreObjFlag(bool createFlag);
 
-		// m_createScoreObj‚ÌƒQƒbƒ^
+		// m_createScoreObjã®ã‚²ãƒƒã‚¿
 		bool GetCreateScoreObjFlag();
+
+		int GetGameStartCountDown()
+		{
+			return m_gameStartPhase;
+		}
+
+		void SetCountEnd(bool flag)
+		{
+		   m_countEnd = flag;
+		}	
+		
+		bool GetCountEnd()
+		{
+		   return m_countEnd;
+		}
+
+		void SetGameEnd(bool flag)
+		{
+			m_gameEnd = flag;
+		}
+
+		bool  GetGameEnd()
+		{
+			return m_gameEnd;
+		}
 	};
 }
 //end basecross

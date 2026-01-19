@@ -21,7 +21,8 @@ namespace basecross
 		m_second(0),
 		m_bulletNumCurrentNow(0),
 		m_bulletNumMax(0),
-		m_playerScoreCurrent(0)
+		m_playerScoreCurrent(0),
+		m_createUIEnd(false)
 	{
 
 	}
@@ -87,6 +88,17 @@ namespace basecross
 		UpdateTime(limit);
 
 		GetPlayerScore();
+
+		if (gameManager->GetGameEnd() && !m_createUIEnd)
+		{
+			m_score = stage->AddGameObject<NumberSprite>(Vec2(150.0f, 150.0f), Vec3(0.0f, 0.0f, 0.0f));
+			m_score->SetMyType(NumberType::Score);
+			auto finalscore = stage->AddGameObject<Sprite>(L"Finalscore", Vec2(800.0f, 200.0f), Vec3(0.0f, 200.0f, 0.0f));
+
+			m_createUIEnd = true;
+		}
+
+
 	}
 
 	// Ž©•ªŽ©g‚Ì”jŠüˆ—
@@ -101,6 +113,7 @@ namespace basecross
 		auto& app = App::GetApp();
 		auto scene = app->GetScene<Scene>();
 		auto stage = scene->GetActiveStage();
+		auto& gameMana = GameManager::GetGameManager();
 
 		auto hp = stage->AddGameObject<HpSprite>(L"HP", Vec2(30.0f, 5.0f), Vec3(-600.0f, 375.0f, 0.0f));
 				
@@ -109,8 +122,28 @@ namespace basecross
 
 		auto maxBullet = stage->AddGameObject<Sprite>(L"RemainingRounds",Vec2(200.0f, 60.0f), Vec3(-480.0f, 330.0f, 0.0f));
 		
-		auto score = stage->AddGameObject<NumberSprite>(Vec2(50.0f,50.0f),Vec3(600.0f, 370.0f, 0.0f));
-		score->SetMyType(NumberType::Score);
+		//auto score = stage->AddGameObject<NumberSprite>(Vec2(50.0f,50.0f),Vec3(600.0f, 370.0f, 0.0f));
+		//score->SetMyType(NumberType::Score);
+
+		auto colon = stage->AddGameObject<Sprite>(L"Colon", Vec2(20.0f, 50.0f), Vec3(500.0f, 370.0f, 0.0f));
+
+
+		auto minutu = stage->AddGameObject<NumberSprite>(Vec2(50.0f, 50.0f), Vec3(450.0f, 370.0f, 0.0f));
+		minutu->SetMyType(NumberType::Minute);
+
+		auto second = stage->AddGameObject<NumberSprite>(Vec2(50.0f, 50.0f), Vec3(600.0f, 370.0f, 0.0f));
+		second->SetMyType(NumberType::Second);
+		second->SetDigitCount(2);
+
+		//auto count = stage->AddGameObject<NumberSprite>(Vec2(50.0f, 50.0f), Vec3(0.0f, 0.0f, 0.0f));
+		//count->SetMyType(NumberType::Count);
+
+		//if(!gameMana->GetCountEnd())
+		//{
+		//	//stage->RemoveGameObject<NumberSprite>(count);
+		//	//App::GetApp()->GetScene<Scene>()->Get
+		//	//count->RemoveComponent<NumberSprite>();
+		//}
 
 		auto pauseMenu = stage->AddGameObject<PauseMenu>();
 
