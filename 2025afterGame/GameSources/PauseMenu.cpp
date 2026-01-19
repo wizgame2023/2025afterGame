@@ -343,34 +343,24 @@ namespace basecross{
 	void PauseMenu::UpdateVolumeSettingMenu(InputManager& input)
 	{
 		auto& gameManager = GameManager::GetGameManager();
-		float globalBGMVolume = gameManager->GetBGMVolume();
-		// 値を直接操作(BGMとSEで分岐)
-		float* volumePtr = nullptr;
+		float crntVol = 0.0f;
+		function<void(float)> volSetter;	// 未定義
 		if (m_pauseState == PauseMenuState::BGMSetting)
 		{
-			volumePtr = &globalBGMVolume;
+			crntVol = gameManager->GetBGMVolume();
+			volSetter = [&](float v) { return gameManager->SetBGMVolume(v); };	// ここで関数を定義
 		}
 		else if (m_pauseState == PauseMenuState::SESetting)
 		{
-			//volumePtr = &m_SEVolume;
+			crntVol = gameManager->GetSEVolume();
+			volSetter = [&](float v) { return gameManager->SetSEVolume(v); };	// ここで関数を定義
 		}
-
-		// nullptrチェック
-		if (volumePtr == nullptr) return;
-		float& volume = *volumePtr;
 
 		auto leftStick = input.GetLStick();
 		if (leftStick != Vec2(0.0f))
 		{
-			if (m_pauseState == PauseMenuState::BGMSetting)
-			{
-				gameManager->SetBGMVolume(clamp(volume + leftStick.x * 0.01f, 0.0f, 1.0f));
-
-			}
-			else if (m_pauseState == PauseMenuState::SESetting)
-			{
-				volume = clamp(volume + leftStick.x * 0.01f, 0.0f, 1.0f);
-			}
+			float clampedVol = clamp(crntVol + leftStick.x * 0.01f, 0.0f, 1.0f);
+			volSetter(clampedVol);
 		}
 
 		bool pressAButton = input.GetDownButton(L"A");

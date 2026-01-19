@@ -47,8 +47,9 @@ namespace basecross {
 
 		shared_ptr<Stage> m_currentStage; // 現在ステージ
 
-		// BGM音量
+		// BGM,SE音量
 		float m_BGMVolume = 1.0f;
+		float m_SEVolume = 1.0f;
 
 		// 現在ポーズしているMyGameObjectを保存する配列
 		vector<weak_ptr<MyGameObject>> m_myGameObjectVec;
@@ -76,6 +77,8 @@ namespace basecross {
 	public:
 		float GetBGMVolume() const { return m_BGMVolume; };
 		void SetBGMVolume(const float volume) { m_BGMVolume = volume; };
+		float GetSEVolume() const { return m_SEVolume; };
+		void SetSEVolume(const float volume) { m_SEVolume = volume; };
 
 		//構築と破棄
 		GameManager();
