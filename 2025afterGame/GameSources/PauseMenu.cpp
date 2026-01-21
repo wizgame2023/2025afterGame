@@ -10,7 +10,8 @@ namespace basecross{
 	PauseMenu::PauseMenu(const shared_ptr<Stage>& stage) :
 		MyGameObject(stage),
 		m_crntMainSelect(PauseMainMenuSelect::Resume),
-		m_pauseState(PauseMenuState::False)
+		m_pauseState(PauseMenuState::False),
+		m_pauseData(PauseData{ 1.0f, 1.0f, false, L"A", L"RTrigger", L"Y" })
 	{
 	}
 
@@ -28,6 +29,7 @@ namespace basecross{
 		spInfo.size = Vec2(700.0f, 700.0f);
 		spInfo.pos = Vec3(0.0f, 0.0f, 0.0f);
 
+		// ƒƒjƒ…[”wŒi
 		m_pauseBackGroundSprite = m_stage->AddGameObject<Sprite>(
 			spInfo.textureName,
 			spInfo.size,
@@ -42,7 +44,7 @@ namespace basecross{
 
 		for (int i = 0; i < 4; i++)
 		{
-			spInfo.pos = Vec3(0.0f, 300.0f + (i * -100), 0.0f);
+			spInfo.pos = Vec3(0.0f, 280.0f + (i * -150), 0.0f);
 			spInfo.leftTopUV = Vec2(0.0f, mainUVHeight * i);
 			spInfo.rightBotUV = Vec2(1.0f, (mainUVHeight * (i + 1)));
 			PushBackPauseMenuSprite(m_pauseMainMenuSprites, spInfo);
@@ -55,14 +57,51 @@ namespace basecross{
 
 		for (int i = 0; i < 2; i++)
 		{
-			spInfo.pos = Vec3(0.0f, 300.0f + (i * -100), 0.0f);
+			// ‰¹—ÊAƒL[ƒRƒ“ƒtƒBƒO
+			spInfo.pos = Vec3(0.0f, 200.0f + (i * -250), 0.0f);
 			spInfo.leftTopUV = Vec2(0.0f, SettingUVHeight * i);
 			spInfo.rightBotUV = Vec2(1.0f, SettingUVHeight * (i + 1));
 			PushBackPauseMenuSprite(m_pauseSettingMenuSprites, spInfo);
 
+			// BGMASE
 			spInfo.leftTopUV = Vec2(0.0f, SettingUVHeight * i + 0.5f);
 			spInfo.rightBotUV = Vec2(1.0f, SettingUVHeight * (i + 1) + 0.5f);
 			PushBackPauseMenuSprite(m_pauseVolumeMenuSprites, spInfo);
+		}
+
+		// ƒ{ƒŠƒ…[ƒ€ƒQ[ƒW ------
+		spInfo.textureName = L"PauseMenuVolumeGauge_TX";
+		for (int i = 0; i < 2; i++)
+		{
+			// ƒ{ƒŠƒ…[ƒ€•¶š—ñ‚ÌˆÊ’u‚ğæ“¾
+			Vec3 volumeStringPos = m_pauseVolumeMenuSprites[i]->GetPosition();
+
+			// ƒQ[ƒW–{‘Ì
+			spInfo.pos = Vec3(0.0f, (volumeStringPos.y - 100), 0.0f);
+			spInfo.leftTopUV = Vec2(0.0f, 0.0f);
+			spInfo.rightBotUV = Vec2(0.75f, 1.0f);
+			spInfo.size = Vec2(300.0f, 100.0f);
+			PushBackPauseMenuSprite(m_pauseVolumeMenuSprites, spInfo);
+
+			// ƒXƒ‰ƒCƒ_[•”•ª
+			spInfo.pos = Vec3(135.0f, (volumeStringPos.y - 100), 0.0f);
+			spInfo.leftTopUV = Vec2(0.75f, 0.0f);
+			spInfo.rightBotUV = Vec2(1.0f, 1.0f);
+			spInfo.size = Vec2(100.0f, 100.0f);
+			PushBackPauseMenuSprite(m_pauseVolumeMenuSprites, spInfo);
+		}
+
+		// ƒL[ƒRƒ“ƒtƒBƒOƒƒjƒ…[ ------
+		spInfo.textureName = L"PauseMenuKeyConfig_TX";
+		spInfo.size = Vec2(200.0f, 100.0f);
+		constexpr float KeyConfigUVHeight = 1.0f / 4.0f;
+
+		for (int i = 0; i < 4; i++)
+		{
+			spInfo.pos = Vec3(0.0f, 300.0f + (i * -100), 0.0f);
+			spInfo.leftTopUV = Vec2(0.0f, mainUVHeight * i);
+			spInfo.rightBotUV = Vec2(1.0f, (mainUVHeight * (i + 1)));
+			PushBackPauseMenuSprite(m_pauseKeyConfigMenuSprites, spInfo);
 		}
 
 		// ƒ{ƒ^ƒ“ŒQ ------
@@ -82,6 +121,8 @@ namespace basecross{
 		}
 
 		m_pauseState = PauseMenuState::False;
+
+		m_gameManager = GameManager::GetGameManager().get();
 
 		// Å‰‚Í”ñ•\¦‚É‚µ‚Ä‚¨‚­
 		IsVisibleAllMenuSprites(false);
@@ -123,23 +164,23 @@ namespace basecross{
 
 	void PauseMenu::DebugLogs()
 	{
-		DebugLog(L"\n\n\n\nPauseState : ", to_wstring(static_cast<int>(m_pauseState)));
+		DebugLog(L"\n\n\n\nPauseState : ", L"");
 
 		if (m_pauseState == PauseMenuState::MainMenu)
 		{
 			switch (m_crntMainSelect)
 			{
 			case PauseMainMenuSelect::Resume:
-				DebugLog(L" Current Select: Resume ", to_wstring(static_cast<int>(m_crntMainSelect)));
+				DebugLog(L" Current Select: Resume ", L"");
 				break;
 			case PauseMainMenuSelect::Restart:
-				DebugLog(L" Current Select: Restart ", to_wstring(static_cast<int>(m_crntMainSelect)));
+				DebugLog(L" Current Select: Restart ", L"");
 				break;
 			case PauseMainMenuSelect::Setting:
-				DebugLog(L" Current Select: Setting ", to_wstring(static_cast<int>(m_crntMainSelect)));
+				DebugLog(L" Current Select: Setting ", L"");
 				break;
 			case PauseMainMenuSelect::Exit:
-				DebugLog(L" Current Select: Exit ", to_wstring(static_cast<int>(m_crntMainSelect)));
+				DebugLog(L" Current Select: Exit ", L"");
 				break;
 
 			}
@@ -149,10 +190,10 @@ namespace basecross{
 			switch (m_crntSettingSelect)
 			{
 			case PauseSettingMenuSelect::Volume:
-				DebugLog(L" Current Select: Volume ", to_wstring(static_cast<int>(m_crntSettingSelect)));
+				DebugLog(L" Current Select: Volume ", L"");
 				break;
 			case PauseSettingMenuSelect::KeyConfig:
-				DebugLog(L" Current Select: KeyConfig ", to_wstring(static_cast<int>(m_crntSettingSelect)));
+				DebugLog(L" Current Select: KeyConfig ", L"");
 				break;
 			}
 		}
@@ -161,10 +202,10 @@ namespace basecross{
 			switch (m_crntVolumeSelect)
 			{
 			case PauseVolumeMenuSelect::BGMVolume:
-				DebugLog(L" Current Select: BGM ", to_wstring(static_cast<int>(m_crntVolumeSelect)));
+				DebugLog(L" Current Select: BGM ", L"");
 				break;
 			case PauseVolumeMenuSelect::SEVolume:
-				DebugLog(L" Current Select: SE ", to_wstring(static_cast<int>(m_crntVolumeSelect)));
+				DebugLog(L" Current Select: SE ", L"");
 				break;
 			}
 		}
@@ -173,20 +214,30 @@ namespace basecross{
 			switch (m_crntKeyConfigSelect)
 			{
 			case PauseKeyConfigMenuSelect::UpDownSwap:
-				DebugLog(L" Current Select: UpDownSwap ", to_wstring(static_cast<int>(m_crntKeyConfigSelect)));
+				DebugLog(L" Current Select: UpDownSwap ", L"");
+				break;
+			case PauseKeyConfigMenuSelect::Accel:
+				DebugLog(L" Current Select: Accel ", L"");
 				break;
 			case PauseKeyConfigMenuSelect::Bullet:
-				DebugLog(L" Current Select: Bullet ", to_wstring(static_cast<int>(m_crntKeyConfigSelect)));
+				DebugLog(L" Current Select: Bullet ", L"");
 				break;
 			case PauseKeyConfigMenuSelect::ViewBehind:
-				DebugLog(L" Current Select: ViewBehind ", to_wstring(static_cast<int>(m_crntKeyConfigSelect)));
+				DebugLog(L" Current Select: ViewBehind ", L"");
 				break;
 			}
 		}
-		auto& gameManager = GameManager::GetGameManager();
-		float BGMVolume = gameManager->GetBGMVolume();
+		
+		float BGMVolume = m_gameManager->GetBGMVolume();
+		auto& input = InputManager::GetInputManager();
+		auto& pressedButton = input->GetPressedButton();
+
 		DebugLog(L"\nBGMVolume : ", BGMVolume);
 		DebugLog(L"SEVolume : ", GetSEVolume());
+		DebugLog(pressedButton, L"");
+		DebugLog(L"Accel Key : ", m_pauseData.AccelKey);
+		DebugLog(L"Bullet Key : ", m_pauseData.BulletKey);
+		DebugLog(L"ViewBehind Key : ", m_pauseData.ViewBehindKey);
 	}
 
 	// ==============================================================================
@@ -203,6 +254,9 @@ namespace basecross{
 		case PauseMenuState::BGMSetting:
 		case PauseMenuState::SESetting:		UpdateVolumeSettingMenu(*input); break;
 		case PauseMenuState::KeyConfigMenu:	UpdateKeyConfigMenu(*input); break;
+		case PauseMenuState::AccelSetting:
+		case PauseMenuState::BulletSetting:
+		case PauseMenuState::ViewBehindSetting:	UpdateKeyConfigSettingMenu(*input); break;
 		}
 	}
 
@@ -342,18 +396,23 @@ namespace basecross{
 
 	void PauseMenu::UpdateVolumeSettingMenu(InputManager& input)
 	{
-		auto& gameManager = GameManager::GetGameManager();
 		float crntVol = 0.0f;
 		function<void(float)> volSetter;	// –¢’è‹`
 		if (m_pauseState == PauseMenuState::BGMSetting)
 		{
-			crntVol = gameManager->GetBGMVolume();
-			volSetter = [&](float v) { return gameManager->SetBGMVolume(v); };	// ‚±‚±‚ÅŠÖ”‚ğ’è‹`
+			crntVol = m_gameManager->GetBGMVolume();
+			volSetter = [&](float v) { // ‚±‚±‚ÅŠÖ”‚ğ’è‹`
+				m_pauseVolumeMenuSprites[3]->SetPositionX(-130 + (v * 265));
+				return m_gameManager->SetBGMVolume(v); 
+			};	
 		}
 		else if (m_pauseState == PauseMenuState::SESetting)
 		{
-			crntVol = gameManager->GetSEVolume();
-			volSetter = [&](float v) { return gameManager->SetSEVolume(v); };	// ‚±‚±‚ÅŠÖ”‚ğ’è‹`
+			crntVol = m_gameManager->GetSEVolume();
+			volSetter = [&](float v) { 	// ‚±‚±‚ÅŠÖ”‚ğ’è‹`
+				m_pauseVolumeMenuSprites[5]->SetPositionX(-130 + (v * 265));
+				return m_gameManager->SetSEVolume(v); 
+			};
 		}
 
 		auto leftStick = input.GetLStick();
@@ -394,12 +453,20 @@ namespace basecross{
 			switch (m_crntKeyConfigSelect)
 			{
 			case PauseKeyConfigMenuSelect::UpDownSwap:
+				// ã‰ºˆÚ“®“ü‚ê‘Ö‚¦
+				//m_pauseData.UpDownSwap = !m_pauseData.UpDownSwap;
+				break;
+
+			case PauseKeyConfigMenuSelect::Accel:
+				m_pauseState = PauseMenuState::AccelSetting;
 				break;
 
 			case PauseKeyConfigMenuSelect::Bullet:
+				m_pauseState = PauseMenuState::BulletSetting;
 				break;
 
 			case PauseKeyConfigMenuSelect::ViewBehind:
+				m_pauseState = PauseMenuState::ViewBehindSetting;
 				break;
 			}
 		}
@@ -416,7 +483,7 @@ namespace basecross{
 	{
 		const wstring inputKey = input.GetPressedButton();
 
-		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ï¿½Ô‚ï¿½Backï¿½Å‚ï¿½ï¿½ï¿½Î‰ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½Å–ß‚ï¿½
+		// ‰½‚à‰Ÿ‚³‚ê‚Ä‚¢‚È‚¢ó‘Ô‚©Back‚Å‚ ‚ê‚Î‰½‚à‚µ‚È‚¢‚Å–ß‚é
 		if (inputKey == L"" || inputKey == L"Back")
 		{
 			return;
@@ -424,16 +491,16 @@ namespace basecross{
 
 		bool pressStartButton = input.GetDownButton(L"Start");
 
-		// Startï¿½{ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ï¿½ê‡ï¿½ÍƒLï¿½[ï¿½Rï¿½ï¿½ï¿½tï¿½Bï¿½Oï¿½ï¿½ï¿½jï¿½ï¿½ï¿½[ï¿½Ö–ß‚ï¿½
+		// Startƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½ê‡‚ÍƒL[ƒRƒ“ƒtƒBƒOƒƒjƒ…[‚Ö–ß‚é
 		if (pressStartButton)
 		{
 			m_pauseState = PauseMenuState::KeyConfigMenu;
 			return;
 		}
 
-		function<void(const wstring&)> keySetter;	// ï¿½ï¿½ï¿½ï¿½`
+		function<void(const wstring&)> keySetter;	// –¢’è‹`
 
-		// keySetterï¿½Ì’ï¿½`
+		// keySetter‚Ì’è‹`
 		switch (m_pauseState)
 		{
 		case PauseMenuState::AccelSetting:
@@ -456,21 +523,21 @@ namespace basecross{
 			break;
 		}
 
-		// ï¿½dï¿½ï¿½ï¿½`ï¿½Fï¿½bï¿½N
+		// d•¡ƒ`ƒFƒbƒN
 		bool isDuplicate = false;
-		// ï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½[ï¿½İ’ï¿½Å‚È‚ï¿½ï¿½ê‡ï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½[ï¿½Æ“ï¿½ï¿½ï¿½ï¿½È‚ï¿½dï¿½ï¿½
+		// ‰Á‘¬ƒL[İ’è‚Å‚È‚¢ê‡A‰Á‘¬ƒL[‚Æ“¯‚¶‚È‚çd•¡
 		if (m_pauseState != PauseMenuState::AccelSetting && inputKey == m_pauseData.AccelKey) isDuplicate = true;
 		if (m_pauseState != PauseMenuState::BulletSetting && inputKey == m_pauseData.BulletKey) isDuplicate = true;
 		if (m_pauseState != PauseMenuState::ViewBehindSetting && inputKey == m_pauseData.ViewBehindKey) isDuplicate = true;
 
 		if(isDuplicate)
 		{
-			// ï¿½dï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î‰ï¿½ï¿½ï¿½Â‚ç‚·ï¿½È‚Ç‚Ìï¿½ï¿½ï¿½
+			// d•¡‚ª‚ ‚ê‚Î‰¹‚ğ–Â‚ç‚·‚È‚Ç‚Ìˆ—
 			return;
 		}
 		else
 		{
-			// ï¿½dï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½Îİ’ï¿½
+			// d•¡‚ª‚È‚¯‚ê‚Îİ’è
 			keySetter(inputKey);
 			// SavePauseData();
 		}
