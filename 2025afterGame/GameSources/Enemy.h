@@ -42,6 +42,9 @@ namespace basecross {
 
 		unique_ptr<StateEnemyMachine> m_stateMachine; // ステートマシン
 
+		// レイキャスト用
+		unique_ptr<RayCast> m_rayCast;
+
 
 		// 緊急処置
 		float m_timeOfPlayerLock;
