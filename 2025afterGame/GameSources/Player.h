@@ -34,7 +34,6 @@ namespace basecross{
 		shared_ptr<Barrier> m_barrier;
 		shared_ptr<Bullet> m_bullet;
 		shared_ptr<Gravity> m_gravity;
-		shared_ptr<PNTStaticDraw> m_model;
 		// 速度ベクトル
 		Vec3 m_velocity;
 		// 弾が当たった時の位置
@@ -64,6 +63,8 @@ namespace basecross{
 		
 		bool m_yawMoveFlag;
 		bool m_pitchMoveFlag;
+		bool m_moveAnimationFlag;
+		bool m_stopAnimationFlag;
 
 		float m_pitchAngle; // ラジアン
 		float m_yawAngle;
