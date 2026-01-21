@@ -78,6 +78,7 @@ namespace basecross {
 
 		void SetRotate(Vec3 rotate);
 		void SetScale(Vec3 scl);
+		Vec3 GetScale();
 		void SetUVRect(const Vec2& topLeft, const Vec2& botRight);
 		void SetDigit(int digit);
 

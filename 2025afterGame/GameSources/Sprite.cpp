@@ -184,6 +184,10 @@ namespace basecross {
 		m_trans->SetScale(scl);
 	}
 
+	Vec3 Sprite::GetScale()
+	{
+		return m_trans->GetScale();
+	}
 
 	void Sprite::SetUVRect(const Vec2& topLeft, const Vec2& botRight)
 	{
