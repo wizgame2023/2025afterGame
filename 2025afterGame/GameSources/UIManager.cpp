@@ -71,6 +71,12 @@ namespace basecross
 		CreateGaugeUI();
 	}
 
+	void UIManager::UIManagerCreate()
+	{
+		CreateUI();
+		CreateGaugeUI();
+	}
+
 	// XV
 	void UIManager::OnUpdate()
 	{
