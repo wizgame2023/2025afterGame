@@ -126,6 +126,12 @@ namespace basecross{
 		auto pauseMenuVolume = uiMenuPath + L"PauseMenuSetting.png";
 		App::GetApp()->RegisterTexture(L"PauseMenuSetting_TX", pauseMenuVolume);
     
+		auto pauseMenuKeyConfig = uiMenuPath + L"PauseMenuKeyConfig.png";
+		App::GetApp()->RegisterTexture(L"PauseMenuKeyConfig_TX", pauseMenuKeyConfig);
+
+		auto pauseMenuVolumeGauge = uiMenuPath + L"PauseMenuVolumeGauge.png";
+		App::GetApp()->RegisterTexture(L"PauseMenuVolumeGauge_TX", pauseMenuVolumeGauge);
+
 		auto buttonsTex = uiMenuPath + L"Buttons.png";
 		App::GetApp()->RegisterTexture(L"Buttons_TX", buttonsTex);
 
