@@ -86,6 +86,9 @@ namespace basecross {
 		// ステートマシン作成
 		m_stateMachine = unique_ptr<StateEnemyMachine>(new StateEnemyMachine(GetThis<MyGameObject>()));
 		m_stateMachine->ChangeState(L"Tracking"); // 仮で最初のステートはベースステートに変更する
+
+		// レイキャスト生成
+		m_rayCast = unique_ptr<RayCast>();
 	}
 
 	void Enemy::OnUpdate()
@@ -94,6 +97,8 @@ namespace basecross {
 		{
 			return;
 		}
+		// レイを表示したい数
+		m_rayCast->InitRay(2);
 
 
 		FighterAircraftBase::OnUpdate();
@@ -162,7 +167,7 @@ namespace basecross {
 		// レイの長さを求める
 		auto forward = GetComponent<Transform>()->GetForward();
 		forward = forward.normalize();
-		Vec3 rayLength = (forward * 5.0f);
+		Vec3 rayLength = (forward *15.0f);
 		//GetStage()->AddGameObject<>
 		
 
@@ -177,6 +182,7 @@ namespace basecross {
 			{
 				auto fighterPos = fighter->GetPos();
 				auto ptrDraw = fighter->GetComponent<SmBaseDraw>();
+				m_rayCast->DebugRay(Line(m_pos, m_pos + rayLength), Col4(1.0f, 0.5f, 1.0f, 1.0f), GetStage());
 				ptrDraw->HitTestStaticMeshSegmentTriangles(m_pos, m_pos + rayLength, hitPos, triangle, triangleNumber);
 			}
 
