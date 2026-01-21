@@ -17,7 +17,7 @@ namespace basecross {
 		wstringstream m_debugWss;
 
 		// BGMÅASEóp
-		shared_ptr<XAudio2Manager> m_AudioManager;
+		shared_ptr<XAudio2Manager> m_audioManager;
 		shared_ptr<SoundItem> m_bgm;
 
 		shared_ptr<Player> m_player;

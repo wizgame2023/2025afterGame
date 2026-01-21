@@ -92,8 +92,8 @@ namespace basecross {
 			//obj->CreateScoreObject();
 
 			// BGM、SE用のマネージャー作成
-			m_AudioManager = App::GetApp()->GetXAudio2Manager();
-			m_bgm = m_AudioManager->Start(L"StageBGM", XAUDIO2_LOOP_INFINITE, 0.6f);
+			m_audioManager = App::GetApp()->GetXAudio2Manager();
+			m_bgm = m_audioManager->Start(L"StageBGM", XAUDIO2_LOOP_INFINITE, 0.6f);
 
 			auto& gameManager = GameManager::GetGameManager();
 			gameManager->AddCheckPoint();
@@ -123,7 +123,7 @@ namespace basecross {
 	// 消去される際の処理
 	void GameStage::OnDestroy()
 	{
-		m_AudioManager->Stop(m_bgm);
+		m_audioManager->Stop(m_bgm);
 	}
 
 }
