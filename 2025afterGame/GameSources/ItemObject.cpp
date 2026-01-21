@@ -67,6 +67,9 @@ namespace basecross{
 
 			auto& score = ScoreObjectManager::GetScoreObjectManager();
 			//score->RemoveObject();
+			float hp = body->GetHpCurrent();
+			hp += 30.0f;
+			body->SetHPCurrent(hp);
 			GetStage()->RemoveGameObject<ItemObject>(GetThis<ItemObject>());
 		}
 	}
