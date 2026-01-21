@@ -186,7 +186,7 @@ namespace basecross {
 		m_countDebagBulletTime += m_delta;
 
 		// ƒŒƒCŽËüã‚É”òs‹@‚ª“–‚½‚Á‚½‚ç’e‚ð”­ŽË‚·‚é
-		if (hitPos != Vec3(0.0f))
+		if (hitPos != Vec3(0.0f) && m_countDebagBulletTime >= 0.5f)
 		{
 			GetStage()->AddGameObject<Bullet>(GetThis<Actor>());
 			m_countDebagBulletTime = 0.0f;
