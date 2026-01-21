@@ -184,6 +184,8 @@ namespace basecross{
 			StageCreateManager::CreateStageCreateManager();
 
 			ScoreObjectManager::CreateScoreObjectManager();
+
+			AmmoObjectManager::CreateAmmoObjectManager();
 		}
 		catch (...) {
 			throw;

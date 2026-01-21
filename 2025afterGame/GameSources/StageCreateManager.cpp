@@ -355,7 +355,7 @@ namespace basecross{
 		//オブジェクトの配列
 		vector<wstring> ObjectLine;
 
-		auto& score = ScoreObjectManager::GetScoreObjectManager();
+		auto& ammo = AmmoObjectManager::GetAmmoObjectManager();
 		int select = rand() % m_ammoAnchorCount;
 
 		//CSVファイルの宣言
@@ -398,8 +398,7 @@ namespace basecross{
 
 			if (Tag == select)
 			{
-				auto stage = App::GetApp()->GetScene<Scene>()->GetActiveStage();
-				stage->AddGameObject<AmmoObject>(Pos, Rot, Siz, Tag);
+				ammo->CreateAmmoObject(Pos, Rot, Siz, Tag);
 			}
 		}
 	}
@@ -422,6 +421,11 @@ namespace basecross{
 	int StageCreateManager::GetScoreAnchorCount()
 	{
 		return m_scoreAnchorCount;
+	}
+
+	int StageCreateManager::GetAmmoAnchorCount()
+	{
+		return m_ammoAnchorCount;
 	}
 }
 //end basecross

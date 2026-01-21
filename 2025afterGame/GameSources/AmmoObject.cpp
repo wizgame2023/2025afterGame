@@ -18,7 +18,7 @@ namespace basecross{
 		m_rot(Rot),
 		m_siz(Siz),
 		m_id(ID),
-		m_reload(10)
+		m_reload(30)
 	{
 		try
 		{
@@ -65,10 +65,10 @@ namespace basecross{
 			auto m_audioManager = App::GetApp()->GetXAudio2Manager();
 			m_audioManager->Start(L"GetScoreSE", 1, 1.0f);
 
-			auto& score = ScoreObjectManager::GetScoreObjectManager();
-			//score->RemoveObject();
+			auto& ammomg = AmmoObjectManager::GetAmmoObjectManager();
+			ammomg->RemoveObject(m_id);
 			int ammo = body->GetBulletNumCurrentNow();
-			ammo += 30;
+			ammo += m_reload;
 			body->SetBulletNumCurrentNow(ammo);
 			GetStage()->RemoveGameObject<AmmoObject>(GetThis<AmmoObject>());
 		}

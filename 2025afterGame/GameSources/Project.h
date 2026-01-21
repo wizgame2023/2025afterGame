@@ -24,6 +24,7 @@
 #include "DashRing.h"
 #include "ScoreObjectManager.h"
 #include "StageCreateManager.h"
+#include "AmmoObjectManager.h"
 
 // 殿堂入りMyGameObject本体
 #include "MyGameObject.h";

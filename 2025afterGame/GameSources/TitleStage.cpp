@@ -97,6 +97,8 @@ namespace basecross {
 
 		//アンカーの数を生成マネージャーに転送
 		manager->SetAmmoAnchorCount(anchorcount);
+		auto& ammomg = AmmoObjectManager::GetAmmoObjectManager();
+		ammomg->SetVector();
 		anchorcount = 0;
 
 		//抜き出し
