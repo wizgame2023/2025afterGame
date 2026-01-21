@@ -12,19 +12,16 @@ namespace basecross
 	{
 	private:
 		shared_ptr<Transform> m_trans;
-		int m_nowIndex;
-		wstring m_rankingUI;
-		wstring m_playerName;
-		wstring m_scoreText;
-		wstring m_TextureName;
-		int m_layer;
 		Vec3 m_pos;
-		int m_rankingNumber;
+		int m_rankingNumber;   // ©•ª‚Í‰½ˆÊ‚©
+		wstring m_textureName;
+		shared_ptr<NumberSprite> m_rankUI;
+		shared_ptr<NumberSprite> m_scoreUI;
+		shared_ptr<Sprite> m_nameSprite;
 
 	public:
 		RankingUI::RankingUI(
 		const shared_ptr<Stage>& stage,	
-		const Vec2& size,
 		const Vec3& pos,
 		const int& m_rankingNumber,
 		const Vec3& rot = Vec3(0.0f,0.0f,0.0f),
@@ -39,8 +36,6 @@ namespace basecross
 
 		// XV
 		void OnUpdate() override;
-
-		void RankingNumber();
 	};
 
 }
