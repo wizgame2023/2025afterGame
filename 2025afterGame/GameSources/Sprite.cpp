@@ -128,9 +128,50 @@ namespace basecross {
 		GetStage()->RemoveGameObject<Sprite>(GetThis<Sprite>());
 	}
 
+	// 位置のセッター、ゲッター
+	// -----------------------------
+
 	void Sprite::SetPosition(Vec3 pos)
 	{
 		m_trans->SetPosition(pos);
+	}
+
+	void Sprite::SetPositionX(float X)
+	{
+		auto& pos = m_trans->GetPosition();
+		m_trans->SetPosition(X, pos.y, pos.z);
+	}
+
+	void Sprite::SetPositionY(float Y)
+	{
+		auto& pos = m_trans->GetPosition();
+		m_trans->SetPosition(pos.x, Y, pos.z);
+	}
+
+	void Sprite::SetPositionZ(float Z)
+	{
+		auto& pos = m_trans->GetPosition();
+		m_trans->SetPosition(pos.x, pos.y, Z);
+	}
+
+	Vec3 Sprite::GetPosition() const
+	{
+		return m_trans->GetPosition();
+	}
+
+	float Sprite::GetPositionX() const
+	{
+		return m_trans->GetPosition().x;
+	}
+
+	float Sprite::GetPositionY() const
+	{
+		return m_trans->GetPosition().y;
+	}
+
+	float Sprite::GetPositionZ() const
+	{
+		return m_trans->GetPosition().z;
 	}
 
 	void Sprite::SetRotate(Vec3 rotate)
@@ -143,10 +184,6 @@ namespace basecross {
 		m_trans->SetScale(scl);
 	}
 
-	Vec3 Sprite::GetPosition() const
-	{
-		return m_trans->GetPosition();
-	}
 
 	void Sprite::SetUVRect(const Vec2& topLeft, const Vec2& botRight)
 	{
