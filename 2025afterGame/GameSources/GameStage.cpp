@@ -39,6 +39,8 @@ namespace basecross {
 			game->NowPhase();
 			//game->SetGameStartFlag(true);
 			game->ResetCheckPoint();
+			auto& score = ScoreObjectManager::GetScoreObjectManager();
+			score->OnCreate();
 			auto& obj = StageCreateManager::GetStageCreateManager();
 			m_count = 0;
 

@@ -8,6 +8,10 @@
 
 namespace basecross{
 	StageCreateManager::StageCreateManager()
+		:
+		m_scoreAnchorCount(0),
+		m_ammoAnchorCount(0),
+		m_repairAnchorCount(0)
 	{
 
 	}
@@ -413,6 +417,11 @@ namespace basecross{
 	void StageCreateManager::SetRepairAnchorCount(int repairanchorcount)
 	{
 		m_repairAnchorCount = repairanchorcount;
+	}
+
+	int StageCreateManager::GetScoreAnchorCount()
+	{
+		return m_scoreAnchorCount;
 	}
 }
 //end basecross

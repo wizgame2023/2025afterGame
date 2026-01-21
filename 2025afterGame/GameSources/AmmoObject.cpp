@@ -67,6 +67,9 @@ namespace basecross{
 
 			auto& score = ScoreObjectManager::GetScoreObjectManager();
 			//score->RemoveObject();
+			int ammo = body->GetBulletNumCurrentNow();
+			ammo += 30;
+			body->SetBulletNumCurrentNow(ammo);
 			GetStage()->RemoveGameObject<AmmoObject>(GetThis<AmmoObject>());
 		}
 	}

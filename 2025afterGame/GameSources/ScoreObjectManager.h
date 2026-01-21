@@ -32,7 +32,8 @@ namespace basecross{
 		void RemoveObject(int id);
 
 		int m_count;
-		bool m_currentID[];
+
+		std::vector<bool> m_current;
 	};
 }
 //end basecross
