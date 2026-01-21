@@ -179,6 +179,11 @@ namespace basecross{
 
 			// ゲームマネージャー作成
 			GameManager::CreateGameManager();
+
+			// ステージ生成マネージャー作成
+			StageCreateManager::CreateStageCreateManager();
+
+			ScoreObjectManager::CreateScoreObjectManager();
 		}
 		catch (...) {
 			throw;

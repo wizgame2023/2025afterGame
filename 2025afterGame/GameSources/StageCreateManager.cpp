@@ -245,7 +245,7 @@ namespace basecross{
 		vector<wstring> ObjectLine;
 
 		auto& score = ScoreObjectManager::GetScoreObjectManager();
-		int select = rand() % 5;
+		int select = rand() % m_scoreAnchorCount;
 
 		//CSVファイルの宣言
 		CsvFile objectFile;
@@ -298,7 +298,7 @@ namespace basecross{
 		vector<wstring> ObjectLine;
 
 		auto& score = ScoreObjectManager::GetScoreObjectManager();
-		int select = rand() % 5;
+		int select = rand() % m_repairAnchorCount;
 
 		//CSVファイルの宣言
 		CsvFile objectFile;
@@ -352,7 +352,7 @@ namespace basecross{
 		vector<wstring> ObjectLine;
 
 		auto& score = ScoreObjectManager::GetScoreObjectManager();
-		int select = rand() % 5;
+		int select = rand() % m_ammoAnchorCount;
 
 		//CSVファイルの宣言
 		CsvFile objectFile;
@@ -400,5 +400,19 @@ namespace basecross{
 		}
 	}
 
+	void StageCreateManager::SetScoreAnchorCount(int scoreanchorcount)
+	{
+		m_scoreAnchorCount = scoreanchorcount;
+	}
+
+	void StageCreateManager::SetAmmoAnchorCount(int ammoanchorcount)
+	{
+		m_ammoAnchorCount = ammoanchorcount;
+	}
+
+	void StageCreateManager::SetRepairAnchorCount(int repairanchorcount)
+	{
+		m_repairAnchorCount = repairanchorcount;
+	}
 }
 //end basecross

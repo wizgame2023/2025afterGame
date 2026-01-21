@@ -59,6 +59,50 @@ namespace basecross {
 		catch (...) {
 			throw;
 		}
+
+		auto& manager = StageCreateManager::GetStageCreateManager();
+		//ステージのアンカー数を読み取ってマネージャーに渡す
+		int anchorcount = 0;
+		//オブジェクトの配列
+		vector<wstring> ObjectLine;
+		//CSVファイルの宣言
+		CsvFile objectFile;
+
+		//CSVファイルの読み込み
+		wstring DataDir;
+		App::GetApp()->GetDataDirectory(DataDir);
+		DataDir += L"Stage/";
+		objectFile.SetFileName(DataDir + L"positions.csv");
+		objectFile.ReadCsv();
+
+		//抜き出し
+		objectFile.GetSelect(ObjectLine, 0, L"ScoreObjectAnchor");
+		for (auto& v : ObjectLine)
+		{
+			anchorcount++;
+		}
+
+		manager->SetScoreAnchorCount(anchorcount);
+		anchorcount = 0;
+
+		//抜き出し
+		objectFile.GetSelect(ObjectLine, 0, L"AmmoObjectAnchor");
+		for (auto& v : ObjectLine)
+		{
+			anchorcount++;
+		}
+
+		manager->SetAmmoAnchorCount(anchorcount);
+		anchorcount = 0;
+
+		//抜き出し
+		objectFile.GetSelect(ObjectLine, 0, L"ItemObjectAnchor");
+		for (auto& v : ObjectLine)
+		{
+			anchorcount++;
+		}
+
+		manager->SetRepairAnchorCount(anchorcount);
 	}
 
 	void TitleStage::OnUpdate() 

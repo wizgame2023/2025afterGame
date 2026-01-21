@@ -29,7 +29,7 @@ namespace basecross{
 
 		void CreateScoreObject(Vec3 pos, Vec3 rot, Vec3 siz, int tag = 0);
 
-		void RemoveObject();
+		void RemoveObject(int id);
 
 		int m_count;
 		bool m_currentID[];

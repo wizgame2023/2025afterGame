@@ -18,6 +18,10 @@ namespace basecross{
 		static unique_ptr<StageCreateManager, StageCreateManagerDeleter> m_stageCreateManager;
 
 	public :
+		int m_scoreAnchorCount;
+		int m_ammoAnchorCount;
+		int m_repairAnchorCount;
+
 		StageCreateManager();
 		~StageCreateManager();
 
@@ -41,6 +45,12 @@ namespace basecross{
 		void CreateItemObject();
 
 		void CreateAmmoObject();
+
+		void SetScoreAnchorCount(int scoreanchorcount);
+
+		void SetAmmoAnchorCount(int ammoanchorcount);
+
+		void SetRepairAnchorCount(int repairanchorcount);
 	};
 }
 //end basecross
