@@ -71,6 +71,11 @@ namespace basecross{
 
 		// ボリュームゲージ ------
 		spInfo.textureName = L"PauseMenuVolumeGauge_TX";
+		const float gaugeWidth = 300.0f;
+		const float gaugeHeight = gaugeWidth / 3.0f;
+		// 正方形にする
+		const float sliderWidth = gaugeHeight; 
+		const float sliderHeight = sliderWidth;
 		for (int i = 0; i < 2; i++)
 		{
 			// ボリューム文字列の位置を取得
@@ -80,11 +85,14 @@ namespace basecross{
 			spInfo.pos = Vec3(0.0f, (volumeStringPos.y - 100), 0.0f);
 			spInfo.leftTopUV = Vec2(0.0f, 0.0f);
 			spInfo.rightBotUV = Vec2(0.75f, 1.0f);
-			spInfo.size = Vec2(300.0f, 100.0f);
+			spInfo.size = Vec2(gaugeWidth, 100.0f);
 			PushBackPauseMenuSprite(m_pauseVolumeMenuSprites, spInfo);
 
+			// ゲージの右端の位置を取得
+			auto rightEdgePos = m_pauseVolumeMenuSprites[2 + (i * 2)]->GetPositionX() + (spInfo.size.x * 0.5f);
+
 			// スライダー部分
-			spInfo.pos = Vec3(135.0f, (volumeStringPos.y - 100), 0.0f);
+			spInfo.pos = Vec3(rightEdgePos, (volumeStringPos.y - 100), 0.0f);
 			spInfo.leftTopUV = Vec2(0.75f, 0.0f);
 			spInfo.rightBotUV = Vec2(1.0f, 1.0f);
 			spInfo.size = Vec2(100.0f, 100.0f);
@@ -282,10 +290,12 @@ namespace basecross{
 			case PauseMainMenuSelect::Resume:
 				// 再開が選択された場合はポーズ解除
 				m_pauseState = PauseMenuState::False;
+				SetPauseFlag(false);
 				break;
 
 			case PauseMainMenuSelect::Restart:
 				m_pauseState = PauseMenuState::False;
+				SetPauseFlag(false);
 				// リスタートが選択された場合はゲームステージへ遷移
 				PostEvent(0.0f,
 					GetThis<ObjectInterface>(),
@@ -301,6 +311,7 @@ namespace basecross{
 
 			case PauseMainMenuSelect::Exit:
 				m_pauseState = PauseMenuState::False;
+				SetPauseFlag(false);
 				// 終了が選択された場合はタイトルステージへ遷移
 				PostEvent(0.0f,
 					GetThis<ObjectInterface>(),
@@ -311,6 +322,7 @@ namespace basecross{
 			default:
 				// 例外が発生した場合はポーズ解除
 				m_pauseState = PauseMenuState::False;
+				SetPauseFlag(false);
 				break;
 			}
 		}
