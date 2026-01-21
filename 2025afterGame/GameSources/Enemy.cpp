@@ -100,6 +100,8 @@ namespace basecross {
 
 		auto& gameManager = GameManager::GetGameManager();
 		auto currentPhase = gameManager->GetCurrentPhase();//現在フェーズ取得
+		
+		auto objVec = GetStage()->GetGameObjectVec();
 
 		// 追跡対象がいなくなったら一番近いものを決めて追跡すると決める
 		if (currentPhase == GamePhase::Score)
@@ -107,7 +109,6 @@ namespace basecross {
 			int minLenght = 999999.9f;
 			int minDefault = 999999.9f;
 			// MyGameObjectの物を全て停止する
-			auto objVec = GetStage()->GetGameObjectVec();
 			//アクターを継承しているものだけ取得
 			for (auto obj : objVec)
 			{
@@ -150,21 +151,64 @@ namespace basecross {
 			m_timeOfPlayerLock = 0.0f;
 		}
 
+
+		// 射線上に敵対する相手がいたら攻撃する
+		Vec3 hitPos;			// 出力用：レイの交差地点(衝突点)
+		TRIANGLE triangle;		// レイが交差したポリゴンを構成する頂点の座標
+		size_t triangleNumber;	// レイが交差したポリゴンの番号
+		float min = 9999999.9f;	//Playerから見てカメラの障害となる距離の最小値
+		bool moveEnd = false;	//移動処理が終わったかを保存する変数
+
+		// レイの長さを求める
+		auto forward = GetComponent<Transform>()->GetForward();
+		forward = forward.normalize();
+		Vec3 rayLength = (forward * 5.0f);
+		//GetStage()->AddGameObject<>
+		
+
+		// 射線上に敵戦闘機がいるか確認
+		for (auto obj : objVec)
+		{
+
+			auto fighter = dynamic_pointer_cast<FighterAircraftBase>(obj);
+
+			// 戦闘機のメッシュがレイに当たっているか確認する
+			if (fighter)
+			{
+				auto fighterPos = fighter->GetPos();
+				auto ptrDraw = fighter->GetComponent<SmBaseDraw>();
+				ptrDraw->HitTestStaticMeshSegmentTriangles(m_pos, m_pos + rayLength, hitPos, triangle, triangleNumber);
+			}
+
+		}
+
+
+		m_countDebagBulletTime += m_delta;
+
+		// レイ射線上に飛行機が当たったら弾を発射する
+		if (hitPos != Vec3(0.0f))
+		{
+			GetStage()->AddGameObject<Bullet>(GetThis<Actor>());
+			m_countDebagBulletTime = 0.0f;
+		}
+
+
+
 		// ステートのUpdate
 		m_stateMachine->Update();
 
 		// デバック用に弾を出す
-		m_countDebagBulletTime += m_delta;
 		auto stateName = m_stateMachine->GetCurrentStateWString();
 
-		if (m_countDebagBulletTime >= 0.5f)
-		{
-			if (stateName == L"Tracking")
-			{
-				GetStage()->AddGameObject<Bullet>(GetThis<Actor>());
-			}
-			m_countDebagBulletTime = 0.0f;
-		}
+		//if (m_countDebagBulletTime >= 0.5f)
+		//{
+		//	if (stateName == L"Tracking")
+		//	{
+		//		GetStage()->AddGameObject<Bullet>(GetThis<Actor>());
+		//	}
+		//	m_countDebagBulletTime = 0.0f;
+		//} 
+		// リスポーン状態なら移動しないように変更
 		if (stateName == L"Respawn")
 		{
 			m_moveVec = Vec3(0.0f);
