@@ -24,6 +24,7 @@ namespace basecross{
 		const wstring path = app->GetDataDirWString();
 		const wstring& modelPath = path + L"Models/";
 		const wstring& texPath = path + L"Textures/";
+		const wstring& uiPath = path + L"UI/";
 		const wstring& uiPlayerPath = path + L"UI/Player/";
 		const wstring& uiTitlePath = path + L"UI/Title/";
 		const wstring& uiMenuPath = path + L"UI/Menu/";
@@ -35,7 +36,7 @@ namespace basecross{
 		const wstring& soundPath = path + L"Sounds/";
 
 		//Textures //////////////////////////////////////////////
-		auto modelTex = modelPath + L"diffuse.png";
+		auto modelTex = modelPath + L"Player_Plane.png";
 		app->RegisterTexture(L"diffuse_TX", modelTex);
 
 		auto strTexture = texPath + L"TestTex.png";
@@ -70,7 +71,7 @@ namespace basecross{
 
 		// Model /////////////////////////////////////////////////
 		// Player
-		auto modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"PropellerPlane.bmf");
+		auto modelMesh = MeshResource::CreateBoneModelMesh(modelPath, L"Player_Plane.bmf");
 		app->RegisterResource(L"Sentouki", modelMesh);
 
 		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"desk.bmf");
@@ -97,9 +98,18 @@ namespace basecross{
     
 		auto colon = uiPlayerPath + L"Colon.png";
 		app->RegisterTexture(L"Colon", colon);
+
+		auto resultPlayer = uiPath + L"Result_Player.png";
+		app->RegisterTexture(L"ResultPlayer", resultPlayer);
+    
+		auto resultEnemy = uiPath + L"Result_Enemy.png";
+		app->RegisterTexture(L"ResultEnemy", resultEnemy);
     
 		auto finalscore = uiResultPath + L"finalscore.png";
 		app->RegisterTexture(L"Finalscore", finalscore);
+
+		auto crown = uiResultPath + L"oukan.png";
+		app->RegisterTexture(L"crown", crown);
     
 		auto startTex = uiTitlePath + L"PressA.png";
 		app->RegisterTexture(L"Start_TX", startTex);
