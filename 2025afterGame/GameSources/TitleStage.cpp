@@ -82,7 +82,10 @@ namespace basecross {
 			anchorcount++;
 		}
 
+		//アンカーの数を生成マネージャーに転送
 		manager->SetScoreAnchorCount(anchorcount);
+		auto& scmg = ScoreObjectManager::GetScoreObjectManager();
+		scmg->SetVector();
 		anchorcount = 0;
 
 		//抜き出し
@@ -92,6 +95,7 @@ namespace basecross {
 			anchorcount++;
 		}
 
+		//アンカーの数を生成マネージャーに転送
 		manager->SetAmmoAnchorCount(anchorcount);
 		anchorcount = 0;
 
@@ -102,6 +106,7 @@ namespace basecross {
 			anchorcount++;
 		}
 
+		//アンカーの数を生成マネージャーに転送
 		manager->SetRepairAnchorCount(anchorcount);
 	}
 

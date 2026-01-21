@@ -31,6 +31,8 @@ namespace basecross{
 
 		void RemoveObject(int id);
 
+		void SetVector();
+
 		int m_count;
 
 		std::vector<bool> m_current;

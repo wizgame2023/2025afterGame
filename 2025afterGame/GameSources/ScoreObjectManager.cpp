@@ -50,13 +50,7 @@ namespace basecross{
 
 	void ScoreObjectManager::OnCreate()
 	{
-		auto& manager = StageCreateManager::GetStageCreateManager();
-		int roop = manager->GetScoreAnchorCount();
-
-		for (int a = 0; a < roop; a++)
-		{
-			m_current.push_back(false);
-		}
+		
 	}
 
 	void ScoreObjectManager::CreateScoreObject(Vec3 pos, Vec3 rot, Vec3 siz, int tag)
@@ -74,6 +68,17 @@ namespace basecross{
 	{
 		m_current[id] = false;
 		m_count--;
+	}
+
+	void ScoreObjectManager::SetVector()
+	{
+		auto& manager = StageCreateManager::GetStageCreateManager();
+		int roop = manager->GetScoreAnchorCount();
+
+		for (int a = 0; a < roop; a++)
+		{
+			m_current.push_back(false);
+		}
 	}
 }
 //end basecross
