@@ -111,6 +111,8 @@ namespace basecross{
 
 		// Œ»İ‚Ì’e”‚ÌƒQƒbƒ^
 		int GetBulletNumCurrentNow();
+		// Œ»İ‚Ì’e”‚ÌƒQƒbƒ^
+		void SetBulletNumCurrentNow(int bullet);
 		// Å‘å‚Ì’e”‚ÌƒQƒbƒ^
 		int GetBulletNumMax();
 		//  •œŠˆ‚Ü‚Å‚Ì–³“G•t—^ŠÔ‚ÌƒQƒbƒ^
