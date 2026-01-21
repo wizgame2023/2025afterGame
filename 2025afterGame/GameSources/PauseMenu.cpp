@@ -412,6 +412,72 @@ namespace basecross{
 
 	// ==============================================================================
 
+	void PauseMenu::UpdateKeyConfigSettingMenu(InputManager& input)
+	{
+		const wstring inputKey = input.GetPressedButton();
+
+		// ���������Ă��Ȃ���Ԃ�Back�ł���Ή�����Ȃ��Ŗ߂�
+		if (inputKey == L"" || inputKey == L"Back")
+		{
+			return;
+		}
+
+		bool pressStartButton = input.GetDownButton(L"Start");
+
+		// Start�{�^���������ꂽ�ꍇ�̓L�[�R���t�B�O���j���[�֖߂�
+		if (pressStartButton)
+		{
+			m_pauseState = PauseMenuState::KeyConfigMenu;
+			return;
+		}
+
+		function<void(const wstring&)> keySetter;	// ����`
+
+		// keySetter�̒�`
+		switch (m_pauseState)
+		{
+		case PauseMenuState::AccelSetting:
+			keySetter = [&](const wstring& k) { 
+				m_pauseData.AccelKey = k;
+				m_gameManager->SetAccelKey(k); 
+			};
+			break;
+		case PauseMenuState::BulletSetting:
+			keySetter = [&](const wstring& k) {
+				m_pauseData.BulletKey = k;
+				m_gameManager->SetBulletKey(k);
+			};
+			break;
+		case PauseMenuState::ViewBehindSetting:
+			keySetter = [&](const wstring& k) {
+				m_pauseData.ViewBehindKey = k;
+				m_gameManager->SetViewBehindKey(k); 
+			};
+			break;
+		}
+
+		// �d���`�F�b�N
+		bool isDuplicate = false;
+		// �����L�[�ݒ�łȂ��ꍇ�A�����L�[�Ɠ����Ȃ�d��
+		if (m_pauseState != PauseMenuState::AccelSetting && inputKey == m_pauseData.AccelKey) isDuplicate = true;
+		if (m_pauseState != PauseMenuState::BulletSetting && inputKey == m_pauseData.BulletKey) isDuplicate = true;
+		if (m_pauseState != PauseMenuState::ViewBehindSetting && inputKey == m_pauseData.ViewBehindKey) isDuplicate = true;
+
+		if(isDuplicate)
+		{
+			// �d��������Ή���炷�Ȃǂ̏���
+			return;
+		}
+		else
+		{
+			// �d�����Ȃ���ΐݒ�
+			keySetter(inputKey);
+			// SavePauseData();
+		}
+	}
+
+	// ==============================================================================
+
 	//void PauseMenu::CreatePauseBinary()
 	//{
 	//	// �o�C�i���p�X�擾
@@ -513,6 +579,7 @@ namespace basecross{
 		IsVisibleMenuSprites(m_pauseMainMenuSprites,flag);
 		IsVisibleMenuSprites(m_pauseSettingMenuSprites, flag);
 		IsVisibleMenuSprites(m_pauseVolumeMenuSprites, flag);
+		IsVisibleMenuSprites(m_pauseKeyConfigMenuSprites, flag);
 		IsVisibleMenuSprites(m_pauseButtonsSprites, flag);
 	}
 

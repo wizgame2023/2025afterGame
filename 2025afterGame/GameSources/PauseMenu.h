@@ -10,6 +10,10 @@ namespace basecross{
 	class InputManager;
 	class PauseMenu : public MyGameObject
 	{
+		// ==============================================================================
+		// enum群
+		// ==============================================================================
+
 		// メインメニューでの選択肢
 		enum class PauseMainMenuSelect
 		{
@@ -28,6 +32,7 @@ namespace basecross{
 			Max				// 項目の最大数
 		};
 
+		// ボリュームメニューの選択肢
 		enum class PauseVolumeMenuSelect
 		{
 			BGMVolume,		// BGM音量
@@ -35,9 +40,11 @@ namespace basecross{
 			Max				// 項目の最大数
 		};
 
+		// キーコンフィグメニューの選択肢
 		enum class PauseKeyConfigMenuSelect
 		{
 			UpDownSwap,		// 上下反転
+			Accel,			// 加速
 			Bullet,			// 弾丸
 			ViewBehind,		// 背面視点
 			Max				// 項目の最大数
@@ -53,8 +60,15 @@ namespace basecross{
 			KeyConfigMenu,
 			BGMSetting,
 			SESetting,
+			AccelSetting,
+			BulletSetting,
+			ViewBehindSetting,
 			Max
 		};
+
+		// ==============================================================================
+		// 構造体群
+		// ==============================================================================
 
 		struct SpriteInfo
 		{
@@ -71,6 +85,7 @@ namespace basecross{
 			float BGMVolume;
 			float SEVolume;
 			bool UpDownSwap;
+			wstring AccelKey;
 			wstring BulletKey;
 			wstring ViewBehindKey;
 		};
@@ -79,7 +94,7 @@ namespace basecross{
 		// メンバ変数
 		// ==============================================================================
 
-		// ポーズメニュー群============
+		// ポーズメニュースプライト群============
 
 		vector<shared_ptr<Sprite>> m_pauseMainMenuSprites;			// メインメニューのスプライトの数
 		vector<shared_ptr<Sprite>> m_pauseSettingMenuSprites;		// 設定メニューのスプライトの数
@@ -88,20 +103,17 @@ namespace basecross{
 		vector<shared_ptr<Sprite>> m_pauseButtonsSprites;			// ボタンのスプライトの数
 		shared_ptr<Sprite> m_pauseBackGroundSprite;					// ポーズメニューの背景スプライト
 
-		// ============================
+		// ======================================
 
-		// 現在の選択肢(Main)
-		PauseMainMenuSelect m_crntMainSelect;
+		// 現在の選択肢群========================
 
-		// 現在の選択肢(Setting)
-		PauseSettingMenuSelect m_crntSettingSelect;
+		PauseMainMenuSelect m_crntMainSelect;			// 現在の選択肢(Main)
+		PauseSettingMenuSelect m_crntSettingSelect;		// 現在の選択肢(Setting)
+		PauseVolumeMenuSelect m_crntVolumeSelect;		// 現在の選択肢(Volume)
+		PauseKeyConfigMenuSelect m_crntKeyConfigSelect;	// 現在の選択肢(KeyConfig)
 
-		// 現在の選択肢(Volume)
-		PauseVolumeMenuSelect m_crntVolumeSelect;
-
-		// 現在の選択肢(KeyConfig)
-		PauseKeyConfigMenuSelect m_crntKeyConfigSelect;
-
+		// ======================================
+		
 		// ポーズメニューの状態
 		PauseMenuState m_pauseState;
 
@@ -111,6 +123,9 @@ namespace basecross{
 		// ステージ
 		shared_ptr<Stage> m_stage;
 
+		// ゲームマネージャー
+		GameManager* m_gameManager = nullptr;
+
 		// 選択が変わったかどうか
 		bool m_selectChanged = false;
 
@@ -118,7 +133,7 @@ namespace basecross{
 		// メンバ関数
 		// ==============================================================================
 
-		// メインメニューのスプライトを追加する
+		// スプライトを追加する(vector専用)
 		void PushBackPauseMenuSprite(vector<shared_ptr<Sprite>>& vecSprite, const SpriteInfo& spInfo);
 
 		// 選択肢が変わったかどうか
@@ -141,9 +156,10 @@ namespace basecross{
 			int current = static_cast<int>(crntSelect);
 			int max = static_cast<int>(maxEnum);
 			int move = 0;
+			constexpr float deadZone = 0.5;
 
-			if (leftStick.y > 0.8f)	  move = -1; // 上
-			else if (leftStick.y < -0.8f) move = 1;  // 下
+			if (leftStick.y > deadZone)	  move = -1; // 上
+			else if (leftStick.y < deadZone) move = 1;  // 下
 
 			if (move != 0) {
 				current += move;
@@ -161,21 +177,26 @@ namespace basecross{
 			return false;
 		}
 
-		// ポーズ開始
+		// ポーズが始まった瞬間の処理
 		void StartPause();
 
 		// メニューの可視管理
 		void MenuVisibleManagement();
 
-		// ポーズメニューの更新
+		// ポーズメニューの更新	==========================================
+
+		// 全メニュー更新の管理
 		void UpdatePauseMenu();
 
 		// 各メニューの更新
 		void UpdateMainMenu(InputManager& input);
 		void UpdateSettingMenu(InputManager& input);
 		void UpdateVolumeMenu(InputManager& input);
-		void UpdateKeyConfigMenu(InputManager& input);
 		void UpdateVolumeSettingMenu(InputManager& input);
+		void UpdateKeyConfigMenu(InputManager& input);
+		void UpdateKeyConfigSettingMenu(InputManager& input);
+		
+		// ポーズメニューの更新	==========================================
 
 		// デバッグログ群
 		void DebugLogs();
