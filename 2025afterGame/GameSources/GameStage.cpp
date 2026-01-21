@@ -42,6 +42,12 @@ namespace basecross {
 			auto& obj = StageCreateManager::GetStageCreateManager();
 			m_count = 0;
 
+			auto& scrMana = ScoreManager::CreateScoreManager();
+
+			scrMana->CreateHighScoreBinary();
+			scrMana->SetID(L"Player");
+			scrMana->SetID(L"Enemy1");
+
 			auto backgroundPath = path + L"Backgrounds/";
 			for (const auto& keyName : Background::pairs) {
 				app->RegisterTexture(keyName.first, backgroundPath + keyName.first + L".bmp");
