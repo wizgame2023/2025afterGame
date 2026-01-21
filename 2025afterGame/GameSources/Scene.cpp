@@ -107,6 +107,9 @@ namespace basecross{
 		startTex = uiTitlePath + L"rogo.png";
 		App::GetApp()->RegisterTexture(L"rogo_TX", startTex);
 
+		startTex = uiTitlePath + L"TitleBackGround.png";
+		App::GetApp()->RegisterTexture(L"TitleBackGround_TX", startTex);
+
 		auto remainingRounds = uiPlayerPath + L"RemainingRounds.png";
 		app->RegisterTexture(L"RemainingRounds", remainingRounds);
 
