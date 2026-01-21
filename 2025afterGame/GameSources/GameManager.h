@@ -74,11 +74,21 @@ namespace basecross {
 		// BGM、SE用
 		shared_ptr<XAudio2Manager> m_AudioManager;
 		shared_ptr<SoundItem> m_se;
+
+		wstring m_bulletKey = L"RTrigger";
+		wstring m_viewBehindKey = L"Y";
+		wstring m_accelKey = L"A";
 	public:
 		float GetBGMVolume() const { return m_BGMVolume; };
 		void SetBGMVolume(const float volume) { m_BGMVolume = volume; };
 		float GetSEVolume() const { return m_SEVolume; };
 		void SetSEVolume(const float volume) { m_SEVolume = volume; };
+		wstring GetBulletKey() const { return m_bulletKey; };
+		void SetBulletKey(const wstring& key) { m_bulletKey = key; };
+		wstring GetViewBehindKey() const { return m_viewBehindKey; };
+		void SetViewBehindKey(const wstring& key) { m_viewBehindKey = key; };
+		wstring GetAccelKey() const { return m_accelKey; };
+		void SetAccelKey(const wstring& key) { m_accelKey = key; };
 
 		//構築と破棄
 		GameManager();
