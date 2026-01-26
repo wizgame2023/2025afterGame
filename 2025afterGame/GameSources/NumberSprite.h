@@ -9,13 +9,14 @@
 namespace basecross{
 	enum class NumberType
 	{
+		None,
 		Minute,
 		Second,
 		Bullet,
 		MaxBullet,
 		Score,
-		Ranking,
 		Count,
+		RankingNumber,
 	};
 
 	class NumberSprite : public Sprite
@@ -28,7 +29,9 @@ namespace basecross{
 		int m_prevNumber;     // 初期値はありえない値にしておく
 		Vec3 m_pos;
 		int m_layer;
-		
+		int m_rankingNumber;
+		int m_value;
+
 	public:
 		NumberSprite(
 			const shared_ptr<Stage>& stagePtr,
@@ -63,6 +66,8 @@ namespace basecross{
 		virtual void OnDestory();
 
 		void SetLayer(int layer);
+
+		void SetRankingNumberCount(int number);
 	};
 }
 //end basecross
