@@ -130,8 +130,6 @@ namespace basecross{
 
 		m_pauseState = PauseMenuState::False;
 
-		m_gameManager = GameManager::GetGameManager().get();
-
 		// 最初は非表示にしておく
 		IsVisibleAllMenuSprites(false);
 	}
@@ -144,6 +142,11 @@ namespace basecross{
 		// コントローラーの取得
 		auto& input = InputManager::GetInputManager();
 		bool isStartButtonDown = input->GetNowUpdateButton(L"Start"); // スタートボタンを押した瞬間を取る
+		//bool testX = input->GetNowUpdateButton(L"X"); // デバッグ用
+		//if (testX)
+		//{
+		//	m_pauseBackGroundSprite->RemoveSprite();
+		//}
 
 		// ポーズ開始の処理
 		if (isStartButtonDown && m_pauseState == PauseMenuState::False)
@@ -236,7 +239,8 @@ namespace basecross{
 			}
 		}
 		
-		float BGMVolume = m_gameManager->GetBGMVolume();
+		auto& game = GameManager::CreateGameManager();
+		float BGMVolume = game->GetBGMVolume();
 		auto& input = InputManager::GetInputManager();
 		auto& pressedButton = input->GetPressedButton();
 
@@ -408,22 +412,23 @@ namespace basecross{
 
 	void PauseMenu::UpdateVolumeSettingMenu(InputManager& input)
 	{
+		auto& game = GameManager::CreateGameManager();
 		float crntVol = 0.0f;
 		function<void(float)> volSetter;	// 未定義
 		if (m_pauseState == PauseMenuState::BGMSetting)
 		{
-			crntVol = m_gameManager->GetBGMVolume();
+			crntVol = game->GetBGMVolume();
 			volSetter = [&](float v) { // ここで関数を定義
 				m_pauseVolumeMenuSprites[3]->SetPositionX(-130 + (v * 265));
-				return m_gameManager->SetBGMVolume(v); 
+				return game->SetBGMVolume(v); 
 			};	
 		}
 		else if (m_pauseState == PauseMenuState::SESetting)
 		{
-			crntVol = m_gameManager->GetSEVolume();
+			crntVol = game->GetSEVolume();
 			volSetter = [&](float v) { 	// ここで関数を定義
 				m_pauseVolumeMenuSprites[5]->SetPositionX(-130 + (v * 265));
-				return m_gameManager->SetSEVolume(v); 
+				return game->SetSEVolume(v); 
 			};
 		}
 
@@ -511,6 +516,7 @@ namespace basecross{
 		}
 
 		function<void(const wstring&)> keySetter;	// 未定義
+		auto& game = GameManager::CreateGameManager();
 
 		// keySetterの定義
 		switch (m_pauseState)
@@ -518,19 +524,19 @@ namespace basecross{
 		case PauseMenuState::AccelSetting:
 			keySetter = [&](const wstring& k) { 
 				m_pauseData.AccelKey = k;
-				m_gameManager->SetAccelKey(k); 
+				game->SetAccelKey(k);
 			};
 			break;
 		case PauseMenuState::BulletSetting:
 			keySetter = [&](const wstring& k) {
 				m_pauseData.BulletKey = k;
-				m_gameManager->SetBulletKey(k);
+				game->SetBulletKey(k);
 			};
 			break;
 		case PauseMenuState::ViewBehindSetting:
 			keySetter = [&](const wstring& k) {
 				m_pauseData.ViewBehindKey = k;
-				m_gameManager->SetViewBehindKey(k); 
+				game->SetViewBehindKey(k);
 			};
 			break;
 		}
