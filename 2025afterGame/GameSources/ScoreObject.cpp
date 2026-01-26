@@ -80,9 +80,11 @@ namespace basecross{
 	{
 		auto& gameManager = GameManager::GetGameManager();
 		auto& score = ScoreObjectManager::GetScoreObjectManager();
+		auto& scoreMana = ScoreManager::GetScoreManager();
 		auto body = dynamic_pointer_cast<FighterAircraftBase>(obj);
 		auto player = dynamic_pointer_cast<Player>(obj);
 		auto enemy = dynamic_pointer_cast<Enemy>(obj);
+
 
 		if (body)
 		{
@@ -100,14 +102,14 @@ namespace basecross{
 
 		if (player)
 		{
-			auto plScore = scoreManager->GetPlScore();
-			scoreManager->SetPlScore(plScore + m_score);
+			auto plScore = scoreMana->GetPlScore();
+			scoreMana->SetPlScore(plScore + m_score);
 		}
 
 		if (enemy)
 		{
-			auto enemyScore = scoreManager->GetPlScore();
-			scoreManager->SetScore(L"Enemy1", scoreManager->GetScore(L"Enemy1") + m_score);
+			auto enemyScore = scoreMana->GetPlScore();
+			scoreMana->SetScore(L"Enemy1", scoreMana->GetScore(L"Enemy1") + m_score);
 		}
 
 	}
