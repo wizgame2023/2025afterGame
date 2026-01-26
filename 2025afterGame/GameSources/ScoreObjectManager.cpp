@@ -57,10 +57,22 @@ namespace basecross{
 	{
 		if (m_count < 3 && m_current[tag] != true)
 		{
+			int point = 0;
 			m_count++;
 			m_current[tag] = true;
+
+			int score = rand() % 100;
+			if (score >= 90)
+			{
+				point = 2;
+			}
+			else if (score >= 60)
+			{
+				point = 1;
+			}
+
 			auto stage = App::GetApp()->GetScene<Scene>()->GetActiveStage();
-			stage->AddGameObject<ScoreObject>(pos, rot, siz, tag);
+			stage->AddGameObject<ScoreObject>(pos, rot, siz, tag, point);
 		}
 	}
 

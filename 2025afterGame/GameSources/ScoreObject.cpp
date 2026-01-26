@@ -11,14 +11,16 @@ namespace basecross{
 		const Vec3& Pos,
 		const Vec3& Rot,
 		const Vec3& Siz,
-		const int& ID
+		const int& ID,
+		const int& Point
 	) :
 		Actor(StagePtr),
 		m_pos(Pos),
 		m_rot(Rot),
 		m_siz(Siz),
 		m_id(ID),
-		m_score(10)
+		m_point(Point),
+		m_score(0)
 	{
 		try
 		{
@@ -54,8 +56,24 @@ namespace basecross{
 		ptrCol->SetDrawActive(false);
 		ptrCol->SetAfterCollision(AfterCollision::None); // 物理判定無し
 
-		//ビルボードの生成
-		m_billBoard = GetStage()->AddGameObject<BillBoard>(GetThis<GameObject>(), L"Bear", 2, 0, 0, Vec3(1.5f, 1.5f, 1.5f));
+		if (m_point == 0)
+		{
+			//ビルボードの生成、スコアの設定
+			m_billBoard = GetStage()->AddGameObject<BillBoard>(GetThis<GameObject>(), L"Bear", 2, 0, 0, Vec3(1.5f, 1.5f, 1.5f));
+			m_score = 10;
+		}
+		else if (m_point == 1)
+		{
+			//ビルボードの生成、スコアの設定
+			m_billBoard = GetStage()->AddGameObject<BillBoard>(GetThis<GameObject>(), L"Car", 2, 0, 0, Vec3(1.5f, 1.5f, 1.5f));
+			m_score = 30;
+		}
+		else if (m_point == 2)
+		{
+			//ビルボードの生成、スコアの設定
+			m_billBoard = GetStage()->AddGameObject<BillBoard>(GetThis<GameObject>(), L"Racingcar", 2, 0, 0, Vec3(1.5f, 1.5f, 1.5f));
+			m_score = 50;
+		}
 	}
 
 	void ScoreObject::OnCollisionEnter(shared_ptr<GameObject>& obj)
