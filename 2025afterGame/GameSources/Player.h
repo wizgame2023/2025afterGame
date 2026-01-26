@@ -145,6 +145,8 @@ namespace basecross{
 		void ChangePlayer(Vec2 lstick);
 
 		void GetPlayerScore();
+
+		void PlayerRespon();
 	};
 }
 //end basecross

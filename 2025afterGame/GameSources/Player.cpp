@@ -89,8 +89,6 @@ namespace basecross {
 
 		if (start == 0) return;
 		
-
-
 		// プレイヤーの挙動
 		PlayerMove();
 		TurnUpdate(deltaTime);
@@ -102,6 +100,8 @@ namespace basecross {
 		
 		// dpadでコントローラーを変える
 		ChangController();
+
+		PlayerRespon();
 	}
 
 	void Player::OnCollisionEnter(shared_ptr<GameObject>& obj)
@@ -523,6 +523,17 @@ namespace basecross {
 		transform->SetPosition(pos);
 	}
 
+	void Player::PlayerRespon()
+	{
+		if (m_hpCurrent == 0)
+		{
+			auto trans = GetComponent<Transform>();
+			trans->SetPosition(Vec3(0.0f,-14.0f, -1.0f));
+
+			m_hpCurrent = m_hpMax;
+		}
+	}
+
 	//void Player::CreateBarrier()
 	//{
 	//	auto stage = GetStage();
@@ -619,6 +630,8 @@ namespace basecross {
 			lstick = input->GetLStick2();
 		}
 	}
+
+
 }
 //end basecross
 
