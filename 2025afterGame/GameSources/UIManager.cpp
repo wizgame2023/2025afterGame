@@ -74,6 +74,11 @@ namespace basecross
 		CreateRankingUI();
 	}
 
+	void UIManager::UIManagerCreate()
+	{
+		OnCreate();
+	}
+
 	// XV
 	void UIManager::OnUpdate()
 	{

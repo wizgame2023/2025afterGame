@@ -64,6 +64,8 @@ namespace basecross
 		virtual void OnCreate();
 		virtual void OnUpdate();
 
+		void UIManagerCreate();
+
 		// ˆê‚Â‚¾‚¯¶¬‚µ‚½•¨
 		void CreateUI();
 		// •¡”¶¬‚·‚é‚à‚Ì

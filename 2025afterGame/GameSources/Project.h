@@ -26,6 +26,8 @@
 #include "StageCreateManager.h"
 #include "ForecastLine.h"
 #include "RayCast.h"
+#include "AmmoObjectManager.h"
+#include "RepairObjectManager.h"
 
 // 殿堂入りMyGameObject本体
 #include "MyGameObject.h";
@@ -83,6 +85,7 @@
 #include "YuutaStage.h"
 #include "TitleStage.h"
 #include "SelectStage.h"
+#include "GameClearStage.h"
 ///////////////////////////////////////////////////
 
 // ステートインクルード

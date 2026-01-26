@@ -117,11 +117,20 @@ namespace basecross{
 		startTex = uiTitlePath + L"rogo.png";
 		App::GetApp()->RegisterTexture(L"rogo_TX", startTex);
 
+		startTex = uiTitlePath + L"TitleBackGround.png";
+		App::GetApp()->RegisterTexture(L"TitleBackGround_TX", startTex);
+
 		auto remainingRounds = uiPlayerPath + L"RemainingRounds.png";
 		app->RegisterTexture(L"RemainingRounds", remainingRounds);
 
 		auto ScoreLow = uiScorePath + L"bear.png";
 		App::GetApp()->RegisterTexture(L"Bear", ScoreLow);
+
+		auto ScoreMid = uiScorePath + L"car.png";
+		App::GetApp()->RegisterTexture(L"Car", ScoreMid);
+
+		auto ScoreHigh = uiScorePath + L"Racingcar.png";
+		App::GetApp()->RegisterTexture(L"Racingcar", ScoreHigh);
 
 		auto RepairItem = uiItemPath + L"HpRecovery.png";
 		App::GetApp()->RegisterTexture(L"Repair", RepairItem);
@@ -136,6 +145,12 @@ namespace basecross{
 		auto pauseMenuVolume = uiMenuPath + L"PauseMenuSetting.png";
 		App::GetApp()->RegisterTexture(L"PauseMenuSetting_TX", pauseMenuVolume);
     
+		auto pauseMenuKeyConfig = uiMenuPath + L"PauseMenuKeyConfig.png";
+		App::GetApp()->RegisterTexture(L"PauseMenuKeyConfig_TX", pauseMenuKeyConfig);
+
+		auto pauseMenuVolumeGauge = uiMenuPath + L"PauseMenuVolumeGauge.png";
+		App::GetApp()->RegisterTexture(L"PauseMenuVolumeGauge_TX", pauseMenuVolumeGauge);
+
 		auto buttonsTex = uiMenuPath + L"Buttons.png";
 		App::GetApp()->RegisterTexture(L"Buttons_TX", buttonsTex);
 
@@ -189,6 +204,15 @@ namespace basecross{
 
 			// ゲームマネージャー作成
 			GameManager::CreateGameManager();
+
+			// ステージ生成マネージャー作成
+			StageCreateManager::CreateStageCreateManager();
+
+			ScoreObjectManager::CreateScoreObjectManager();
+
+			AmmoObjectManager::CreateAmmoObjectManager();
+
+			RepairObjectManager::CreateRepairObjectManager();
 		}
 		catch (...) {
 			throw;
@@ -221,6 +245,10 @@ namespace basecross{
 		if (event->m_MsgStr == L"ToSelectStage") {
 			//セレクトステージのアクティブステージ設定
 			ResetActiveStage<SelectStage>();
+		}
+		if (event->m_MsgStr == L"ToGameClearStage") {
+			//ゲームクリアステージのアクティブステージ設定
+			ResetActiveStage<GameClearStage>();
 		}
 		//デバッグ用ステージ
 		if (event->m_MsgStr == L"ToErionStage") {

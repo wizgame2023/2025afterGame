@@ -569,23 +569,63 @@ namespace basecross {
 		static BYTE prevTrigger = 0;
 		auto ptrMana = App::GetApp()->GetXAudio2Manager();
 
-		BYTE nowTrigger = input->GetRightTrigger();
-		BYTE threshold = 30;
+		auto& game = GameManager::GetGameManager();
+		wstring& bulletKey = game->GetBulletKey();
 
-		//「押した瞬間」だけ発射する
-		if (prevTrigger <= threshold && nowTrigger > threshold)
+
+		// 右か左トリガーに設定されていれば
+		if (bulletKey == L"LTrigger" || bulletKey == L"RTrigger")
 		{
-			if (m_bulletNumCurrentNow > 0)
+			function<BYTE(wstring)> getTrigger = nullptr;
+			if (bulletKey == L"LTrigger")
 			{
-				ptrMana->Start(L"ShotSE", 0, 0.1f);
+				getTrigger = [&](wstring key)
+					{
+						return input->GetLeftTrigger();
+					};
+			}
+			else if (bulletKey == L"RTrigger")
+			{
+				getTrigger = [&](wstring key)
+					{
+						return input->GetRightTrigger();
+					};
+			}
 
-				m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
-				m_bulletNumCurrentNow -= 1;
+			//BYTE nowTrigger = input->GetRightTrigger();
+			BYTE threshold = 30;
+
+
+			//「押した瞬間」だけ発射する
+			if ((prevTrigger <= threshold && getTrigger(bulletKey) > threshold))
+			{
+				if (m_bulletNumCurrentNow > 0)
+				{
+					ptrMana->Start(L"ShotSE", 0, 0.1f);
+
+					m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
+					m_bulletNumCurrentNow -= 1;
+				}
+			}
+
+			// 前フレーム値の更新を忘れない
+			prevTrigger = getTrigger(bulletKey);
+
+		}
+		else
+		{
+			if (input->GetDownButton(bulletKey))
+			{
+				if (m_bulletNumCurrentNow > 0)
+				{
+					ptrMana->Start(L"ShotSE", 0, 0.1f);
+
+					m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
+					m_bulletNumCurrentNow -= 1;
+				}
 			}
 		}
 
-		// 前フレーム値の更新を忘れない
-		prevTrigger = nowTrigger;
 	}
 
 	// プレイヤーのコントローラ番号をセッタ
