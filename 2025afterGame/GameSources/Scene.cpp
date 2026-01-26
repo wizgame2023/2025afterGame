@@ -188,6 +188,15 @@ namespace basecross{
 
 			// ゲームマネージャー作成
 			GameManager::CreateGameManager();
+
+			// ステージ生成マネージャー作成
+			StageCreateManager::CreateStageCreateManager();
+
+			ScoreObjectManager::CreateScoreObjectManager();
+
+			AmmoObjectManager::CreateAmmoObjectManager();
+
+			RepairObjectManager::CreateRepairObjectManager();
 		}
 		catch (...) {
 			throw;
@@ -220,6 +229,10 @@ namespace basecross{
 		if (event->m_MsgStr == L"ToSelectStage") {
 			//セレクトステージのアクティブステージ設定
 			ResetActiveStage<SelectStage>();
+		}
+		if (event->m_MsgStr == L"ToGameClearStage") {
+			//ゲームクリアステージのアクティブステージ設定
+			ResetActiveStage<GameClearStage>();
 		}
 		//デバッグ用ステージ
 		if (event->m_MsgStr == L"ToErionStage") {

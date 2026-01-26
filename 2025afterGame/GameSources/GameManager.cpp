@@ -20,35 +20,35 @@ namespace basecross {
 
 	}
 
-	unique_ptr<GameManager, GameManager::GameManagerDeleter> GameManager::m_GameManager;
+	unique_ptr<GameManager, GameManager::GameManagerDeleter> GameManager::m_gameManager;
 
 	// シングルトンによる生成
 	unique_ptr<GameManager, GameManager::GameManagerDeleter>& GameManager::CreateGameManager()
 	{
 		try
 		{
-			if (m_GameManager.get() == 0)
+			if (m_gameManager.get() == 0)
 			{
 				// 自分を作成
-				m_GameManager.reset(new GameManager());
+				m_gameManager.reset(new GameManager());
 
 				// 初期化
-				m_GameManager->OnCreate();
+				m_gameManager->OnCreate();
 			}
-			return m_GameManager;
+			return m_gameManager;
 		}
 		catch(...)
 		{
 			throw;
 		}
 
-		return m_GameManager;
+		return m_gameManager;
 	}
 
 	// 自分を渡す
 	unique_ptr<GameManager, GameManager::GameManagerDeleter>& GameManager::GetGameManager()
 	{
-		return m_GameManager;
+		return m_gameManager;
 	}
 
 
@@ -119,8 +119,8 @@ namespace basecross {
 			if (m_countTimeGameStart >= 1.0f && m_countDownSEFlag)
 			{
 				// BGM、SE用のマネージャー作成
-				m_AudioManager = App::GetApp()->GetXAudio2Manager();
-				m_se = m_AudioManager->Start(L"CountDownSE", 0, 1.0f);
+				m_audioManager = App::GetApp()->GetXAudio2Manager();
+				m_se = m_audioManager->Start(L"CountDownSE", 0, 1.0f);
 				m_countDownSEFlag = false;// なんどもSEを鳴らさない
 				SetCountEnd(true);
 			}
@@ -228,7 +228,7 @@ namespace basecross {
 		DeleteChildManager();
 
 		// 自分自身の破棄
-		m_GameManager.reset();
+		m_gameManager.reset();
 	}
 
 	// 子マネージャーの破棄処理
@@ -348,7 +348,7 @@ namespace basecross {
 		}
 		else if (m_phase == GamePhase::Item)
 		{
-			m_ItemPhaseLimit = 5.0f;
+			m_itemPhaseLimit = 5.0f;
 		}
 	}
 
@@ -384,9 +384,9 @@ namespace basecross {
 				m_itemObj = false;
 			}
 
-			m_ItemPhaseLimit -= 1.0f * m_deltaTime;
+			m_itemPhaseLimit -= 1.0f * m_deltaTime;
 
-			if (m_ItemPhaseLimit <= 0.0f)
+			if (m_itemPhaseLimit <= 0.0f)
 			{
 				m_itemObj = true;
 				ChangePhase(GamePhase::Score);

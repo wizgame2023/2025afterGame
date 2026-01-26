@@ -62,11 +62,14 @@ namespace basecross{
 		if (body)
 		{
 			// BGM、SE用のマネージャー作成
-			auto m_AudioManager = App::GetApp()->GetXAudio2Manager();
-			m_AudioManager->Start(L"GetScoreSE", 1, 1.0f);
+			auto m_audioManager = App::GetApp()->GetXAudio2Manager();
+			m_audioManager->Start(L"GetScoreSE", 1, 1.0f);
 
 			auto& score = ScoreObjectManager::GetScoreObjectManager();
 			//score->RemoveObject();
+			float hp = body->GetHpCurrent();
+			hp += 30.0f;
+			body->SetHPCurrent(hp);
 			GetStage()->RemoveGameObject<ItemObject>(GetThis<ItemObject>());
 		}
 	}

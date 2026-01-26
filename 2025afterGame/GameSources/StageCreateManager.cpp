@@ -8,6 +8,10 @@
 
 namespace basecross{
 	StageCreateManager::StageCreateManager()
+		:
+		m_scoreAnchorCount(0),
+		m_ammoAnchorCount(0),
+		m_repairAnchorCount(0)
 	{
 
 	}
@@ -245,7 +249,7 @@ namespace basecross{
 		vector<wstring> ObjectLine;
 
 		auto& score = ScoreObjectManager::GetScoreObjectManager();
-		int select = rand() % 5;
+		int select = rand() % m_scoreAnchorCount;
 
 		//CSVファイルの宣言
 		CsvFile objectFile;
@@ -297,8 +301,8 @@ namespace basecross{
 		//オブジェクトの配列
 		vector<wstring> ObjectLine;
 
-		auto& score = ScoreObjectManager::GetScoreObjectManager();
-		int select = rand() % 5;
+		auto& repair = RepairObjectManager::GetRepairObjectManager();
+		int select = rand() % m_repairAnchorCount;
 
 		//CSVファイルの宣言
 		CsvFile objectFile;
@@ -340,8 +344,7 @@ namespace basecross{
 
 			if (Tag == select)
 			{
-				auto stage = App::GetApp()->GetScene<Scene>()->GetActiveStage();
-				stage->AddGameObject<ItemObject>(Pos, Rot, Siz, Tag);
+				repair->CreateRepairObject(Pos, Rot, Siz, Tag);
 			}
 		}
 	}
@@ -351,8 +354,8 @@ namespace basecross{
 		//オブジェクトの配列
 		vector<wstring> ObjectLine;
 
-		auto& score = ScoreObjectManager::GetScoreObjectManager();
-		int select = rand() % 5;
+		auto& ammo = AmmoObjectManager::GetAmmoObjectManager();
+		int select = rand() % m_ammoAnchorCount;
 
 		//CSVファイルの宣言
 		CsvFile objectFile;
@@ -394,11 +397,39 @@ namespace basecross{
 
 			if (Tag == select)
 			{
-				auto stage = App::GetApp()->GetScene<Scene>()->GetActiveStage();
-				stage->AddGameObject<AmmoObject>(Pos, Rot, Siz, Tag);
+				ammo->CreateAmmoObject(Pos, Rot, Siz, Tag);
 			}
 		}
 	}
 
+	void StageCreateManager::SetScoreAnchorCount(int scoreanchorcount)
+	{
+		m_scoreAnchorCount = scoreanchorcount;
+	}
+
+	void StageCreateManager::SetAmmoAnchorCount(int ammoanchorcount)
+	{
+		m_ammoAnchorCount = ammoanchorcount;
+	}
+
+	void StageCreateManager::SetRepairAnchorCount(int repairanchorcount)
+	{
+		m_repairAnchorCount = repairanchorcount;
+	}
+
+	int StageCreateManager::GetScoreAnchorCount()
+	{
+		return m_scoreAnchorCount;
+	}
+
+	int StageCreateManager::GetAmmoAnchorCount()
+	{
+		return m_ammoAnchorCount;
+	}
+
+	int StageCreateManager::GetRepairAnchorCount()
+	{
+		return m_repairAnchorCount;
+	}
 }
 //end basecross

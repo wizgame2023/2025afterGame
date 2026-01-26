@@ -222,6 +222,16 @@ namespace basecross {
 		return m_bulletNumCurrentNow;
 	}
 
+	// Œ»Ý‚Ì’e”‚ÌƒZƒbƒ^
+	void FighterAircraftBase::SetBulletNumCurrentNow(int bullet)
+	{
+		m_bulletNumCurrentNow = bullet;
+		if (m_bulletNumCurrentNow >= m_bulletNumMax)
+		{
+			m_bulletNumCurrentNow = m_bulletNumMax;
+		}
+	}
+
 	// Å‘å‚Ì’e”‚ÌƒQƒbƒ^
 	int FighterAircraftBase::GetBulletNumMax()
 	{
@@ -257,6 +267,11 @@ namespace basecross {
 	void FighterAircraftBase::SetHPCurrent(float hp)
 	{
 		m_hpCurrent = hp;
+
+		if (m_hpCurrent >= m_hpMax)
+		{
+			m_hpCurrent = m_hpMax;
+		}
 	}
 
 }

@@ -54,8 +54,8 @@ namespace basecross {
 
 	void TitleStage::OnCreate() {
 		// BGM、SE用のマネージャー作成
-		m_AudioManager = App::GetApp()->GetXAudio2Manager();
-		m_bgm = m_AudioManager->Start(L"TitleBGM", XAUDIO2_LOOP_INFINITE, 0.9f);
+		m_audioManager = App::GetApp()->GetXAudio2Manager();
+		m_bgm = m_audioManager->Start(L"TitleBGM", XAUDIO2_LOOP_INFINITE, 0.9f);
 
 		try {
 			//ビューとライトの作成
@@ -66,6 +66,59 @@ namespace basecross {
 		catch (...) {
 			throw;
 		}
+
+		auto& manager = StageCreateManager::GetStageCreateManager();
+		//ステージのアンカー数を読み取ってマネージャーに渡す
+		int anchorcount = 0;
+		//オブジェクトの配列
+		vector<wstring> ObjectLine;
+		//CSVファイルの宣言
+		CsvFile objectFile;
+
+		//CSVファイルの読み込み
+		wstring DataDir;
+		App::GetApp()->GetDataDirectory(DataDir);
+		DataDir += L"Stage/";
+		objectFile.SetFileName(DataDir + L"positions.csv");
+		objectFile.ReadCsv();
+
+		//抜き出し
+		objectFile.GetSelect(ObjectLine, 0, L"ScoreObjectAnchor");
+		for (auto& v : ObjectLine)
+		{
+			anchorcount++;
+		}
+
+		//アンカーの数を生成マネージャーに転送
+		manager->SetScoreAnchorCount(anchorcount);
+		auto& scmg = ScoreObjectManager::GetScoreObjectManager();
+		scmg->SetVector();
+		anchorcount = 0;
+
+		//抜き出し
+		objectFile.GetSelect(ObjectLine, 0, L"AmmoObjectAnchor");
+		for (auto& v : ObjectLine)
+		{
+			anchorcount++;
+		}
+
+		//アンカーの数を生成マネージャーに転送
+		manager->SetAmmoAnchorCount(anchorcount);
+		auto& ammomg = AmmoObjectManager::GetAmmoObjectManager();
+		ammomg->SetVector();
+		anchorcount = 0;
+
+		//抜き出し
+		objectFile.GetSelect(ObjectLine, 0, L"ItemObjectAnchor");
+		for (auto& v : ObjectLine)
+		{
+			anchorcount++;
+		}
+
+		//アンカーの数を生成マネージャーに転送
+		manager->SetRepairAnchorCount(anchorcount);
+		auto& repairmg = RepairObjectManager::GetRepairObjectManager();
+		repairmg->SetVector();
 	}
 
 	void TitleStage::OnUpdate() 
@@ -94,7 +147,7 @@ namespace basecross {
 	// 消去される際の処理
 	void TitleStage::OnDestroy()
 	{
-		m_AudioManager->Stop(m_bgm);
+		m_audioManager->Stop(m_bgm);
 	}
 
 	void TitleStage::BlinkUI(shared_ptr<Sprite> blinksprite)

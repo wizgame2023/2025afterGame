@@ -40,7 +40,6 @@ namespace basecross{
 		{
 			throw;
 		}
-
 		return m_scoreObjectManager;
 	}
 
@@ -56,13 +55,30 @@ namespace basecross{
 
 	void ScoreObjectManager::CreateScoreObject(Vec3 pos, Vec3 rot, Vec3 siz, int tag)
 	{
-		auto stage = App::GetApp()->GetScene<Scene>()->GetActiveStage();
-		stage->AddGameObject<ScoreObject>(pos, rot, siz, tag);
+		if (m_count < 3 && m_current[tag] != true)
+		{
+			m_count++;
+			m_current[tag] = true;
+			auto stage = App::GetApp()->GetScene<Scene>()->GetActiveStage();
+			stage->AddGameObject<ScoreObject>(pos, rot, siz, tag);
+		}
 	}
 
-	void ScoreObjectManager::RemoveObject()
+	void ScoreObjectManager::RemoveObject(int id)
 	{
+		m_current[id] = false;
+		m_count--;
+	}
 
+	void ScoreObjectManager::SetVector()
+	{
+		auto& manager = StageCreateManager::GetStageCreateManager();
+		int roop = manager->GetScoreAnchorCount();
+
+		for (int a = 0; a < roop; a++)
+		{
+			m_current.push_back(false);
+		}
 	}
 }
 //end basecross

@@ -61,15 +61,15 @@ namespace basecross{
 	void ScoreObject::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
 		auto& gameManager = GameManager::GetGameManager();
+		auto& score = ScoreObjectManager::GetScoreObjectManager();
 		auto body = dynamic_pointer_cast<FighterAircraftBase>(obj);
 		if (body)
 		{
 			// BGM、SE用のマネージャー作成
-			auto m_AudioManager = App::GetApp()->GetXAudio2Manager();
-			m_AudioManager->Start(L"GetScoreSE", 0, 1.0f);
+			auto m_audioManager = App::GetApp()->GetXAudio2Manager();
+			m_audioManager->Start(L"GetScoreSE", 0, 1.0f);
 
-			auto& score = ScoreObjectManager::GetScoreObjectManager();
-			//score->RemoveObject();
+			score->RemoveObject(m_id);
 			body->AddScoreCurrent(m_score);
 			gameManager->RemoveScoreObjectCout();
 			GetStage()->RemoveGameObject<ScoreObject>(GetThis<ScoreObject>());

@@ -28,7 +28,7 @@ namespace basecross {
 			void operator()(GameManager* p) { delete p; };
 		};
 
-		static unique_ptr<GameManager, GameManagerDeleter> m_GameManager;
+		static unique_ptr<GameManager, GameManagerDeleter> m_gameManager;
 
 		float m_deltaTime = 0.0f; // 次のフレームに移動するまでの時間
 		int m_gameStageNow = 0; // 現在のゲームステージの変数
@@ -36,14 +36,14 @@ namespace basecross {
 		bool m_gameStartFlag; // ゲームが開始しているかのフラグ
 		float m_timeGamePlaying = 0.0f; // ゲームの経過時間
 		float m_timeLimit = 180.0f;
-		float m_ItemPhaseLimit = 5.0f;
+		float m_itemPhaseLimit = 5.0f;
 		int m_scoreObjecCout = 0;
 		bool m_createScoreObj = false;
 		bool m_itemObj = true;
 		bool m_countEnd = false;
 		bool m_gameEnd = false;
 		float m_countTimeGameStart = 0.0f; //カウントダウンの経過時間
-		GamePhase m_phase = GamePhase::Score; // 最初はItmeフェーズから 
+		GamePhase m_phase = GamePhase::Score; // 最初はItmeフェーズから
 
 		shared_ptr<Stage> m_currentStage; // 現在ステージ
 
@@ -72,7 +72,7 @@ namespace basecross {
 		shared_ptr<Sprite> m_startSprite; // カウントダウン時のStartスプライト
 
 		// BGM、SE用
-		shared_ptr<XAudio2Manager> m_AudioManager;
+		shared_ptr<XAudio2Manager> m_audioManager;
 		shared_ptr<SoundItem> m_se;
 
 		wstring m_bulletKey = L"RTrigger";
