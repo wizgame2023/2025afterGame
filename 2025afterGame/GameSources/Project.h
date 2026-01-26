@@ -25,6 +25,7 @@
 #include "ScoreObjectManager.h"
 #include "StageCreateManager.h"
 #include "AmmoObjectManager.h"
+#include "RepairObjectManager.h"
 
 // 殿堂入りMyGameObject本体
 #include "MyGameObject.h";

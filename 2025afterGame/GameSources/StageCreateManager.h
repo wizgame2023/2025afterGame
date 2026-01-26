@@ -55,6 +55,8 @@ namespace basecross{
 		int GetScoreAnchorCount();
 
 		int GetAmmoAnchorCount();
+
+		int GetRepairAnchorCount();
 	};
 }
 //end basecross

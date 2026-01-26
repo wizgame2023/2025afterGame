@@ -186,6 +186,8 @@ namespace basecross{
 			ScoreObjectManager::CreateScoreObjectManager();
 
 			AmmoObjectManager::CreateAmmoObjectManager();
+
+			RepairObjectManager::CreateRepairObjectManager();
 		}
 		catch (...) {
 			throw;

@@ -110,6 +110,8 @@ namespace basecross {
 
 		//アンカーの数を生成マネージャーに転送
 		manager->SetRepairAnchorCount(anchorcount);
+		auto& repairmg = RepairObjectManager::GetRepairObjectManager();
+		repairmg->SetVector();
 	}
 
 	void TitleStage::OnUpdate() 
