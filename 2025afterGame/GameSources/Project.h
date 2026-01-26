@@ -24,6 +24,8 @@
 #include "DashRing.h"
 #include "ScoreObjectManager.h"
 #include "StageCreateManager.h"
+#include "ForecastLine.h"
+#include "RayCast.h"
 #include "AmmoObjectManager.h"
 #include "RepairObjectManager.h"
 
