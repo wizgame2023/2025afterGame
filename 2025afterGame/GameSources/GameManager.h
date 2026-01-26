@@ -160,30 +160,20 @@ namespace basecross {
 		// m_createScoreObjのゲッタ
 		bool GetCreateScoreObjFlag();
 
-		int GetGameStartCountDown()
-		{
-			return m_gameStartPhase;
-		}
+		// カウントダウンの取得
+		int GetGameStartCountDown();
 
-		void SetCountEnd(bool flag)
-		{
-		   m_countEnd = flag;
-		}	
+		// Countこれが終わったらSet
+		void SetCountEnd(bool flag);
 		
-		bool GetCountEnd()
-		{
-		   return m_countEnd;
-		}
+		// Countが終わったかの取得
+		bool GetCountEnd();
 
-		void SetGameEnd(bool flag)
-		{
-			m_gameEnd = flag;
-		}
+		// Gameが終わったらSet
+		void SetGameEnd(bool flag);
 
-		bool  GetGameEnd()
-		{
-			return m_gameEnd;
-		}
+		// Gameが終わっているかの取得
+		bool  GetGameEnd();
 	};
 }
 //end basecross
