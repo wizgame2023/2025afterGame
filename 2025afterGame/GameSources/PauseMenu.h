@@ -67,7 +67,7 @@ namespace basecross{
 		};
 
 		// ボタンのスプライトの種類
-		enum class ButtonsSpriteType : int
+		enum class ButtonsType : int
 		{
 			A,
 			B,
@@ -143,9 +143,6 @@ namespace basecross{
 
 		// ステージ
 		shared_ptr<Stage> m_stage;
-
-		// ゲームマネージャー
-		GameManager* m_gameManager = nullptr;
 
 		// 選択が変わったかどうか
 		bool m_selectChanged = false;
