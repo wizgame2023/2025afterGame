@@ -13,6 +13,7 @@ namespace basecross{
 		Vec3 m_rot;
 		Vec3 m_siz;
 		int m_id;
+		int m_point;
 		int m_score;
 
 		shared_ptr<BillBoard> m_billBoard;
@@ -22,7 +23,8 @@ namespace basecross{
 			const Vec3& Pos,
 			const Vec3& Rot,
 			const Vec3& Siz,
-			const int& ID
+			const int& ID,
+			const int& Point
 		);
 		virtual ~ScoreObject();
 

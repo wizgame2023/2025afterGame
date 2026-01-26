@@ -116,6 +116,12 @@ namespace basecross{
 		auto ScoreLow = uiScorePath + L"bear.png";
 		App::GetApp()->RegisterTexture(L"Bear", ScoreLow);
 
+		auto ScoreMid = uiScorePath + L"car.png";
+		App::GetApp()->RegisterTexture(L"Car", ScoreMid);
+
+		auto ScoreHigh = uiScorePath + L"Racingcar.png";
+		App::GetApp()->RegisterTexture(L"Racingcar", ScoreHigh);
+
 		auto RepairItem = uiItemPath + L"HpRecovery.png";
 		App::GetApp()->RegisterTexture(L"Repair", RepairItem);
 
