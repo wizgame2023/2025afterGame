@@ -39,6 +39,8 @@ namespace basecross {
 			game->NowPhase();
 			//game->SetGameStartFlag(true);
 			game->ResetCheckPoint();
+			auto& score = ScoreObjectManager::GetScoreObjectManager();
+			score->OnCreate();
 			auto& obj = StageCreateManager::GetStageCreateManager();
 			m_count = 0;
 
@@ -103,7 +105,9 @@ namespace basecross {
 
 			auto enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
 
-
+			//// スコアマネージャーのテスト
+			//auto& testScoreManager = ScoreObjectManager::GetScoreObjectManager();
+			//testScoreManager->OnCreate();
 		}
 		catch (...) {
 			throw;

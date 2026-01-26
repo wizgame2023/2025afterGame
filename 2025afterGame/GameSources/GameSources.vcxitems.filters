@@ -57,6 +57,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)YuutaStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)RayCast.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ForecastLine.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameClearStage.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)AmmoObjectManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)RepairObjectManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Actor.h" />
@@ -116,5 +119,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)YuutaStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)RayCast.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ForecastLine.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameClearStage.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)AmmoObjectManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)RepairObjectManager.h" />
   </ItemGroup>
 </Project>

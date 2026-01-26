@@ -225,6 +225,7 @@ namespace basecross {
 	// Œ»Ý‚Ì’e”‚ÌƒZƒbƒ^
 	void FighterAircraftBase::SetBulletNumCurrentNow(int bullet)
 	{
+		m_bulletNumCurrentNow = bullet;
 		if (m_bulletNumCurrentNow >= m_bulletNumMax)
 		{
 			m_bulletNumCurrentNow = m_bulletNumMax;
