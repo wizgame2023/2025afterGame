@@ -24,8 +24,10 @@ namespace basecross
 		static unique_ptr<UIManager, UIManagerDeleter> m_UIManager;
 		vector<shared_ptr<Enemy>> m_enemies;
 		vector<shared_ptr<BillBoardGauge>> m_enemyGauges;
+		shared_ptr<NumberSprite> m_countNumber;
 		bool m_createUI;
 		bool m_initialized;
+		bool m_createRankingflag;
 		int m_playerHpCurrent;
 		int m_playerHpMax;
 		vector<int> m_enemyHpCurrent;
@@ -37,6 +39,7 @@ namespace basecross
 		int m_playerScoreCurrent;
 
 		bool m_createUIEnd;
+		bool m_deleteUI;
 
 		shared_ptr<NumberSprite> m_score;
 	public:
@@ -96,6 +99,7 @@ namespace basecross
 
 		// 現在のPlayerのスコアを取得
 		int GetPlayerScore();
+
 
 	private:
 		//コピー禁止

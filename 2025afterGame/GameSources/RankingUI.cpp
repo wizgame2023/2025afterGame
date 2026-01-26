@@ -8,7 +8,6 @@
 
 namespace basecross{
 	RankingUI::RankingUI(const shared_ptr<Stage>& stage,
-		const Vec2& size, 
 		const Vec3& pos, 
 		const int& rankingNumber,
 		const Vec3& rot,
@@ -16,8 +15,6 @@ namespace basecross{
 		const int& layer
 	) :
 		MyGameObject(stage),
-		m_nowIndex(0),
-		m_layer(layer),
 		m_pos(pos),
 		m_rankingNumber(rankingNumber)
 	{
@@ -32,27 +29,77 @@ namespace basecross{
 	void RankingUI::OnCreate()
 	{
 		m_trans = GetComponent<Transform>();
-		m_trans->SetPosition(m_pos.x, m_pos.y, m_pos.z);
-		SetDrawActive(true);
+		m_trans->SetPosition(m_pos);
+
+		auto& app = App::GetApp();
+		auto scene = App::GetApp()->GetScene<Scene>();
+		auto stage = scene->GetActiveStage();
+
+		Vec3 rankPos =  m_pos + Vec3(-80, 0, 0);
+		Vec3 namePos =  m_pos + Vec3( 30, -10, 0);
+		Vec3 scorePos = m_pos + Vec3(230, 0, 0);
+		
+		if (m_rankingNumber == 1)
+		{
+			namePos.y += 10;
+		}
+
+		// 左：順位
+		// 5:6
+		m_rankUI = stage->AddGameObject<NumberSprite>(Vec2(35 ,42), rankPos);
+		m_rankUI->SetRankingNumberCount(m_rankingNumber);
+		m_rankUI->SetMyType(NumberType::RankingNumber);
+
+		// 中：名前
+		// 3 : 1 
+		// 103 : 32
+		m_nameSprite = stage->AddGameObject<Sprite>(
+			L"ResultPlayer",
+			Vec2(180,60),
+			namePos,
+			1
+		);
+
+		// 右：スコア
+		m_scoreUI = stage->AddGameObject<NumberSprite>(Vec2(30, 30), scorePos);
 	}
 
 	void RankingUI::OnUpdate()
 	{
-		RankingNumber();
-	}
+		auto& scoreManager = ScoreManager::GetScoreManager();
+		auto scores = scoreManager->GetSortedScores();
+		auto plScore = scoreManager->GetPlScore();
 
-	void RankingUI::RankingNumber()
-	{
-		auto& app = App::GetApp();
-		auto scene = app->GetScene<Scene>();
-		auto stage = scene->GetActiveStage();
+		int index = m_rankingNumber - 1;
 
-		for (int i = 0; i < m_rankingNumber; i++)
+		if (index < scores.size())
 		{
-			auto number = stage->AddGameObject<NumberSprite>(Vec2(25.0f, 25.0f), Vec3(m_pos.x, m_pos.y, m_pos.z));
-			number->SetMyType(NumberType::Ranking);
-		}
-	}
+			const auto& id = scores[index].id;
 
+			if (id == L"Player")
+			{
+				m_nameSprite->SetTexture(L"ResultPlayer");
+			}
+			else if (id == L"Enemy1")
+			{
+				m_nameSprite->SetTexture(L"ResultEnemy");
+			}
+			//else if (id == L"Enemy2")
+			//{
+			//	m_nameSprite->SetTexture(L"ResultEnemy");
+			//}
+			//else if (id == L"Enemy3")
+			//{
+			//	m_nameSprite->SetTexture(L"ResultEnemy");
+			//}
+
+			m_scoreUI->SetNumber(scores[index].crntScore);
+		}
+	/*	else
+		{
+			m_nameSprite->SetTexture(L"Enemy");
+			m_scoreUI->SetNumber(0);
+		}*/
+	}
 }
 //end basecross

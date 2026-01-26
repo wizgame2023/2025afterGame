@@ -419,6 +419,30 @@ namespace basecross {
 		return m_createScoreObj;
 	}
 	 
+	int  GameManager::GetGameStartCountDown()
+	{
+		return m_gameStartPhase;
+	}
+
+	void GameManager::SetCountEnd(bool flag)
+	{
+		m_countEnd = flag;
+	}
+
+	bool GameManager::GetCountEnd()
+	{
+		return m_countEnd;
+	}
+	
+	void GameManager::SetGameEnd(bool flag)
+	{
+		m_gameEnd = flag;
+	}
+
+	bool GameManager::GetGameEnd()
+	{
+		return m_gameEnd;
+	}
 }
 
 //end basecross

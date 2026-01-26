@@ -25,7 +25,10 @@ namespace basecross {
 		m_pitchAngle(0.0f),
 		m_yawAngle(0.0f),
 		m_rollAngle(0.0f),
-		m_baseMeshMat()
+		m_baseMeshMat(),
+		m_moveAnimationFlag(false),
+		m_stopAnimationFlag(false),
+		m_aButton(false)
 	{
 	}
 
@@ -44,9 +47,9 @@ namespace basecross {
 		auto ptrTrans = GetComponent<Transform>();
 		ptrTrans->SetPosition(Vec3(0.0f, -14.0f, -1.0f));
 
-		m_model = AddComponent<PNTStaticDraw>();
-		m_model->SetMeshResource(L"Sentouki");
-		m_model->SetTextureResource(L"diffuse_TX");
+		m_draw = AddComponent<PNTBoneModelDraw>();
+		m_draw->SetMeshResource(L"Sentouki");
+		m_draw->SetTextureResource(L"diffuse_TX");
 
 		auto ptrCol = AddComponent<CollisionObb>();
 		ptrCol->SetDrawActive(false);
@@ -61,9 +64,16 @@ namespace basecross {
 		);
 
 		m_baseMeshMat = spanMat;
-		m_model->SetMeshToTransformMatrix(spanMat);
+		m_draw->SetMeshToTransformMatrix(spanMat);
+
+		m_draw->AddAnimation(L"PropellerMove",  0, 50, 60.0f);
+		m_draw->AddAnimation(L"PropellerDown", 40, 20, 30.0f);
+		m_draw->AddAnimation(L"PropellerStop",  0,  1,  0.0f);
+		
+		m_draw->ChangeCurrentAnimation(L"PropellerStop");
 
 		// m_gravity = AddComponent<Gravity>();
+
 	}
 
 	void Player::OnUpdate()
@@ -71,12 +81,14 @@ namespace basecross {
 		if (GetPauseFlag()) return;
 
 		FighterAircraftBase::OnUpdate();
-
 		auto& app = App::GetApp();
 		auto deltaTime = app->GetElapsedTime();
-		
 		auto pos = GetComponent<Transform>()->GetPosition();
+		auto& gameManager = GameManager::GetGameManager();
+		auto start = gameManager->GetGameStartCountDown();
 
+		if (start == 0) return;
+		
 		// プレイヤーの挙動
 		PlayerMove();
 		TurnUpdate(deltaTime);
@@ -88,6 +100,8 @@ namespace basecross {
 		
 		// dpadでコントローラーを変える
 		ChangController();
+
+		PlayerRespon();
 	}
 
 	void Player::OnCollisionEnter(shared_ptr<GameObject>& obj)
@@ -116,7 +130,7 @@ namespace basecross {
 		}
 	}
 
-	void Player::PlayerMove()
+	void Player::PlayerMove() 
 	{
 		auto& app = App::GetApp();
 		auto& game = GameManager::GetGameManager();
@@ -148,33 +162,46 @@ namespace basecross {
 
 		ChangePlayer(lstick);
 
-		if (m_playerIndex == 0)
-		{
-			m_aButton = input->GetButton(L"A");
-		}
-		else if (m_playerIndex == 1)
-		{
-			m_aButton = input->GetButton2(L"A");
-		}
+		m_aButton = input->GetButton(L"A");
 
 		// Aボタンを押して加速移動
 		if (m_aButton)
 		{
+			if (!m_moveAnimationFlag)
+			{
+				m_draw->ChangeCurrentAnimation(L"PropellerMove");
+				m_moveAnimationFlag = true;
+			}
+
 			m_recoveryTime = 0.0f;
 			// 現在のスピードに加速度を足して動かす
 			m_speedCurrent += m_speedAdd * deltaTime;
+
 		}
 		else
 		{
+			if (m_moveAnimationFlag)
+			{
+				m_draw->ChangeCurrentAnimation(L"PropellerDown");
+				m_moveAnimationFlag = false;
+			}
+
+			auto animTime = m_draw->GetCurrentAnimationTime();
+			if (animTime >= 0.5f)
+			{
+				m_draw->ChangeCurrentAnimation(L"PropellerStop");
+			}
+
 			m_recoveryTime += deltaTime;
 			m_speedCurrent -= speedBrake * deltaTime;
 		}
+
+		m_draw->UpdateAnimation(deltaTime);
 
 		// Flight(deltaTime);
 
 		// 現在のスピードをclampで0.0f以下m_speedMax以上にならないよう
 		m_speedCurrent = clamp(m_speedCurrent, 0.0f, m_speedMax);
-
 
 		// --- 移動処理 ---
 		m_velocity = moveDir * m_speedCurrent;
@@ -333,7 +360,7 @@ namespace basecross {
 		Mat4x4 finalMeshMat = m_baseMeshMat * rollMat;
 
 		// 描画用に反映
-		m_model->SetMeshToTransformMatrix(finalMeshMat);
+		m_draw->SetMeshToTransformMatrix(finalMeshMat);
 	}
 
 	void Player::Flight(float deltaTime)
@@ -496,6 +523,17 @@ namespace basecross {
 		transform->SetPosition(pos);
 	}
 
+	void Player::PlayerRespon()
+	{
+		if (m_hpCurrent == 0)
+		{
+			auto trans = GetComponent<Transform>();
+			trans->SetPosition(Vec3(0.0f,-14.0f, -1.0f));
+
+			m_hpCurrent = m_hpMax;
+		}
+	}
+
 	//void Player::CreateBarrier()
 	//{
 	//	auto stage = GetStage();
@@ -632,6 +670,8 @@ namespace basecross {
 			lstick = input->GetLStick2();
 		}
 	}
+
+
 }
 //end basecross
 
