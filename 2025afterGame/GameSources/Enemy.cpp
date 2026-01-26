@@ -56,8 +56,8 @@ namespace basecross {
 		//ptrCol->SetAfterCollision(AfterCollision::None);
 
 		// ƒhƒ[ˆ—
-		m_draw = AddComponent<PNTStaticDraw>();
-		m_draw->SetMeshResource(L"Sentouki");
+		m_draw = AddComponent<PNTBoneModelDraw>();
+		m_draw->SetMultiMeshResource(L"Sentouki");
 		m_draw->SetTextureResource(L"diffuse_TX");
 		m_draw->SetMeshToTransformMatrix(spanMat);
 		m_draw->SetDiffuse(m_color);
