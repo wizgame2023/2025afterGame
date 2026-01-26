@@ -60,6 +60,8 @@ namespace basecross{
 	{
 		MyGameObject::OnUpdate();
 
+		//if (GetPauseFlag()) return; // ポーズ中は更新しない
+
 		// コントローラーの取得
 		auto& input = InputManager::GetInputManager();
 

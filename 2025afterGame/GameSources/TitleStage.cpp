@@ -40,9 +40,16 @@ namespace basecross {
 	//UIçÏê¨
 	void TitleStage::CreateUI()
 	{
-		m_testTitle = AddGameObject<Sprite>(L"Start_TX", Vec2(412.0f, 128.0f), Vec3(0.0f, -210.0f, 0.0f));
+		AddGameObject<Sprite>(L"TitleBackGround_TX", Vec2(1280.0f, 800.0f), Vec3(0.0f, 0.0f, 0.0f));
 
-		AddGameObject<Sprite>(L"rogo_TX", Vec2(1024.0f, 512.0f), Vec3(0.0f, 100.0f, 0.0f));
+
+		float test2 = 412 * 0.75;
+		float test3 = 128 * 0.75;
+		m_testTitle = AddGameObject<Sprite>(L"Start_TX", Vec2(test2, test3), Vec3(0.0f, -260.0f, 0.0f));
+
+		float test = 800.0f;
+		AddGameObject<Sprite>(L"rogo_TX", Vec2(test, test / 2), Vec3(0.0f, 210.0f, 0.0f));
+
 	}
 
 	void TitleStage::OnCreate() {

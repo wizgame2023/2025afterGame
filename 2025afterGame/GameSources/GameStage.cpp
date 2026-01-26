@@ -105,6 +105,13 @@ namespace basecross {
 
 			auto enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
 
+			UIManager::CreateUIManager();
+			auto& uiManager = UIManager::GetUIManager();
+			uiManager->UIManagerCreate();
+
+			auto mainCamMana = AddGameObject<MainCameraManager>();
+			SetSharedGameObject(L"MainCameraManager", mainCamMana);
+
 			//// スコアマネージャーのテスト
 			//auto& testScoreManager = ScoreObjectManager::GetScoreObjectManager();
 			//testScoreManager->OnCreate();
@@ -113,9 +120,6 @@ namespace basecross {
 			throw;
 		}
 
-		UIManager::CreateUIManager();
-		auto mainCamMana = AddGameObject<MainCameraManager>();
-		SetSharedGameObject(L"MainCameraManager", mainCamMana);
 	}
 
 	void GameStage::OnUpdate()
