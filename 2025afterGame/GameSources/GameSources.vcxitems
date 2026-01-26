@@ -33,6 +33,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Enemy.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ErionStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FighterAircraftBase.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ForecastLine.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)HpSprite.h" />
@@ -52,6 +53,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)ProjectShader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)KaitoStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)RankingUI.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)RayCast.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Scene.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ScoreManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ScoreObject.h" />
@@ -89,6 +91,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Enemy.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ErionStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FighterAircraftBase.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ForecastLine.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)HpSprite.cpp" />
@@ -107,6 +110,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectBehavior.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectShader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)RankingUI.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)RayCast.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Scene.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ScoreManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ScoreObject.cpp" />

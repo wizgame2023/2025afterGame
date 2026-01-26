@@ -47,8 +47,8 @@ namespace basecross {
 
 	void TitleStage::OnCreate() {
 		// BGM、SE用のマネージャー作成
-		m_AudioManager = App::GetApp()->GetXAudio2Manager();
-		m_bgm = m_AudioManager->Start(L"TitleBGM", XAUDIO2_LOOP_INFINITE, 0.9f);
+		m_audioManager = App::GetApp()->GetXAudio2Manager();
+		m_bgm = m_audioManager->Start(L"TitleBGM", XAUDIO2_LOOP_INFINITE, 0.9f);
 
 		try {
 			//ビューとライトの作成
@@ -87,7 +87,7 @@ namespace basecross {
 	// 消去される際の処理
 	void TitleStage::OnDestroy()
 	{
-		m_AudioManager->Stop(m_bgm);
+		m_audioManager->Stop(m_bgm);
 	}
 
 	void TitleStage::BlinkUI(shared_ptr<Sprite> blinksprite)
