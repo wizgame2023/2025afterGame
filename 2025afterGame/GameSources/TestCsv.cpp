@@ -78,6 +78,14 @@ namespace basecross {
 			Vec3(0.0f, -0.54f, 0.0f)
 		);
 
+		Mat4x4 spanMat5;
+		spanMat5.affineTransformation(
+			Vec3(0.11f, 0.16f, 0.2f),
+			Vec3(0.0f, 0.0f, 0.0f),
+			Vec3(0.0f, XMConvertToRadians(-90.0f), 0.0f),
+			Vec3(0.0f, -0.54f, 0.0f)
+		);
+
 		//ƒƒbƒVƒ…‚Ì•`‰æ
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
 		
@@ -121,6 +129,15 @@ namespace basecross {
 			ptrDraw->SetMeshResource(L"Shelf");
 			ptrDraw->SetTextureResource(L"ShelfTex");
 			ptrDraw->SetMeshToTransformMatrix(spanMat4);
+		}
+		else if (m_tag == L"BookShelf")
+		{
+			AddTag(L"CameraObsDiffuse");
+			SetAlphaActive(true);
+
+			ptrDraw->SetMeshResource(L"Shelf");
+			ptrDraw->SetTextureResource(L"ShelfTex");
+			ptrDraw->SetMeshToTransformMatrix(spanMat5);
 		}
 		else
 		{

@@ -27,6 +27,7 @@ namespace basecross{
 		const wstring& uiPlayerPath = path + L"UI/Player/";
 		const wstring& uiTitlePath = path + L"UI/Title/";
 		const wstring& uiMenuPath = path + L"UI/Menu/";
+		const wstring& uiResultPath = path + L"UI/Result/";
 		const wstring& uiScorePath = path + L"UI/Score/";
 		const wstring& uiStagePath = path + L"UI/Stage/";
 		const wstring& uiItemPath = path + L"UI/HealItem/";
@@ -96,6 +97,9 @@ namespace basecross{
     
 		auto colon = uiPlayerPath + L"Colon.png";
 		app->RegisterTexture(L"Colon", colon);
+    
+		auto finalscore = uiResultPath + L"finalscore.png";
+		app->RegisterTexture(L"Finalscore", finalscore);
     
 		auto startTex = uiTitlePath + L"PressA.png";
 		app->RegisterTexture(L"Start_TX", startTex);

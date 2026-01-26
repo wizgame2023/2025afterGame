@@ -82,8 +82,8 @@ namespace basecross {
 			auto enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, m_player);
 
 			// BGM、SE用のマネージャー作成
-			//m_AudioManager = App::GetApp()->GetXAudio2Manager();
-			//m_bgm = m_AudioManager->Start(L"StageBGM", XAUDIO2_LOOP_INFINITE, gameManager->GetBGMVolume());
+			//m_audioManager = App::GetApp()->GetXAudio2Manager();
+			//m_bgm = m_audioManager->Start(L"StageBGM", XAUDIO2_LOOP_INFINITE, gameManager->GetBGMVolume());
 			
 			// これがないとエフェクトが表示されない()
 			AddGameObject<EffectUpdateDrawManager>();
