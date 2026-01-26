@@ -81,6 +81,9 @@ namespace basecross{
 		auto& gameManager = GameManager::GetGameManager();
 		auto& score = ScoreObjectManager::GetScoreObjectManager();
 		auto body = dynamic_pointer_cast<FighterAircraftBase>(obj);
+		auto player = dynamic_pointer_cast<Player>(obj);
+		auto enemy = dynamic_pointer_cast<Enemy>(obj);
+
 		if (body)
 		{
 			// BGM、SE用のマネージャー作成
@@ -93,8 +96,20 @@ namespace basecross{
 			GetStage()->RemoveGameObject<ScoreObject>(GetThis<ScoreObject>());
 			m_billBoard = nullptr;
 			//GetStage()->RemoveGameObject<BillBoard>(m_billBoard);
-
 		}
+
+		if (player)
+		{
+			auto plScore = scoreManager->GetPlScore();
+			scoreManager->SetPlScore(plScore + m_score);
+		}
+
+		if (enemy)
+		{
+			auto enemyScore = scoreManager->GetPlScore();
+			scoreManager->SetScore(L"Enemy1", scoreManager->GetScore(L"Enemy1") + m_score);
+		}
+
 	}
 
 	int ScoreObject::GetObjectID()
