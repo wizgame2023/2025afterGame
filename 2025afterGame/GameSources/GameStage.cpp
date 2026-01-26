@@ -124,6 +124,17 @@ namespace basecross {
 	{
 		UIManager::GetUIManager()->OnUpdate();
 		auto& obj = StageCreateManager::GetStageCreateManager();
+		auto& gameMana = GameManager::GetGameManager();
+		auto& input = InputManager::GetInputManager();
+
+		if (gameMana->GetGameEnd() == true)
+		{
+			if (input->GetButton(L"A"))
+			{
+				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
+				return;
+			}
+		}
 	}
 
 	// 消去される際の処理
