@@ -21,7 +21,9 @@ namespace basecross {
         m_digit(0),
         m_prevNumber(-1),
         m_pos(pos),
-        m_layer(layer)
+        m_layer(layer),
+        m_rankingNumber(0),
+        m_value(0)
     {
     }
 
@@ -48,36 +50,39 @@ namespace basecross {
 
         auto countDown = gameManger->GetGameStartCountDown();
 
-        int value = 0;
+        if (m_type == NumberType::None)
+        {
+            return;
+        }
 
         switch (m_type)
         {
         case NumberType::Bullet:
-            value = uiManager->GetBulletNumCurrentNow();
+            m_value = uiManager->GetBulletNumCurrentNow();
             break;
         case NumberType::Minute:
-            value = uiManager->GetMinuteTimer();
+            m_value = uiManager->GetMinuteTimer();
             break;
         case NumberType::Second:
-            value = uiManager->GetSecondTimer();
+            m_value = uiManager->GetSecondTimer();
             break;
         case NumberType::MaxBullet:
-            value = uiManager->GetBulletNumMax();
+            m_value = uiManager->GetBulletNumMax();
             break;
         case NumberType::Score:
-			value = uiManager->GetPlayerScore();
+            m_value = uiManager->GetPlayerScore();
 			break;
-        case NumberType::Ranking:
-            value = 100;
-            break;
         case NumberType::Count:
-            value = countDown;
+            m_value = 4 - countDown;
+            break;
+        case NumberType::RankingNumber:
+            m_value = m_rankingNumber;
             break;
         }
 
-        if (value >= 0)
+        if (m_value >= 0)
         {
-            SetNumber(value);
+            SetNumber(m_value);
         }
     }
 
@@ -184,6 +189,11 @@ namespace basecross {
     void NumberSprite::SetLayer(int layer)
     {
         m_layer = layer;
+    }
+
+    void NumberSprite::SetRankingNumberCount(int number)
+    {
+        m_rankingNumber += number;
     }
 }
 //end basecross
