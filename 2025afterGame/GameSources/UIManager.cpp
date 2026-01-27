@@ -161,7 +161,6 @@ namespace basecross
 		//	//count->RemoveComponent<NumberSprite>();
 		//}
 
-		auto pauseMenu = stage->AddGameObject<PauseMenu>();
 
 		m_createUI = true;
 	}

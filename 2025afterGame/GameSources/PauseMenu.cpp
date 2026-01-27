@@ -44,7 +44,7 @@ namespace basecross{
 
 		for (int i = 0; i < 4; i++)
 		{
-			spInfo.pos = Vec3(0.0f, 280.0f + (i * -150), 0.0f);
+			spInfo.pos = Vec3(0.0f, 260.0f + (i * -150), 0.0f);
 			spInfo.leftTopUV = Vec2(0.0f, mainUVHeight * i);
 			spInfo.rightBotUV = Vec2(1.0f, (mainUVHeight * (i + 1)));
 			PushBackPauseMenuSprite(m_pauseMainMenuSprites, spInfo);
@@ -154,16 +154,16 @@ namespace basecross{
 			StartPause();
 		}
 
+		MenuVisibleManagement();
+
 		// 非ポーズ中は全メニュー非表示
 		if (m_pauseState == PauseMenuState::False)
 		{
-			IsVisibleAllMenuSprites(false);
 			return;
 		}
 
 		UpdatePauseMenu();
 
-		MenuVisibleManagement();
 
 		DebugLogs();
 		FlushDebugLog();
@@ -277,12 +277,7 @@ namespace basecross{
 	void PauseMenu::UpdateMainMenu(InputManager& input)
 	{
 		// Lスティックの上下入力で選択肢を変更
-		if(UpdateSelection(m_crntMainSelect, PauseMainMenuSelect::Max))
-		{
-			// 選択肢が変わった場合の処理
-			// 音を鳴らすなど
-
-		}
+		HandleMenuSelection(m_pauseMainMenuSprites, m_crntMainSelect, PauseMainMenuSelect::Max);
 
 		bool pressAButton = input.GetDownButton(L"A");
 		bool pressBButton = input.GetDownButton(L"B");
@@ -342,12 +337,7 @@ namespace basecross{
 	void PauseMenu::UpdateSettingMenu(InputManager& input)
 	{
 		// Lスティックの上下入力で選択肢を変更
-		if (UpdateSelection(m_crntSettingSelect, PauseSettingMenuSelect::Max))
-		{
-			// 選択肢が変わった場合の処理
-			// 音を鳴らすなど
-
-		}
+		HandleMenuSelection(m_pauseSettingMenuSprites, m_crntSettingSelect, PauseSettingMenuSelect::Max);
 
 		bool pressAButton = input.GetDownButton(L"A");
 		bool pressBButton = input.GetDownButton(L"B");
@@ -378,12 +368,7 @@ namespace basecross{
 	void PauseMenu::UpdateVolumeMenu(InputManager& input)
 	{
 		// Lスティックの上下入力で選択肢を変更
-		if (UpdateSelection(m_crntVolumeSelect, PauseVolumeMenuSelect::Max))
-		{
-			// 選択肢が変わった場合の処理
-			// 音を鳴らすなど
-
-		}
+		HandleMenuSelection(m_pauseVolumeMenuSprites, m_crntVolumeSelect, PauseVolumeMenuSelect::Max);
 
 		bool pressAButton = input.GetDownButton(L"A");
 		bool pressBButton = input.GetDownButton(L"B");
@@ -591,42 +576,33 @@ namespace basecross{
 
 	void PauseMenu::MenuVisibleManagement()
 	{
-		// 現在のポーズメニューの状態に応じて表示・非表示を切り替え
-		switch (m_pauseState)
+		static PauseMenuState lastState = PauseMenuState::Max;
+
+		// 前フレームとステートが違っていたら処理を行う
+		if (m_pauseState != lastState)
 		{
-		case PauseMenuState::False:
-			// 全メニューを非表示
-			IsVisibleAllMenuSprites(false);
-			break;
+			// 背景は非ポーズ状態以外常に表示
+			m_pauseBackGroundSprite->OnClear(m_pauseState == PauseMenuState::False);
 
-		case PauseMenuState::MainMenu:
-			IsVisibleAllMenuSprites(false);
-			// 背景とメインメニューを表示
-			m_pauseBackGroundSprite->OnClear(false);
-			IsVisibleMenuSprites(m_pauseMainMenuSprites, true);
-			break;
+			// 各グループについて、現在のステートと一致するときだけ true にする
+			{
+				// ポーズがMainMenu状態のときだけメインメニューを表示
+				IsVisibleMenuSprites(m_pauseMainMenuSprites,		(m_pauseState == PauseMenuState::MainMenu));
 
-		case PauseMenuState::SettingMenu:
-			IsVisibleAllMenuSprites(false);
-			// 設定メニューを表示
-			m_pauseBackGroundSprite->OnClear(false);
-			IsVisibleMenuSprites(m_pauseSettingMenuSprites, true);
-			break;
+				IsVisibleMenuSprites(m_pauseSettingMenuSprites,		(m_pauseState == PauseMenuState::SettingMenu));
 
-		case PauseMenuState::VolumeMenu:
-			IsVisibleAllMenuSprites(false);
-			// ボリュームメニューを表示
-			m_pauseBackGroundSprite->OnClear(false);
-			IsVisibleMenuSprites(m_pauseVolumeMenuSprites, true);
-			break;
+				IsVisibleMenuSprites(m_pauseVolumeMenuSprites,		(m_pauseState == PauseMenuState::VolumeMenu ||
+																	 m_pauseState == PauseMenuState::BGMSetting ||
+																	 m_pauseState == PauseMenuState::SESetting));
 
-		case PauseMenuState::KeyConfigMenu:
-			IsVisibleAllMenuSprites(false);
-			// キーコンフィグメニューを表示
-			m_pauseBackGroundSprite->OnClear(false);
-			IsVisibleMenuSprites(m_pauseKeyConfigMenuSprites, true);
-			break;
+				IsVisibleMenuSprites(m_pauseKeyConfigMenuSprites,	(m_pauseState == PauseMenuState::KeyConfigMenu ||
+																	 m_pauseState == PauseMenuState::AccelSetting ||
+																	 m_pauseState == PauseMenuState::BulletSetting ||
+																	 m_pauseState == PauseMenuState::ViewBehindSetting));
+			}
 		}
+
+		lastState = m_pauseState;
 	}
 
 	// ==============================================================================
@@ -636,7 +612,7 @@ namespace basecross{
 		SetPauseFlag(true);
 		m_crntMainSelect = PauseMainMenuSelect::Resume;
 		m_pauseState = PauseMenuState::MainMenu;
-		IsVisibleMenuSprites(m_pauseMainMenuSprites, true);
+		m_pauseMainMenuSprites[0]->SetScale(m_selectionScale);
 		m_pauseBackGroundSprite->OnClear(false);
 	}
 

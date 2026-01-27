@@ -127,6 +127,8 @@ namespace basecross {
 			auto mainCamMana = AddGameObject<MainCameraManager>();
 			SetSharedGameObject(L"MainCameraManager", mainCamMana);
 
+			auto pauseMenu = AddGameObject<PauseMenu>();
+
 			//// スコアマネージャーのテスト
 			//auto& testScoreManager = ScoreObjectManager::GetScoreObjectManager();
 			//testScoreManager->OnCreate();
@@ -143,6 +145,7 @@ namespace basecross {
 		auto& obj = StageCreateManager::GetStageCreateManager();
 		auto& gameMana = GameManager::GetGameManager();
 		auto& input = InputManager::GetInputManager();
+		m_bgm->m_SourceVoice->SetVolume(GameManager::GetGameManager()->GetBGMVolume());
 
 		if (gameMana->GetGameEnd() == true)
 		{
