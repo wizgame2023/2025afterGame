@@ -75,6 +75,9 @@ namespace basecross{
 		modelTex = modelPath + L"Clock.png";
 		app->RegisterTexture(L"ClockTex", modelTex);
 
+		modelTex = modelPath + L"house.png";
+		app->RegisterTexture(L"HouseTex", modelTex);
+
 		// Model /////////////////////////////////////////////////
 		// Player
 		auto modelMesh = MeshResource::CreateBoneModelMesh(modelPath, L"Player_Plane.bmf");
@@ -100,6 +103,9 @@ namespace basecross{
     
 		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"clock.bmf");
 		app->RegisterResource(L"Clock", modelMesh);
+
+		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"house.bmf");
+		app->RegisterResource(L"House", modelMesh);
 
 		// UI /////////////////////////////////////////////////
 		auto numberSprite = uiPlayerPath + L"Number.png";
