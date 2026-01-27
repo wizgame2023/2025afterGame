@@ -43,7 +43,7 @@ namespace basecross {
 		//コリジョン
 		auto ptrCol = AddComponent<CollisionObb>();
 		ptrCol->SetFixed(true);
-		ptrCol->SetDrawActive(false);
+		ptrCol->SetDrawActive(true);
 		ptrCol->SetAfterCollision(AfterCollision::Auto);
 
 		Mat4x4 spanMat1;
@@ -84,6 +84,14 @@ namespace basecross {
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, XMConvertToRadians(-90.0f), 0.0f),
 			Vec3(0.0f, -0.54f, 0.0f)
+		);
+
+		Mat4x4 spanMat6;
+		spanMat6.affineTransformation(
+			Vec3(0.2f, 0.2f, 1.0f),
+			Vec3(0.0f, 0.0f, 0.0f),
+			Vec3(0.0f, XMConvertToRadians(90.0f), 0.0f),
+			Vec3(0.0f, -0.6f, 0.0f)
 		);
 
 		//メッシュの描画
@@ -138,6 +146,15 @@ namespace basecross {
 			ptrDraw->SetMeshResource(L"Shelf");
 			ptrDraw->SetTextureResource(L"ShelfTex");
 			ptrDraw->SetMeshToTransformMatrix(spanMat5);
+		}
+		else if (m_tag == L"Clock")
+		{
+			AddTag(L"CameraObsDiffuse");
+			SetAlphaActive(true);
+
+			ptrDraw->SetMeshResource(L"Clock");
+			ptrDraw->SetTextureResource(L"ClockTex");
+			ptrDraw->SetMeshToTransformMatrix(spanMat6);
 		}
 		else
 		{
