@@ -238,7 +238,7 @@ namespace basecross {
 		m_timeOfReturn = m_enemyLock->GetTimeOfReturn();
 
 		// Ž©•ª‚ªŒ©‚¦‚È‚¢ó‘Ô‚É•ÏX‚·‚é
-		m_enemyLock->GetComponent<PNTStaticDraw>()->SetDrawActive(false);
+		m_enemyLock->GetComponent<SmBaseDraw>()->SetDrawActive(false);
 		// –³“Gó‘Ô‚ðƒIƒ“‚É‚·‚é
 		m_enemyLock->OnInvincibleFlag();
 	}
@@ -257,7 +257,7 @@ namespace basecross {
 			m_enemyLock->SetPos(Vec3(0.0f, -10.0f, 0.0f));
 
 			// Ž©•ª‚ªŒ©‚¦‚éó‘Ô‚É•ÏX‚·‚é
-			m_enemyLock->GetComponent<PNTStaticDraw>()->SetDrawActive(true);
+			m_enemyLock->GetComponent<SmBaseDraw>()->SetDrawActive(true);
 
 			m_enemyLock->GetHpMax();
 

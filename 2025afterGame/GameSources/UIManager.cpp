@@ -1,7 +1,7 @@
 /*!
 @file UIManager.cpp
-@brief UIŠÇ—‚ÌÀ‘Ì
-’S“–F‹g“c ’q‹M
+@brief UIç®¡ç†ã®å®Ÿä½“
+æ‹…å½“ï¼šå‰ç”° æ™ºè²´
 */
 
 #include "stdafx.h"
@@ -36,17 +36,17 @@ namespace basecross
 
 	unique_ptr<UIManager, UIManager::UIManagerDeleter> UIManager::m_UIManager;
 
-	// ƒVƒ“ƒOƒ‹ƒgƒ“‚É‚æ‚é¶¬
+	// ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã«ã‚ˆã‚‹ç”Ÿæˆ
 	unique_ptr<UIManager, UIManager::UIManagerDeleter>& UIManager::CreateUIManager()
 	{
 		try
 		{
 			if (m_UIManager.get() == 0)
 			{
-				// ©•ª‚ğì¬
+				// è‡ªåˆ†ã‚’ä½œæˆ
 				m_UIManager.reset(new UIManager());
 
-				// ‰Šú‰»
+				// åˆæœŸåŒ–
 				m_UIManager->OnCreate();
 			}
 			return m_UIManager;
@@ -59,14 +59,14 @@ namespace basecross
 		return m_UIManager;
 	}
 
-	// ©•ª‚ğ“n‚·
+	// è‡ªåˆ†ã‚’æ¸¡ã™
 	unique_ptr<UIManager, UIManager::UIManagerDeleter>& UIManager::GetUIManager()
 	{
 		return m_UIManager;
 	}
 
 
-	// ‰Šú‰»ˆ—
+	// åˆæœŸåŒ–å‡¦ç†
 	void UIManager::OnCreate()
 	{
 		CreateUI();
@@ -79,7 +79,7 @@ namespace basecross
 		OnCreate();
 	}
 
-	// XV
+	// æ›´æ–°
 	void UIManager::OnUpdate()
 	{
 		auto& app = App::GetApp();
@@ -110,10 +110,10 @@ namespace basecross
 		}
 	}
 
-	// ©•ª©g‚Ì”jŠüˆ—
+	// è‡ªåˆ†è‡ªèº«ã®ç ´æ£„å‡¦ç†
 	void UIManager::DeleteUIManager()
 	{
-		// ©•ª©g‚Ì”jŠü
+		// è‡ªåˆ†è‡ªèº«ã®ç ´æ£„
 		m_UIManager.reset();
 	}
 
@@ -128,7 +128,7 @@ namespace basecross
 		//auto finalscore = stage->AddGameObject<Sprite>(L"Finalscore", Vec2(600.0f, 200.0f), Vec3(0.0f, 325.0f, 0.0f));
 		//finalscore->SetDrawLayer(2);
 
-		//// ‡ˆÊ
+		//// é †ä½
 		//auto you = stage->AddGameObject<RankingUI>(Vec3(0, 0, 0), 1, true);
 		//you->SetLayer(4);
 
@@ -153,6 +153,13 @@ namespace basecross
 		//m_countNumber->SetMyType(NumberType::Count);
 
 		auto pauseMenu = stage->AddGameObject<PauseMenu>();
+		//if(!gameMana->GetCountEnd())
+		//{
+		//	//stage->RemoveGameObject<NumberSprite>(count);
+		//	//App::GetApp()->GetScene<Scene>()->Get
+		//	//count->RemoveComponent<NumberSprite>();
+		//}
+
 
 		m_createUI = true;
 	}

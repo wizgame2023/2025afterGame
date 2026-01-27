@@ -110,6 +110,15 @@ namespace basecross {
 			auto startCheckPoint = gameManager->GetCheckPoint(0);
 
 			auto enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			auto testenemy = AddGameObject<Enemy>(Vec3(50.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, 25.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			AddGameObject<Enemy>(Vec3(0.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			AddGameObject<Enemy>(Vec3(50.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			AddGameObject<Enemy>(Vec3(25.0f, 0.0f, -20.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			//AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			//auto enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
 
 			UIManager::CreateUIManager();
 			auto& uiManager = UIManager::GetUIManager();
@@ -117,6 +126,8 @@ namespace basecross {
 
 			auto mainCamMana = AddGameObject<MainCameraManager>();
 			SetSharedGameObject(L"MainCameraManager", mainCamMana);
+
+			auto pauseMenu = AddGameObject<PauseMenu>();
 
 			//// スコアマネージャーのテスト
 			//auto& testScoreManager = ScoreObjectManager::GetScoreObjectManager();
@@ -134,6 +145,7 @@ namespace basecross {
 		auto& obj = StageCreateManager::GetStageCreateManager();
 		auto& gameMana = GameManager::GetGameManager();
 		auto& input = InputManager::GetInputManager();
+		m_bgm->m_SourceVoice->SetVolume(GameManager::GetGameManager()->GetBGMVolume());
 
 		if (gameMana->GetGameEnd() == true)
 		{
