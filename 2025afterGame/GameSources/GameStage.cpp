@@ -151,6 +151,7 @@ namespace basecross {
 		{
 			if (input->GetButton(L"A"))
 			{
+				gameMana->ResetGameManager();
 				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
 				return;
 			}
