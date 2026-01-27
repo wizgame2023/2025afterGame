@@ -43,56 +43,11 @@ namespace basecross {
 		//コリジョン
 		auto ptrCol = AddComponent<CollisionObb>();
 		ptrCol->SetFixed(true);
-		ptrCol->SetDrawActive(true);
+		ptrCol->SetDrawActive(false);
 		ptrCol->SetAfterCollision(AfterCollision::Auto);
 
-		Mat4x4 spanMat1;
-		spanMat1.affineTransformation(
-			Vec3(0.3f, 0.7f, 0.3f),
-			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, -0.7f, 0.0f)
-		);
-
-		Mat4x4 spanMat2;
-		spanMat2.affineTransformation(
-			Vec3(0.45f, 3.3f, 0.45f),
-			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, XMConvertToRadians(-90.0f), 0.0f),
-			Vec3(0.0f, -5.5f, 0.0f)
-		);
-
-		Mat4x4 spanMat3;
-		spanMat3.affineTransformation(
-			Vec3(0.15f, 1.0f, 0.3f),
-			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, XMConvertToRadians(90.0f), 0.0f),
-			Vec3(0.0f, -1.0f, 0.0f)
-		);
-
-		Mat4x4 spanMat4;
-		spanMat4.affineTransformation(
-			Vec3(0.11f, 0.16f, 0.2f),
-			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, XMConvertToRadians(90.0f), 0.0f),
-			Vec3(0.0f, -0.54f, 0.0f)
-		);
-
-		Mat4x4 spanMat5;
-		spanMat5.affineTransformation(
-			Vec3(0.11f, 0.16f, 0.2f),
-			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, XMConvertToRadians(-90.0f), 0.0f),
-			Vec3(0.0f, -0.54f, 0.0f)
-		);
-
-		Mat4x4 spanMat6;
-		spanMat6.affineTransformation(
-			Vec3(0.2f, 0.2f, 1.0f),
-			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, XMConvertToRadians(90.0f), 0.0f),
-			Vec3(0.0f, -0.6f, 0.0f)
-		);
+		Mat4x4 spanMat;
+		
 
 		//メッシュの描画
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
@@ -105,7 +60,16 @@ namespace basecross {
 
 			ptrDraw->SetMeshResource(L"Desk");
 			ptrDraw->SetTextureResource(L"DeskTex");
-			ptrDraw->SetMeshToTransformMatrix(spanMat1);
+
+			spanMat.affineTransformation(
+				Vec3(0.29f, 3.0f, 0.62f),
+				Vec3(0.0f, 0.0f, 0.0f),
+				Vec3(0.0f, XMConvertToRadians(90.0f), 0.0f),
+				Vec3(0.0f, -6.0f, 0.0f)
+			);
+
+			ptrDraw->SetMeshToTransformMatrix(spanMat);
+
 		}
 		else if (m_tag == L"Chair")
 		{
@@ -114,7 +78,15 @@ namespace basecross {
 
 			ptrDraw->SetMeshResource(L"Chair");
 			ptrDraw->SetTextureResource(L"ChairTex");
-			ptrDraw->SetMeshToTransformMatrix(spanMat2);
+
+			spanMat.affineTransformation(
+				Vec3(0.45f, 3.3f, 0.45f),
+				Vec3(0.0f, 0.0f, 0.0f),
+				Vec3(0.0f, XMConvertToRadians(-90.0f), 0.0f),
+				Vec3(0.0f, -5.5f, 0.0f)
+			);
+
+			ptrDraw->SetMeshToTransformMatrix(spanMat);
 		}
 		else if (m_tag == L"Bed")
 		{
@@ -123,11 +95,15 @@ namespace basecross {
 
 			ptrDraw->SetMeshResource(L"Bed");
 			ptrDraw->SetTextureResource(L"BedTex");
-			ptrDraw->SetMeshToTransformMatrix(spanMat3);
-		}
-		else if (m_tag == L"InvisibleCollision")
-		{
 
+			spanMat.affineTransformation(
+				Vec3(0.15f, 1.0f, 0.3f),
+				Vec3(0.0f, 0.0f, 0.0f),
+				Vec3(0.0f, XMConvertToRadians(90.0f), 0.0f),
+				Vec3(0.0f, -1.0f, 0.0f)
+			);
+
+			ptrDraw->SetMeshToTransformMatrix(spanMat);
 		}
 		else if (m_tag == L"Shelf")
 		{
@@ -136,7 +112,15 @@ namespace basecross {
 
 			ptrDraw->SetMeshResource(L"Shelf");
 			ptrDraw->SetTextureResource(L"ShelfTex");
-			ptrDraw->SetMeshToTransformMatrix(spanMat4);
+
+			spanMat.affineTransformation(
+				Vec3(0.11f, 0.16f, 0.2f),
+				Vec3(0.0f, 0.0f, 0.0f),
+				Vec3(0.0f, XMConvertToRadians(90.0f), 0.0f),
+				Vec3(0.0f, -0.54f, 0.0f)
+			);
+
+			ptrDraw->SetMeshToTransformMatrix(spanMat);
 		}
 		else if (m_tag == L"BookShelf")
 		{
@@ -145,7 +129,15 @@ namespace basecross {
 
 			ptrDraw->SetMeshResource(L"Shelf");
 			ptrDraw->SetTextureResource(L"ShelfTex");
-			ptrDraw->SetMeshToTransformMatrix(spanMat5);
+
+			spanMat.affineTransformation(
+				Vec3(0.11f, 0.16f, 0.2f),
+				Vec3(0.0f, 0.0f, 0.0f),
+				Vec3(0.0f, XMConvertToRadians(-90.0f), 0.0f),
+				Vec3(0.0f, -0.54f, 0.0f)
+			);
+
+			ptrDraw->SetMeshToTransformMatrix(spanMat);
 		}
 		else if (m_tag == L"Clock")
 		{
@@ -154,8 +146,33 @@ namespace basecross {
 
 			ptrDraw->SetMeshResource(L"Clock");
 			ptrDraw->SetTextureResource(L"ClockTex");
-			ptrDraw->SetMeshToTransformMatrix(spanMat6);
+
+			spanMat.affineTransformation(
+				Vec3(0.2f, 0.2f, 1.0f),
+				Vec3(0.0f, 0.0f, 0.0f),
+				Vec3(0.0f, XMConvertToRadians(90.0f), 0.0f),
+				Vec3(0.5f, -0.6f, 0.0f)
+			);
+
+			ptrDraw->SetMeshToTransformMatrix(spanMat);
 		}
+		else if (m_tag == L"House")
+		{
+			AddTag(L"CameraObsDiffuse");
+			SetAlphaActive(true);
+
+			ptrDraw->SetMeshResource(L"House");
+			ptrDraw->SetTextureResource(L"HouseTex");
+
+			spanMat.affineTransformation(
+				Vec3(0.2f, 0.2f, 0.43f),
+				Vec3(0.0f, 0.0f, 0.0f),
+				Vec3(0.0f, 0.0f, 0.0f),
+				Vec3(0.0f, -0.5f, -0.15f)
+			);
+
+			ptrDraw->SetMeshToTransformMatrix(spanMat);
+			}
 		else
 		{
 			AddTag(L"CameraObsDiffuse");
