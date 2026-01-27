@@ -40,9 +40,16 @@ namespace basecross {
 	//UI作成
 	void TitleStage::CreateUI()
 	{
-		m_testTitle = AddGameObject<Sprite>(L"Start_TX", Vec2(412.0f, 128.0f), Vec3(0.0f, -210.0f, 0.0f));
+		AddGameObject<Sprite>(L"TitleBackGround_TX", Vec2(1280.0f, 800.0f), Vec3(0.0f, 0.0f, 0.0f));
 
-		AddGameObject<Sprite>(L"rogo_TX", Vec2(1024.0f, 512.0f), Vec3(0.0f, 100.0f, 0.0f));
+
+		float test2 = 412 * 0.75;
+		float test3 = 128 * 0.75;
+		m_testTitle = AddGameObject<Sprite>(L"Start_TX", Vec2(test2, test3), Vec3(0.0f, -260.0f, 0.0f));
+
+		float test = 800.0f;
+		AddGameObject<Sprite>(L"rogo_TX", Vec2(test, test / 2), Vec3(0.0f, 210.0f, 0.0f));
+
 	}
 
 	void TitleStage::OnCreate() {
@@ -59,6 +66,59 @@ namespace basecross {
 		catch (...) {
 			throw;
 		}
+
+		auto& manager = StageCreateManager::GetStageCreateManager();
+		//ステージのアンカー数を読み取ってマネージャーに渡す
+		int anchorcount = 0;
+		//オブジェクトの配列
+		vector<wstring> ObjectLine;
+		//CSVファイルの宣言
+		CsvFile objectFile;
+
+		//CSVファイルの読み込み
+		wstring DataDir;
+		App::GetApp()->GetDataDirectory(DataDir);
+		DataDir += L"Stage/";
+		objectFile.SetFileName(DataDir + L"positions.csv");
+		objectFile.ReadCsv();
+
+		//抜き出し
+		objectFile.GetSelect(ObjectLine, 0, L"ScoreObjectAnchor");
+		for (auto& v : ObjectLine)
+		{
+			anchorcount++;
+		}
+
+		//アンカーの数を生成マネージャーに転送
+		manager->SetScoreAnchorCount(anchorcount);
+		auto& scmg = ScoreObjectManager::GetScoreObjectManager();
+		scmg->SetVector();
+		anchorcount = 0;
+
+		//抜き出し
+		objectFile.GetSelect(ObjectLine, 0, L"AmmoObjectAnchor");
+		for (auto& v : ObjectLine)
+		{
+			anchorcount++;
+		}
+
+		//アンカーの数を生成マネージャーに転送
+		manager->SetAmmoAnchorCount(anchorcount);
+		auto& ammomg = AmmoObjectManager::GetAmmoObjectManager();
+		ammomg->SetVector();
+		anchorcount = 0;
+
+		//抜き出し
+		objectFile.GetSelect(ObjectLine, 0, L"ItemObjectAnchor");
+		for (auto& v : ObjectLine)
+		{
+			anchorcount++;
+		}
+
+		//アンカーの数を生成マネージャーに転送
+		manager->SetRepairAnchorCount(anchorcount);
+		auto& repairmg = RepairObjectManager::GetRepairObjectManager();
+		repairmg->SetVector();
 	}
 
 	void TitleStage::OnUpdate() 

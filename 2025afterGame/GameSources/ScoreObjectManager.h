@@ -29,10 +29,13 @@ namespace basecross{
 
 		void CreateScoreObject(Vec3 pos, Vec3 rot, Vec3 siz, int tag = 0);
 
-		void RemoveObject();
+		void RemoveObject(int id);
+
+		void SetVector();
 
 		int m_count;
-		bool m_currentID[];
+
+		std::vector<bool> m_current;
 	};
 }
 //end basecross

@@ -24,6 +24,7 @@ namespace basecross{
 		const wstring path = app->GetDataDirWString();
 		const wstring& modelPath = path + L"Models/";
 		const wstring& texPath = path + L"Textures/";
+		const wstring& uiPath = path + L"UI/";
 		const wstring& uiPlayerPath = path + L"UI/Player/";
 		const wstring& uiTitlePath = path + L"UI/Title/";
 		const wstring& uiMenuPath = path + L"UI/Menu/";
@@ -35,7 +36,7 @@ namespace basecross{
 		const wstring& soundPath = path + L"Sounds/";
 
 		//Textures //////////////////////////////////////////////
-		auto modelTex = modelPath + L"diffuse.png";
+		auto modelTex = modelPath + L"Player_Plane.png";
 		app->RegisterTexture(L"diffuse_TX", modelTex);
 
 		auto strTexture = texPath + L"TestTex.png";
@@ -68,9 +69,12 @@ namespace basecross{
 		modelTex = modelPath + L"bed.png";
 		app->RegisterTexture(L"BedTex", modelTex);
 
+		modelTex = modelPath + L"Tama.png";
+		app->RegisterTexture(L"BulletTex", modelTex);
+
 		// Model /////////////////////////////////////////////////
 		// Player
-		auto modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"PropellerPlane.bmf");
+		auto modelMesh = MeshResource::CreateBoneModelMesh(modelPath, L"Player_Plane.bmf");
 		app->RegisterResource(L"Sentouki", modelMesh);
 
 		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"desk.bmf");
@@ -88,6 +92,9 @@ namespace basecross{
 		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"tansu.bmf");
 		app->RegisterResource(L"Shelf", modelMesh);
 
+		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"Tama.bmf");
+		app->RegisterResource(L"Bullet_Mesh", modelMesh);
+
 		// UI /////////////////////////////////////////////////
 		auto numberSprite = uiPlayerPath + L"Number.png";
 		app->RegisterTexture(L"Number", numberSprite);
@@ -97,9 +104,18 @@ namespace basecross{
     
 		auto colon = uiPlayerPath + L"Colon.png";
 		app->RegisterTexture(L"Colon", colon);
+
+		auto resultPlayer = uiPath + L"Result_Player.png";
+		app->RegisterTexture(L"ResultPlayer", resultPlayer);
+    
+		auto resultEnemy = uiPath + L"Result_Enemy.png";
+		app->RegisterTexture(L"ResultEnemy", resultEnemy);
     
 		auto finalscore = uiResultPath + L"finalscore.png";
 		app->RegisterTexture(L"Finalscore", finalscore);
+
+		auto crown = uiResultPath + L"oukan.png";
+		app->RegisterTexture(L"crown", crown);
     
 		auto startTex = uiTitlePath + L"PressA.png";
 		app->RegisterTexture(L"Start_TX", startTex);
@@ -107,11 +123,20 @@ namespace basecross{
 		startTex = uiTitlePath + L"rogo.png";
 		App::GetApp()->RegisterTexture(L"rogo_TX", startTex);
 
+		startTex = uiTitlePath + L"TitleBackGround.png";
+		App::GetApp()->RegisterTexture(L"TitleBackGround_TX", startTex);
+
 		auto remainingRounds = uiPlayerPath + L"RemainingRounds.png";
 		app->RegisterTexture(L"RemainingRounds", remainingRounds);
 
 		auto ScoreLow = uiScorePath + L"bear.png";
 		App::GetApp()->RegisterTexture(L"Bear", ScoreLow);
+
+		auto ScoreMid = uiScorePath + L"car.png";
+		App::GetApp()->RegisterTexture(L"Car", ScoreMid);
+
+		auto ScoreHigh = uiScorePath + L"Racingcar.png";
+		App::GetApp()->RegisterTexture(L"Racingcar", ScoreHigh);
 
 		auto RepairItem = uiItemPath + L"HpRecovery.png";
 		App::GetApp()->RegisterTexture(L"Repair", RepairItem);
@@ -126,6 +151,12 @@ namespace basecross{
 		auto pauseMenuVolume = uiMenuPath + L"PauseMenuSetting.png";
 		App::GetApp()->RegisterTexture(L"PauseMenuSetting_TX", pauseMenuVolume);
     
+		auto pauseMenuKeyConfig = uiMenuPath + L"PauseMenuKeyConfig.png";
+		App::GetApp()->RegisterTexture(L"PauseMenuKeyConfig_TX", pauseMenuKeyConfig);
+
+		auto pauseMenuVolumeGauge = uiMenuPath + L"PauseMenuVolumeGauge.png";
+		App::GetApp()->RegisterTexture(L"PauseMenuVolumeGauge_TX", pauseMenuVolumeGauge);
+
 		auto buttonsTex = uiMenuPath + L"Buttons.png";
 		App::GetApp()->RegisterTexture(L"Buttons_TX", buttonsTex);
 
@@ -173,12 +204,21 @@ namespace basecross{
 
 			//自分自身にイベントを送る
 			//これにより各ステージやオブジェクトがCreate時にシーンにアクセスできる
-			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");			
+			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");
 			
 			CreateResource();
 
 			// ゲームマネージャー作成
 			GameManager::CreateGameManager();
+
+			// ステージ生成マネージャー作成
+			StageCreateManager::CreateStageCreateManager();
+
+			ScoreObjectManager::CreateScoreObjectManager();
+
+			AmmoObjectManager::CreateAmmoObjectManager();
+
+			RepairObjectManager::CreateRepairObjectManager();
 		}
 		catch (...) {
 			throw;
@@ -186,7 +226,9 @@ namespace basecross{
 	}
 
 	void Scene::OnUpdate()
-	{
+	{		
+		RayCast::InitRay(100);
+
 		SceneBase::OnUpdate();
 
 		// ゲームマネージャー更新
@@ -211,6 +253,10 @@ namespace basecross{
 		if (event->m_MsgStr == L"ToSelectStage") {
 			//セレクトステージのアクティブステージ設定
 			ResetActiveStage<SelectStage>();
+		}
+		if (event->m_MsgStr == L"ToGameClearStage") {
+			//ゲームクリアステージのアクティブステージ設定
+			ResetActiveStage<GameClearStage>();
 		}
 		//デバッグ用ステージ
 		if (event->m_MsgStr == L"ToErionStage") {

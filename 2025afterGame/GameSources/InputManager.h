@@ -212,6 +212,27 @@ namespace basecross
 			return m_RightTrigger;
 		}
 
+		// 押されているボタンの名前を取得
+		wstring GetPressedButton() const
+		{
+			for (const auto& button : m_Buttons)
+			{
+				if (button.second)
+				{
+					return button.first;
+				}
+			}
+			if (GetLeftTrigger())
+			{
+				return L"LTrigger";
+			}
+			if (GetRightTrigger())
+			{
+				return L"RTrigger";
+			}
+			return L"";
+		}
+
 		// 2P //////////////////////////////////
 		/*!
 		@brief Lスティックの傾きを取得

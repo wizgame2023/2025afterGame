@@ -39,8 +39,16 @@ namespace basecross {
 			game->NowPhase();
 			//game->SetGameStartFlag(true);
 			game->ResetCheckPoint();
+			auto& score = ScoreObjectManager::GetScoreObjectManager();
+			score->OnCreate();
 			auto& obj = StageCreateManager::GetStageCreateManager();
 			m_count = 0;
+
+			auto& scrMana = ScoreManager::CreateScoreManager();
+
+			scrMana->CreateHighScoreBinary();
+			scrMana->SetID(L"Player");
+			scrMana->SetID(L"Enemy1");
 
 			auto backgroundPath = path + L"Backgrounds/";
 			for (const auto& keyName : Background::pairs) {
@@ -102,22 +110,48 @@ namespace basecross {
 			auto startCheckPoint = gameManager->GetCheckPoint(0);
 
 			auto enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			auto testenemy = AddGameObject<Enemy>(Vec3(50.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, 25.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			AddGameObject<Enemy>(Vec3(0.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			AddGameObject<Enemy>(Vec3(50.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			AddGameObject<Enemy>(Vec3(25.0f, 0.0f, -20.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			//AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			//auto enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
 
+			UIManager::CreateUIManager();
+			auto& uiManager = UIManager::GetUIManager();
+			uiManager->UIManagerCreate();
 
+			auto mainCamMana = AddGameObject<MainCameraManager>();
+			SetSharedGameObject(L"MainCameraManager", mainCamMana);
+
+			//// スコアマネージャーのテスト
+			//auto& testScoreManager = ScoreObjectManager::GetScoreObjectManager();
+			//testScoreManager->OnCreate();
 		}
 		catch (...) {
 			throw;
 		}
 
-		UIManager::CreateUIManager();
-		auto mainCamMana = AddGameObject<MainCameraManager>();
-		SetSharedGameObject(L"MainCameraManager", mainCamMana);
 	}
 
 	void GameStage::OnUpdate()
 	{
 		UIManager::GetUIManager()->OnUpdate();
 		auto& obj = StageCreateManager::GetStageCreateManager();
+		auto& gameMana = GameManager::GetGameManager();
+		auto& input = InputManager::GetInputManager();
+
+		if (gameMana->GetGameEnd() == true)
+		{
+			if (input->GetButton(L"A"))
+			{
+				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
+				return;
+			}
+		}
 	}
 
 	// 消去される際の処理

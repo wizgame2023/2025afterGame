@@ -75,6 +75,7 @@ namespace basecross {
 		m_trans->SetPosition(m_pos);
 		m_trans->SetRotation(m_rot);
 
+		m_stage = GetStage();
 
 		// アルファブレンド(透過処理)を有効にする
 		SetAlphaActive(true); // true:透過を有効、false:透過を無効
@@ -128,9 +129,50 @@ namespace basecross {
 		GetStage()->RemoveGameObject<Sprite>(GetThis<Sprite>());
 	}
 
+	// 位置のセッター、ゲッター
+	// -----------------------------
+
 	void Sprite::SetPosition(Vec3 pos)
 	{
 		m_trans->SetPosition(pos);
+	}
+
+	void Sprite::SetPositionX(float X)
+	{
+		auto& pos = m_trans->GetPosition();
+		m_trans->SetPosition(X, pos.y, pos.z);
+	}
+
+	void Sprite::SetPositionY(float Y)
+	{
+		auto& pos = m_trans->GetPosition();
+		m_trans->SetPosition(pos.x, Y, pos.z);
+	}
+
+	void Sprite::SetPositionZ(float Z)
+	{
+		auto& pos = m_trans->GetPosition();
+		m_trans->SetPosition(pos.x, pos.y, Z);
+	}
+
+	Vec3 Sprite::GetPosition() const
+	{
+		return m_trans->GetPosition();
+	}
+
+	float Sprite::GetPositionX() const
+	{
+		return m_trans->GetPosition().x;
+	}
+
+	float Sprite::GetPositionY() const
+	{
+		return m_trans->GetPosition().y;
+	}
+
+	float Sprite::GetPositionZ() const
+	{
+		return m_trans->GetPosition().z;
 	}
 
 	void Sprite::SetRotate(Vec3 rotate)
@@ -143,9 +185,19 @@ namespace basecross {
 		m_trans->SetScale(scl);
 	}
 
-	Vec3 Sprite::GetPosition() const
+	Vec3 Sprite::GetScale()
 	{
-		return m_trans->GetPosition();
+		return m_trans->GetScale();
+	}
+
+	Vec2 Sprite::GetSpritePixel()
+	{
+		return m_size;
+	}
+
+	void Sprite::RemoveSprite()
+	{
+		m_stage.lock()->RemoveGameObject<Sprite>(GetThis<Sprite>());
 	}
 
 	void Sprite::SetUVRect(const Vec2& topLeft, const Vec2& botRight)

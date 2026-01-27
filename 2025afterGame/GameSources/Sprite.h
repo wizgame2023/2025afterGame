@@ -16,7 +16,7 @@ namespace basecross {
 		int m_layer;
 		Vec2 m_size;//画像の大きさ
 		shared_ptr<PCTSpriteDraw> m_drawComp;//ドローコンポーネント
-
+		weak_ptr<Stage> m_stage;//ステージの弱ポインタ
 		bool m_clear;//透明にするかしないかの変数
 		bool m_updateFlag;//アップデートするかしないかの変数
 
@@ -67,9 +67,25 @@ namespace basecross {
 		Col4 GetColor();//ゲッター
 
 		void SetPosition(Vec3 pos);
+		void SetPositionX(float X);
+		void SetPositionY(float Y);
+		void SetPositionZ(float Z);
+
+		Vec3 GetPosition() const;
+		float GetPositionX() const;
+		float GetPositionY() const;
+		float GetPositionZ() const;
+
 		void SetRotate(Vec3 rotate);
 		void SetScale(Vec3 scl);
-		Vec3 GetPosition() const;
+		Vec3 GetScale();
+
+		// スプライトの実際の大きさ
+		Vec2 GetSpritePixel();
+
+		// スプライトの削除
+		void RemoveSprite();
+
 		void SetUVRect(const Vec2& topLeft, const Vec2& botRight);
 		void SetDigit(int digit);
 
