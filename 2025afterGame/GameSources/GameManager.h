@@ -147,8 +147,12 @@ namespace basecross {
 		// チェックポイント配列の初期化
 		void ResetCheckPoint();
 
+		// 時間の設定
+		void SetTimeLimit(float limit);
+
 		// 残り時間の取得
 		float GetTimeLimit();
+		
 		// カウントダウンを開始するフラグのセッタ
 		void SetCountDown(bool onOff);
 
@@ -187,6 +191,8 @@ namespace basecross {
 
 		// Gameが終わっているかの取得
 		bool  GetGameEnd();
+
+		void ResetGameManager();
 	};
 }
 //end basecross
