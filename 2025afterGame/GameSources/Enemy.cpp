@@ -1,7 +1,7 @@
 /*!
 @file Enemy.cpp
-@brief “GÀ‘Ì
-’S“–FO•r—T‘¾
+@brief æ•µå®Ÿä½“
+æ‹…å½“ï¼šä¸‰ç“¶è£•å¤ª
 */
 
 #include "stdafx.h"
@@ -31,14 +31,14 @@ namespace basecross {
 	void Enemy::OnCreate()
 	{
 		FighterAircraftBase::OnCreate();
-		// Transˆ—’Ç‰Á
+		// Transå‡¦ç†è¿½åŠ 
 		m_trans = GetComponent<Transform>();
 		m_trans->SetPosition(m_pos);
 		//m_trans->SetQuaternion(m_qt);
 		m_trans->SetRotation(m_rot);
 		m_trans->SetScale(Vec3(1.0f));
 
-		//// ‰ñ“]“xæ“¾
+		//// å›è»¢åº¦å–å¾—
 		//m_rot = m_trans->GetRotation();
 		m_rot = Vec3(AdjustmentAngle(m_rot.x), AdjustmentAngle(m_rot.y), AdjustmentAngle(m_rot.z));
 
@@ -50,12 +50,12 @@ namespace basecross {
 			Vec3(0.0f, -0.5f, 0.0f)
 		);
 
-		// ƒRƒŠƒWƒ‡ƒ“’Ç‰Á
+		// ã‚³ãƒªã‚¸ãƒ§ãƒ³è¿½åŠ 
 		auto ptrCol = AddComponent<CollisionObb>();
 		ptrCol->SetDrawActive(true);
 		//ptrCol->SetAfterCollision(AfterCollision::None);
 
-		// ƒhƒ[ˆ—
+		// ãƒ‰ãƒ­ãƒ¼å‡¦ç†
 		m_draw = AddComponent<PNTBoneModelDraw>();
 		m_draw->SetMeshResource(L"Sentouki");
 		m_draw->SetTextureResource(L"diffuse_TX");
@@ -64,11 +64,11 @@ namespace basecross {
 		m_draw->SetEmissive(m_color);
 		SetAlphaActive(true);
 
-		// “Gƒ^ƒO’Ç‰Á
+		// æ•µã‚¿ã‚°è¿½åŠ 
 		AddTag(L"Enemy");
 
 
-		// Qt‰ñ“]
+		// Qtå›è»¢
 		//XMVECTOR axis = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 		//float testAngle = XMConvertToRadians(90.0f);
 		//XMVECTOR quat = XMQuaternionRotationAxis(axis, testAngle);
@@ -77,18 +77,17 @@ namespace basecross {
 		//m_qt = m_qt * Quat(0.0f, (sin(testAngle / 2.0f)), 0.0f, 0.0f);
 		//m_trans->SetQuaternion(m_qt);
 
-		// ‰Šú‰»
+		// åˆæœŸåŒ–
 		m_hpCurrent = 30;
 		m_hpMax = 30;
 		m_timeOfReturn = 5.0f;
 		m_scoreCurrent = 0;
 
-		// ƒXƒe[ƒgƒ}ƒVƒ“ì¬
+		// ã‚¹ãƒ†ãƒ¼ãƒˆãƒã‚·ãƒ³ä½œæˆ
 		m_stateMachine = unique_ptr<StateEnemyMachine>(new StateEnemyMachine(GetThis<MyGameObject>()));
-		m_stateMachine->ChangeState(L"Tracking"); // ‰¼‚ÅÅ‰‚ÌƒXƒe[ƒg‚Íƒx[ƒXƒXƒe[ƒg‚É•ÏX‚·‚é
+		m_stateMachine->ChangeState(L"Tracking"); // ä»®ã§æœ€åˆã®ã‚¹ãƒ†ãƒ¼ãƒˆã¯ãƒ™ãƒ¼ã‚¹ã‚¹ãƒ†ãƒ¼ãƒˆã«å¤‰æ›´ã™ã‚‹
 
-		// ƒŒƒCƒLƒƒƒXƒg¶¬
-		m_rayCast = unique_ptr<RayCast>();
+		// ãƒ¬ã‚¤ã‚­ãƒ£ã‚¹ãƒˆç”Ÿæˆ
 	}
 
 	void Enemy::OnUpdate()
@@ -97,30 +96,30 @@ namespace basecross {
 		{
 			return;
 		}
-		// ƒŒƒC‚ğ•\¦‚µ‚½‚¢”
-		m_rayCast->InitRay(2);
+		// ãƒ¬ã‚¤ã‚’è¡¨ç¤ºã—ãŸã„æ•°
+		//RayCast::InitRay(1);
 
 
 		FighterAircraftBase::OnUpdate();
 
 		auto& gameManager = GameManager::GetGameManager();
-		auto currentPhase = gameManager->GetCurrentPhase();//Œ»İƒtƒF[ƒYæ“¾
+		auto currentPhase = gameManager->GetCurrentPhase();//ç¾åœ¨ãƒ•ã‚§ãƒ¼ã‚ºå–å¾—
 		
 		auto objVec = GetStage()->GetGameObjectVec();
 
-		// ’ÇÕ‘ÎÛ‚ª‚¢‚È‚­‚È‚Á‚½‚çˆê”Ô‹ß‚¢‚à‚Ì‚ğŒˆ‚ß‚Ä’ÇÕ‚·‚é‚ÆŒˆ‚ß‚é
+		// è¿½è·¡å¯¾è±¡ãŒã„ãªããªã£ãŸã‚‰ä¸€ç•ªè¿‘ã„ã‚‚ã®ã‚’æ±ºã‚ã¦è¿½è·¡ã™ã‚‹ã¨æ±ºã‚ã‚‹
 		if (currentPhase == GamePhase::Score)
 		{
 			int minLenght = 999999.9f;
 			int minDefault = 999999.9f;
-			// MyGameObject‚Ì•¨‚ğ‘S‚Ä’â~‚·‚é
-			//ƒAƒNƒ^[‚ğŒp³‚µ‚Ä‚¢‚é‚à‚Ì‚¾‚¯æ“¾
+			// MyGameObjectã®ç‰©ã‚’å…¨ã¦åœæ­¢ã™ã‚‹
+			//ã‚¢ã‚¯ã‚¿ãƒ¼ã‚’ç¶™æ‰¿ã—ã¦ã„ã‚‹ã‚‚ã®ã ã‘å–å¾—
 			for (auto obj : objVec)
 			{
 				auto scoreObjectCast = dynamic_pointer_cast<ScoreObject>(obj);
 				//weak_ptr<ScoreObject> scoreObjectCast = dynamic_pointer_cast<ScoreObject>(obj);
 				//scoreObjectCast
-				//ƒAƒNƒ^[‚ğŒp³‚µ‚Ä‚¢‚éƒIƒuƒWƒFƒNƒg’â~
+				//ã‚¢ã‚¯ã‚¿ãƒ¼ã‚’ç¶™æ‰¿ã—ã¦ã„ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆåœæ­¢
 				if (scoreObjectCast)
 				{
 					auto scorePos = scoreObjectCast->GetComponent<Transform>()->GetPosition();
@@ -157,32 +156,32 @@ namespace basecross {
 		}
 
 
-		// Ëüã‚É“G‘Î‚·‚é‘Šè‚ª‚¢‚½‚çUŒ‚‚·‚é
-		Vec3 hitPos;			// o—Í—pFƒŒƒC‚ÌŒğ·’n“_(Õ“Ë“_)
-		TRIANGLE triangle;		// ƒŒƒC‚ªŒğ·‚µ‚½ƒ|ƒŠƒSƒ“‚ğ\¬‚·‚é’¸“_‚ÌÀ•W
-		size_t triangleNumber;	// ƒŒƒC‚ªŒğ·‚µ‚½ƒ|ƒŠƒSƒ“‚Ì”Ô†
-		float min = 9999999.9f;	//Player‚©‚çŒ©‚ÄƒJƒƒ‰‚ÌáŠQ‚Æ‚È‚é‹——£‚ÌÅ¬’l
-		bool moveEnd = false;	//ˆÚ“®ˆ—‚ªI‚í‚Á‚½‚©‚ğ•Û‘¶‚·‚é•Ï”
+		// å°„ç·šä¸Šã«æ•µå¯¾ã™ã‚‹ç›¸æ‰‹ãŒã„ãŸã‚‰æ”»æ’ƒã™ã‚‹
+		Vec3 hitPos;			// å‡ºåŠ›ç”¨ï¼šãƒ¬ã‚¤ã®äº¤å·®åœ°ç‚¹(è¡çªç‚¹)
+		TRIANGLE triangle;		// ãƒ¬ã‚¤ãŒäº¤å·®ã—ãŸãƒãƒªã‚´ãƒ³ã‚’æ§‹æˆã™ã‚‹é ‚ç‚¹ã®åº§æ¨™
+		size_t triangleNumber;	// ãƒ¬ã‚¤ãŒäº¤å·®ã—ãŸãƒãƒªã‚´ãƒ³ã®ç•ªå·
+		float min = 9999999.9f;	//Playerã‹ã‚‰è¦‹ã¦ã‚«ãƒ¡ãƒ©ã®éšœå®³ã¨ãªã‚‹è·é›¢ã®æœ€å°å€¤
+		bool moveEnd = false;	//ç§»å‹•å‡¦ç†ãŒçµ‚ã‚ã£ãŸã‹ã‚’ä¿å­˜ã™ã‚‹å¤‰æ•°
 
-		// ƒŒƒC‚Ì’·‚³‚ğ‹‚ß‚é
+		// ãƒ¬ã‚¤ã®é•·ã•ã‚’æ±‚ã‚ã‚‹
 		auto forward = GetComponent<Transform>()->GetForward();
 		forward = forward.normalize();
 		Vec3 rayLength = (forward *15.0f);
 		//GetStage()->AddGameObject<>
 		
 
-		// Ëüã‚É“Gí“¬‹@‚ª‚¢‚é‚©Šm”F
+		// å°„ç·šä¸Šã«æ•µæˆ¦é—˜æ©ŸãŒã„ã‚‹ã‹ç¢ºèª
 		for (auto obj : objVec)
 		{
 
 			auto fighter = dynamic_pointer_cast<FighterAircraftBase>(obj);
 
-			// í“¬‹@‚ÌƒƒbƒVƒ…‚ªƒŒƒC‚É“–‚½‚Á‚Ä‚¢‚é‚©Šm”F‚·‚é
+			// æˆ¦é—˜æ©Ÿã®ãƒ¡ãƒƒã‚·ãƒ¥ãŒãƒ¬ã‚¤ã«å½“ãŸã£ã¦ã„ã‚‹ã‹ç¢ºèªã™ã‚‹
 			if (fighter)
 			{
 				auto fighterPos = fighter->GetPos();
 				auto ptrDraw = fighter->GetComponent<SmBaseDraw>();
-				m_rayCast->DebugRay(Line(m_pos, m_pos + rayLength), Col4(1.0f, 0.5f, 1.0f, 1.0f), GetStage());
+				RayCast::DebugRay(Line(m_pos, m_pos + rayLength), Col4(1.0f, 0.5f, 1.0f, 1.0f), GetStage());
 				ptrDraw->HitTestStaticMeshSegmentTriangles(m_pos, m_pos + rayLength, hitPos, triangle, triangleNumber);
 			}
 
@@ -191,7 +190,7 @@ namespace basecross {
 
 		m_countDebagBulletTime += m_delta;
 
-		// ƒŒƒCËüã‚É”òs‹@‚ª“–‚½‚Á‚½‚ç’e‚ğ”­Ë‚·‚é
+		// ãƒ¬ã‚¤å°„ç·šä¸Šã«é£›è¡Œæ©ŸãŒå½“ãŸã£ãŸã‚‰å¼¾ã‚’ç™ºå°„ã™ã‚‹
 		if (hitPos != Vec3(0.0f) && m_countDebagBulletTime >= 0.5f)
 		{
 			GetStage()->AddGameObject<Bullet>(GetThis<Actor>());
@@ -200,10 +199,10 @@ namespace basecross {
 
 
 
-		// ƒXƒe[ƒg‚ÌUpdate
+		// ã‚¹ãƒ†ãƒ¼ãƒˆã®Update
 		m_stateMachine->Update();
 
-		// ƒfƒoƒbƒN—p‚É’e‚ğo‚·
+		// ãƒ‡ãƒãƒƒã‚¯ç”¨ã«å¼¾ã‚’å‡ºã™
 		auto stateName = m_stateMachine->GetCurrentStateWString();
 
 		//if (m_countDebagBulletTime >= 0.5f)
@@ -214,58 +213,58 @@ namespace basecross {
 		//	}
 		//	m_countDebagBulletTime = 0.0f;
 		//} 
-		// ƒŠƒXƒ|[ƒ“ó‘Ô‚È‚çˆÚ“®‚µ‚È‚¢‚æ‚¤‚É•ÏX
+		// ãƒªã‚¹ãƒãƒ¼ãƒ³çŠ¶æ…‹ãªã‚‰ç§»å‹•ã—ãªã„ã‚ˆã†ã«å¤‰æ›´
 		if (stateName == L"Respawn")
 		{
 			m_moveVec = Vec3(0.0f);
 		}
 
-		// ’Ç‚¢‚©‚¯‚é‚à‚Ì‚ªÁ‚¦‚Ä‚¢‚½‚çUpdate‚µ‚È‚¢‚æ‚¤‚É‚·‚é
+		// è¿½ã„ã‹ã‘ã‚‹ã‚‚ã®ãŒæ¶ˆãˆã¦ã„ãŸã‚‰Updateã—ãªã„ã‚ˆã†ã«ã™ã‚‹
 		if (!m_trackingObj.lock())
 		{
 			return;
 		}
 
-		// ƒˆ[ƒsƒbƒ`ƒ[ƒ‹‚É‰ˆ‚Á‚Ä‰ñ“]‚·‚éˆ—
+		// ãƒ¨ãƒ¼ãƒ”ãƒƒãƒãƒ­ãƒ¼ãƒ«ã«æ²¿ã£ã¦å›è»¢ã™ã‚‹å‡¦ç†
 		MoveRotate();
 
-		// –³“G—p‚Ìˆ—
+		// ç„¡æ•µæ™‚ç”¨ã®å‡¦ç†
 		Invincible();
 
-		// Transform”½‰f
-		//m_trans->SetQuaternion(m_qt); // qt”½‰f
+		// Transformåæ˜ 
+		//m_trans->SetQuaternion(m_qt); // qtåæ˜ 
 		m_trans->SetRotation(m_rot);
-		m_trans->SetPosition(m_pos + m_moveVec); // pos”½‰f
+		m_trans->SetPosition(m_pos + m_moveVec); // posåæ˜ 
 
-		// ˆÊ’uæ“¾
+		// ä½ç½®å–å¾—
 		m_pos = GetComponent<Transform>()->GetPosition();
 
-		// ƒJƒ‰[“K‰
+		// ã‚«ãƒ©ãƒ¼é©å¿œ
 		m_draw->SetEmissive(m_color);
 		m_draw->SetDiffuse(m_color);
 
 
-		////ƒfƒoƒbƒN—p
+		////ãƒ‡ãƒãƒƒã‚¯ç”¨
 		//wstringstream wss(L"");
 		//auto scene = App::GetApp()->GetScene<Scene>();
 
-		//wss /* << L"ƒfƒoƒbƒO—p•¶š—ñ "*/
+		//wss /* << L"ãƒ‡ãƒãƒƒã‚°ç”¨æ–‡å­—åˆ— "*/
 		//	<< L"\nm_pitchAngle : " << (int)currentPhase
 		//	<< endl;
 
 		//scene->SetDebugString(wss.str());
 	}
 
-	// “–‚½‚è”»’è
+	// å½“ãŸã‚Šåˆ¤å®š
 	void Enemy::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
 		FighterAircraftBase::OnCollisionEnter(obj);
 
 		auto bullet = dynamic_pointer_cast<Bullet>(obj);
 
-		// ’e‚É“–‚½‚Á‚½ê‡
+		// å¼¾ã«å½“ãŸã£ãŸå ´åˆ
 
-		// HP‚ª‚È‚©‚Á‚½‚ç’e‚Ìˆ—‚Í–³‹‚·‚é
+		// HPãŒãªã‹ã£ãŸã‚‰å¼¾ã®å‡¦ç†ã¯ç„¡è¦–ã™ã‚‹
 		if (m_hpCurrent < 0) return;
 
 		if (bullet)
@@ -273,22 +272,22 @@ namespace basecross {
 			bool bulletAffiliation = bullet->GetAffiliation();
 			GetStage()->RemoveGameObject<Bullet>(bullet);
 
-			// –³“Gƒtƒ‰ƒO‚ªƒIƒ“‚È‚çƒ_ƒ[ƒWŠÖŒW‚Ìˆ—‚Í‚µ‚È‚¢
+			// ç„¡æ•µãƒ•ãƒ©ã‚°ãŒã‚ªãƒ³ãªã‚‰ãƒ€ãƒ¡ãƒ¼ã‚¸é–¢ä¿‚ã®å‡¦ç†ã¯ã—ãªã„
 			if (m_invincibleFlag) return;
 
-			// ’e‚ÌŠ‘®‚ªƒvƒŒƒCƒ„[‚È‚çƒ_ƒ[ƒW‚ğó‚¯‚é
+			// å¼¾ã®æ‰€å±ãŒãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãªã‚‰ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ã‚‹
 			if (bulletAffiliation == true)
 			{
 				m_hpCurrent -= bullet->GetDamage();
 			}
 
-			// HP‚ª‚O‚É‚È‚Á‚½‚çƒŠƒXƒ|[ƒ“‚·‚é
+			// HPãŒï¼ã«ãªã£ãŸã‚‰ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹
 			if (m_hpCurrent <= 0)
 			{
-				// ƒXƒRƒA‚ğ10%“|‚µ‚½“G‚É÷“n‚·‚é
+				// ã‚¹ã‚³ã‚¢ã‚’10%å€’ã—ãŸæ•µã«è­²æ¸¡ã™ã‚‹
 				DownTransferScore(bullet, 0.1f);
 
-				// ƒŠƒXƒ|[ƒ“ƒXƒe[ƒg‚É‘JˆÚ‚·‚é
+				// ãƒªã‚¹ãƒãƒ¼ãƒ³ã‚¹ãƒ†ãƒ¼ãƒˆã«é·ç§»ã™ã‚‹
 				ChangeState(L"Respawn");
 			}
 
@@ -296,7 +295,7 @@ namespace basecross {
 	}
 
 
-	//Šp“x‚Ì’²®0~360“x‚Ü‚Å‚µ‚©o‚È‚¢‚æ‚¤‚É‚·‚é
+	//è§’åº¦ã®èª¿æ•´0~360åº¦ã¾ã§ã—ã‹å‡ºãªã„ã‚ˆã†ã«ã™ã‚‹
 	float Enemy::AdjustmentAngle(float angle)
 	{
 		if (angle >= XMConvertToRadians(360.0f))
@@ -311,7 +310,7 @@ namespace basecross {
 		return angle;
 	}
 
-	// Šp“x‚Ì·‚ª‘å‚«‚¢‚Æ‚«‚É•Ê•ûŒü‚Éi‚ñ‚¾Šp“x‚Ì·‚ğ‹‚ß‚éˆ—
+	// è§’åº¦ã®å·®ãŒå¤§ãã„ã¨ãã«åˆ¥æ–¹å‘ã«é€²ã‚“ã è§’åº¦ã®å·®ã‚’æ±‚ã‚ã‚‹å‡¦ç†
 	float Enemy::CorrectRotationDirection(float differenceAngle)
 	{
 		if (differenceAngle >= XMConvertToRadians(181.0f))
@@ -329,43 +328,43 @@ namespace basecross {
 	}
 
 
-	// ƒXƒe[ƒg‚Ì•ÏXˆ—
+	// ã‚¹ãƒ†ãƒ¼ãƒˆã®å¤‰æ›´å‡¦ç†
 	void Enemy::ChangeState(wstring stateName)
 	{
 		m_stateMachine->ChangeState(stateName);
 	}
 
-	// ‘ÎÛ‚ÉŒü‚©‚Á‚Ä’Ç‚¢‚©‚¯‚éˆ—
+	// å¯¾è±¡ã«å‘ã‹ã£ã¦è¿½ã„ã‹ã‘ã‚‹å‡¦ç†
 	void Enemy::TrackingMove(const Vec3& posPlayerDifference)
 	{
-		// ˆÚ“®ƒxƒNƒgƒ‹‰ÁZ
+		// ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«åŠ ç®—
 		auto forward = m_trans->GetForward();
 		m_moveVec = (forward * m_delta) * m_speed;
 
 		return;
 	}
 
-	// ’Ç‚¢‚©‚¯‚é‘ÎÛ‚ÉŒü‚©‚Á‚ÄX²‰ñ“]•ûŒü‚ÅŒü‚­ˆ—
+	// è¿½ã„ã‹ã‘ã‚‹å¯¾è±¡ã«å‘ã‹ã£ã¦Xè»¸å›è»¢æ–¹å‘ã§å‘ãå‡¦ç†
 	void Enemy::TrackingPitchQt(const Vec3& posPlayerDifference)
 	{
-		// ƒsƒbƒ`‚ÌŒü‚«‚½‚¢•ûŒü‚ğ‹‚ß‚éˆ—
-		// ‚±‚ê‚ÅAŒü‚¢‚Ä‚¢‚é•ûŒü‚ÌYÀ•W‚ğ0‚É‚µ‚½‚à‚Ì‚ğ‹‚ß‚é
+		// ãƒ”ãƒƒãƒã®å‘ããŸã„æ–¹å‘ã‚’æ±‚ã‚ã‚‹å‡¦ç†
+		// ã“ã‚Œã§ã€å‘ã„ã¦ã„ã‚‹æ–¹å‘ã®Yåº§æ¨™ã‚’0ã«ã—ãŸã‚‚ã®ã‚’æ±‚ã‚ã‚‹
 		auto posPlayerDifferenceZY = posPlayerDifference;
 		posPlayerDifferenceZY.y = 0.0f;
 
-		// ƒ[ƒƒxƒNƒgƒ‹‘Îô
+		// ã‚¼ãƒ­ãƒ™ã‚¯ãƒˆãƒ«å¯¾ç­–
 		if (posPlayerDifference == Vec3(0.0f))
 		{
 			return;
 		}
 
-		// “àÏ
+		// å†…ç©
 		float dotf = posPlayerDifference.dot(posPlayerDifferenceZY);
-		dotf = clamp(dotf, -1.0f, 1.0f); // acosf‚Ìˆø””ÍˆÍ“à‚É‚È‚é‚æ‚¤‚É§ŒÀ
-		// ‚È‚·Šp‚ğ‹‚ß‚é
+		dotf = clamp(dotf, -1.0f, 1.0f); // acosfã®å¼•æ•°ç¯„å›²å†…ã«ãªã‚‹ã‚ˆã†ã«åˆ¶é™
+		// ãªã™è§’ã‚’æ±‚ã‚ã‚‹
 		m_pitchAngle = acosf(dotf);
 
-		// “G‚©‚çŒ©‚ÄƒvƒŒƒCƒ„[‚ª‰º‚É‚¢‚½‚çŠp“x‚ğƒ}ƒCƒiƒX‚É‚·‚é
+		// æ•µã‹ã‚‰è¦‹ã¦ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒä¸‹ã«ã„ãŸã‚‰è§’åº¦ã‚’ãƒã‚¤ãƒŠã‚¹ã«ã™ã‚‹
 		if (posPlayerDifference.y > 0)
 		{
 			m_pitchAngle = -m_pitchAngle;
@@ -374,10 +373,10 @@ namespace basecross {
 		auto a = 0.0f;
 	}
 
-	// ’Ç‚¢‚©‚¯‚é‘ÎÛ‚ÉŒü‚©‚Á‚ÄZ²‰ñ“]•ûŒü‚ÅŒü‚­ˆ—
+	// è¿½ã„ã‹ã‘ã‚‹å¯¾è±¡ã«å‘ã‹ã£ã¦Zè»¸å›è»¢æ–¹å‘ã§å‘ãå‡¦ç†
 	void Enemy::TrackingRollQt()
 	{
-		// ƒfƒoƒbƒN—p‚Ìƒ[ƒ‹‰ñ“]
+		// ãƒ‡ãƒãƒƒã‚¯ç”¨ã®ãƒ­ãƒ¼ãƒ«å›è»¢
 		static float debugYX = 0.0f;
 		auto& input = InputManager::GetInputManager();
 		if (input->GetButton(L"DLeft"))
@@ -394,29 +393,29 @@ namespace basecross {
 		return;
 	}
 
-	// ’Ç‚¢‚©‚¯‚é‘ÎÛ‚ÉŒü‚©‚Á‚ÄY²‰ñ“]•ûŒü‚ÅŒü‚­ˆ—
+	// è¿½ã„ã‹ã‘ã‚‹å¯¾è±¡ã«å‘ã‹ã£ã¦Yè»¸å›è»¢æ–¹å‘ã§å‘ãå‡¦ç†
 	void Enemy::TrackingYawQt(const Vec3& posPlayerDifference)
 	{
 		m_yawAngle = atan2f(posPlayerDifference.x, posPlayerDifference.z);
 		return;
 	}
 
-	// ƒˆ[ƒsƒbƒ`ƒ[ƒ‹‚É‰ˆ‚Á‚Ä‰ñ“]‚·‚éˆ—
+	// ãƒ¨ãƒ¼ãƒ”ãƒƒãƒãƒ­ãƒ¼ãƒ«ã«æ²¿ã£ã¦å›è»¢ã™ã‚‹å‡¦ç†
 	void Enemy::MoveRotate()
 	{
-		// i‚İ‚½‚¢•ûŒü‚É‰ñ“]
-		// ƒsƒbƒ`ƒˆ[ƒ[ƒ‹‚ğrotate‚É•ÏŠ·
+		// é€²ã¿ãŸã„æ–¹å‘ã«å›è»¢
+		// ãƒ”ãƒƒãƒãƒ¨ãƒ¼ãƒ­ãƒ¼ãƒ«ã‚’rotateã«å¤‰æ›
 		m_goalRotVec = Vec3(AdjustmentAngle(m_pitchAngle), AdjustmentAngle(m_yawAngle), AdjustmentAngle(m_rollAngle));
 		Vec3 differenceRotVec = m_goalRotVec - m_rot;
 
-		// ‰ñ“]“x‚Ì·‚ª•Ê‚Ì•ûŒü‚É‰ñ“]‚µ‚½‚Ù‚¤‚ª¬‚³‚¢‚È‚ç‹t‚É‚·‚é
+		// å›è»¢åº¦ã®å·®ãŒåˆ¥ã®æ–¹å‘ã«å›è»¢ã—ãŸã»ã†ãŒå°ã•ã„ãªã‚‰é€†ã«ã™ã‚‹
 		differenceRotVec.y = CorrectRotationDirection(differenceRotVec.y);
 		differenceRotVec.x = CorrectRotationDirection(differenceRotVec.x);
 
 		Vec3 addRotVec = differenceRotVec;
-		addRotVec.normalize();//³‹K‰»
+		addRotVec.normalize();//æ­£è¦åŒ–
 
-		// ­‚µ‚¸‚Â‰ñ“]‚·‚éˆ—
+		// å°‘ã—ãšã¤å›è»¢ã™ã‚‹å‡¦ç†
 		if (differenceRotVec.length() > 0.01f)
 		{
 			m_rot += addRotVec * m_delta;
@@ -426,15 +425,15 @@ namespace basecross {
 			m_rot = m_goalRotVec;
 		}
 
-		// ‰ñ“]“x‚Ì®—
+		// å›è»¢åº¦ã®æ•´ç†
 		m_rot = Vec3(AdjustmentAngle(m_rot.x), AdjustmentAngle(m_rot.y), m_rot.z);
 
 
-		////ƒfƒoƒbƒN—p
+		////ãƒ‡ãƒãƒƒã‚¯ç”¨
 		//wstringstream wss(L"");
 		//auto scene = App::GetApp()->GetScene<Scene>();
 
-		//wss /* << L"ƒfƒoƒbƒO—p•¶š—ñ "*/
+		//wss /* << L"ãƒ‡ãƒãƒƒã‚°ç”¨æ–‡å­—åˆ— "*/
 		//	//<< L"\ndifferenceRotVec.x : " << differenceRotVec.x
 		//	<< L"\n\n\n\nrotVec.x : " << XMConvertToDegrees(m_rot.x)
 		//	<< L"\nrotVec.y : " << XMConvertToDegrees(m_rot.y)
@@ -445,20 +444,20 @@ namespace basecross {
 		return;
 	}
 
-	// áŠQ•¨‚ğ”ğ‚¯‚éˆ—
+	// éšœå®³ç‰©ã‚’é¿ã‘ã‚‹å‡¦ç†
 	void Enemy::DodgeObstacles(const Vec3& posPlayerDifference)
 	{
 		auto objVec = GetStage()->GetGameObjectVec();
 
-		Vec3 hitPos;			// o—Í—pFƒŒƒC‚ÌŒğ·’n“_(Õ“Ë“_)
-		TRIANGLE triangle;		// ƒŒƒC‚ªŒğ·‚µ‚½ƒ|ƒŠƒSƒ“‚ğ\¬‚·‚é’¸“_‚ÌÀ•W
-		size_t triangleNumber;	// ƒŒƒC‚ªŒğ·‚µ‚½ƒ|ƒŠƒSƒ“‚Ì”Ô†
+		Vec3 hitPos;			// å‡ºåŠ›ç”¨ï¼šãƒ¬ã‚¤ã®äº¤å·®åœ°ç‚¹(è¡çªç‚¹)
+		TRIANGLE triangle;		// ãƒ¬ã‚¤ãŒäº¤å·®ã—ãŸãƒãƒªã‚´ãƒ³ã‚’æ§‹æˆã™ã‚‹é ‚ç‚¹ã®åº§æ¨™
+		size_t triangleNumber;	// ãƒ¬ã‚¤ãŒäº¤å·®ã—ãŸãƒãƒªã‚´ãƒ³ã®ç•ªå·
 
 		for (auto obj : objVec)
 		{
-			auto obstacles = dynamic_pointer_cast<TestCsv>(obj);// “–‚½‚è”»’è‚Ì‘ÎÛ
+			auto obstacles = dynamic_pointer_cast<TestCsv>(obj);// å½“ãŸã‚Šåˆ¤å®šã®å¯¾è±¡
 		
-			// isã‚ÌáŠQ‚É‚È‚è‚»‚¤‚È‚à‚Ì‚©”»’f
+			// é€²è¡Œä¸Šã®éšœå®³ã«ãªã‚Šãã†ãªã‚‚ã®ã‹åˆ¤æ–­
 			if (obstacles)
 			{
 				auto ptrDraw = obstacles->GetComponent<SmBaseDraw>();
@@ -469,22 +468,22 @@ namespace basecross {
 				}
 			}
 
-			// Œ»İ‚ÌƒXƒe[ƒg‚Ì•¶š—ñ‚ğó‚¯æ‚é
+			// ç¾åœ¨ã®ã‚¹ãƒ†ãƒ¼ãƒˆã®æ–‡å­—åˆ—ã‚’å—ã‘å–ã‚‹
 			auto currentStateWstring = m_stateMachine->GetCurrentStateWString();
 
-			// ‚Ç‚Ì‚æ‚¤‚É‰ñ”ğ‚·‚é‚©‚ÌƒAƒ“ƒJ[‚ğ•t‚¯‚½‚ç•œŠˆ‚³‚¹‚Ü‚·
-			// ƒŒƒC‚ª“–‚½‚Á‚½‚ç“®‚©‚È‚¢‚æ‚¤‚É‚·‚é (áŠQ•¨‚ğ”ğ‚¯‚éƒXƒe[ƒg‚ÉˆÚs‚·‚é‚½‚ß‚Ì•¨‚È‚Ì‚Å˜A‘±‚µ‚Ä“¯‚¶ƒXƒe[ƒg‚É•ÏX‚µ‚È‚¢‚æ‚¤‚É‚µ‚Ä‚Ü‚·)
+			// ã©ã®ã‚ˆã†ã«å›é¿ã™ã‚‹ã‹ã®ã‚¢ãƒ³ã‚«ãƒ¼ã‚’ä»˜ã‘ãŸã‚‰å¾©æ´»ã•ã›ã¾ã™
+			// ãƒ¬ã‚¤ãŒå½“ãŸã£ãŸã‚‰å‹•ã‹ãªã„ã‚ˆã†ã«ã™ã‚‹ (éšœå®³ç‰©ã‚’é¿ã‘ã‚‹ã‚¹ãƒ†ãƒ¼ãƒˆã«ç§»è¡Œã™ã‚‹ãŸã‚ã®ç‰©ãªã®ã§é€£ç¶šã—ã¦åŒã˜ã‚¹ãƒ†ãƒ¼ãƒˆã«å¤‰æ›´ã—ãªã„ã‚ˆã†ã«ã—ã¦ã¾ã™)
 			//if (hitPos != Vec3(0.0f) && currentStateWstring != L"ObstaclesDodge")
 			//{
-			//	// ‚±‚±‚ğ“®‚©‚È‚¢‚æ‚¤‚É‚¶‚á‚È‚­‚Ä‰I‰ñ‚·‚éƒ‹[ƒg‚ğl‚¦‚éˆ—‚É‚·‚é
+			//	// ã“ã“ã‚’å‹•ã‹ãªã„ã‚ˆã†ã«ã˜ã‚ƒãªãã¦è¿‚å›ã™ã‚‹ãƒ«ãƒ¼ãƒˆã‚’è€ƒãˆã‚‹å‡¦ç†ã«ã™ã‚‹
 			//	m_moveVec = Vec3(0.0f);
 
-			//	// áŠQ•¨‚ğ”ğ‚¯‚é‚½‚ß‚Éi‚Şƒ‹[ƒg‚ğŒˆ‚ß‚é ƒ|ƒCƒ“ƒ^‚ÌŠÖŒW‚ÅƒGƒ‰[“f‚­
+			//	// éšœå®³ç‰©ã‚’é¿ã‘ã‚‹ãŸã‚ã«é€²ã‚€ãƒ«ãƒ¼ãƒˆã‚’æ±ºã‚ã‚‹ ãƒã‚¤ãƒ³ã‚¿ã®é–¢ä¿‚ã§ã‚¨ãƒ©ãƒ¼åã
 			//	auto obstaclesDodgeObj = DodgeRoute();
 
-			//	// •ÏX‚µ‚½ƒXƒe[ƒg‚ÉáŠQ•¨‚ğ”ğ‚¯‚é‚½‚ß‚É‚±‚ÌƒIƒuƒWƒFƒNƒg‚ğ–Úˆó‚É‚µ‚Ä‚Ù‚µ‚¢‚Æ“`‚¦‚é
+			//	// å¤‰æ›´ã—ãŸã‚¹ãƒ†ãƒ¼ãƒˆã«éšœå®³ç‰©ã‚’é¿ã‘ã‚‹ãŸã‚ã«ã“ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç›®å°ã«ã—ã¦ã»ã—ã„ã¨ä¼ãˆã‚‹
 			//	ChangeState(L"ObstaclesDodge");
-			//	auto currentState = m_stateMachine->GetCurrentState(); // Œ»İ‚ÌƒXƒe[ƒgæ“¾
+			//	auto currentState = m_stateMachine->GetCurrentState(); // ç¾åœ¨ã®ã‚¹ãƒ†ãƒ¼ãƒˆå–å¾—
 			//	auto obstaclesDodgeState = dynamic_pointer_cast<StateObstaclesDodgeEnemy>(currentState);
 			//	obstaclesDodgeState->SetObstaclesDodge(obstaclesDodgeObj);
 			//}
@@ -492,7 +491,7 @@ namespace basecross {
 
 	}
 
-	// –³“G‚Ìˆ—
+	// ç„¡æ•µæ™‚ã®å‡¦ç†
 	void Enemy::Invincible()
 	{
 		if (m_invincibleFlag)
@@ -501,26 +500,26 @@ namespace basecross {
 			m_countTimeOfInvincible += m_delta;
 			if (m_timeOfInvincible < m_countTimeOfInvincible)
 			{
-				// –³“G‚ªØ‚ê‚é
+				// ç„¡æ•µãŒåˆ‡ã‚Œã‚‹
 				m_invincibleFlag = false;
 				m_countTimeOfInvincible = 0.0f;
 
-				// “_–Å—p‚Ì”’l‚à‰Šú‰»‚·‚é
+				// ç‚¹æ»…ç”¨ã®æ•°å€¤ã‚‚åˆæœŸåŒ–ã™ã‚‹
 				m_color.w = 1.0f;
 				m_countTimeOfBlinking = 0.0f;
 			}
 
-			// –³“Gó‘Ô‚Ì©•ª©g‚Í“_–Å‚·‚é
+			// ç„¡æ•µçŠ¶æ…‹ã®æ™‚è‡ªåˆ†è‡ªèº«ã¯ç‚¹æ»…ã™ã‚‹
 			DrawBlinking();
 		}
 
 		return;
 	}
 
-	// –³“G‚Ì“_–Åˆ—
+	// ç„¡æ•µæ™‚ã®ç‚¹æ»…å‡¦ç†
 	void Enemy::DrawBlinking()
 	{
-		// –³“Gó‘Ô‚Ì©•ª©g‚Í“_–Å‚·‚é
+		// ç„¡æ•µçŠ¶æ…‹ã®æ™‚è‡ªåˆ†è‡ªèº«ã¯ç‚¹æ»…ã™ã‚‹
 		m_countTimeOfBlinking += m_delta;
 		if (0.3f < m_countTimeOfBlinking)
 		{
@@ -539,7 +538,7 @@ namespace basecross {
 		return;
 	}
 
-	// áŠQ•¨‚ğ”ğ‚¯‚éƒ‹[ƒg‚ğl‚¦‚éˆ—
+	// éšœå®³ç‰©ã‚’é¿ã‘ã‚‹ãƒ«ãƒ¼ãƒˆã‚’è€ƒãˆã‚‹å‡¦ç†
 	shared_ptr<ObstaclesDodge> Enemy::DodgeRoute()
 	{
 		auto objVec = GetStage()->GetGameObjectVec();
@@ -547,12 +546,12 @@ namespace basecross {
 
 		for (auto obj : objVec)
 		{
-			// ‰ñ”ğƒ‹[ƒg—p‚ÌƒIƒuƒWƒFƒNƒg‚©Šm”F‚µ‚½Œã‰ñ”ğƒ‹[ƒg‚ğ‚«‚ß‚é
+			// å›é¿ãƒ«ãƒ¼ãƒˆç”¨ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‹ç¢ºèªã—ãŸå¾Œå›é¿ãƒ«ãƒ¼ãƒˆã‚’ãã‚ã‚‹
 			auto obstaclesDodgeObj = dynamic_pointer_cast<ObstaclesDodge>(obj);
 
 			if (obstaclesDodgeObj)
 			{
-				// áŠQ•¨‚ğ‰ñ”ğ‚·‚é‚½‚ß‚Ì–Úˆó‚©Šm”Fo—ˆ‚½‚çáŠQ•¨ˆê——‚Æ‚µ‚Äó‚¯æ‚é
+				// éšœå®³ç‰©ã‚’å›é¿ã™ã‚‹ãŸã‚ã®ç›®å°ã‹ç¢ºèªå‡ºæ¥ãŸã‚‰éšœå®³ç‰©ä¸€è¦§ã¨ã—ã¦å—ã‘å–ã‚‹
 				if (obstaclesDodgeObj->FindTag(L"ObstaclesRoute"))
 				{
 					m_obstaclesDodgeObjs.push_back(obstaclesDodgeObj);
@@ -560,19 +559,19 @@ namespace basecross {
 			}
 		}
 
-		float min = 999999.9f; // Å’Z‹——£
-		shared_ptr<ObstaclesDodge> targetObstaclesDodgeObj; // áŠQ•¨‚ğ”ğ‚¯‚é‚½‚ß‚É’ÇÕ‚·‚éƒIƒuƒWƒFƒNƒg
+		float min = 999999.9f; // æœ€çŸ­è·é›¢
+		shared_ptr<ObstaclesDodge> targetObstaclesDodgeObj; // éšœå®³ç‰©ã‚’é¿ã‘ã‚‹ãŸã‚ã«è¿½è·¡ã™ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 
-		// áŠQ•¨‚ğ”ğ‚¯‚éÛ‚ÌÅ’Z‹——£‚Í‚Ç‚ÌƒIƒuƒWƒFƒNƒg‚ğŒo—R‚·‚ê‚Î‚¢‚¢‚©Šm”F‚·‚é
+		// éšœå®³ç‰©ã‚’é¿ã‘ã‚‹éš›ã®æœ€çŸ­è·é›¢ã¯ã©ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’çµŒç”±ã™ã‚Œã°ã„ã„ã‹ç¢ºèªã™ã‚‹
 		for (auto obj : m_obstaclesDodgeObjs)
 		{
 			auto objPos = obj->GetComponent<Transform>()->GetPosition();
 
-			// ©•ª‚ÌˆÊ’u‚ÆŒo—R‚·‚éƒIƒuƒWƒFƒNƒg‚ÌˆÊ’u‚Ì·‚ğ‹‚ß‚é
+			// è‡ªåˆ†ã®ä½ç½®ã¨çµŒç”±ã™ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä½ç½®ã®å·®ã‚’æ±‚ã‚ã‚‹
 			auto differencePos = m_pos - objPos;
 			float distanceVec = differencePos.length();
 
-			// Å’Z‹——£‚¾‚Á‚½ê‡‚»‚±‚ğ’ÇÕ‘ÎÛ‚Æ‚µ‚Ä’Ç‚¢‚©‚¯‚é
+			// æœ€çŸ­è·é›¢ã ã£ãŸå ´åˆãã“ã‚’è¿½è·¡å¯¾è±¡ã¨ã—ã¦è¿½ã„ã‹ã‘ã‚‹
 			if (min > distanceVec && distanceVec != 0.0f)
 			{
 				min = distanceVec;
@@ -580,11 +579,11 @@ namespace basecross {
 			}
 		}
 
-		// áŠQ•¨‚ğ‰I‰ñ‚·‚é‚½‚ß‚É‚±‚ÌƒIƒuƒWƒFƒNƒg‚ğ’Ç‚¢‚©‚¯‚Ä‚Ë
+		// éšœå®³ç‰©ã‚’è¿‚å›ã™ã‚‹ãŸã‚ã«ã“ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’è¿½ã„ã‹ã‘ã¦ã­
 		return targetObstaclesDodgeObj;
 	}
 
-	// ’Ç‚¢‚©‚¯‚é‘ÎÛƒ|ƒCƒ“ƒ^‚ÌƒQƒbƒ^
+	// è¿½ã„ã‹ã‘ã‚‹å¯¾è±¡ãƒã‚¤ãƒ³ã‚¿ã®ã‚²ãƒƒã‚¿
 	shared_ptr<Actor> Enemy::GetTrackingObj()
 	{
 		auto trackingObjLock = m_trackingObj.lock();
@@ -592,7 +591,7 @@ namespace basecross {
 		{
 			throw BaseException
 			{
-				L"’Ç‚¢‚©‚¯‚é‘ÎÛ‚ª‘¶İ‚µ‚Ü‚¹‚ñ",
+				L"è¿½ã„ã‹ã‘ã‚‹å¯¾è±¡ãŒå­˜åœ¨ã—ã¾ã›ã‚“",
 				L"if (!trackingObjLock)",
 				L"shared_ptr<Actor> Enemy::GetTrackingObj()"
 			};
@@ -603,13 +602,13 @@ namespace basecross {
 		return trackingObjLock;
 	}
 
-	// –³“Gƒtƒ‰ƒO‚ÌƒQƒbƒ^
+	// ç„¡æ•µãƒ•ãƒ©ã‚°ã®ã‚²ãƒƒã‚¿
 	bool Enemy::GetInvincibleFlag()
 	{
 		return m_invincibleFlag;
 	}
 
-	// –³“Gƒtƒ‰ƒO‚ğƒIƒ“‚É‚·‚éˆ—
+	// ç„¡æ•µãƒ•ãƒ©ã‚°ã‚’ã‚ªãƒ³ã«ã™ã‚‹å‡¦ç†
 	void Enemy::OnInvincibleFlag()
 	{
 		m_invincibleFlag = true;

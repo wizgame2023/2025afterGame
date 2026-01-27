@@ -69,6 +69,9 @@ namespace basecross{
 		modelTex = modelPath + L"bed.png";
 		app->RegisterTexture(L"BedTex", modelTex);
 
+		modelTex = modelPath + L"Tama.png";
+		app->RegisterTexture(L"BulletTex", modelTex);
+    
 		modelTex = modelPath + L"Clock.png";
 		app->RegisterTexture(L"ClockTex", modelTex);
 
@@ -92,6 +95,9 @@ namespace basecross{
 		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"tansu.bmf");
 		app->RegisterResource(L"Shelf", modelMesh);
 
+		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"Tama.bmf");
+		app->RegisterResource(L"Bullet_Mesh", modelMesh);
+    
 		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"clock.bmf");
 		app->RegisterResource(L"Clock", modelMesh);
 
@@ -204,7 +210,7 @@ namespace basecross{
 
 			//自分自身にイベントを送る
 			//これにより各ステージやオブジェクトがCreate時にシーンにアクセスできる
-			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");			
+			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");
 			
 			CreateResource();
 
@@ -226,7 +232,9 @@ namespace basecross{
 	}
 
 	void Scene::OnUpdate()
-	{
+	{		
+		RayCast::InitRay(100);
+
 		SceneBase::OnUpdate();
 
 		// ゲームマネージャー更新

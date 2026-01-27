@@ -75,6 +75,7 @@ namespace basecross {
 		m_trans->SetPosition(m_pos);
 		m_trans->SetRotation(m_rot);
 
+		m_stage = GetStage();
 
 		// アルファブレンド(透過処理)を有効にする
 		SetAlphaActive(true); // true:透過を有効、false:透過を無効
@@ -187,6 +188,16 @@ namespace basecross {
 	Vec3 Sprite::GetScale()
 	{
 		return m_trans->GetScale();
+	}
+
+	Vec2 Sprite::GetSpritePixel()
+	{
+		return m_size;
+	}
+
+	void Sprite::RemoveSprite()
+	{
+		m_stage.lock()->RemoveGameObject<Sprite>(GetThis<Sprite>());
 	}
 
 	void Sprite::SetUVRect(const Vec2& topLeft, const Vec2& botRight)
