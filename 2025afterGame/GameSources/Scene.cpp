@@ -71,6 +71,15 @@ namespace basecross{
 
 		modelTex = modelPath + L"Tama.png";
 		app->RegisterTexture(L"BulletTex", modelTex);
+    
+		modelTex = modelPath + L"Clock.png";
+		app->RegisterTexture(L"ClockTex", modelTex);
+
+		modelTex = modelPath + L"house.png";
+		app->RegisterTexture(L"HouseTex", modelTex);
+
+		modelTex = modelPath + L"Basket.png";
+		app->RegisterTexture(L"BasketTex", modelTex);
 
 		// Model /////////////////////////////////////////////////
 		// Player
@@ -94,6 +103,15 @@ namespace basecross{
 
 		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"Tama.bmf");
 		app->RegisterResource(L"Bullet_Mesh", modelMesh);
+    
+		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"clock.bmf");
+		app->RegisterResource(L"Clock", modelMesh);
+
+		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"house.bmf");
+		app->RegisterResource(L"House", modelMesh);
+
+		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"Basket.bmf");
+		app->RegisterResource(L"Basket", modelMesh);
 
 		// UI /////////////////////////////////////////////////
 		auto numberSprite = uiPlayerPath + L"Number.png";

@@ -122,7 +122,6 @@ namespace basecross {
 				m_audioManager = App::GetApp()->GetXAudio2Manager();
 				m_se = m_audioManager->Start(L"CountDownSE", 0, 1.0f);
 				m_countDownSEFlag = false;// なんどもSEを鳴らさない
-				SetCountEnd(true);
 			}
 
 			if (m_countTimeGameStart >= 2.0f)
@@ -155,6 +154,7 @@ namespace basecross {
 				{
 					m_startSprite = m_currentStage->AddGameObject<Sprite>(L"GameEnd_TX", Vec2(500.0f, 250.0f));
 				}
+				SetCountEnd(true);
 
 				m_gameStartPhase = GAMESTART_End;
 			}
@@ -326,6 +326,11 @@ namespace basecross {
 		m_checkPoints.clear();
 	}
 
+	void GameManager::SetTimeLimit(float limit)
+	{
+		m_timeLimit += limit;
+	}
+
 	float GameManager::GetTimeLimit()
 	{
 		return m_timeLimit;
@@ -442,6 +447,12 @@ namespace basecross {
 	bool GameManager::GetGameEnd()
 	{
 		return m_gameEnd;
+	}
+
+	void GameManager::ResetGameManager()
+	{
+		SetGameEnd(false);
+		SetTimeLimit(180.0f);
 	}
 }
 
