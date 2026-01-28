@@ -220,5 +220,16 @@ namespace basecross {
 
 		SetAlphaActive(true);
 	};
+
+	void Sprite::SetDigit(int digit)
+	{
+		digit = clamp(digit, 0, 9);
+
+		float piece = 1.0f / 10.0f;
+		float u0 = piece * digit;
+		float u1 = piece * (digit + 1);
+
+		SetUVRect(Vec2(u0, 0.0f), Vec2(u1, 1.0f));
+	}
 }
 //end basecross
