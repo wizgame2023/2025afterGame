@@ -124,7 +124,10 @@ namespace basecross
 		auto stage = scene->GetActiveStage();
 		auto& gameMana = GameManager::GetGameManager();
 
+		auto hpwaku = stage->AddGameObject<HpSprite>(L"HP_WAKU", Vec2(30.0f, 5.0f), Vec3(-600.0f, 375.0f, 0.0f));
 		auto hp = stage->AddGameObject<HpSprite>(L"HP", Vec2(30.0f, 5.0f), Vec3(-600.0f, 375.0f, 0.0f));
+		hp->SetSpriteMove(true);
+
 		//auto finalscore = stage->AddGameObject<Sprite>(L"Finalscore", Vec2(600.0f, 200.0f), Vec3(0.0f, 325.0f, 0.0f));
 		//finalscore->SetDrawLayer(2);
 

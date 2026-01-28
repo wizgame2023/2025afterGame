@@ -119,6 +119,9 @@ namespace basecross{
     
 		auto hp = uiPlayerPath + L"Hp.png";
 		app->RegisterTexture(L"HP", hp);
+
+		auto hpwaku = uiPlayerPath + L"HP_waku.png";
+		app->RegisterTexture(L"HP_WAKU", hpwaku);
     
 		auto colon = uiPlayerPath + L"Colon.png";
 		app->RegisterTexture(L"Colon", colon);

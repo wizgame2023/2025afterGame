@@ -47,8 +47,8 @@ namespace basecross {
 		float test3 = 128 * 0.75;
 		m_testTitle = AddGameObject<Sprite>(L"Start_TX", Vec2(test2, test3), Vec3(0.0f, -260.0f, 0.0f));
 
-		float test = 800.0f;
-		AddGameObject<Sprite>(L"rogo_TX", Vec2(test, test / 2), Vec3(0.0f, 210.0f, 0.0f));
+		float test = 1000.0f;
+		AddGameObject<Sprite>(L"rogo_TX", Vec2(test, test / 2), Vec3(15.0f, 200.0f, 0.0f));
 
 	}
 
