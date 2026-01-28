@@ -43,7 +43,7 @@ namespace basecross {
 		//ƒRƒŠƒWƒ‡ƒ“
 		auto ptrCol = AddComponent<CollisionObb>();
 		ptrCol->SetFixed(true);
-		ptrCol->SetDrawActive(false);
+		ptrCol->SetDrawActive(true);
 		ptrCol->SetAfterCollision(AfterCollision::Auto);
 
 		Mat4x4 spanMat;
@@ -172,7 +172,24 @@ namespace basecross {
 			);
 
 			ptrDraw->SetMeshToTransformMatrix(spanMat);
-			}
+		}
+		else if (m_tag == L"Basket")
+		{
+			AddTag(L"CameraObsDiffuse");
+			SetAlphaActive(true);
+
+			ptrDraw->SetMeshResource(L"Basket");
+			ptrDraw->SetTextureResource(L"BasketTex");
+
+			spanMat.affineTransformation(
+				Vec3(0.3f, 0.3f, 0.3f),
+				Vec3(0.0f, 0.0f, 0.0f),
+				Vec3(0.0f, 0.0f, 0.0f),
+				Vec3(0.0f, 0.0f, 0.0f)
+			);
+
+			ptrDraw->SetMeshToTransformMatrix(spanMat);
+		}
 		else
 		{
 			AddTag(L"CameraObsDiffuse");
