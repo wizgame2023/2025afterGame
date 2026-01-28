@@ -43,7 +43,7 @@ namespace basecross {
 		//ƒRƒŠƒWƒ‡ƒ“
 		auto ptrCol = AddComponent<CollisionObb>();
 		ptrCol->SetFixed(true);
-		ptrCol->SetDrawActive(false);
+		ptrCol->SetDrawActive(true);
 		ptrCol->SetAfterCollision(AfterCollision::Auto);
 
 		Mat4x4 spanMat;
@@ -185,7 +185,7 @@ namespace basecross {
 				Vec3(0.3f, 0.3f, 0.3f),
 				Vec3(0.0f, 0.0f, 0.0f),
 				Vec3(0.0f, 0.0f, 0.0f),
-				Vec3(0.0f, 0.0f, 0.0f)
+				Vec3(0.0f, -0.4f, 0.0f)
 			);
 
 			ptrDraw->SetMeshToTransformMatrix(spanMat);
