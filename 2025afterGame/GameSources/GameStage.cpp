@@ -162,6 +162,10 @@ namespace basecross {
 	void GameStage::OnDestroy()
 	{
 		m_audioManager->Stop(m_bgm);
+
+		// ゲームマネージャ取得
+		auto& gameManager = GameManager::GetGameManager();
+		gameManager->ResetGameManager();
 	}
 
 }
