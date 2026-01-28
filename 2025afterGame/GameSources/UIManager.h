@@ -100,6 +100,8 @@ namespace basecross
 		// 現在のPlayerのスコアを取得
 		int GetPlayerScore();
 
+		void SetCreateUIFlag(bool flag);
+
 
 	private:
 		//コピー禁止
