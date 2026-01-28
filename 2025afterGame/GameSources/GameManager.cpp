@@ -371,6 +371,8 @@ namespace basecross {
 			if (!m_createScoreObj)
 			{
 				obj->CreateScoreObject();
+				obj->CreateScoreObject();
+				obj->CreateScoreObject();
 				m_createScoreObj = true;
 			}
 
