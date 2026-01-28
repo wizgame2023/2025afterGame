@@ -20,6 +20,11 @@ namespace basecross{
 	// =============================================================================================
 	void PauseMenu::OnCreate()
 	{
+		// m_pauseMainMenu[0] : 再開
+		// m_pauseMainMenu[1] : リスタート
+		// m_pauseMainMenu[2] : 設定
+		// m_pauseMainMenu[3] : タイトル
+
 		m_stage = GetStage();
 		SpriteInfo spInfo; // 共通設定用のベース
 		spInfo.layer = 10; // 全メニュー共通のレイヤー
@@ -50,7 +55,10 @@ namespace basecross{
 			PushBackPauseMenuSprite(m_pauseMainMenuSprites, spInfo);
 		}
 
-		// ボリュームメニュー ------
+		// m_pauseSettingMenu[0] : 音量
+		// m_pauseSettingMenu[1] : キーコンフィグ
+
+		// 設定メニュー ------
 		spInfo.textureName = L"PauseMenuSetting_TX";
 		spInfo.size = Vec2(200.0f, 100.0f);
 		constexpr float SettingUVHeight = 1.0f / 4.0f;
@@ -69,13 +77,20 @@ namespace basecross{
 			PushBackPauseMenuSprite(m_pauseVolumeMenuSprites, spInfo);
 		}
 
+		// m_pauseVolumeMenu[0] : BGM文字列
+		// m_pauseVolumeMenu[1] : SE文字列
+		// m_pauseVolumeMenu[2] : BGMゲージ本体
+		// m_pauseVolumeMenu[3] : BGMゲージスライダー
+		// m_pauseVolumeMenu[4] : SEゲージ本体
+		// m_pauseVolumeMenu[5] : SEゲージスライダー
+
 		// ボリュームゲージ ------
 		spInfo.textureName = L"PauseMenuVolumeGauge_TX";
-		const float gaugeWidth = 300.0f;
-		const float gaugeHeight = gaugeWidth / 3.0f;
+		constexpr float gaugeWidth = 300.0f;
+		constexpr float gaugeHeight = gaugeWidth / 3.0f;
 		// 正方形にする
-		const float sliderWidth = gaugeHeight; 
-		const float sliderHeight = sliderWidth;
+		constexpr float sliderWidth = gaugeHeight; 
+		constexpr float sliderHeight = sliderWidth;
 		for (int i = 0; i < 2; i++)
 		{
 			// ボリューム文字列の位置を取得
@@ -88,8 +103,9 @@ namespace basecross{
 			spInfo.size = Vec2(gaugeWidth, 100.0f);
 			PushBackPauseMenuSprite(m_pauseVolumeMenuSprites, spInfo);
 
-			// ゲージの右端の位置を取得
-			auto rightEdgePos = m_pauseVolumeMenuSprites[2 + (i * 2)]->GetPositionX() + (spInfo.size.x * 0.5f);
+			// ゲージの右端の位置を取得(backで直前に追加されたデータを見る)
+			auto& gaugeSp = m_pauseVolumeMenuSprites.back();
+			auto rightEdgePos = gaugeSp->GetPositionX() + gaugeSp->GetSpritePixel().x * 0.49f;
 
 			// スライダー部分
 			spInfo.pos = Vec3(rightEdgePos, (volumeStringPos.y - 100), 0.0f);
@@ -99,6 +115,11 @@ namespace basecross{
 			PushBackPauseMenuSprite(m_pauseVolumeMenuSprites, spInfo);
 		}
 
+		// m_pauseKeyConfigMenu[0] : 上下反転文字列
+		// m_pauseKeyConfigMenu[1] : 加速文字列
+		// m_pauseKeyConfigMenu[2] : 弾発射文字列
+		// m_pauseKeyConfigMenu[3] : 背面視点文字列
+
 		// キーコンフィグメニュー ------
 		spInfo.textureName = L"PauseMenuKeyConfig_TX";
 		spInfo.size = Vec2(200.0f, 100.0f);
@@ -106,7 +127,7 @@ namespace basecross{
 
 		for (int i = 0; i < 4; i++)
 		{
-			spInfo.pos = Vec3(0.0f, 300.0f + (i * -100), 0.0f);
+			spInfo.pos = Vec3(0.0f, 260.0f + (i * -150), 0.0f);
 			spInfo.leftTopUV = Vec2(0.0f, mainUVHeight * i);
 			spInfo.rightBotUV = Vec2(1.0f, (mainUVHeight * (i + 1)));
 			PushBackPauseMenuSprite(m_pauseKeyConfigMenuSprites, spInfo);
@@ -400,20 +421,38 @@ namespace basecross{
 		auto& game = GameManager::CreateGameManager();
 		float crntVol = 0.0f;
 		function<void(float)> volSetter;	// 未定義
+
+		// ゲージとスライダーの取得
+		shared_ptr<Sprite> gauge;
+		shared_ptr<Sprite> slider;
+
+		// volSetterの定義
 		if (m_pauseState == PauseMenuState::BGMSetting)
 		{
 			crntVol = game->GetBGMVolume();
+			gauge = m_pauseVolumeMenuSprites[2];
+			slider = m_pauseVolumeMenuSprites[3];
 			volSetter = [&](float v) { // ここで関数を定義
-				m_pauseVolumeMenuSprites[3]->SetPositionX(-130 + (v * 265));
+				float width = gauge->GetSpritePixel().x;
+				float leftEdge = gauge->GetPositionX() - (width * 0.48f);
+				float rightEdge = gauge->GetPositionX() + (width * 0.48f);
+				float clampedSliderX = clamp(leftEdge + (v * width), leftEdge, rightEdge);
+				slider->SetPositionX(clampedSliderX);
 				return game->SetBGMVolume(v); 
 			};	
 		}
 		else if (m_pauseState == PauseMenuState::SESetting)
 		{
 			crntVol = game->GetSEVolume();
+			gauge = m_pauseVolumeMenuSprites[4];
+			slider = m_pauseVolumeMenuSprites[5];
 			volSetter = [&](float v) { 	// ここで関数を定義
-				m_pauseVolumeMenuSprites[5]->SetPositionX(-130 + (v * 265));
-				return game->SetSEVolume(v); 
+				float width = gauge->GetSpritePixel().x;
+				float leftEdge = gauge->GetPositionX() - (width * 0.48f);
+				float rightEdge = gauge->GetPositionX() + (width * 0.48f);
+				float clampedSliderX = clamp(leftEdge + (v * width), leftEdge, rightEdge);
+				slider->SetPositionX(clampedSliderX);
+				return game->SetSEVolume(v);
 			};
 		}
 
@@ -440,12 +479,7 @@ namespace basecross{
 	void PauseMenu::UpdateKeyConfigMenu(InputManager& input)
 	{
 		// Lスティックの上下入力で選択肢を変更
-		if (UpdateSelection(m_crntKeyConfigSelect, PauseKeyConfigMenuSelect::Max))
-		{
-			// 選択肢が変わった場合の処理
-			// 音を鳴らすなど
-
-		}
+		HandleMenuSelection(m_pauseKeyConfigMenuSprites, m_crntKeyConfigSelect, PauseKeyConfigMenuSelect::Max);
 
 		bool pressAButton = input.GetDownButton(L"A");
 		bool pressBButton = input.GetDownButton(L"B");
@@ -600,6 +634,23 @@ namespace basecross{
 																	 m_pauseState == PauseMenuState::BulletSetting ||
 																	 m_pauseState == PauseMenuState::ViewBehindSetting));
 			}
+
+			// 大きさの初期化処理
+			switch (m_pauseState)
+			{
+			case PauseMenuState::MainMenu:
+				ScalingSelectedSprite(m_pauseMainMenuSprites, m_crntMainSelect, PauseMainMenuSelect::Max);
+				break;
+			case PauseMenuState::SettingMenu:
+				ScalingSelectedSprite(m_pauseSettingMenuSprites, m_crntSettingSelect, PauseSettingMenuSelect::Max);
+				break;
+			case PauseMenuState::VolumeMenu:
+				ScalingSelectedSprite(m_pauseVolumeMenuSprites, m_crntVolumeSelect, PauseVolumeMenuSelect::Max);
+				break;
+			case PauseMenuState::KeyConfigMenu:
+				ScalingSelectedSprite(m_pauseKeyConfigMenuSprites, m_crntKeyConfigSelect, PauseKeyConfigMenuSelect::Max);
+				break;
+			}
 		}
 
 		lastState = m_pauseState;
@@ -612,8 +663,6 @@ namespace basecross{
 		SetPauseFlag(true);
 		m_crntMainSelect = PauseMainMenuSelect::Resume;
 		m_pauseState = PauseMenuState::MainMenu;
-		m_pauseMainMenuSprites[0]->SetScale(m_selectionScale);
-		m_pauseBackGroundSprite->OnClear(false);
 	}
 
 	// ==============================================================================
