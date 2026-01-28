@@ -141,16 +141,23 @@ namespace basecross {
 
 	void GameStage::OnUpdate()
 	{
-		UIManager::GetUIManager()->OnUpdate();
+		auto& uiManager = UIManager::GetUIManager();
+		uiManager->OnUpdate();
+
 		auto& obj = StageCreateManager::GetStageCreateManager();
 		auto& gameMana = GameManager::GetGameManager();
 		auto& input = InputManager::GetInputManager();
-		m_bgm->m_SourceVoice->SetVolume(GameManager::GetGameManager()->GetBGMVolume());
+		auto& scoreManager = ScoreManager::GetScoreManager();
 
+		m_bgm->m_SourceVoice->SetVolume(GameManager::GetGameManager()->GetBGMVolume());
 		if (gameMana->GetGameEnd() == true)
 		{
-			if (input->GetButton(L"A"))
+			if (input->GetDownButton(L"A"))
 			{
+				scoreManager->SetScore(L"Enemy1", 0);
+				scoreManager->SetPlScore(0);
+				uiManager->SetCreateUIFlag(false);
+
 				gameMana->ResetGameManager();
 				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
 				return;
