@@ -64,6 +64,14 @@ namespace basecross {
 		m_draw->SetEmissive(m_color);
 		SetAlphaActive(true);
 
+		// アニメーション追加
+		m_draw->AddAnimation(L"PropellerMove", 0, 50, 60.0f);
+		m_draw->AddAnimation(L"PropellerDown", 40, 20, 30.0f);
+		m_draw->AddAnimation(L"PropellerStop", 0, 1, 0.0f);
+
+		m_draw->ChangeCurrentAnimation(L"PropellerStop");
+
+
 		// 敵タグ追加
 		AddTag(L"Enemy");
 
@@ -98,6 +106,7 @@ namespace basecross {
 		}
 		// レイを表示したい数
 		//RayCast::InitRay(1);
+
 
 
 		FighterAircraftBase::OnUpdate();
@@ -242,6 +251,9 @@ namespace basecross {
 		// カラー適応
 		m_draw->SetEmissive(m_color);
 		m_draw->SetDiffuse(m_color);
+
+		//アニメーション再生
+		//GetComponent<PNTBoneModelDraw>()->UpdateAnimation(m_delta);
 
 
 		////デバック用
