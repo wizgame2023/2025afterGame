@@ -60,12 +60,12 @@ namespace basecross {
 		{
 			ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 			ptrDraw->SetTextureResource(L"StageCeiling");
-			//ptrDraw->SetTextureResource(L"CloudCeiling");
 		}
 		else if (m_tag == L"StageFloar")
 		{
 			ptrDraw->SetMeshResource(L"StageFloar");
 			ptrDraw->SetTextureResource(L"StageFloarTex");
+			ptrDraw->SetOwnShadowActive(true);
 			//インスタンスの行列を作成する
 			Mat4x4 matrix;
 			matrix.affineTransformation(

@@ -51,6 +51,8 @@ namespace basecross {
 
 		//ƒƒbƒVƒ…‚Ì•`‰æ
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
+		//‰e‚ğ‚Â‚¯‚é
+		auto ptrShadow = AddComponent<Shadowmap>();
 		
 
 		if (m_tag == L"Desk")
@@ -68,7 +70,10 @@ namespace basecross {
 				Vec3(0.0f, -6.0f, 0.0f)
 			);
 
+			ptrDraw->SetOwnShadowActive(true);
 			ptrDraw->SetMeshToTransformMatrix(spanMat);
+			ptrShadow->SetMeshResource(L"Desk");
+			ptrShadow->SetMeshToTransformMatrix(spanMat);
 
 		}
 		else if (m_tag == L"Chair")
@@ -83,10 +88,13 @@ namespace basecross {
 				Vec3(0.45f, 3.3f, 0.45f),
 				Vec3(0.0f, 0.0f, 0.0f),
 				Vec3(0.0f, XMConvertToRadians(-90.0f), 0.0f),
-				Vec3(0.0f, -5.5f, 0.0f)
+				Vec3(0.0f, -6.0f, 0.0f)
 			);
 
+			ptrDraw->SetOwnShadowActive(true);
 			ptrDraw->SetMeshToTransformMatrix(spanMat);
+			ptrShadow->SetMeshResource(L"Chair");
+			ptrShadow->SetMeshToTransformMatrix(spanMat);
 		}
 		else if (m_tag == L"Bed")
 		{
@@ -103,7 +111,10 @@ namespace basecross {
 				Vec3(0.0f, -1.0f, 0.0f)
 			);
 
+			ptrDraw->SetOwnShadowActive(true);
 			ptrDraw->SetMeshToTransformMatrix(spanMat);
+			ptrShadow->SetMeshResource(L"Bed");
+			ptrShadow->SetMeshToTransformMatrix(spanMat);
 		}
 		else if (m_tag == L"Shelf")
 		{
@@ -120,7 +131,10 @@ namespace basecross {
 				Vec3(0.0f, -0.54f, 0.0f)
 			);
 
+			ptrDraw->SetOwnShadowActive(true);
 			ptrDraw->SetMeshToTransformMatrix(spanMat);
+			ptrShadow->SetMeshResource(L"Shelf");
+			ptrShadow->SetMeshToTransformMatrix(spanMat);
 		}
 		else if (m_tag == L"BookShelf")
 		{
@@ -137,7 +151,10 @@ namespace basecross {
 				Vec3(0.0f, -0.54f, 0.0f)
 			);
 
+			ptrDraw->SetOwnShadowActive(true);
 			ptrDraw->SetMeshToTransformMatrix(spanMat);
+			ptrShadow->SetMeshResource(L"Shelf");
+			ptrShadow->SetMeshToTransformMatrix(spanMat);
 		}
 		else if (m_tag == L"Clock")
 		{
@@ -155,6 +172,8 @@ namespace basecross {
 			);
 
 			ptrDraw->SetMeshToTransformMatrix(spanMat);
+			ptrShadow->SetMeshResource(L"Clock");
+			ptrShadow->SetMeshToTransformMatrix(spanMat);
 		}
 		else if (m_tag == L"House")
 		{
@@ -171,7 +190,10 @@ namespace basecross {
 				Vec3(0.0f, -0.5f, -0.15f)
 			);
 
+			ptrDraw->SetOwnShadowActive(true);
 			ptrDraw->SetMeshToTransformMatrix(spanMat);
+			ptrShadow->SetMeshResource(L"House");
+			ptrShadow->SetMeshToTransformMatrix(spanMat);
 		}
 		else if (m_tag == L"Basket")
 		{
@@ -188,7 +210,10 @@ namespace basecross {
 				Vec3(0.0f, -0.4f, 0.0f)
 			);
 
+			ptrDraw->SetOwnShadowActive(true);
 			ptrDraw->SetMeshToTransformMatrix(spanMat);
+			ptrShadow->SetMeshResource(L"Basket");
+			ptrShadow->SetMeshToTransformMatrix(spanMat);
 		}
 		else
 		{
