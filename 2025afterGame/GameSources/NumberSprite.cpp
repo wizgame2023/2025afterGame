@@ -36,7 +36,7 @@ namespace basecross {
         Sprite::OnCreate();
         m_trans->SetPosition(m_pos.x, m_pos.y,m_pos.z);
         SetDrawActive(false);
-        SetLayer(99);
+        SetLayer(3);
 
         SetDrawLayer(m_layer);
     }

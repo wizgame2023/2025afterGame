@@ -135,6 +135,10 @@ namespace basecross{
 
 		// ======================================
 		
+		// 定数
+		const Vec3 m_normalScale = Vec3(1.0f, 1.0f, 1.0f);    // 通常のスケール
+		const Vec3 m_selectionScale = Vec3(1.3f, 1.3f, 1.0f); // 選択中のスケール
+
 		// ポーズメニューの状態
 		PauseMenuState m_pauseState;
 
@@ -195,6 +199,27 @@ namespace basecross{
 			return false;
 		}
 
+		// 選ばれている選択肢のスケールを変更
+		template<typename Se,typename Max>
+		void ScalingSelectedSprite(vector<shared_ptr<Sprite>>& spVec, const Se& crntSelect,const Max& selectMax)
+		{
+			for (int i = 0; i < static_cast<int>(selectMax); i++)
+			{
+				spVec[i]->SetScale(m_normalScale);
+			}
+			spVec[static_cast<int>(crntSelect)]->SetScale(m_selectionScale);
+		}
+
+		// 選択肢が変わった時の処理
+		template<typename T, typename EnumMax>
+		void HandleMenuSelection( vector<shared_ptr<Sprite>>& spVec, T& crntSelect, EnumMax max) {
+			if (UpdateSelection(crntSelect, max)) {
+				// 選択が変わった時だけスケーリングを更新
+				ScalingSelectedSprite(spVec, crntSelect, max);
+
+				// あとは音を鳴らすなどの処理を入れる
+			}
+		}
 		// ポーズが始まった瞬間の処理
 		void StartPause();
 

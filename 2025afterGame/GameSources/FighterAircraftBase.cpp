@@ -115,18 +115,47 @@ namespace basecross {
 		auto bulletParent = bullet->GetParentObj();
 		auto bulletParentlock = bulletParent.lock();
 
+		auto& scoreManager = ScoreManager::GetScoreManager();
+
 		if (bulletParentlock)
 		{
-			auto bulletParentFighter = dynamic_pointer_cast<FighterAircraftBase>(bulletParentlock);
+			auto bulletParentPlayer = dynamic_pointer_cast<Player>(bulletParentlock);
+			auto bulletParentEnemy = dynamic_pointer_cast<Enemy>(bulletParentlock);
 
-			// ÷“n‚·‚éƒXƒRƒA‚ÌŒvŽZ(Šî–{“I‚É‚Í10%÷“n‚·‚é)
-			float transferScore = m_scoreCurrent * magnification;
-			m_scoreCurrent -= transferScore;
-
-			if (bulletParentFighter)
+			if (bulletParentPlayer)
 			{
-				bulletParentFighter->AddScoreCurrent(transferScore);
+				float tansferScore = scoreManager->GetScore(L"Enemy1") * magnification;
+				scoreManager->SetScore(L"Enemy1", scoreManager->GetScore(L"Enemy1") - tansferScore);
+				scoreManager->SetPlScore(scoreManager->GetPlScore() + tansferScore);
 			}
+			else if (bulletParentEnemy)
+			{
+				float tansferScore = scoreManager->GetPlScore() * magnification;
+				scoreManager->SetPlScore(scoreManager->GetPlScore() - tansferScore);
+				scoreManager->SetScore(L"Enemy1", scoreManager->GetScore(L"Enemy1") + tansferScore);
+			}
+
+			//if (player)
+			//{
+			//	// ÷“n‚·‚éƒXƒRƒA‚ÌŒvŽZ(Šî–{“I‚É‚Í10%÷“n‚·‚é)
+			//	float transferScore = scoreManager->GetPlScore * magnification;
+			//	m_scoreCurrent -= transferScore;
+			//	bulletParentFighter->AddScoreCurrent(transferScore);
+
+			//	if (bulletParentFighter)
+			//	{
+			//		bulletParentFighter->AddScoreCurrent(transferScore);
+			//	}
+
+			//}
+			//// ÷“n‚·‚éƒXƒRƒA‚ÌŒvŽZ(Šî–{“I‚É‚Í10%÷“n‚·‚é)
+			//float transferScore = scoreManager->GetPlScore * magnification;
+			//m_scoreCurrent -= transferScore;
+
+			//if (bulletParentFighter)
+			//{
+			//	bulletParentFighter->AddScoreCurrent(transferScore);
+			//}
 		}
 	}
 
