@@ -88,7 +88,6 @@ namespace basecross {
 
 		void SetUVRect(const Vec2& topLeft, const Vec2& botRight);
 		void SetDigit(int digit);
-
 	};
 
 }
