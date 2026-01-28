@@ -85,7 +85,7 @@ namespace basecross {
 			SetGameEnd(true);
 		}
 
-		// カウントダウン処理
+		// ゲーム開始時のカウントダウン処理
 		if (m_countDown && !m_gameStartFlag)
 		{
 			CountDown(true);
@@ -171,6 +171,7 @@ namespace basecross {
 				m_countDown = false; // カウントダウンの使用状態を解除
 				m_countDownSEFlag = true; // SEも使用可能に
 				m_gameStartFlag = true;
+				m_countTimeGameStart = 0.0f; // 終わったら時間計測リセット
 				
 				// ポーズ解除
 				Pose(false);
@@ -328,7 +329,7 @@ namespace basecross {
 
 	void GameManager::SetTimeLimit(float limit)
 	{
-		m_timeLimit += limit;
+		m_timeLimit = limit;
 	}
 
 	float GameManager::GetTimeLimit()
@@ -451,10 +452,17 @@ namespace basecross {
 		return m_gameEnd;
 	}
 
+	// ゲーム終了時のゲームマネージャリセット処理
 	void GameManager::ResetGameManager()
 	{
 		SetGameEnd(false);
 		SetTimeLimit(180.0f);
+
+		m_countDown = false;
+		m_gameStartFlag = false;
+		m_countDownSEFlag = true;
+		m_gameStartPhase = GAMESTART_Start;
+		m_countTimeGameStart = 0.0f;
 	}
 }
 
