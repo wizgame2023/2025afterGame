@@ -370,10 +370,7 @@ namespace basecross {
 		{	
 			if (!m_createScoreObj)
 			{
-				for (int a = 0; a < 3; a++)
-				{
-					obj->CreateScoreObject();
-				}
+				obj->CreateScoreObject();
 				m_createScoreObj = true;
 			}
 
