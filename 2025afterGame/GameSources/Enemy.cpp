@@ -52,7 +52,7 @@ namespace basecross {
 
 		// コリジョン追加
 		auto ptrCol = AddComponent<CollisionObb>();
-		ptrCol->SetDrawActive(true);
+		ptrCol->SetDrawActive(false);
 		//ptrCol->SetAfterCollision(AfterCollision::None);
 
 		// ドロー処理
@@ -181,7 +181,7 @@ namespace basecross {
 			{
 				auto fighterPos = fighter->GetPos();
 				auto ptrDraw = fighter->GetComponent<SmBaseDraw>();
-				RayCast::DebugRay(Line(m_pos, m_pos + rayLength), Col4(1.0f, 0.5f, 1.0f, 1.0f), GetStage());
+				//RayCast::DebugRay(Line(m_pos, m_pos + rayLength), Col4(1.0f, 0.5f, 1.0f, 1.0f), GetStage());
 				ptrDraw->HitTestStaticMeshSegmentTriangles(m_pos, m_pos + rayLength, hitPos, triangle, triangleNumber);
 			}
 
