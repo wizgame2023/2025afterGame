@@ -54,6 +54,7 @@ namespace basecross {
 		auto ptrCol = AddComponent<CollisionObb>();
 		ptrCol->SetDrawActive(false);
 		//ptrCol->SetAfterCollision(AfterCollision::None);
+		auto ptrShadow = AddComponent<Shadowmap>();
 
 		// ドロー処理
 		m_draw = AddComponent<PNTBoneModelDraw>();
@@ -63,6 +64,9 @@ namespace basecross {
 		m_draw->SetDiffuse(m_color);
 		m_draw->SetEmissive(m_color);
 		SetAlphaActive(true);
+
+		ptrShadow->SetMeshResource(L"Sentouki");
+		ptrShadow->SetMeshToTransformMatrix(spanMat);
 
 		// アニメーション追加
 		m_draw->AddAnimation(L"PropellerMove", 0, 50, 60.0f);

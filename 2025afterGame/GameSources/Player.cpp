@@ -47,6 +47,7 @@ namespace basecross {
 
 		auto ptrTrans = GetComponent<Transform>();
 		ptrTrans->SetPosition(Vec3(0.0f, -14.0f, -1.0f));
+		auto ptrShadow = AddComponent<Shadowmap>();
 
 		m_draw = AddComponent<PNTBoneModelDraw>();
 		m_draw->SetMeshResource(L"Sentouki");
@@ -66,6 +67,8 @@ namespace basecross {
 
 		m_baseMeshMat = spanMat;
 		m_draw->SetMeshToTransformMatrix(spanMat);
+		ptrShadow->SetMeshResource(L"Sentouki");
+		ptrShadow->SetMeshToTransformMatrix(spanMat);
 
 		m_draw->AddAnimation(L"PropellerMove",  0, 50, 60.0f);
 		m_draw->AddAnimation(L"PropellerDown", 40, 20, 30.0f);
