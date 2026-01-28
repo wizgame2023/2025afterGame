@@ -140,9 +140,10 @@ namespace basecross {
 					auto differenceVec = scorePos - m_pos;
 					float differenceLength = differenceVec.length();
 
-					if (minLenght >= differenceLength)
+					if (minLenght >= abs(differenceLength))
 					{
 						m_trackingObj = scoreObjectCast;
+						minLenght = differenceLength;
 					}
 				}
 			}

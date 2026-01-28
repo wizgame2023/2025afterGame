@@ -70,7 +70,7 @@ namespace basecross
 	void UIManager::OnCreate()
 	{
 		CreateUI();
-		CreateGaugeUI();
+		// CreateGaugeUI();
 		CreateRankingUI();
 	}
 
@@ -289,6 +289,11 @@ namespace basecross
 	int UIManager::GetPlayerScore()
 	{
 		return m_playerScoreCurrent;
+	}
+
+	void UIManager::SetCreateUIFlag(bool flag)
+	{
+		m_createUIEnd = flag;
 	}
 }
 //end basecross
