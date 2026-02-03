@@ -223,9 +223,9 @@ namespace basecross {
 
 	void Sprite::SetDigit(int digit)
 	{
-		digit = clamp(digit, 0, 9);
+		digit = clamp(digit, 0, 13);
 
-		float piece = 1.0f / 10.0f;
+		float piece = 1.0f / 14.0f;
 		float u0 = piece * digit;
 		float u1 = piece * (digit + 1);
 

@@ -65,18 +65,12 @@ namespace basecross
 		return m_UIManager;
 	}
 
-
 	// 初期化処理
 	void UIManager::OnCreate()
 	{
 		CreateUI();
 		// CreateGaugeUI();
 		CreateRankingUI();
-	}
-
-	void UIManager::UIManagerCreate()
-	{
-		OnCreate();
 	}
 
 	// 更新
@@ -87,6 +81,7 @@ namespace basecross
 		auto stage = scene->GetActiveStage();
 		auto& gameManager = GameManager::GetGameManager();
 		auto limit  = gameManager->GetTimeLimit();
+		auto countDown = gameManager->GetGameStartCountDown();
 
 		GetPlayerHP();
 		GetEnemies();
@@ -108,6 +103,11 @@ namespace basecross
 
 			m_createUIEnd = true;
 		}
+
+		if (countDown == 2)
+		{
+			m_countNumber->OnDestory();
+		}
 	}
 
 	// 自分自身の破棄処理
@@ -124,7 +124,7 @@ namespace basecross
 		auto stage = scene->GetActiveStage();
 		auto& gameMana = GameManager::GetGameManager();
 
-		auto hpwaku = stage->AddGameObject<HpSprite>(L"HP_WAKU", Vec2(30.0f, 5.0f), Vec3(-600.0f, 375.0f, 0.0f));
+		auto hpwaku = stage->AddGameObject<HpSprite>(L"HP_WAKU", Vec2(30.0f, 5.8f), Vec3(-600.0f, 375.0f, 0.0f));
 		auto hp = stage->AddGameObject<HpSprite>(L"HP", Vec2(30.0f, 5.0f), Vec3(-600.0f, 375.0f, 0.0f));
 		hp->SetSpriteMove(true);
 
@@ -135,36 +135,51 @@ namespace basecross
 		//auto you = stage->AddGameObject<RankingUI>(Vec3(0, 0, 0), 1, true);
 		//you->SetLayer(4);
 
-		// 5:6
-		auto bullet = stage->AddGameObject<NumberSprite>(Vec2(50.0f,60.0f),Vec3(-550.0f, 330.0f, 0.0f));
-		bullet->SetMyType(NumberType::Bullet);
+		CreateSprite();
+		CreateNumberSprite();
 
-		auto maxBullet = stage->AddGameObject<Sprite>(L"RemainingRounds",Vec2(170.0f, 85.0f), Vec3(-480.0f, 330.0f, 0.0f));
+		auto pauseMenu = stage->AddGameObject<PauseMenu>();
+	}
 
-		auto colon = stage->AddGameObject<Sprite>(L"Colon", Vec2(20.0f, 50.0f), Vec3(500.0f, 370.0f, 0.0f));
+	void UIManager::CreateSprite()
+	{
+		auto& app = App::GetApp();
+		auto scene = app->GetScene<Scene>();
+		auto stage = scene->GetActiveStage();
+		auto& gameMana = GameManager::GetGameManager();
 
-		auto minutu = stage->AddGameObject<NumberSprite>(Vec2(50.0f, 50.0f), Vec3(450.0f, 370.0f, 0.0f));
-		minutu->SetMyType(NumberType::Minute);
+		//auto maxBullet = stage->AddGameObject<Sprite>(L"RemainingRounds", Vec2(170.0f, 85.0f), Vec3(-480.0f, 330.0f, 0.0f));
 
-		auto second = stage->AddGameObject<NumberSprite>(Vec2(50.0f, 50.0f), Vec3(600.0f, 370.0f, 0.0f));
-		second->SetMyType(NumberType::Second);
-		second->SetDigitCount(2);
+		m_clon = stage->AddGameObject<NumberSprite>(Vec2(20.0f, 60.0f), Vec3(500.0f, 370.0f, 0.0f));
+		m_clon->SetDigit(11);
 
 		auto crown = stage->AddGameObject<Sprite>(L"crown", Vec2(70.0f, 70.0f), Vec3(-600.0f, 205.0f, 0.0f));
 
-		//m_countNumber = stage->AddGameObject<NumberSprite>(Vec2(50.0f, 50.0f), Vec3(0.0f, 0.0f, 0.0f));
-		//m_countNumber->SetMyType(NumberType::Count);
+	}
 
-		auto pauseMenu = stage->AddGameObject<PauseMenu>();
-		//if(!gameMana->GetCountEnd())
-		//{
-		//	//stage->RemoveGameObject<NumberSprite>(count);
-		//	//App::GetApp()->GetScene<Scene>()->Get
-		//	//count->RemoveComponent<NumberSprite>();
-		//}
+	void UIManager::CreateNumberSprite()
+	{
+		auto& app = App::GetApp();
+		auto scene = app->GetScene<Scene>();
+		auto stage = scene->GetActiveStage();
+		auto& gameMana = GameManager::GetGameManager();
 
+		m_countNumber = stage->AddGameObject<NumberSprite>(Vec2(50.0f, 100.0f), Vec3(0.0f, 0.0f, 0.0f));
+		m_countNumber->SetDigitCount(1);
+		m_countNumber->SetMyType(NumberType::Count);
 
-		m_createUI = true;
+		auto minutu = stage->AddGameObject<NumberSprite>(Vec2(50.0f, 100.0f), Vec3(445.0f, 370.0f, 0.0f));
+		minutu->SetMyType(NumberType::Minute);
+
+		auto second = stage->AddGameObject<NumberSprite>(Vec2(50.0f, 100.0f), Vec3(600.0f, 370.0f, 0.0f));
+		second->SetMyType(NumberType::Second);
+		second->SetDigitCount(2);
+
+		// 5:6
+		auto bullet = stage->AddGameObject<NumberSprite>(Vec2(45.0f, 64.0f), Vec3(-415.0f, 325.0f, 0.0f));
+		bullet->SetMyType(NumberType::Bullet);	
+		bullet->SetDigitCount(2);
+
 	}
 
 	void UIManager::CreateGaugeUI()
@@ -185,15 +200,28 @@ namespace basecross
 		auto& app = App::GetApp();
 		auto scene = app->GetScene<Scene>();
 		auto stage = scene->GetActiveStage();
-		int total = 2;
+		int total = 8;
 
 		for (int i = 0; i < total; i++)
 		{
-			stage->AddGameObject<RankingUI>(
+			auto obj = stage->AddGameObject<RankingUI>(
 				Vec3(-450, 200 - i * 50, 0),
 				i + 1,
 				false
 			);
+			
+			shared_ptr<FighterAircraftBase> fightBase;
+
+			if (i == 0)
+			{
+				fightBase = stage->GetSharedGameObject<Player>(L"Player");
+			}
+			else
+			{
+				fightBase = stage->GetSharedGameObject<Enemy>(L"Enemy" + to_wstring(i));
+			}
+
+			obj->SetFightBase(fightBase);
 		}
 	}
 
