@@ -103,13 +103,13 @@ namespace basecross{
 		if (player)
 		{
 			auto plScore = scoreMana->GetPlScore();
-			scoreMana->SetPlScore(plScore + m_score);
+			//scoreMana->SetPlScore(plScore + m_score);
 		}
 
 		if (enemy)
 		{
 			auto enemyScore = scoreMana->GetPlScore();
-			scoreMana->SetScore(L"Enemy1", scoreMana->GetScore(L"Enemy1") + m_score);
+			//scoreMana->SetScore(L"Enemy1", scoreMana->GetScore(L"Enemy1") + m_score);
 		}
 
 	}
