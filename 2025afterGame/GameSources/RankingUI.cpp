@@ -76,11 +76,11 @@ namespace basecross{
 		{
 			const auto& id = scores[index].id;
 
-			if (id == L"Player")
+			if (id == 0)
 			{
 				m_nameSprite->SetTexture(L"ResultPlayer");
 			}
-			else if (id == L"Enemy1")
+			else if (id == 1)
 			{
 				m_nameSprite->SetTexture(L"ResultEnemy");
 			}
