@@ -51,13 +51,14 @@ namespace basecross {
 			auto& scrMana = ScoreManager::CreateScoreManager();
 			
 			scrMana->CreateHighScoreBinary();
-			scrMana->SetID(L"Player");
-			scrMana->SetID(L"Enemy1");
-			scrMana->SetID(L"Enemy2");
+			// player‚Í0ŒÅ’è‚¾‚¯‚ÇAˆê‰žéŒ¾
+			scrMana->SetID(0);
+			scrMana->SetID(1);
+			scrMana->SetID(2);
 
-			scrMana->SetPlScore(scrMana->GetPlScore() + 200);
-			scrMana->SetScore(L"Enemy1", scrMana->GetScore(L"Enemy1") + 400);
-			scrMana->SetScore(L"Enemy2", scrMana->GetScore(L"Enemy2") + 100);
+			scrMana->AddPlScore(50);
+			scrMana->AddScore(1, 150);
+			scrMana->AddScore(2, 300);
 
 			scrMana->SaveHighScoreBinary();
 
@@ -108,18 +109,20 @@ namespace basecross {
 			ptrMana->Start(L"ShotSE", 0, m_player->GetSEVolume());
 		}
 
+		scrMana->AddPlScore(1);
+
 		//scrMana->SetPlScore(scrMana->GetPlScore() + 1);
 		//DebugLog(L"\n\n\n\n\nPLScore : ", scrMana->GetPlScore());
 		//DebugLog(L"Enemy1Score : ", scrMana->GetScore(L"Enemy1"));
 		//DebugLog(L"fileScore : ", scrMana->LoadHighScoreBinary());
-		//auto SortedScores = scrMana->GetSortedScores();
-		//for (size_t i = 0; i < SortedScores.size(); i++)
-		//{
-		//	DebugLog(L"\nRank ", i + 1);
-		//	DebugLog(L" ID : ", SortedScores[i].id);
-		//	DebugLog(L" Score : ", SortedScores[i].crntScore);
-		//}
-		//FlushDebugLog();
+		auto SortedScores = scrMana->GetSortedScores();
+		for (size_t i = 0; i < SortedScores.size(); i++)
+		{
+			DebugLog(L"\nRank ", i + 1);
+			DebugLog(L" ID : ", SortedScores[i].id);
+			DebugLog(L" Score : ", SortedScores[i].crntScore);
+		}
+		FlushDebugLog();
 	}
 
 	// ==============================================================================
