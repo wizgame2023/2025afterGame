@@ -163,6 +163,10 @@ namespace basecross{
 
 		m_pauseState = PauseMenuState::False;
 
+
+		// ボタンの種類マップの初期化
+		InitButtonTypeMap();
+
 		// 最初は非表示にしておく
 		IsVisibleAllMenuSprites(false);
 	}
@@ -556,6 +560,8 @@ namespace basecross{
 			keySetter = [&](const wstring& k) { 
 				m_pauseData.AccelKey = k;
 				game->SetAccelKey(k);
+				auto& accelStringPos = m_pauseKeyConfigMenuSprites[1]->GetPosition();
+				SetShowAndPosButtons(k, accelStringPos + Vec3(200.0f, 0.0f, 0.0f));
 			};
 			break;
 		case PauseMenuState::BulletSetting:
@@ -645,6 +651,8 @@ namespace basecross{
 																	 m_pauseState == PauseMenuState::AccelSetting ||
 																	 m_pauseState == PauseMenuState::BulletSetting ||
 																	 m_pauseState == PauseMenuState::ViewBehindSetting));
+
+
 			}
 
 			// 大きさの初期化処理
@@ -720,5 +728,46 @@ namespace basecross{
 		}
 	}
 
+	// ==============================================================================
+
+	void PauseMenu::InitButtonTypeMap()
+	{
+		m_buttonTypeMap[L"A"]			= ButtonsType::A;
+		m_buttonTypeMap[L"B"]			= ButtonsType::B;
+		m_buttonTypeMap[L"X"]			= ButtonsType::X;
+		m_buttonTypeMap[L"Y"]			= ButtonsType::Y;
+		m_buttonTypeMap[L"LB"]			= ButtonsType::LB;
+		m_buttonTypeMap[L"RB"]			= ButtonsType::RB;
+		m_buttonTypeMap[L"LTrigger"]	= ButtonsType::LT;
+		m_buttonTypeMap[L"RTrigger"]	= ButtonsType::RT;
+		m_buttonTypeMap[L"Back"]		= ButtonsType::Back;
+		m_buttonTypeMap[L"Start"]		= ButtonsType::Start;
+		m_buttonTypeMap[L"LStick"]		= ButtonsType::LS;
+		m_buttonTypeMap[L"RStick"]		= ButtonsType::RS;
+		m_buttonTypeMap[L"DUp"]			= ButtonsType::Up;
+		m_buttonTypeMap[L"DRight"]		= ButtonsType::Right;
+		m_buttonTypeMap[L"DDown"]		= ButtonsType::Down;
+		m_buttonTypeMap[L"DLeft"]		= ButtonsType::Left;
+	}
+
+	// ==============================================================================
+
+	void PauseMenu::SetShowAndPosButtons(const wstring& buttonsName, const Vec3& setPos)
+	{
+		// ボタン種類を取得
+		auto it = m_buttonTypeMap.find(buttonsName);
+
+		// 見つかったら表示位置を設定して表示
+		if (it != m_buttonTypeMap.end())
+		{
+			ButtonsType type = it->second;
+			int index = static_cast<int>(type);
+			if (index >= 0 && index < m_pauseButtonsSprites.size())
+			{
+				m_pauseButtonsSprites[index]->SetPosition(setPos);
+				m_pauseButtonsSprites[index]->OnClear(false); // 表示
+			}
+		}
+	}
 }
 //end basecross
