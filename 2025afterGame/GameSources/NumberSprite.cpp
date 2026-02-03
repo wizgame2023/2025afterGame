@@ -90,70 +90,33 @@ namespace basecross {
     {
         m_number = number;
 
-        wstring str;
+        int n = max(0, number);
 
-        // m_digit が 1以上なら「ゼロ埋めして桁数固定」
-        if (m_digit > 0)
+        // 表示する桁数
+        int digitCount =
+            (m_digit > 0) ? m_digit :
+            max(1, (int)to_string(n).size());
+
+        // 数が違えば作り直す
+        if ((int)m_digits.size() != digitCount)
         {
-            int n = max(0, number);  // マイナスはとりあえず0扱い
-            str.clear();
-
-            // とりあえず 「m_digit 桁」ぶん 0埋めして作る（下位桁から）
-            for (int i = 0; i < m_digit; ++i)
+            for (auto& d : m_digits)
             {
-                int d = n % 10;
-                wchar_t ch = L'0' + d;
-                // 先頭に詰めていく
-                str.insert(str.begin(), ch);
-                n /= 10;
-            }
-
-            // もし number が m_digit より大きい桁数だった場合（例: m_digit=2 で number=123）
-            // 余った桁をさらに前に足す
-            while (n > 0)
-            {
-                int d = n % 10;
-                wchar_t ch = L'0' + d;
-                str.insert(str.begin(), ch);
-                n /= 10;
-            }
-        }
-        else
-        {
-            // そのまま文字列化
-            str = to_wstring(number);
-        }
-
-        float totalWidth = m_size.x * str.size();
-
-        // 桁数が変わったらスプライト作り直し
-        if (m_digits.size() != str.size())
-        {
-            // 既存の桁を削除
-            for (auto& obj : m_digits)
-            {
-                obj->MyDestroy();
+                if (d) d->MyDestroy();
             }
             m_digits.clear();
-            m_digits.reserve(str.size());
+            m_digits.reserve(digitCount);
 
-            // 新しい桁Spriteを生成
-            for (int i = 0; i < str.size(); i++) 
+            float totalWidth = m_size.x * digitCount;
+
+            for (int i = 0; i < digitCount; ++i)
             {
                 float x = m_pos.x + (i * m_size.x) - totalWidth + m_size.x;
-
-                x = round(x);
-
-                Vec3 digitPos = Vec3(
-                    x,
-                    m_pos.y,
-                    m_pos.z
-                );
 
                 auto digitSprite = GetStage()->AddGameObject<Sprite>(
                     m_textureName,
                     m_size,
-                    digitPos,
+                    Vec3(round(x), m_pos.y, m_pos.z),
                     m_rot,
                     m_color,
                     m_layer
@@ -162,12 +125,13 @@ namespace basecross {
             }
         }
 
-        // UVで数字部分を切り出す
-        for (int i = 0; i < str.size(); i++)
+        // 下位桁から数字を入れる
+        for (int i = digitCount - 1; i >= 0; --i)
         {
-            int value = str[i] - L'0';
+            int digit = n % 10;
+            n /= 10;
 
-            m_digits[i]->SetDigit(value);
+            m_digits[i]->SetDigit(digit); 
         }
     }
 
@@ -183,6 +147,17 @@ namespace basecross {
 
     void NumberSprite::OnDestory()
     {
+        // 子の桁Spriteを全て破棄
+        for (auto& digit : m_digits)
+        {
+            if (digit)
+            {
+                digit->MyDestroy();
+            }
+        }
+        m_digits.clear();
+
+        // 自分自身を破棄
         GetStage()->RemoveGameObject<NumberSprite>(GetThis<NumberSprite>());
     }
 

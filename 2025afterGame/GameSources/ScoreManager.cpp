@@ -233,6 +233,7 @@ namespace basecross {
 		m_fighterBases.push_back(fighterAircraftBase);
 		int countId = m_fighterBases.size() - 1;
 		fighterAircraftBase->SetId(countId);
+		SetID(countId);
 	}
 }
 //end basecross
