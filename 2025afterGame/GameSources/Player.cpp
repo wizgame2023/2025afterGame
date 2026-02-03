@@ -140,6 +140,14 @@ namespace basecross {
 
 	}
 
+	void Player::OnCollisionExit(shared_ptr<GameObject>& obj)
+	{
+		if (obj->FindTag(L"CameraObsDiffuse"))
+		{
+			m_isGrounded = false;
+		}
+	}
+
 	void Player::PlayerMove() 
 	{
 		auto& app = App::GetApp();
