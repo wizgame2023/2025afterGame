@@ -20,7 +20,7 @@
 #include "Plane.h"
 #include "UIManager.h"
 #include "StageWall.h"
-#include "TestCsv.h"
+#include "StageObject.h"
 #include "DashRing.h"
 #include "ScoreObjectManager.h"
 #include "StageCreateManager.h"

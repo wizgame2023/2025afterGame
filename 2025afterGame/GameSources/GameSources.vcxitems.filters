@@ -154,7 +154,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)StateEnemy.cpp">
       <Filter>Script</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)TestCsv.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)StageObject.cpp">
       <Filter>Script</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)TitleStage.cpp">
@@ -339,7 +339,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)StateEnemy.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)TestCsv.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)StageObject.h">
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)TitleStage.h">

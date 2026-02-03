@@ -7,7 +7,7 @@
 #include "Project.h"
 
 namespace basecross {
-	TestCsv::TestCsv(const shared_ptr<Stage>& StagePtr,
+	StageObject::StageObject(const shared_ptr<Stage>& StagePtr,
 		const Vec3& Pos,
 		const Vec3& Rot,
 		const Vec3& Siz,
@@ -29,11 +29,11 @@ namespace basecross {
 		}
 	}
 
-	TestCsv::~TestCsv(){
+	StageObject::~StageObject(){
 
 	}
 
-	void TestCsv::OnCreate()
+	void StageObject::OnCreate()
 	{
 		auto PtrTrans = GetComponent<Transform>();
 		PtrTrans->SetScale(m_siz);
