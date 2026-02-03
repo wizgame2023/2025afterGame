@@ -25,6 +25,8 @@ namespace basecross {
 	//		登録されていないIDに対してスコアを設定・取得しようとしても反映されません。					//
 	// ================================================================================================ //
 
+	class FighterAircraftBase;
+
 	class ScoreManager
 	{
 	public:
@@ -55,6 +57,9 @@ namespace basecross {
 
 		// ステージ
 		shared_ptr<Stage> m_stage;
+
+		// 戦闘機を管理するための配列
+		vector<weak_ptr<FighterAircraftBase>> m_fighterBases;
 
 		// 定数
 
@@ -125,6 +130,9 @@ namespace basecross {
 
 		// スコアバイナリ読み込み
 		int LoadHighScoreBinary();
+
+		// 戦闘機配列に対し戦闘機の中身を追加する
+		void PushBackFighterBase(const shared_ptr<FighterAircraftBase>& fighterAircraftBase);
 	};
 
 }
