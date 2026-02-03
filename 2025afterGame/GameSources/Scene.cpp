@@ -123,9 +123,6 @@ namespace basecross{
 		auto hpwaku = uiPlayerPath + L"HP_waku.png";
 		app->RegisterTexture(L"HP_WAKU", hpwaku);
     
-		auto colon = uiPlayerPath + L"Colon.png";
-		app->RegisterTexture(L"Colon", colon);
-
 		auto resultPlayer = uiPath + L"Result_Player.png";
 		app->RegisterTexture(L"ResultPlayer", resultPlayer);
     
@@ -146,9 +143,6 @@ namespace basecross{
 
 		startTex = uiTitlePath + L"TitleBackGround.png";
 		App::GetApp()->RegisterTexture(L"TitleBackGround_TX", startTex);
-
-		auto remainingRounds = uiPlayerPath + L"RemainingRounds.png";
-		app->RegisterTexture(L"RemainingRounds", remainingRounds);
 
 		auto ScoreLow = uiScorePath + L"bear.png";
 		App::GetApp()->RegisterTexture(L"Bear", ScoreLow);
