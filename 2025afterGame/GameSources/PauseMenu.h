@@ -69,22 +69,12 @@ namespace basecross{
 		// ボタンのスプライトの種類
 		enum class ButtonsType : int
 		{
-			A,
-			B,
-			X,
-			Y,
-			LB,
-			RB,
-			LT,
-			RT,
-			Back,
-			Start,
-			LS,
-			RS,
-			Up,
-			Right,
-			Down,
-			Left
+			A, B, X, Y,
+			LB,	RB,	LT,	RT,
+			Back, Start,
+			LS,	RS,
+			Up,	Right, Down, Left,
+			Max
 		};
 
 		// ==============================================================================
@@ -115,15 +105,25 @@ namespace basecross{
 		// メンバ変数
 		// ==============================================================================
 
+		// 定数群================================
+
+		const Vec3 m_normalScale = Vec3(1.0f, 1.0f, 1.0f);    // 通常のスケール
+		const Vec3 m_selectionScale = Vec3(1.3f, 1.3f, 1.0f); // 選択中のスケール
+		static constexpr int ButtonsTypeCount = 16;           // ボタンの種類数
+
+		// ======================================
+		
 		// ポーズメニュースプライト群============
 
 		vector<shared_ptr<Sprite>> m_pauseMainMenuSprites;			// メインメニューのスプライトの数
 		vector<shared_ptr<Sprite>> m_pauseSettingMenuSprites;		// 設定メニューのスプライトの数
 		vector<shared_ptr<Sprite>> m_pauseVolumeMenuSprites;		// 音量メニューのスプライトの数
 		vector<shared_ptr<Sprite>> m_pauseKeyConfigMenuSprites;		// キーコンフィグメニューのスプライトの数
-		vector<shared_ptr<Sprite>> m_pauseButtonsSprites;			// ボタンのスプライトの数
 		shared_ptr<Sprite> m_pauseBackGroundSprite;					// ポーズメニューの背景スプライト
-
+		// ボタンのスプライトの数
+		array<shared_ptr<Sprite>, ButtonsTypeCount> m_pauseButtonsSprites;
+		// [自分用メモ]arrayは<型, 要素数>の形で宣言(この場合はshared_ptr<Sprite>型の16個の要素配列)
+		
 		// ======================================
 
 		// 現在の選択肢群========================
@@ -135,10 +135,6 @@ namespace basecross{
 
 		// ======================================
 		
-		// 定数
-		const Vec3 m_normalScale = Vec3(1.0f, 1.0f, 1.0f);    // 通常のスケール
-		const Vec3 m_selectionScale = Vec3(1.3f, 1.3f, 1.0f); // 選択中のスケール
-
 		// ポーズメニューの状態
 		PauseMenuState m_pauseState;
 

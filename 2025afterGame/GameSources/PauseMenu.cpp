@@ -138,15 +138,27 @@ namespace basecross{
 		spInfo.size = Vec2(80.0f, 80.0f);
 		constexpr float buttonsUV = 1.0f / 4.0f;
 
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < static_cast<int>(ButtonsType::Max); i++)
 		{
-			for (int j = 0; j < 4; j++)
-			{
-				spInfo.pos = Vec3(300.0f + (i * 100), 300.0f + (j * -100), 0.0f);
-				spInfo.leftTopUV = Vec2(buttonsUV * i, buttonsUV * j);
-				spInfo.rightBotUV = Vec2(buttonsUV * (i + 1), buttonsUV * (j + 1));
-				PushBackPauseMenuSprite(m_pauseButtonsSprites, spInfo);
-			}
+			int rows = i / 4;	// s : 0, 1, 2, 3, 0, 1, 2, 3 ...
+			int cols = i % 4;	// —ñ : 0, 0, 0, 0, 1, 1, 1, 1 ...
+
+
+			spInfo.leftTopUV = Vec2(buttonsUV * cols, buttonsUV * rows);
+			spInfo.rightBotUV = Vec2(buttonsUV * (cols + 1), buttonsUV * (rows + 1));
+			spInfo.pos = Vec3(0.0f, 0.0f, 0.0f); // ‰¼’u‚«
+			
+			// array‚ÉŠi”[
+			auto buttonSp = m_stage->AddGameObject<Sprite>(
+				spInfo.textureName,
+				spInfo.size,
+				spInfo.pos,
+				spInfo.layer
+			);
+			buttonSp->SetUVRect(spInfo.leftTopUV, spInfo.rightBotUV);
+			buttonSp->OnClear(true);
+			
+			m_pauseButtonsSprites[i] = buttonSp;
 		}
 
 		m_pauseState = PauseMenuState::False;
@@ -690,7 +702,11 @@ namespace basecross{
 		IsVisibleMenuSprites(m_pauseSettingMenuSprites, flag);
 		IsVisibleMenuSprites(m_pauseVolumeMenuSprites, flag);
 		IsVisibleMenuSprites(m_pauseKeyConfigMenuSprites, flag);
-		IsVisibleMenuSprites(m_pauseButtonsSprites, flag);
+
+		// array —p‚Ìˆ—
+		//for (auto& sp : m_pauseButtonsSprites) {
+		//	if (sp) sp->OnClear(!flag);
+		//}
 	}
 
 	// ==============================================================================
