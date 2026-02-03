@@ -283,7 +283,7 @@ namespace basecross {
 		{
 			throw BaseException
 			{
-				L"配列外の物を指定しようとしています。\",
+				L"配列外の物を指定しようとしています。\n",
 				L"if(number > m_checkPoints.size() - 1 || number < 0)",
 				L"GameManager::GetCheckPoint(int number)"
 			};
