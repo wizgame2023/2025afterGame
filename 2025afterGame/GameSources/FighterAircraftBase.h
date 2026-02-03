@@ -21,6 +21,10 @@ namespace basecross{
 		// 名前
 		wstring m_name;
 
+		// id保存用
+		int m_id;
+		wstring m_idWstring; // intでid保存が難しいとき用の物
+
 		// パラメーター
 		int m_hpCurrent = 0;			// 耐久値
 		int m_hpMax = 0;				// 最大耐久値
@@ -125,6 +129,10 @@ namespace basecross{
 		void AddScoreCurrent(int addScore);
 		// 現在HPのセッタ
 		void SetHPCurrent(float hp);
+		// idのゲッタ
+		int GetId();
+		// idのセッタ
+		void SetId(int id);
 
 	};
 }

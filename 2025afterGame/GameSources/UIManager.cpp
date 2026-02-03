@@ -1,7 +1,7 @@
 /*!
 @file UIManager.cpp
-@brief UIŠÇ—‚ÌÀ‘Ì
-’S“–F‹g“c ’q‹M
+@brief UIç®¡ç†ã®å®Ÿä½“
+æ‹…å½“ï¼šå‰ç”° æ™ºè²´
 */
 
 #include "stdafx.h"
@@ -36,17 +36,17 @@ namespace basecross
 
 	unique_ptr<UIManager, UIManager::UIManagerDeleter> UIManager::m_UIManager;
 
-	// ƒVƒ“ƒOƒ‹ƒgƒ“‚É‚æ‚é¶¬
+	// ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã«ã‚ˆã‚‹ç”Ÿæˆ
 	unique_ptr<UIManager, UIManager::UIManagerDeleter>& UIManager::CreateUIManager()
 	{
 		try
 		{
 			if (m_UIManager.get() == 0)
 			{
-				// ©•ª‚ğì¬
+				// è‡ªåˆ†ã‚’ä½œæˆ
 				m_UIManager.reset(new UIManager());
 
-				// ‰Šú‰»
+				// åˆæœŸåŒ–
 				m_UIManager->OnCreate();
 			}
 			return m_UIManager;
@@ -59,18 +59,18 @@ namespace basecross
 		return m_UIManager;
 	}
 
-	// ©•ª‚ğ“n‚·
+	// è‡ªåˆ†ã‚’æ¸¡ã™
 	unique_ptr<UIManager, UIManager::UIManagerDeleter>& UIManager::GetUIManager()
 	{
 		return m_UIManager;
 	}
 
 
-	// ‰Šú‰»ˆ—
+	// åˆæœŸåŒ–å‡¦ç†
 	void UIManager::OnCreate()
 	{
 		CreateUI();
-		CreateGaugeUI();
+		// CreateGaugeUI();
 		CreateRankingUI();
 	}
 
@@ -79,7 +79,7 @@ namespace basecross
 		OnCreate();
 	}
 
-	// XV
+	// æ›´æ–°
 	void UIManager::OnUpdate()
 	{
 		auto& app = App::GetApp();
@@ -94,34 +94,26 @@ namespace basecross
 		UpdateTime(limit);
 
 		GetPlayerScore();
-		
+
 		if (gameManager->GetGameEnd() && !m_createUIEnd)
 		{
 			m_score = stage->AddGameObject<NumberSprite>(Vec2(150.0f, 150.0f), Vec3(0.0f, 0.0f, 0.0f));
 			m_score->SetMyType(NumberType::Score);
-			auto finalscore = stage->AddGameObject<Sprite>(L"Finalscore", Vec2(800.0f, 200.0f), Vec3(0.0f, 200.0f, 0.0f));
-			finalscore->SetDrawLayer(2);
+			m_score->SetLayer(999);
+			auto backGraund = stage->AddGameObject<Sprite>(L"PauseMenuBackGround_TX", Vec2(800.0f, 700.0f), Vec3(0.0f, 0.0f, 0.0f));
+			backGraund->SetDrawLayer(3);
+			backGraund->SetColor(Col4(1.0f, 1.0f, 1.0f, 1.0f));
+			auto finalscore = stage->AddGameObject<Sprite>(L"Finalscore", Vec2(600.0f, 200.0f), Vec3(0.0f, 200.0f, 0.0f));
+			finalscore->SetDrawLayer(4);
 
 			m_createUIEnd = true;
 		}
-
-		auto countDown = gameManager->GetGameStartCountDown();
-
-		//if (!m_deleteUI && countDown == 5)
-		//{
-		//	m_deleteUI = true;
-
-		//	if (m_deleteUI)
-		//	{
-		//		stage->RemoveGameObject<NumberSprite>(m_countNumber);
-		//	}
-		//}
 	}
 
-	// ©•ª©g‚Ì”jŠüˆ—
+	// è‡ªåˆ†è‡ªèº«ã®ç ´æ£„å‡¦ç†
 	void UIManager::DeleteUIManager()
 	{
-		// ©•ª©g‚Ì”jŠü
+		// è‡ªåˆ†è‡ªèº«ã®ç ´æ£„
 		m_UIManager.reset();
 	}
 
@@ -133,12 +125,18 @@ namespace basecross
 		auto& gameMana = GameManager::GetGameManager();
 
 		auto hp = stage->AddGameObject<HpSprite>(L"HP", Vec2(30.0f, 5.0f), Vec3(-600.0f, 375.0f, 0.0f));
-				
+		//auto finalscore = stage->AddGameObject<Sprite>(L"Finalscore", Vec2(600.0f, 200.0f), Vec3(0.0f, 325.0f, 0.0f));
+		//finalscore->SetDrawLayer(2);
+
+		//// é †ä½
+		//auto you = stage->AddGameObject<RankingUI>(Vec3(0, 0, 0), 1, true);
+		//you->SetLayer(4);
+
 		// 5:6
-		auto bullet = stage->AddGameObject<NumberSprite>(Vec2(50.0f, 60.0f),Vec3(-550.0f, 330.0f, 0.0f));
+		auto bullet = stage->AddGameObject<NumberSprite>(Vec2(50.0f,60.0f),Vec3(-550.0f, 330.0f, 0.0f));
 		bullet->SetMyType(NumberType::Bullet);
 
-		auto maxBullet = stage->AddGameObject<Sprite>(L"RemainingRounds",Vec2(150.0f, 75.0f), Vec3(-480.0f, 330.0f, 0.0f));
+		auto maxBullet = stage->AddGameObject<Sprite>(L"RemainingRounds",Vec2(170.0f, 85.0f), Vec3(-480.0f, 330.0f, 0.0f));
 
 		auto colon = stage->AddGameObject<Sprite>(L"Colon", Vec2(20.0f, 50.0f), Vec3(500.0f, 370.0f, 0.0f));
 
@@ -154,6 +152,7 @@ namespace basecross
 		//m_countNumber = stage->AddGameObject<NumberSprite>(Vec2(50.0f, 50.0f), Vec3(0.0f, 0.0f, 0.0f));
 		//m_countNumber->SetMyType(NumberType::Count);
 
+		auto pauseMenu = stage->AddGameObject<PauseMenu>();
 		//if(!gameMana->GetCountEnd())
 		//{
 		//	//stage->RemoveGameObject<NumberSprite>(count);
@@ -187,14 +186,12 @@ namespace basecross
 
 		for (int i = 0; i < total; i++)
 		{
-
 			stage->AddGameObject<RankingUI>(
 				Vec3(-450, 200 - i * 50, 0),
-				i + 1
+				i + 1,
+				false
 			);
 		}
-
-
 	}
 
 	void UIManager::GetPlayerHP()
@@ -292,6 +289,11 @@ namespace basecross
 	int UIManager::GetPlayerScore()
 	{
 		return m_playerScoreCurrent;
+	}
+
+	void UIManager::SetCreateUIFlag(bool flag)
+	{
+		m_createUIEnd = flag;
 	}
 }
 //end basecross

@@ -52,8 +52,9 @@ namespace basecross {
 
 		// コリジョン追加
 		auto ptrCol = AddComponent<CollisionObb>();
-		ptrCol->SetDrawActive(true);
+		ptrCol->SetDrawActive(false);
 		//ptrCol->SetAfterCollision(AfterCollision::None);
+		auto ptrShadow = AddComponent<Shadowmap>();
 
 		// ドロー処理
 		m_draw = AddComponent<PNTBoneModelDraw>();
@@ -63,6 +64,17 @@ namespace basecross {
 		m_draw->SetDiffuse(m_color);
 		m_draw->SetEmissive(m_color);
 		SetAlphaActive(true);
+
+		ptrShadow->SetMeshResource(L"Sentouki");
+		ptrShadow->SetMeshToTransformMatrix(spanMat);
+
+		// アニメーション追加
+		m_draw->AddAnimation(L"PropellerMove", 0, 50, 60.0f);
+		m_draw->AddAnimation(L"PropellerDown", 40, 20, 30.0f);
+		m_draw->AddAnimation(L"PropellerStop", 0, 1, 0.0f);
+
+		m_draw->ChangeCurrentAnimation(L"PropellerStop");
+
 
 		// 敵タグ追加
 		AddTag(L"Enemy");
@@ -100,6 +112,7 @@ namespace basecross {
 		//RayCast::InitRay(1);
 
 
+
 		FighterAircraftBase::OnUpdate();
 
 		auto& gameManager = GameManager::GetGameManager();
@@ -127,9 +140,10 @@ namespace basecross {
 					auto differenceVec = scorePos - m_pos;
 					float differenceLength = differenceVec.length();
 
-					if (minLenght >= differenceLength)
+					if (minLenght >= abs(differenceLength))
 					{
 						m_trackingObj = scoreObjectCast;
+						minLenght = differenceLength;
 					}
 				}
 			}
@@ -181,7 +195,7 @@ namespace basecross {
 			{
 				auto fighterPos = fighter->GetPos();
 				auto ptrDraw = fighter->GetComponent<SmBaseDraw>();
-				RayCast::DebugRay(Line(m_pos, m_pos + rayLength), Col4(1.0f, 0.5f, 1.0f, 1.0f), GetStage());
+				//RayCast::DebugRay(Line(m_pos, m_pos + rayLength), Col4(1.0f, 0.5f, 1.0f, 1.0f), GetStage());
 				ptrDraw->HitTestStaticMeshSegmentTriangles(m_pos, m_pos + rayLength, hitPos, triangle, triangleNumber);
 			}
 
@@ -242,6 +256,9 @@ namespace basecross {
 		// カラー適応
 		m_draw->SetEmissive(m_color);
 		m_draw->SetDiffuse(m_color);
+
+		//アニメーション再生
+		//GetComponent<PNTBoneModelDraw>()->UpdateAnimation(m_delta);
 
 
 		////デバック用

@@ -115,8 +115,8 @@ namespace basecross {
 			AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, 25.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
 			AddGameObject<Enemy>(Vec3(0.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
 			AddGameObject<Enemy>(Vec3(50.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
-			AddGameObject<Enemy>(Vec3(25.0f, 0.0f, -20.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
-			AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			//AddGameObject<Enemy>(Vec3(25.0f, 0.0f, -20.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			//AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
 			//AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
 			//auto enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
 
@@ -141,16 +141,24 @@ namespace basecross {
 
 	void GameStage::OnUpdate()
 	{
-		UIManager::GetUIManager()->OnUpdate();
+		auto& uiManager = UIManager::GetUIManager();
+		uiManager->OnUpdate();
+
 		auto& obj = StageCreateManager::GetStageCreateManager();
 		auto& gameMana = GameManager::GetGameManager();
 		auto& input = InputManager::GetInputManager();
-		m_bgm->m_SourceVoice->SetVolume(GameManager::GetGameManager()->GetBGMVolume());
+		auto& scoreManager = ScoreManager::GetScoreManager();
 
+		m_bgm->m_SourceVoice->SetVolume(GameManager::GetGameManager()->GetBGMVolume());
 		if (gameMana->GetGameEnd() == true)
 		{
-			if (input->GetButton(L"A"))
+			if (input->GetDownButton(L"A"))
 			{
+				scoreManager->SetScore(L"Enemy1", 0);
+				scoreManager->SetPlScore(0);
+				uiManager->SetCreateUIFlag(false);
+
+				gameMana->ResetGameManager();
 				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
 				return;
 			}
@@ -161,6 +169,10 @@ namespace basecross {
 	void GameStage::OnDestroy()
 	{
 		m_audioManager->Stop(m_bgm);
+
+		// ゲームマネージャ取得
+		auto& gameManager = GameManager::GetGameManager();
+		gameManager->ResetGameManager();
 	}
 
 }

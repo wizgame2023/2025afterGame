@@ -115,18 +115,47 @@ namespace basecross {
 		auto bulletParent = bullet->GetParentObj();
 		auto bulletParentlock = bulletParent.lock();
 
+		auto& scoreManager = ScoreManager::GetScoreManager();
+
 		if (bulletParentlock)
 		{
-			auto bulletParentFighter = dynamic_pointer_cast<FighterAircraftBase>(bulletParentlock);
+			auto bulletParentPlayer = dynamic_pointer_cast<Player>(bulletParentlock);
+			auto bulletParentEnemy = dynamic_pointer_cast<Enemy>(bulletParentlock);
 
-			// 譲渡するスコアの計算(基本的には10%譲渡する)
-			float transferScore = m_scoreCurrent * magnification;
-			m_scoreCurrent -= transferScore;
-
-			if (bulletParentFighter)
+			if (bulletParentPlayer)
 			{
-				bulletParentFighter->AddScoreCurrent(transferScore);
+				float tansferScore = scoreManager->GetScore(L"Enemy1") * magnification;
+				scoreManager->SetScore(L"Enemy1", scoreManager->GetScore(L"Enemy1") - tansferScore);
+				scoreManager->SetPlScore(scoreManager->GetPlScore() + tansferScore);
 			}
+			else if (bulletParentEnemy)
+			{
+				float tansferScore = scoreManager->GetPlScore() * magnification;
+				scoreManager->SetPlScore(scoreManager->GetPlScore() - tansferScore);
+				scoreManager->SetScore(L"Enemy1", scoreManager->GetScore(L"Enemy1") + tansferScore);
+			}
+
+			//if (player)
+			//{
+			//	// 譲渡するスコアの計算(基本的には10%譲渡する)
+			//	float transferScore = scoreManager->GetPlScore * magnification;
+			//	m_scoreCurrent -= transferScore;
+			//	bulletParentFighter->AddScoreCurrent(transferScore);
+
+			//	if (bulletParentFighter)
+			//	{
+			//		bulletParentFighter->AddScoreCurrent(transferScore);
+			//	}
+
+			//}
+			//// 譲渡するスコアの計算(基本的には10%譲渡する)
+			//float transferScore = scoreManager->GetPlScore * magnification;
+			//m_scoreCurrent -= transferScore;
+
+			//if (bulletParentFighter)
+			//{
+			//	bulletParentFighter->AddScoreCurrent(transferScore);
+			//}
 		}
 	}
 
@@ -272,6 +301,18 @@ namespace basecross {
 		{
 			m_hpCurrent = m_hpMax;
 		}
+	}
+
+	// idのゲッタ
+	int FighterAircraftBase::GetId()
+	{
+		return m_id;
+	}
+
+	// idのセッタ
+	void FighterAircraftBase::SetId(int id)
+	{
+		m_id = id;
 	}
 
 }

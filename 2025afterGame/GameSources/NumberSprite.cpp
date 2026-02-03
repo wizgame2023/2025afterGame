@@ -36,7 +36,7 @@ namespace basecross {
         Sprite::OnCreate();
         m_trans->SetPosition(m_pos.x, m_pos.y,m_pos.z);
         SetDrawActive(false);
-        SetLayer(99);
+        SetLayer(3);
 
         SetDrawLayer(m_layer);
     }
@@ -70,7 +70,7 @@ namespace basecross {
             m_value = uiManager->GetBulletNumMax();
             break;
         case NumberType::Score:
-            m_value = uiManager->GetPlayerScore();
+            m_value = scoreManager->GetPlScore();
 			break;
         case NumberType::Count:
             m_value = 4 - countDown;

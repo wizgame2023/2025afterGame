@@ -226,5 +226,13 @@ namespace basecross {
 
 		return loadedScore; 
 	}
+
+	// 戦闘機配列に対し戦闘機の中身を追加する
+	void ScoreManager::PushBackFighterBase(const shared_ptr<FighterAircraftBase>& fighterAircraftBase)
+	{
+		m_fighterBases.push_back(fighterAircraftBase);
+		int countId = m_fighterBases.size() - 1;
+		fighterAircraftBase->SetId(countId);
+	}
 }
 //end basecross
