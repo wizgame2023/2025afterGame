@@ -303,6 +303,18 @@ namespace basecross {
 		}
 	}
 
+	// idのゲッタ
+	int FighterAircraftBase::GetId()
+	{
+		return m_id;
+	}
+
+	// idのセッタ
+	void FighterAircraftBase::SetId(int id)
+	{
+		m_id = id;
+	}
+
 }
 //end basecross
 
