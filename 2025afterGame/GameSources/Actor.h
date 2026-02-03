@@ -40,6 +40,9 @@ namespace basecross {
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
 
+		// 回転処理
+		Quat SetRotate(Vec3 directionVec);
+
 		// 判定用の子オブジェクトを生成し、Actorに紐付ける
 		virtual void CreateChildObjects()
 		{
