@@ -43,10 +43,10 @@ namespace basecross{
 		Vec3 scorePos = m_pos + Vec3(230,  0, 0);
 
 		// 左：順位
-		// 5:6
+		// 1:2
 		if (!m_isPlayerOnly)
 		{
-			m_rankUI = stage->AddGameObject<NumberSprite>(Vec2(35, 42), rankPos);
+			m_rankUI = stage->AddGameObject<NumberSprite>(Vec2(35, 70), rankPos);
 			m_rankUI->SetRankingNumberCount(m_rankingNumber);
 			m_rankUI->SetMyType(NumberType::RankingNumber);
 		}
@@ -61,57 +61,45 @@ namespace basecross{
 		);
 
 		// 右：スコア
-		m_scoreUI = stage->AddGameObject<NumberSprite>(Vec2(35,42), scorePos);
-
-		int a = 0;
+		m_scoreUI = stage->AddGameObject<NumberSprite>(Vec2(30,60), scorePos);
 	}
 
 	void RankingUI::OnUpdate()
 	{
 		auto& scoreManager = ScoreManager::GetScoreManager();
+		// ソート化されたスコアの情報
 		auto scores = scoreManager->GetSortedScores();
+		// Playerのスコア
 		auto plScore = scoreManager->GetPlScore();
+		// ランキング順位
+		int index = m_rankingNumber - 1;
+		// 同じ要素から名前とスコアを取る
+		const auto& info = scores[index];
 
+		// 名前
+		// 0番目は必ずPlayer
+		if (info.id == 0)
+		{
+			m_nameSprite->SetTexture(L"ResultPlayer");
+		}
+		else
+		{
+			m_nameSprite->SetTexture(L"ResultEnemy");
+		}
+
+		// スコア
+		m_scoreUI->SetNumber(info.crntScore);
+		
+		// リザルト生成
 		if (m_isPlayerOnly)
 		{
 			m_scoreUI->SetDrawLayer(m_layer + 1);
 			m_nameSprite->SetDrawLayer(m_layer);
 
 			m_nameSprite->SetTexture(L"ResultPlayer");
-			m_scoreUI->SetNumber(scoreManager->GetPlScore());
+			m_scoreUI->SetNumber(plScore);
 			return;
 		}
-
-		int index = m_rankingNumber - 1;
-
-		if (index < scores.size())
-		{
-			const auto& id = scores[index].id;
-
-			if (id == 0)
-			{
-				m_nameSprite->SetTexture(L"ResultPlayer");
-			}
-			else if (id == 1)
-			{
-				m_nameSprite->SetTexture(L"ResultEnemy");
-			}
-			//else if (id == L"Enemy2")
-			//{
-			//	m_nameSprite->SetTexture(L"ResultEnemy");
-			//}
-			//else if (id == L"Enemy3")
-			//{
-			//	m_nameSprite->SetTexture(L"ResultEnemy");
-			//}
-
-			m_scoreUI->SetNumber(scores[index].crntScore);
-		}
-	/*	else
-		{
-			m_nameSprite->SetTexture(L"Enemy");
-			m_scoreUI->SetNumber(0);
-		}*/
 	}
 
 	void RankingUI::SetLayer(int layer)
