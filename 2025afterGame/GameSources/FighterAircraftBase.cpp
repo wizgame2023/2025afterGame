@@ -49,6 +49,9 @@ namespace basecross {
 		Actor::OnCreate();
 
 		auto stage = GetStage();
+		auto& scoreManager = ScoreManager::GetScoreManager();
+
+		scoreManager->PushBackFighterBase(GetThis<FighterAircraftBase>());
 
 		// バリア装備
 		m_barrier = stage->AddGameObject<Barrier>(GetThis<FighterAircraftBase>());
@@ -116,23 +119,26 @@ namespace basecross {
 		auto bulletParentlock = bulletParent.lock();
 
 		auto& scoreManager = ScoreManager::GetScoreManager();
+		auto plScore = scoreManager->GetPlScore();
 
 		if (bulletParentlock)
 		{
 			auto bulletParentPlayer = dynamic_pointer_cast<Player>(bulletParentlock);
 			auto bulletParentEnemy = dynamic_pointer_cast<Enemy>(bulletParentlock);
 
+			// 譲渡するスコアの計算(基本的には10%譲渡する)
 			if (bulletParentPlayer)
 			{
-				float tansferScore = scoreManager->GetScore(L"Enemy1") * magnification;
-				scoreManager->SetScore(L"Enemy1", scoreManager->GetScore(L"Enemy1") - tansferScore);
-				scoreManager->SetPlScore(scoreManager->GetPlScore() + tansferScore);
+				float tansferScore = scoreManager->GetScore(GetId()) * magnification;
+				scoreManager->AddScore(GetId(), scoreManager->GetScore(GetId()) - tansferScore);
+				scoreManager->SetPlScore(plScore + tansferScore);
 			}
+			// 譲渡するスコアの計算(基本的には10%譲渡する)
 			else if (bulletParentEnemy)
 			{
-				float tansferScore = scoreManager->GetPlScore() * magnification;
-				scoreManager->SetPlScore(scoreManager->GetPlScore() - tansferScore);
-				scoreManager->SetScore(L"Enemy1", scoreManager->GetScore(L"Enemy1") + tansferScore);
+				float tansferScore = plScore * magnification;
+				scoreManager->SetPlScore(plScore - tansferScore);
+				scoreManager->AddScore(GetId(), scoreManager->GetScore(GetId()) + tansferScore);
 			}
 
 			//if (player)
@@ -148,7 +154,6 @@ namespace basecross {
 			//	}
 
 			//}
-			//// 譲渡するスコアの計算(基本的には10%譲渡する)
 			//float transferScore = scoreManager->GetPlScore * magnification;
 			//m_scoreCurrent -= transferScore;
 

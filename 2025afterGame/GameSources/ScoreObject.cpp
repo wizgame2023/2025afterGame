@@ -108,8 +108,9 @@ namespace basecross{
 
 		if (enemy)
 		{
+			auto enemyID = enemy->GetId();
 			auto enemyScore = scoreMana->GetPlScore();
-			scoreMana->SetScore(L"Enemy1", scoreMana->GetScore(L"Enemy1") + m_score);
+			scoreMana->AddScore(enemyID, m_score);
 		}
 
 	}

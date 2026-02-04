@@ -20,7 +20,7 @@ namespace basecross {
 	// 関数
 	// ==============================================================================
 
-	void ScoreManager::SetID(const wstring& id)
+	void ScoreManager::SetID(const int id)
 	{
 		if (FindScoreInfo(id) == nullptr)
 		{
@@ -32,7 +32,7 @@ namespace basecross {
 		}
 	}
 
-	ScoreManager::ScoreInfo* ScoreManager::FindScoreInfo(const wstring& id)
+	ScoreManager::ScoreInfo* ScoreManager::FindScoreInfo(const int id)
 	{
 		// IDからスコア情報を探す
 		for (auto& entity : m_scores)
@@ -47,7 +47,7 @@ namespace basecross {
 		return nullptr;
 	}
 
-	const ScoreManager::ScoreInfo* ScoreManager::FindScoreInfo(const wstring& id) const
+	const ScoreManager::ScoreInfo* ScoreManager::FindScoreInfo(const int id) const
 	{
 		// IDからスコア情報を探す
 		for (const auto& entity : m_scores)
@@ -77,7 +77,7 @@ namespace basecross {
 		return sortedScores;
 	}
 
-	void ScoreManager::SetScore(const wstring& id, int score)
+	void ScoreManager::SetScore(const int id, int score)
 	{
 		// IDからスコア情報を探す
 		if (auto* entity = FindScoreInfo(id))
@@ -86,7 +86,26 @@ namespace basecross {
 		}
 	}
 
-	int ScoreManager::GetScore(const wstring& id) const
+	void ScoreManager::AddScore(const int id, int addScore)
+	{
+		// IDからスコア情報を探す
+		if (auto* entity = FindScoreInfo(id))
+		{
+			entity->crntScore += addScore;
+		}
+	}
+
+	void ScoreManager::SubScore(const int id, int subScore)
+	{
+		// IDからスコア情報を探す
+		if (auto* entity = FindScoreInfo(id))
+		{
+			min(0, entity->crntScore - subScore);
+			entity->crntScore -= subScore;
+		}
+	}
+
+	int ScoreManager::GetScore(const int id) const
 	{
 		// IDからスコア情報を探す
 		if (auto* entity = FindScoreInfo(id))
@@ -96,7 +115,7 @@ namespace basecross {
 		return 0;
 	}
 
-	void ScoreManager::ResetScore(const wstring& id)
+	void ScoreManager::ResetScore(const int id)
 	{
 		// IDからスコア情報を探す
 		if (auto* entity = FindScoreInfo(id))
@@ -214,6 +233,7 @@ namespace basecross {
 		m_fighterBases.push_back(fighterAircraftBase);
 		int countId = m_fighterBases.size() - 1;
 		fighterAircraftBase->SetId(countId);
+		SetID(countId);
 	}
 }
 //end basecross
