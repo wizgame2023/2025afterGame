@@ -568,15 +568,24 @@ namespace basecross{
 			keySetter = [&](const wstring& k) {
 				m_pauseData.BulletKey = k;
 				game->SetBulletKey(k);
+				auto& bulletStringPos = m_pauseKeyConfigMenuSprites[2]->GetPosition();
+				SetShowAndPosButtons(k, bulletStringPos + Vec3(200.0f, 0.0f, 0.0f));
 			};
 			break;
 		case PauseMenuState::ViewBehindSetting:
 			keySetter = [&](const wstring& k) {
 				m_pauseData.ViewBehindKey = k;
 				game->SetViewBehindKey(k);
+				auto& viewBehindStringPos = m_pauseKeyConfigMenuSprites[3]->GetPosition();
+				SetShowAndPosButtons(k, viewBehindStringPos + Vec3(200.0f, 0.0f, 0.0f));
 			};
 			break;
 		}
+
+		// ボタンが押されたその瞬間に、今の設定アイコンを全部一回消す
+		SetHideButtons(m_pauseData.AccelKey);
+		SetHideButtons(m_pauseData.BulletKey);
+		SetHideButtons(m_pauseData.ViewBehindKey);
 
 		// 重複チェック
 		bool isDuplicate = false;
@@ -588,10 +597,23 @@ namespace basecross{
 		if(isDuplicate)
 		{
 			// 重複があれば音を鳴らすなどの処理
+			
+			// 重複して設定は変えられないが、消してしまったアイコンを再表示する
+			auto& currentPos = m_pauseKeyConfigMenuSprites[static_cast<int>(m_crntKeyConfigSelect)]->GetPosition();
+
+			// 現在のステートに合わせて、元のキーを再表示
+			if (m_pauseState == PauseMenuState::AccelSetting)
+				SetShowAndPosButtons(m_pauseData.AccelKey, currentPos + Vec3(200.0f, 0.0f, 0.0f));
+			else if (m_pauseState == PauseMenuState::BulletSetting)
+				SetShowAndPosButtons(m_pauseData.BulletKey, currentPos + Vec3(200.0f, 0.0f, 0.0f));
+			else if (m_pauseState == PauseMenuState::ViewBehindSetting)
+				SetShowAndPosButtons(m_pauseData.ViewBehindKey, currentPos + Vec3(200.0f, 0.0f, 0.0f));
 			return;
 		}
 		else
 		{
+
+
 			// 重複がなければ設定
 			keySetter(inputKey);
 			// SavePauseData();
@@ -652,7 +674,24 @@ namespace basecross{
 																	 m_pauseState == PauseMenuState::BulletSetting ||
 																	 m_pauseState == PauseMenuState::ViewBehindSetting));
 
-
+				// ボタン関係
+				if (m_pauseState == PauseMenuState::KeyConfigMenu ||
+					m_pauseState == PauseMenuState::AccelSetting ||
+					m_pauseState == PauseMenuState::BulletSetting ||
+					m_pauseState == PauseMenuState::ViewBehindSetting)
+				{
+					// 各キー設定のボタンを表示
+					SetShowAndPosButtons(m_pauseData.AccelKey, m_pauseKeyConfigMenuSprites[1]->GetPosition() + Vec3(200.0f, 0.0f, 0.0f));
+					SetShowAndPosButtons(m_pauseData.BulletKey, m_pauseKeyConfigMenuSprites[2]->GetPosition() + Vec3(200.0f, 0.0f, 0.0f));
+					SetShowAndPosButtons(m_pauseData.ViewBehindKey, m_pauseKeyConfigMenuSprites[3]->GetPosition() + Vec3(200.0f, 0.0f, 0.0f));
+				}
+				else
+				{
+					// 非表示
+					SetHideButtons(m_pauseData.AccelKey);
+					SetHideButtons(m_pauseData.BulletKey);
+					SetHideButtons(m_pauseData.ViewBehindKey);
+				}
 			}
 
 			// 大きさの初期化処理
@@ -710,22 +749,6 @@ namespace basecross{
 		IsVisibleMenuSprites(m_pauseSettingMenuSprites, flag);
 		IsVisibleMenuSprites(m_pauseVolumeMenuSprites, flag);
 		IsVisibleMenuSprites(m_pauseKeyConfigMenuSprites, flag);
-
-		// array 用の処理
-		//for (auto& sp : m_pauseButtonsSprites) {
-		//	if (sp) sp->OnClear(!flag);
-		//}
-	}
-
-	// ==============================================================================
-
-	void PauseMenu::IsVisibleMenuSprites(const vector<shared_ptr<Sprite>>& spVec, const bool flag)
-	{
-		// それぞれのスプライトに対して透明化処理を行う
-		for (const auto& sp : spVec)
-		{
-			sp->OnClear(!flag);
-		}
 	}
 
 	// ==============================================================================
@@ -736,8 +759,8 @@ namespace basecross{
 		m_buttonTypeMap[L"B"]			= ButtonsType::B;
 		m_buttonTypeMap[L"X"]			= ButtonsType::X;
 		m_buttonTypeMap[L"Y"]			= ButtonsType::Y;
-		m_buttonTypeMap[L"LB"]			= ButtonsType::LB;
-		m_buttonTypeMap[L"RB"]			= ButtonsType::RB;
+		m_buttonTypeMap[L"L"]			= ButtonsType::LB;
+		m_buttonTypeMap[L"R"]			= ButtonsType::RB;
 		m_buttonTypeMap[L"LTrigger"]	= ButtonsType::LT;
 		m_buttonTypeMap[L"RTrigger"]	= ButtonsType::RT;
 		m_buttonTypeMap[L"Back"]		= ButtonsType::Back;
@@ -766,6 +789,24 @@ namespace basecross{
 			{
 				m_pauseButtonsSprites[index]->SetPosition(setPos);
 				m_pauseButtonsSprites[index]->OnClear(false); // 表示
+			}
+		}
+	}
+
+	// ==============================================================================
+
+	void PauseMenu::SetHideButtons(const wstring& buttonsName)
+	{
+		// ボタン種類を取得
+		auto it = m_buttonTypeMap.find(buttonsName);
+		// 見つかったら非表示
+		if (it != m_buttonTypeMap.end())
+		{
+			ButtonsType type = it->second;
+			int index = static_cast<int>(type);
+			if (index >= 0 && index < m_pauseButtonsSprites.size())
+			{
+				m_pauseButtonsSprites[index]->OnClear(true); // 非表示
 			}
 		}
 	}

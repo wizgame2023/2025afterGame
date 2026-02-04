@@ -167,6 +167,7 @@ namespace basecross{
 
 		// ボタンの可視管理
 		void SetShowAndPosButtons(const wstring& buttonsName, const Vec3& setPos);
+		void SetHideButtons(const wstring& buttonsName);
 
 		// ポーズが始まった瞬間の処理
 		void StartPause();
@@ -199,9 +200,6 @@ namespace basecross{
 		// 全メニューのスプライトを表示するか
 		void IsVisibleAllMenuSprites(const bool flag); 
 
-		// メニュー別でスプライトを表示するか
-		void IsVisibleMenuSprites(const vector<shared_ptr<Sprite>>& spVec, const bool flag);
-
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
 
@@ -213,6 +211,17 @@ namespace basecross{
 		// テンプレート関数
 		// ==============================================================================
 		
+		// メニュー別でスプライトを表示するか
+		template<typename T>
+		void IsVisibleMenuSprites(const T& spVec, const bool flag)
+		{
+			// それぞれのスプライトに対して透明化処理を行う
+			for (const auto& sp : spVec)
+			{
+				sp->OnClear(!flag);
+			}
+		}
+
 	private:
 		// 選択肢が変わったかどうか
 		template<typename T>
