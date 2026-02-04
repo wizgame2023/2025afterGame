@@ -202,8 +202,8 @@ namespace basecross{
 		UpdatePauseMenu();
 
 
-		DebugLogs();
-		FlushDebugLog();
+		//DebugLogs();
+		//FlushDebugLog();
 	}
 
 	// =============================================================================================
@@ -218,64 +218,38 @@ namespace basecross{
 		{
 			switch (m_crntMainSelect)
 			{
-			case PauseMainMenuSelect::Resume:
-				DebugLog(L" Current Select: Resume ", L"");
-				break;
-			case PauseMainMenuSelect::Restart:
-				DebugLog(L" Current Select: Restart ", L"");
-				break;
-			case PauseMainMenuSelect::Setting:
-				DebugLog(L" Current Select: Setting ", L"");
-				break;
-			case PauseMainMenuSelect::Exit:
-				DebugLog(L" Current Select: Exit ", L"");
-				break;
-
+			case PauseMainMenuSelect::Resume:  DebugLog(L" Current Select: Resume ", L"");  break;
+			case PauseMainMenuSelect::Restart: DebugLog(L" Current Select: Restart ", L""); break;
+			case PauseMainMenuSelect::Setting: DebugLog(L" Current Select: Setting ", L""); break;
+			case PauseMainMenuSelect::Exit:    DebugLog(L" Current Select: Exit ", L"");    break;
 			}
 		}
 		else if (m_pauseState == PauseMenuState::SettingMenu)
 		{
 			switch (m_crntSettingSelect)
 			{
-			case PauseSettingMenuSelect::Volume:
-				DebugLog(L" Current Select: Volume ", L"");
-				break;
-			case PauseSettingMenuSelect::KeyConfig:
-				DebugLog(L" Current Select: KeyConfig ", L"");
-				break;
+			case PauseSettingMenuSelect::Volume:    DebugLog(L" Current Select: Volume ", L"");    break;
+			case PauseSettingMenuSelect::KeyConfig: DebugLog(L" Current Select: KeyConfig ", L""); break;
 			}
 		}
 		else if (m_pauseState == PauseMenuState::VolumeMenu)
 		{
 			switch (m_crntVolumeSelect)
 			{
-			case PauseVolumeMenuSelect::BGMVolume:
-				DebugLog(L" Current Select: BGM ", L"");
-				break;
-			case PauseVolumeMenuSelect::SEVolume:
-				DebugLog(L" Current Select: SE ", L"");
-				break;
+			case PauseVolumeMenuSelect::BGMVolume: DebugLog(L" Current Select: BGM ", L""); break;
+			case PauseVolumeMenuSelect::SEVolume:  DebugLog(L" Current Select: SE ", L"");  break;
 			}
 		}
 		else if (m_pauseState == PauseMenuState::KeyConfigMenu)
 		{
 			switch (m_crntKeyConfigSelect)
 			{
-			case PauseKeyConfigMenuSelect::UpDownSwap:
-				DebugLog(L" Current Select: UpDownSwap ", L"");
-				break;
-			case PauseKeyConfigMenuSelect::Accel:
-				DebugLog(L" Current Select: Accel ", L"");
-				break;
-			case PauseKeyConfigMenuSelect::Bullet:
-				DebugLog(L" Current Select: Bullet ", L"");
-				break;
-			case PauseKeyConfigMenuSelect::ViewBehind:
-				DebugLog(L" Current Select: ViewBehind ", L"");
-				break;
+			case PauseKeyConfigMenuSelect::UpDownSwap: DebugLog(L" Current Select: UpDownSwap ", L""); break;
+			case PauseKeyConfigMenuSelect::Accel:      DebugLog(L" Current Select: Accel ", L"");      break;
+			case PauseKeyConfigMenuSelect::Bullet:     DebugLog(L" Current Select: Bullet ", L"");     break;
+			case PauseKeyConfigMenuSelect::ViewBehind: DebugLog(L" Current Select: ViewBehind ", L""); break;
 			}
 		}
-		
 		auto& game = GameManager::CreateGameManager();
 		float BGMVolume = game->GetBGMVolume();
 		auto& input = InputManager::GetInputManager();
@@ -568,15 +542,24 @@ namespace basecross{
 			keySetter = [&](const wstring& k) {
 				m_pauseData.BulletKey = k;
 				game->SetBulletKey(k);
+				auto& bulletStringPos = m_pauseKeyConfigMenuSprites[2]->GetPosition();
+				SetShowAndPosButtons(k, bulletStringPos + Vec3(200.0f, 0.0f, 0.0f));
 			};
 			break;
 		case PauseMenuState::ViewBehindSetting:
 			keySetter = [&](const wstring& k) {
 				m_pauseData.ViewBehindKey = k;
 				game->SetViewBehindKey(k);
+				auto& viewBehindStringPos = m_pauseKeyConfigMenuSprites[3]->GetPosition();
+				SetShowAndPosButtons(k, viewBehindStringPos + Vec3(200.0f, 0.0f, 0.0f));
 			};
 			break;
 		}
+
+		// ボタンが押されたその瞬間に、今の設定アイコンを全部一回消す
+		SetHideButtons(m_pauseData.AccelKey);
+		SetHideButtons(m_pauseData.BulletKey);
+		SetHideButtons(m_pauseData.ViewBehindKey);
 
 		// 重複チェック
 		bool isDuplicate = false;
@@ -588,10 +571,23 @@ namespace basecross{
 		if(isDuplicate)
 		{
 			// 重複があれば音を鳴らすなどの処理
+			
+			// 重複して設定は変えられないが、消してしまったアイコンを再表示する
+			auto& currentPos = m_pauseKeyConfigMenuSprites[static_cast<int>(m_crntKeyConfigSelect)]->GetPosition();
+
+			// 現在のステートに合わせて、元のキーを再表示
+			if (m_pauseState == PauseMenuState::AccelSetting)
+				SetShowAndPosButtons(m_pauseData.AccelKey, currentPos + Vec3(200.0f, 0.0f, 0.0f));
+			else if (m_pauseState == PauseMenuState::BulletSetting)
+				SetShowAndPosButtons(m_pauseData.BulletKey, currentPos + Vec3(200.0f, 0.0f, 0.0f));
+			else if (m_pauseState == PauseMenuState::ViewBehindSetting)
+				SetShowAndPosButtons(m_pauseData.ViewBehindKey, currentPos + Vec3(200.0f, 0.0f, 0.0f));
 			return;
 		}
 		else
 		{
+
+
 			// 重複がなければ設定
 			keySetter(inputKey);
 			// SavePauseData();
@@ -652,24 +648,33 @@ namespace basecross{
 																	 m_pauseState == PauseMenuState::BulletSetting ||
 																	 m_pauseState == PauseMenuState::ViewBehindSetting));
 
-
+				// ボタン関係
+				if (m_pauseState == PauseMenuState::KeyConfigMenu ||
+					m_pauseState == PauseMenuState::AccelSetting ||
+					m_pauseState == PauseMenuState::BulletSetting ||
+					m_pauseState == PauseMenuState::ViewBehindSetting)
+				{
+					// 各キー設定のボタンを表示
+					SetShowAndPosButtons(m_pauseData.AccelKey, m_pauseKeyConfigMenuSprites[1]->GetPosition() + Vec3(200.0f, 0.0f, 0.0f));
+					SetShowAndPosButtons(m_pauseData.BulletKey, m_pauseKeyConfigMenuSprites[2]->GetPosition() + Vec3(200.0f, 0.0f, 0.0f));
+					SetShowAndPosButtons(m_pauseData.ViewBehindKey, m_pauseKeyConfigMenuSprites[3]->GetPosition() + Vec3(200.0f, 0.0f, 0.0f));
+				}
+				else
+				{
+					// 非表示
+					SetHideButtons(m_pauseData.AccelKey);
+					SetHideButtons(m_pauseData.BulletKey);
+					SetHideButtons(m_pauseData.ViewBehindKey);
+				}
 			}
 
 			// 大きさの初期化処理
 			switch (m_pauseState)
 			{
-			case PauseMenuState::MainMenu:
-				ScalingSelectedSprite(m_pauseMainMenuSprites, m_crntMainSelect, PauseMainMenuSelect::Max);
-				break;
-			case PauseMenuState::SettingMenu:
-				ScalingSelectedSprite(m_pauseSettingMenuSprites, m_crntSettingSelect, PauseSettingMenuSelect::Max);
-				break;
-			case PauseMenuState::VolumeMenu:
-				ScalingSelectedSprite(m_pauseVolumeMenuSprites, m_crntVolumeSelect, PauseVolumeMenuSelect::Max);
-				break;
-			case PauseMenuState::KeyConfigMenu:
-				ScalingSelectedSprite(m_pauseKeyConfigMenuSprites, m_crntKeyConfigSelect, PauseKeyConfigMenuSelect::Max);
-				break;
+			case PauseMenuState::MainMenu:		ScalingSelectedSprite(m_pauseMainMenuSprites, m_crntMainSelect, PauseMainMenuSelect::Max); break;
+			case PauseMenuState::SettingMenu:	ScalingSelectedSprite(m_pauseSettingMenuSprites, m_crntSettingSelect, PauseSettingMenuSelect::Max); break;
+			case PauseMenuState::VolumeMenu:	ScalingSelectedSprite(m_pauseVolumeMenuSprites, m_crntVolumeSelect, PauseVolumeMenuSelect::Max); break;
+			case PauseMenuState::KeyConfigMenu: ScalingSelectedSprite(m_pauseKeyConfigMenuSprites, m_crntKeyConfigSelect, PauseKeyConfigMenuSelect::Max); break;
 			}
 		}
 
@@ -680,7 +685,8 @@ namespace basecross{
 
 	void PauseMenu::StartPause()
 	{
-		SetPauseFlag(true);
+		auto& game = GameManager::GetGameManager();
+		game->Pose(true);
 		m_crntMainSelect = PauseMainMenuSelect::Resume;
 		m_pauseState = PauseMenuState::MainMenu;
 	}
@@ -710,22 +716,12 @@ namespace basecross{
 		IsVisibleMenuSprites(m_pauseSettingMenuSprites, flag);
 		IsVisibleMenuSprites(m_pauseVolumeMenuSprites, flag);
 		IsVisibleMenuSprites(m_pauseKeyConfigMenuSprites, flag);
+		
+		// ボタン群
+		SetHideButtons(m_pauseData.AccelKey);
+		SetHideButtons(m_pauseData.BulletKey);
+		SetHideButtons(m_pauseData.ViewBehindKey);
 
-		// array 用の処理
-		//for (auto& sp : m_pauseButtonsSprites) {
-		//	if (sp) sp->OnClear(!flag);
-		//}
-	}
-
-	// ==============================================================================
-
-	void PauseMenu::IsVisibleMenuSprites(const vector<shared_ptr<Sprite>>& spVec, const bool flag)
-	{
-		// それぞれのスプライトに対して透明化処理を行う
-		for (const auto& sp : spVec)
-		{
-			sp->OnClear(!flag);
-		}
 	}
 
 	// ==============================================================================
@@ -736,8 +732,8 @@ namespace basecross{
 		m_buttonTypeMap[L"B"]			= ButtonsType::B;
 		m_buttonTypeMap[L"X"]			= ButtonsType::X;
 		m_buttonTypeMap[L"Y"]			= ButtonsType::Y;
-		m_buttonTypeMap[L"LB"]			= ButtonsType::LB;
-		m_buttonTypeMap[L"RB"]			= ButtonsType::RB;
+		m_buttonTypeMap[L"L"]			= ButtonsType::LB;
+		m_buttonTypeMap[L"R"]			= ButtonsType::RB;
 		m_buttonTypeMap[L"LTrigger"]	= ButtonsType::LT;
 		m_buttonTypeMap[L"RTrigger"]	= ButtonsType::RT;
 		m_buttonTypeMap[L"Back"]		= ButtonsType::Back;
@@ -766,6 +762,24 @@ namespace basecross{
 			{
 				m_pauseButtonsSprites[index]->SetPosition(setPos);
 				m_pauseButtonsSprites[index]->OnClear(false); // 表示
+			}
+		}
+	}
+
+	// ==============================================================================
+
+	void PauseMenu::SetHideButtons(const wstring& buttonsName)
+	{
+		// ボタン種類を取得
+		auto it = m_buttonTypeMap.find(buttonsName);
+		// 見つかったら非表示
+		if (it != m_buttonTypeMap.end())
+		{
+			ButtonsType type = it->second;
+			int index = static_cast<int>(type);
+			if (index >= 0 && index < m_pauseButtonsSprites.size())
+			{
+				m_pauseButtonsSprites[index]->OnClear(true); // 非表示
 			}
 		}
 	}

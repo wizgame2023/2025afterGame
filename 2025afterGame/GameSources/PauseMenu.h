@@ -120,6 +120,7 @@ namespace basecross{
 		vector<shared_ptr<Sprite>> m_pauseVolumeMenuSprites;		// 音量メニューのスプライトの数
 		vector<shared_ptr<Sprite>> m_pauseKeyConfigMenuSprites;		// キーコンフィグメニューのスプライトの数
 		shared_ptr<Sprite> m_pauseBackGroundSprite;					// ポーズメニューの背景スプライト
+
 		// ボタンのスプライトの数
 		array<shared_ptr<Sprite>, ButtonsTypeCount> m_pauseButtonsSprites;
 		// [自分用メモ]arrayは<型, 要素数>の形で宣言(この場合はshared_ptr<Sprite>型の16個の要素配列)
@@ -167,6 +168,7 @@ namespace basecross{
 
 		// ボタンの可視管理
 		void SetShowAndPosButtons(const wstring& buttonsName, const Vec3& setPos);
+		void SetHideButtons(const wstring& buttonsName);
 
 		// ポーズが始まった瞬間の処理
 		void StartPause();
@@ -199,9 +201,6 @@ namespace basecross{
 		// 全メニューのスプライトを表示するか
 		void IsVisibleAllMenuSprites(const bool flag); 
 
-		// メニュー別でスプライトを表示するか
-		void IsVisibleMenuSprites(const vector<shared_ptr<Sprite>>& spVec, const bool flag);
-
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
 
@@ -213,6 +212,17 @@ namespace basecross{
 		// テンプレート関数
 		// ==============================================================================
 		
+		// メニュー別でスプライトを表示するか
+		template<typename T>
+		void IsVisibleMenuSprites(const T& spVec, const bool flag)
+		{
+			// それぞれのスプライトに対して透明化処理を行う
+			for (const auto& sp : spVec)
+			{
+				sp->OnClear(!flag);
+			}
+		}
+
 	private:
 		// 選択肢が変わったかどうか
 		template<typename T>
