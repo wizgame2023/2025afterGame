@@ -136,20 +136,6 @@ namespace basecross {
 				DownTransferScore(bullet, 0.1f);
 			}
 		}
-
-		if (obj->FindTag(L"CameraObsDiffuse"))
-		{
-			m_isGrounded = true;
-		}
-
-	}
-
-	void Player::OnCollisionExit(shared_ptr<GameObject>& obj)
-	{
-		if (obj->FindTag(L"CameraObsDiffuse"))
-		{
-			m_isGrounded = false;
-		}
 	}
 
 	void Player::PlayerMove() 
@@ -513,7 +499,6 @@ namespace basecross {
 
 		if (isFlyInput)
 		{
-			m_isGrounded = false;
 			// A押下中は完全停止
 			verticalVelocity = 0.0f;
 			fallTimer = 0.0f;

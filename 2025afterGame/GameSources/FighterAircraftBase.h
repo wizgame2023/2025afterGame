@@ -7,6 +7,7 @@
 #pragma once
 #include "stdafx.h"
 #include "Actor.h"
+#include "PlayerGrv.h"
 
 namespace basecross{
 	class Barrier;
@@ -59,6 +60,9 @@ namespace basecross{
 		//float m_timeCheckPointDifferece = 0.0f;	  // 自分が通ったチェックポイントのタイムと前の機体のタイムの差
 		//Vec3 m_nextCheckPointPos = Vec3(0.0f);	  // 次のチェックポイントの位置
 		//Vec3 m_currentCheckPointPos = Vec3(0.0f);	  // 次のチェックポイントの位置
+
+		shared_ptr<PlayerGrv> m_playerGrv;
+
 	public:
 		FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& ptrStage);
 		FighterAircraftBase(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 rot, Vec3 scale, const shared_ptr<CheckPoint>& startCheckPoint, Col4 color = Col4(1.0f));
@@ -126,6 +130,13 @@ namespace basecross{
 		// 現在HPのセッタ
 		void SetHPCurrent(float hp);
 
+		virtual void CreateChildObjects()
+		{
+			auto stage = GetStage();
+
+			m_playerGrv = stage->AddGameObject<PlayerGrv>();
+			m_playerGrv->GetComponent<Transform>()->SetParent(dynamic_pointer_cast<GameObject>(GetThis<Actor>()));
+		}
 	};
 }
 //end basecross

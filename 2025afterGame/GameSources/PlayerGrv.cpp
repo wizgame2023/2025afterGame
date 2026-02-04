@@ -36,7 +36,7 @@ namespace basecross{
 		m_collision->SetMakedRadius(m_defaultRadius);
 		GetComponent<Transform>()->SetPosition(m_bindPos);
 
-		m_collision->SetDrawActive(true);
+		m_collision->SetDrawActive(false);
 	}
 
 	void PlayerGrv::OnUpdate()
