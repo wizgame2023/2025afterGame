@@ -749,6 +749,12 @@ namespace basecross{
 		IsVisibleMenuSprites(m_pauseSettingMenuSprites, flag);
 		IsVisibleMenuSprites(m_pauseVolumeMenuSprites, flag);
 		IsVisibleMenuSprites(m_pauseKeyConfigMenuSprites, flag);
+		
+		// ƒ{ƒ^ƒ“ŒQ
+		SetHideButtons(m_pauseData.AccelKey);
+		SetHideButtons(m_pauseData.BulletKey);
+		SetHideButtons(m_pauseData.ViewBehindKey);
+
 	}
 
 	// ==============================================================================
