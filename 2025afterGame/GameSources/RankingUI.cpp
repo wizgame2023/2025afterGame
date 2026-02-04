@@ -39,15 +39,15 @@ namespace basecross{
 		auto stage = scene->GetActiveStage();
 
 		Vec3 rankPos =  m_pos + Vec3(-80,  0, 0);
-		Vec3 namePos =  m_pos + Vec3( 30,-10, 0);
-		Vec3 scorePos = m_pos + Vec3(230,  0, 0);
+		Vec3 namePos =  m_pos + Vec3( 30,  0, 0);
+		Vec3 scorePos = m_pos + Vec3(180,  0, 0);
 
 		// 左：順位
 		// 1:2
 		if (!m_isPlayerOnly)
 		{
 			m_rankUI = stage->AddGameObject<NumberSprite>(Vec2(35, 70), rankPos);
-			m_rankUI->SetRankingNumberCount(m_rankingNumber);
+			m_rankUI->AddRankingNumberCount(m_rankingNumber);
 			m_rankUI->SetMyType(NumberType::RankingNumber);
 		}
 
@@ -87,9 +87,9 @@ namespace basecross{
 			m_nameSprite->SetTexture(L"ResultEnemy");
 		}
 
-		// スコア
+		// スコアの表示
 		m_scoreUI->SetNumber(info.crntScore);
-		
+
 		// リザルト生成
 		if (m_isPlayerOnly)
 		{
@@ -106,5 +106,6 @@ namespace basecross{
 	{
 		m_layer = layer;
 	}
+
 }
 //end basecross
