@@ -11,6 +11,7 @@ namespace basecross
 	class RankingUI : public MyGameObject
 	{
 	private:
+		weak_ptr<FighterAircraftBase> m_fightBase;
 		shared_ptr<Transform> m_trans;
 		Vec3 m_pos;
 		int m_rankingNumber;   // Ž©•ª‚Í‰½ˆÊ‚©
@@ -41,6 +42,12 @@ namespace basecross
 		void OnUpdate() override;
 
 		void SetLayer(int layer);
+
+		void SetFightBase(const shared_ptr<FighterAircraftBase>& fightBase)
+		{
+			m_fightBase = fightBase;
+		}
+
 	};
 
 }

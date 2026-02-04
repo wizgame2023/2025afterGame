@@ -12,6 +12,7 @@ namespace basecross
 	class Enemy;
 	class BillBoardGauge;
 	class NumberSprite;
+	class Sprite;
 	class UIManager
 	{
 	private:
@@ -25,6 +26,7 @@ namespace basecross
 		vector<shared_ptr<Enemy>> m_enemies;
 		vector<shared_ptr<BillBoardGauge>> m_enemyGauges;
 		shared_ptr<NumberSprite> m_countNumber;
+		shared_ptr<Sprite>m_clon;
 		bool m_createUI;
 		bool m_initialized;
 		bool m_createRankingflag;
@@ -64,12 +66,14 @@ namespace basecross
 		virtual void OnCreate();
 		virtual void OnUpdate();
 
-		void UIManagerCreate();
+		// void UIManagerCreate();
 
 		// 一つだけ生成した物
 		void CreateUI();
 		// 複数生成するもの
 		void CreateGaugeUI();
+		void CreateSprite();
+		void CreateNumberSprite();
 		// ランキング
 		void CreateRankingUI();
 
@@ -101,7 +105,6 @@ namespace basecross
 		int GetPlayerScore();
 
 		void SetCreateUIFlag(bool flag);
-
 
 	private:
 		//コピー禁止
