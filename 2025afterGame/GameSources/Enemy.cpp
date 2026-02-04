@@ -121,43 +121,44 @@ namespace basecross {
 		auto objVec = GetStage()->GetGameObjectVec();
 
 		// 追跡対象がいなくなったら一番近いものを決めて追跡すると決める
-		if (currentPhase == GamePhase::Score)
-		{
-			int minLenght = 999999.9f;
-			int minDefault = 999999.9f;
-			// MyGameObjectの物を全て停止する
-			//アクターを継承しているものだけ取得
-			for (auto obj : objVec)
-			{
-				auto scoreObjectCast = dynamic_pointer_cast<ScoreObject>(obj);
-				//weak_ptr<ScoreObject> scoreObjectCast = dynamic_pointer_cast<ScoreObject>(obj);
-				//scoreObjectCast
-				//アクターを継承しているオブジェクト停止
-				if (scoreObjectCast)
-				{
-					auto scorePos = scoreObjectCast->GetComponent<Transform>()->GetPosition();
+		ChangeTarget(currentPhase, objVec);
+		//if (currentPhase == GamePhase::Score)
+		//{
+		//	int minLenght = 999999.9f;
+		//	int minDefault = 999999.9f;
+		//	// スコアオブジェクトを継承しているものだけ取得
+		//	for (auto obj : objVec)
+		//	{
+		//		auto scoreObjectCast = dynamic_pointer_cast<ScoreObject>(obj);
+		//		//アクターを継承しているオブジェクト停止
+		//		if (scoreObjectCast)
+		//		{
+		//			auto scorePos = scoreObjectCast->GetComponent<Transform>()->GetPosition();
 
-					auto differenceVec = scorePos - m_pos;
-					float differenceLength = differenceVec.length();
+		//			auto differenceVec = scorePos - m_pos;
+		//			float differenceLength = differenceVec.length();
 
-					if (minLenght >= abs(differenceLength))
-					{
-						m_trackingObj = scoreObjectCast;
-						minLenght = differenceLength;
-					}
-				}
-			}
-			if (!m_trackingObj.lock())
-			{
-				m_trackingObj = GetStage()->GetSharedGameObject<Player>(L"Player");
-				m_playerLock = true;
-			}
-		}
-		if (currentPhase == GamePhase::Item)
-		{
-			m_trackingObj = GetStage()->GetSharedGameObject<Player>(L"Player");
-		}
+		//			if (minLenght >= abs(differenceLength))
+		//			{
+		//				m_trackingObj = scoreObjectCast;
+		//				minLenght = differenceLength;
+		//			}
+		//		}
+		//	}
+		//	// スコアオブジェクトが無かったら他の戦闘機たちを倒す
+		//	if (!m_trackingObj.lock())
+		//	{
+		//		m_trackingObj = GetStage()->GetSharedGameObject<Player>(L"Player");
+		//		m_playerLock = true;
+		//	}
+		//}
+		//// アイテムフェーズ時でだれを狙うか決める
+		//if (currentPhase == GamePhase::Item)
+		//{
+		//	m_trackingObj = GetStage()->GetSharedGameObject<Player>(L"Player");
+		//}
 
+		// Playerを狙っているときの処理(応急処置)
 		if (m_playerLock)
 		{
 			m_timeOfPlayerLock += m_delta;
@@ -349,6 +350,48 @@ namespace basecross {
 	void Enemy::ChangeState(wstring stateName)
 	{
 		m_stateMachine->ChangeState(stateName);
+	}
+
+	// 目標の変更処理
+	void Enemy::ChangeTarget(GamePhase currentPhase, const vector<shared_ptr<GameObject>>& objVec)
+	{
+		// 追跡対象がいなくなったら一番近いものを決めて追跡すると決める
+		if (currentPhase == GamePhase::Score)
+		{
+			int minLenght = 999999.9f;
+			int minDefault = 999999.9f;
+			// スコアオブジェクトを継承しているものだけ取得
+			for (const auto &obj : objVec)
+			{
+				auto scoreObjectCast = dynamic_pointer_cast<ScoreObject>(obj);
+				//アクターを継承しているオブジェクト停止
+				if (scoreObjectCast)
+				{
+					auto scorePos = scoreObjectCast->GetComponent<Transform>()->GetPosition();
+
+					auto differenceVec = scorePos - m_pos;
+					float differenceLength = differenceVec.length();
+
+					if (minLenght >= abs(differenceLength))
+					{
+						m_trackingObj = scoreObjectCast;
+						minLenght = differenceLength;
+					}
+				}
+			}
+			// スコアオブジェクトが無かったら他の戦闘機たちを倒す
+			if (!m_trackingObj.lock())
+			{
+				m_trackingObj = GetStage()->GetSharedGameObject<Player>(L"Player");
+				m_playerLock = true;
+			}
+		}
+		// アイテムフェーズ時でだれを狙うか決める
+		if (currentPhase == GamePhase::Item)
+		{
+			m_trackingObj = GetStage()->GetSharedGameObject<Player>(L"Player");
+		}
+
 	}
 
 	// 対象に向かって追いかける処理
