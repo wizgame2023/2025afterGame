@@ -515,7 +515,7 @@ namespace basecross {
 
 		for (auto obj : objVec)
 		{
-			auto obstacles = dynamic_pointer_cast<TestCsv>(obj);// 当たり判定の対象
+			auto obstacles = dynamic_pointer_cast<StageObject>(obj);// 当たり判定の対象
 		
 			// 進行上の障害になりそうなものか判断
 			if (obstacles)
