@@ -202,8 +202,8 @@ namespace basecross{
 		UpdatePauseMenu();
 
 
-		DebugLogs();
-		FlushDebugLog();
+		//DebugLogs();
+		//FlushDebugLog();
 	}
 
 	// =============================================================================================
@@ -218,64 +218,38 @@ namespace basecross{
 		{
 			switch (m_crntMainSelect)
 			{
-			case PauseMainMenuSelect::Resume:
-				DebugLog(L" Current Select: Resume ", L"");
-				break;
-			case PauseMainMenuSelect::Restart:
-				DebugLog(L" Current Select: Restart ", L"");
-				break;
-			case PauseMainMenuSelect::Setting:
-				DebugLog(L" Current Select: Setting ", L"");
-				break;
-			case PauseMainMenuSelect::Exit:
-				DebugLog(L" Current Select: Exit ", L"");
-				break;
-
+			case PauseMainMenuSelect::Resume:  DebugLog(L" Current Select: Resume ", L"");  break;
+			case PauseMainMenuSelect::Restart: DebugLog(L" Current Select: Restart ", L""); break;
+			case PauseMainMenuSelect::Setting: DebugLog(L" Current Select: Setting ", L""); break;
+			case PauseMainMenuSelect::Exit:    DebugLog(L" Current Select: Exit ", L"");    break;
 			}
 		}
 		else if (m_pauseState == PauseMenuState::SettingMenu)
 		{
 			switch (m_crntSettingSelect)
 			{
-			case PauseSettingMenuSelect::Volume:
-				DebugLog(L" Current Select: Volume ", L"");
-				break;
-			case PauseSettingMenuSelect::KeyConfig:
-				DebugLog(L" Current Select: KeyConfig ", L"");
-				break;
+			case PauseSettingMenuSelect::Volume:    DebugLog(L" Current Select: Volume ", L"");    break;
+			case PauseSettingMenuSelect::KeyConfig: DebugLog(L" Current Select: KeyConfig ", L""); break;
 			}
 		}
 		else if (m_pauseState == PauseMenuState::VolumeMenu)
 		{
 			switch (m_crntVolumeSelect)
 			{
-			case PauseVolumeMenuSelect::BGMVolume:
-				DebugLog(L" Current Select: BGM ", L"");
-				break;
-			case PauseVolumeMenuSelect::SEVolume:
-				DebugLog(L" Current Select: SE ", L"");
-				break;
+			case PauseVolumeMenuSelect::BGMVolume: DebugLog(L" Current Select: BGM ", L""); break;
+			case PauseVolumeMenuSelect::SEVolume:  DebugLog(L" Current Select: SE ", L"");  break;
 			}
 		}
 		else if (m_pauseState == PauseMenuState::KeyConfigMenu)
 		{
 			switch (m_crntKeyConfigSelect)
 			{
-			case PauseKeyConfigMenuSelect::UpDownSwap:
-				DebugLog(L" Current Select: UpDownSwap ", L"");
-				break;
-			case PauseKeyConfigMenuSelect::Accel:
-				DebugLog(L" Current Select: Accel ", L"");
-				break;
-			case PauseKeyConfigMenuSelect::Bullet:
-				DebugLog(L" Current Select: Bullet ", L"");
-				break;
-			case PauseKeyConfigMenuSelect::ViewBehind:
-				DebugLog(L" Current Select: ViewBehind ", L"");
-				break;
+			case PauseKeyConfigMenuSelect::UpDownSwap: DebugLog(L" Current Select: UpDownSwap ", L""); break;
+			case PauseKeyConfigMenuSelect::Accel:      DebugLog(L" Current Select: Accel ", L"");      break;
+			case PauseKeyConfigMenuSelect::Bullet:     DebugLog(L" Current Select: Bullet ", L"");     break;
+			case PauseKeyConfigMenuSelect::ViewBehind: DebugLog(L" Current Select: ViewBehind ", L""); break;
 			}
 		}
-		
 		auto& game = GameManager::CreateGameManager();
 		float BGMVolume = game->GetBGMVolume();
 		auto& input = InputManager::GetInputManager();
@@ -697,18 +671,10 @@ namespace basecross{
 			// ‘å‚«‚³‚Ì‰Šú‰»ˆ—
 			switch (m_pauseState)
 			{
-			case PauseMenuState::MainMenu:
-				ScalingSelectedSprite(m_pauseMainMenuSprites, m_crntMainSelect, PauseMainMenuSelect::Max);
-				break;
-			case PauseMenuState::SettingMenu:
-				ScalingSelectedSprite(m_pauseSettingMenuSprites, m_crntSettingSelect, PauseSettingMenuSelect::Max);
-				break;
-			case PauseMenuState::VolumeMenu:
-				ScalingSelectedSprite(m_pauseVolumeMenuSprites, m_crntVolumeSelect, PauseVolumeMenuSelect::Max);
-				break;
-			case PauseMenuState::KeyConfigMenu:
-				ScalingSelectedSprite(m_pauseKeyConfigMenuSprites, m_crntKeyConfigSelect, PauseKeyConfigMenuSelect::Max);
-				break;
+			case PauseMenuState::MainMenu:		ScalingSelectedSprite(m_pauseMainMenuSprites, m_crntMainSelect, PauseMainMenuSelect::Max); break;
+			case PauseMenuState::SettingMenu:	ScalingSelectedSprite(m_pauseSettingMenuSprites, m_crntSettingSelect, PauseSettingMenuSelect::Max); break;
+			case PauseMenuState::VolumeMenu:	ScalingSelectedSprite(m_pauseVolumeMenuSprites, m_crntVolumeSelect, PauseVolumeMenuSelect::Max); break;
+			case PauseMenuState::KeyConfigMenu: ScalingSelectedSprite(m_pauseKeyConfigMenuSprites, m_crntKeyConfigSelect, PauseKeyConfigMenuSelect::Max); break;
 			}
 		}
 
@@ -719,7 +685,8 @@ namespace basecross{
 
 	void PauseMenu::StartPause()
 	{
-		SetPauseFlag(true);
+		auto& game = GameManager::GetGameManager();
+		game->Pose(true);
 		m_crntMainSelect = PauseMainMenuSelect::Resume;
 		m_pauseState = PauseMenuState::MainMenu;
 	}

@@ -120,6 +120,7 @@ namespace basecross{
 		vector<shared_ptr<Sprite>> m_pauseVolumeMenuSprites;		// 音量メニューのスプライトの数
 		vector<shared_ptr<Sprite>> m_pauseKeyConfigMenuSprites;		// キーコンフィグメニューのスプライトの数
 		shared_ptr<Sprite> m_pauseBackGroundSprite;					// ポーズメニューの背景スプライト
+
 		// ボタンのスプライトの数
 		array<shared_ptr<Sprite>, ButtonsTypeCount> m_pauseButtonsSprites;
 		// [自分用メモ]arrayは<型, 要素数>の形で宣言(この場合はshared_ptr<Sprite>型の16個の要素配列)
