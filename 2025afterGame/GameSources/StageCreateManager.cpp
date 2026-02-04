@@ -98,7 +98,7 @@ namespace basecross{
 			wstring Tag = Tokens[10];
 
 			auto stage = App::GetApp()->GetScene<Scene>()->GetActiveStage();
-			stage->AddGameObject<TestCsv>(Pos, Rot, Siz, Tag);
+			stage->AddGameObject<StageObject>(Pos, Rot, Siz, Tag);
 		}
 	}
 

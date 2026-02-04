@@ -80,6 +80,7 @@ namespace basecross{
 		void OnUpdate() override;
 		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
 
+
 		//----------------------------------------
 		// プレイヤーの移動・回転・入力関連
 		//----------------------------------------

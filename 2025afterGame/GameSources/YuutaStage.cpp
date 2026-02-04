@@ -197,7 +197,7 @@ namespace basecross {
 
 			wstring Tag = Tokens[10];
 
-			AddGameObject<TestCsv>(Pos, Rot, Siz, Tag);
+			AddGameObject<StageObject>(Pos, Rot, Siz, Tag);
 		}
 	}
 

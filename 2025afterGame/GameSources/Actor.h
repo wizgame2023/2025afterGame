@@ -28,7 +28,6 @@ namespace basecross {
 		float m_angleX = 0.0f; // Œü‚¢‚Ä‚¢‚é•ûŒüX²
 		float m_angleY = 0.0f; // Œü‚¢‚Ä‚¢‚é•ûŒüY²
 
-
 	private:
 
 	public:
