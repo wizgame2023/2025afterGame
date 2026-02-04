@@ -14,6 +14,8 @@ namespace basecross{
 		float m_Rate;
 		Vec3 m_size;
 		Vec3 m_pos;
+		float m_hpWidth;
+		bool m_spriteMoveFlag;
 
 	public:
 		HpSprite(const shared_ptr<Stage>& stagePtr,
@@ -27,6 +29,10 @@ namespace basecross{
 
 		void OnCreate()override;
 		void OnUpdate()override;
+
+		void UpdateHpSprite();
+
+		void SetSpriteMove(bool flag);
 	};
 
 }

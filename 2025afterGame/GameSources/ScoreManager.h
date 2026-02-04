@@ -25,12 +25,14 @@ namespace basecross {
 	//		登録されていないIDに対してスコアを設定・取得しようとしても反映されません。					//
 	// ================================================================================================ //
 
+	class FighterAircraftBase;
+
 	class ScoreManager
 	{
 	public:
 		struct ScoreInfo
 		{
-			wstring id;		// スコアを持っているプレイヤー,NPCの名前
+			int id;		// スコアを持っているプレイヤー,NPCの名前
 			int crntScore = 0;		// 現在のスコア
 		};
 
@@ -56,10 +58,13 @@ namespace basecross {
 		// ステージ
 		shared_ptr<Stage> m_stage;
 
+		// 戦闘機を管理するための配列
+		vector<weak_ptr<FighterAircraftBase>> m_fighterBases;
+
 		// 定数
 
 		// playerのID
-		const wstring& PLAYER_ID = L"Player";
+		static constexpr int PLAYER_ID = 0;
 		
 		// ==============================================================================
 		// 関数
@@ -71,9 +76,9 @@ namespace basecross {
 		// ヘルパー関数
 
 		// IDからスコア情報を探す
-		ScoreInfo* FindScoreInfo(const wstring& id);
+		ScoreInfo* FindScoreInfo(const int id);
 		// 読み取りのみ
-		const ScoreInfo* FindScoreInfo(const wstring& id) const;
+		const ScoreInfo* FindScoreInfo(const int id) const;
 
 
 	public:
@@ -87,6 +92,18 @@ namespace basecross {
 			SetScore(PLAYER_ID, score);
 		}
 		
+		// player専用の加算
+		void AddPlScore(int addScore)
+		{
+			AddScore(PLAYER_ID, addScore);
+		}
+
+		// player専用の減算
+		void SubPlScore(int subScore)
+		{
+			SubScore(PLAYER_ID, subScore);
+		}
+
 		// player専用のゲッター
 		int GetPlScore() const
 		{
@@ -105,17 +122,23 @@ namespace basecross {
 		static unique_ptr<ScoreManager, ScoreManager::ScoreManagerDeleter>& GetScoreManager();
 
 		// ID設定
-		void SetID(const wstring& id);
+		void SetID(const int id);
 
 		// スコア更新
 		// 引数 : 変動するスコア
-		void SetScore(const wstring& id, int score);
+		void SetScore(const int id, int score);
+
+		// スコア加算
+		void AddScore(const int id, int addScore);
+
+		// スコア減算
+		void SubScore(const int id, int subScore);
 
 		// 現在のスコア取得
-		int GetScore(const wstring& id) const;
+		int GetScore(const int id) const;
 
 		// スコア初期化
-		void ResetScore(const wstring& id);
+		void ResetScore(const int id);
 
 		// スコアバイナリ生成
 		void CreateHighScoreBinary();
@@ -125,6 +148,9 @@ namespace basecross {
 
 		// スコアバイナリ読み込み
 		int LoadHighScoreBinary();
+
+		// 戦闘機配列に対し戦闘機の中身を追加する
+		void PushBackFighterBase(const shared_ptr<FighterAircraftBase>& fighterAircraftBase);
 	};
 
 }

@@ -34,14 +34,19 @@ namespace basecross {
 		m_trans = GetComponent<Transform>();
 		m_trans->SetPosition(parentPos + (m_parentForward * 1.6f));
 		m_trans->SetQuaternion(Quat(0.0f,0.0f,0.0f,-1.0f));
-		m_trans->SetScale(Vec3(0.2f));
+		m_trans->SetScale(Vec3(0.1f));
 
 		auto ptrCol = AddComponent<CollisionSphere>();
 		ptrCol->SetDrawActive(false);
 		ptrCol->SetAfterCollision(AfterCollision::None); // ï®óùîªíËñ≥Çµ
 
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
-		ptrDraw->SetMeshResource(L"DEFAULT_SPHERE");
+		ptrDraw->SetMeshResource(L"Bullet_Mesh");
+		ptrDraw->SetTextureResource(L"BulletTex");
+
+		// êiÇﬁï˚å¸Ç…å¸Ç≠
+		m_qt = SetRotate(m_parentForward);
+		m_trans->SetQuaternion(m_qt);
 	
 		AddTag(L"Bullet");
 
@@ -74,6 +79,10 @@ namespace basecross {
 			GetStage()->RemoveGameObject<Bullet>(GetThis<Bullet>());
 			return;
 		}
+
+
+
+		//m_trans->SetQuaternion(qt);
 
 		m_trans->SetPosition(m_pos);
 	}
