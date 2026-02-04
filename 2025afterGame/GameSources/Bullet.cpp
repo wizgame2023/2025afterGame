@@ -43,6 +43,10 @@ namespace basecross {
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
 		ptrDraw->SetMeshResource(L"Bullet_Mesh");
 		ptrDraw->SetTextureResource(L"BulletTex");
+
+		// i‚Þ•ûŒü‚ÉŒü‚­
+		m_qt = SetRotate(m_parentForward);
+		m_trans->SetQuaternion(m_qt);
 	
 		AddTag(L"Bullet");
 
