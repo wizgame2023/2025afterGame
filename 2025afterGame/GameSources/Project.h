@@ -33,6 +33,7 @@
 #include "MyGameObject.h";
 
 // 親クラスがMyGameObject//////////////////////////
+#include "PlayerGrv.h"
 #include "Actor.h";
 #include "AttackCollision.h"
 #include "MainCameraManager.h"

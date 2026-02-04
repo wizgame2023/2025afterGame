@@ -6,6 +6,7 @@
 #pragma once
 #include "stdafx.h"
 #include "AttackCollision.h"
+#include "PlayerGrv.h"
 
 namespace basecross {
 	class Actor :public MyGameObject
@@ -28,6 +29,7 @@ namespace basecross {
 		float m_angleX = 0.0f; // Œü‚¢‚Ä‚¢‚é•ûŒüXŽ²
 		float m_angleY = 0.0f; // Œü‚¢‚Ä‚¢‚é•ûŒüYŽ²
 
+		shared_ptr<PlayerGrv> m_playerGrv;
 
 	private:
 
@@ -44,6 +46,9 @@ namespace basecross {
 		virtual void CreateChildObjects()
 		{
 			auto stage = GetStage();
+
+			m_playerGrv = stage->AddGameObject<PlayerGrv>();
+			m_playerGrv->GetComponent<Transform>()->SetParent(dynamic_pointer_cast<GameObject>(GetThis<Actor>()));
 
 			m_attackCol = stage->AddGameObject<AttackCollision>();	
 			auto ptrColTrans = m_attackCol->GetComponent<Transform>();

@@ -78,6 +78,10 @@ namespace basecross {
 
 		// m_gravity = AddComponent<Gravity>();
 
+		m_playerGrv->SetBindPos(Vec3(0, -1.0f, 0));
+		m_playerGrv->GetComponent<CollisionSphere>()->SetMakedRadius(0.5f);
+		m_playerGrv->GetComponent<Transform>()->SetScale(Vec3(1.0f, 0.5f, 1.0f));
+
 	}
 
 	void Player::OnUpdate()
@@ -519,7 +523,7 @@ namespace basecross {
 			verticalVelocity = 0.0f;
 			fallTimer = 0.0f;
 		}
-		else if (m_isGrounded)
+		else if (m_playerGrv->GetLand())
 		{
 			verticalVelocity = 0.0f;
 			fallTimer = 0.0f;
