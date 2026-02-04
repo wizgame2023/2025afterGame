@@ -33,12 +33,7 @@ namespace basecross {
 
     void NumberSprite::OnCreate()
     {
-        Sprite::OnCreate();
-        m_trans->SetPosition(m_pos.x, m_pos.y,m_pos.z);
-        SetDrawActive(false);
-        SetLayer(3);
 
-        SetDrawLayer(m_layer);
     }
 
     void NumberSprite::OnUpdate()
@@ -85,11 +80,12 @@ namespace basecross {
             SetNumber(m_value);
         }
     }
-
+    
     void NumberSprite::SetNumber(int number)
     {
-        m_number = number;
+        if (m_numberUpDater)return;
 
+        m_number = number;
         int n = max(0, number);
 
         // 表示する桁数
@@ -161,14 +157,19 @@ namespace basecross {
         GetStage()->RemoveGameObject<NumberSprite>(GetThis<NumberSprite>());
     }
 
-    void NumberSprite::SetLayer(int layer)
-    {
-        m_layer = layer;
-    }
-
-    void NumberSprite::SetRankingNumberCount(int number)
+    void NumberSprite::AddRankingNumberCount(int number)
     {
         m_rankingNumber += number;
+    }
+
+    void NumberSprite::SetNumberUpdateFlag(bool flag)
+    {
+        m_numberUpDater += flag;
+    }
+
+    bool NumberSprite::GetNumberUpdateFlag()
+    {
+        return m_numberUpDater;
     }
 }
 //end basecross
