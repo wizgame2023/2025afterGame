@@ -179,6 +179,7 @@ namespace basecross{
 		// コントローラーの取得
 		auto& input = InputManager::GetInputManager();
 		bool isStartButtonDown = input->GetNowUpdateButton(L"Start"); // スタートボタンを押した瞬間を取る
+		auto& game = GameManager::GetGameManager();
 		//bool testX = input->GetNowUpdateButton(L"X"); // デバッグ用
 		//if (testX)
 		//{
@@ -193,9 +194,9 @@ namespace basecross{
 
 		MenuVisibleManagement();
 
-		// 非ポーズ中は全メニュー非表示
 		if (m_pauseState == PauseMenuState::False)
 		{
+			game->Pose(false);
 			return;
 		}
 
