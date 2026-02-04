@@ -26,7 +26,10 @@ namespace basecross
 		vector<shared_ptr<Enemy>> m_enemies;
 		vector<shared_ptr<BillBoardGauge>> m_enemyGauges;
 		shared_ptr<NumberSprite> m_countNumber;
-		shared_ptr<Sprite>m_clon;
+		shared_ptr<Sprite> m_clon;
+		shared_ptr<NumberSprite> m_score;
+		shared_ptr<NumberSprite> m_secondUI;
+
 		bool m_createUI;
 		bool m_initialized;
 		bool m_createRankingflag;
@@ -43,7 +46,6 @@ namespace basecross
 		bool m_createUIEnd;
 		bool m_deleteUI;
 
-		shared_ptr<NumberSprite> m_score;
 	public:
 		//構築と破棄
 		UIManager();
@@ -54,7 +56,7 @@ namespace basecross
 
 		// ゲームマネージャーを取得
 		static unique_ptr<UIManager, UIManagerDeleter>& GetUIManager();
-
+		
 		// 破棄処理
 		void DeleteUIManager();
 
@@ -66,12 +68,10 @@ namespace basecross
 		virtual void OnCreate();
 		virtual void OnUpdate();
 
-		// void UIManagerCreate();
+		void UIManagerCreate();
 
 		// 一つだけ生成した物
 		void CreateUI();
-		// 複数生成するもの
-		void CreateGaugeUI();
 		void CreateSprite();
 		void CreateNumberSprite();
 		// ランキング

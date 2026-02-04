@@ -76,8 +76,11 @@ namespace basecross {
 		// ゲーム経過時間を計測
 		if (m_gameStartFlag)
 		{
-			m_timeGamePlaying += m_deltaTime;
-			m_timeLimit -= m_deltaTime;
+			if (!m_pauseActive)
+			{
+				m_timeGamePlaying += m_deltaTime;
+				m_timeLimit -= m_deltaTime;
+			}
 		}
 
 		if (m_timeLimit < 0.0f)
@@ -190,6 +193,8 @@ namespace basecross {
 		// ポーズ開始
 		if (OnOff)
 		{
+			m_pauseActive = true;
+
 			// MyGameObjectの物を全て停止する
 			auto objVec = m_currentStage->GetGameObjectVec();
 			//アクターを継承しているものだけ取得
@@ -209,6 +214,8 @@ namespace basecross {
 		// ポーズ終了
 		if (!OnOff)
 		{
+			m_pauseActive = false;
+
 			for (auto obj : m_myGameObjectVec)
 			{
 				auto gameObjectCheck = obj.lock();

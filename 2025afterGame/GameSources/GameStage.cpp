@@ -127,7 +127,7 @@ namespace basecross {
 
 			UIManager::CreateUIManager();
 			auto& uiManager = UIManager::GetUIManager();
-			// uiManager->UIManagerCreate();
+			uiManager->OnCreate();
 
 			auto mainCamMana = AddGameObject<MainCameraManager>();
 			SetSharedGameObject(L"MainCameraManager", mainCamMana);
@@ -159,10 +159,7 @@ namespace basecross {
 		{
 			if (input->GetDownButton(L"A"))
 			{
-				//scoreManager->SetScore(L"Enemy1", 0);
-				//scoreManager->SetPlScore(0);
 				uiManager->SetCreateUIFlag(false);
-
 				gameMana->ResetGameManager();
 				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
 				return;
