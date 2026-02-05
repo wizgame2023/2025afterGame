@@ -68,6 +68,8 @@ namespace basecross{
 		void SetNumberUpdateFlag(bool flag);
 		// Numberの更新のゲッター
 		bool GetNumberUpdateFlag();
+
+		void SetNumberLayer(int number);
 	};
 }
 //end basecross

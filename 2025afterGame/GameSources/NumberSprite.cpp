@@ -33,7 +33,7 @@ namespace basecross {
 
     void NumberSprite::OnCreate()
     {
-
+        SetDrawLayer(m_layer);
     }
 
     void NumberSprite::OnUpdate()
@@ -83,8 +83,6 @@ namespace basecross {
     
     void NumberSprite::SetNumber(int number)
     {
-        if (m_numberUpDater)return;
-
         m_number = number;
         int n = max(0, number);
 
@@ -122,12 +120,16 @@ namespace basecross {
         }
 
         // 下位桁から数字を入れる
-        for (int i = digitCount - 1; i >= 0; --i)
-        {
-            int digit = n % 10;
-            n /= 10;
 
-            m_digits[i]->SetDigit(digit); 
+        if (!m_numberUpDater)
+        {
+            for (int i = digitCount - 1; i >= 0; --i)
+            {
+                int digit = n % 10;
+                n /= 10;
+
+                m_digits[i]->SetDigit(digit);
+            }
         }
     }
 
@@ -164,12 +166,17 @@ namespace basecross {
 
     void NumberSprite::SetNumberUpdateFlag(bool flag)
     {
-        m_numberUpDater += flag;
+        m_numberUpDater = flag;
     }
 
     bool NumberSprite::GetNumberUpdateFlag()
     {
         return m_numberUpDater;
+    }
+
+    void NumberSprite::SetNumberLayer(int number)
+    {
+        m_layer = number;
     }
 }
 //end basecross
