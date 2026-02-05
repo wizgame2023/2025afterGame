@@ -48,6 +48,10 @@ namespace basecross
 			m_fightBase = fightBase;
 		}
 
+		// 全体のランキング
+		void AllRanking();
+		// Playerだけのランキング
+		void PlayerOnlyRanking();
 	};
 
 }
