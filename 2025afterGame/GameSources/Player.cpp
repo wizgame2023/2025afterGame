@@ -170,7 +170,7 @@ namespace basecross {
 
 		ChangePlayer(lstick);
 
-		m_aButton = input->GetButton(L"A");
+		m_aButton = input->GetButton(game->GetAccelKey());
 
 		// Aボタンを押して加速移動
 		if (m_aButton)
@@ -475,6 +475,7 @@ namespace basecross {
 	{
 		auto& input = InputManager::GetInputManager();
 		auto transform = GetComponent<Transform>();
+		auto& game = GameManager::GetGameManager();
 
 		Vec3 pos = transform->GetPosition();
 
@@ -487,7 +488,7 @@ namespace basecross {
 		// ----------------------------
 		// 入力判定（Aボタン）
 		// ----------------------------
-		bool isFlyInput = input->GetButton(L"A");
+		bool isFlyInput = input->GetButton(game->GetAccelKey());
 
 		// ----------------------------
 		// 落下制御
@@ -584,60 +585,68 @@ namespace basecross {
 
 		auto& game = GameManager::GetGameManager();
 		wstring& bulletKey = game->GetBulletKey();
+		
+		bool bulletKeyDown = input->GetDownButton(bulletKey);
 
+		if (bulletKeyDown && m_bulletNumCurrentNow > 0)
+		{
+			ptrMana->Start(L"ShotSE", 0, 0.1f);
+			m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
+			m_bulletNumCurrentNow -= 1;
+		}
 
 		// 右か左トリガーに設定されていれば
-		if (bulletKey == L"LTrigger" || bulletKey == L"RTrigger")
-		{
-			function<BYTE(wstring)> getTrigger = nullptr;
-			if (bulletKey == L"LTrigger")
-			{
-				getTrigger = [&](wstring key)
-					{
-						return input->GetLeftTrigger();
-					};
-			}
-			else if (bulletKey == L"RTrigger")
-			{
-				getTrigger = [&](wstring key)
-					{
-						return input->GetRightTrigger();
-					};
-			}
+		//if (bulletKey == L"LTrigger" || bulletKey == L"RTrigger")
+		//{
+		//	function<BYTE(wstring)> getTrigger = nullptr;
+		//	if (bulletKey == L"LTrigger")
+		//	{
+		//		getTrigger = [&](wstring key)
+		//			{
+		//				return input->GetLeftTrigger();
+		//			};
+		//	}
+		//	else if (bulletKey == L"RTrigger")
+		//	{
+		//		getTrigger = [&](wstring key)
+		//			{
+		//				return input->GetRightTrigger();
+		//			};
+		//	}
 
-			//BYTE nowTrigger = input->GetRightTrigger();
-			BYTE threshold = 30;
+		//	//BYTE nowTrigger = input->GetRightTrigger();
+		//	BYTE threshold = 30;
 
 
-			//「押した瞬間」だけ発射する
-			if ((prevTrigger <= threshold && getTrigger(bulletKey) > threshold))
-			{
-				if (m_bulletNumCurrentNow > 0)
-				{
-					ptrMana->Start(L"ShotSE", 0, 0.1f);
+		//	//「押した瞬間」だけ発射する
+		//	if ((prevTrigger <= threshold && getTrigger(bulletKey) > threshold))
+		//	{
+		//		if (m_bulletNumCurrentNow > 0)
+		//		{
+		//			ptrMana->Start(L"ShotSE", 0, 0.1f);
 
-					m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
-					m_bulletNumCurrentNow -= 1;
-				}
-			}
+		//			m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
+		//			m_bulletNumCurrentNow -= 1;
+		//		}
+		//	}
 
-			// 前フレーム値の更新を忘れない
-			prevTrigger = getTrigger(bulletKey);
+		//	// 前フレーム値の更新を忘れない
+		//	prevTrigger = getTrigger(bulletKey);
 
-		}
-		else
-		{
-			if (input->GetDownButton(bulletKey))
-			{
-				if (m_bulletNumCurrentNow > 0)
-				{
-					ptrMana->Start(L"ShotSE", 0, 0.1f);
+		//}
+		//else
+		//{
+		//	if (input->GetDownButton(bulletKey))
+		//	{
+		//		if (m_bulletNumCurrentNow > 0)
+		//		{
+		//			ptrMana->Start(L"ShotSE", 0, 0.1f);
 
-					m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
-					m_bulletNumCurrentNow -= 1;
-				}
-			}
-		}
+		//			m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
+		//			m_bulletNumCurrentNow -= 1;
+		//		}
+		//	}
+		//}
 
 	}
 

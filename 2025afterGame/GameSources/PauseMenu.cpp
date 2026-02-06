@@ -264,6 +264,8 @@ namespace basecross{
 		float BGMVolume = game->GetBGMVolume();
 		auto& input = InputManager::GetInputManager();
 		auto& pressedButton = input->GetPressedButton();
+		auto bytecr = input->GetRightTrigger();
+		auto bytela = input->GetLastRightTrigger();
 
 		DebugLog(L"\nBGMVolume : ", BGMVolume);
 		DebugLog(L"SEVolume : ", GetSEVolume());
@@ -271,6 +273,9 @@ namespace basecross{
 		DebugLog(L"Accel Key : ", m_pauseData.AccelKey);
 		DebugLog(L"Bullet Key : ", m_pauseData.BulletKey);
 		DebugLog(L"ViewBehind Key : ", m_pauseData.ViewBehindKey);
+		DebugLog(L"Crnt : ", bytecr);
+		DebugLog(L"Last : ", bytela);
+
 	}
 
 	// ==============================================================================
