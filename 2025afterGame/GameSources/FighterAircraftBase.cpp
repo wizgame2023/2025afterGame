@@ -137,30 +137,9 @@ namespace basecross {
 			else if (bulletParentEnemy)
 			{
 				float tansferScore = plScore * magnification;
-				scoreManager->SetPlScore(plScore - tansferScore);
 				scoreManager->AddScore(GetId(), scoreManager->GetScore(GetId()) + tansferScore);
+				scoreManager->SetPlScore(plScore - tansferScore);
 			}
-
-			//if (player)
-			//{
-			//	// ÷“n‚·‚éƒXƒRƒA‚ÌŒvŽZ(Šî–{“I‚É‚Í10%÷“n‚·‚é)
-			//	float transferScore = scoreManager->GetPlScore * magnification;
-			//	m_scoreCurrent -= transferScore;
-			//	bulletParentFighter->AddScoreCurrent(transferScore);
-
-			//	if (bulletParentFighter)
-			//	{
-			//		bulletParentFighter->AddScoreCurrent(transferScore);
-			//	}
-
-			//}
-			//float transferScore = scoreManager->GetPlScore * magnification;
-			//m_scoreCurrent -= transferScore;
-
-			//if (bulletParentFighter)
-			//{
-			//	bulletParentFighter->AddScoreCurrent(transferScore);
-			//}
 		}
 	}
 
