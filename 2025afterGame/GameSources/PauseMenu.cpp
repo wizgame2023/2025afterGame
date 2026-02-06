@@ -163,6 +163,11 @@ namespace basecross{
 
 		m_pauseState = PauseMenuState::False;
 
+		auto& game = GameManager::GetGameManager();
+
+		m_pauseData.BulletKey = game->GetBulletKey();
+		m_pauseData.AccelKey = game->GetAccelKey();
+		m_pauseData.ViewBehindKey = game->GetViewBehindKey();
 
 		// ボタンの種類マップの初期化
 		InitButtonTypeMap();
@@ -176,10 +181,14 @@ namespace basecross{
 	// =============================================================================================
 	void PauseMenu::OnUpdate()
 	{
+		// カウントダウンが終わっていたらポーズ可能
+		if (GameManager::GetGameManager()->GetGameStartCountDown() < static_cast<int>(GameStartCount::GAMESTART_End))
+		{
+			return;
+		}
 		// コントローラーの取得
 		auto& input = InputManager::GetInputManager();
 		bool isStartButtonDown = input->GetNowUpdateButton(L"Start"); // スタートボタンを押した瞬間を取る
-		auto& game = GameManager::GetGameManager();
 		//bool testX = input->GetNowUpdateButton(L"X"); // デバッグ用
 		//if (testX)
 		//{
@@ -196,7 +205,7 @@ namespace basecross{
 
 		if (m_pauseState == PauseMenuState::False)
 		{
-			game->Pose(false);
+			//GameManager::GetGameManager()->Pose(false);
 			return;
 		}
 
@@ -291,6 +300,8 @@ namespace basecross{
 		// Lスティックの上下入力で選択肢を変更
 		HandleMenuSelection(m_pauseMainMenuSprites, m_crntMainSelect, PauseMainMenuSelect::Max);
 
+		auto& game = GameManager::GetGameManager();
+
 		bool pressAButton = input.GetDownButton(L"A");
 		bool pressBButton = input.GetDownButton(L"B");
 
@@ -301,12 +312,13 @@ namespace basecross{
 			case PauseMainMenuSelect::Resume:
 				// 再開が選択された場合はポーズ解除
 				m_pauseState = PauseMenuState::False;
-				SetPauseFlag(false);
+				game->Pose(false);
 				break;
 
 			case PauseMainMenuSelect::Restart:
 				m_pauseState = PauseMenuState::False;
-				SetPauseFlag(false);
+				GameManager::GetGameManager()->Pose(false);
+				game->ResetGameManager();
 				// リスタートが選択された場合はゲームステージへ遷移
 				PostEvent(0.0f,
 					GetThis<ObjectInterface>(),
@@ -322,8 +334,8 @@ namespace basecross{
 
 			case PauseMainMenuSelect::Exit:
 				m_pauseState = PauseMenuState::False;
-				SetPauseFlag(false);
-				// 終了が選択された場合はタイトルステージへ遷移
+				GameManager::GetGameManager()->Pose(false);
+				// タイトルが選択された場合はタイトルステージへ遷移
 				PostEvent(0.0f,
 					GetThis<ObjectInterface>(),
 					App::GetApp()->GetScene<Scene>(),
@@ -333,7 +345,7 @@ namespace basecross{
 			default:
 				// 例外が発生した場合はポーズ解除
 				m_pauseState = PauseMenuState::False;
-				SetPauseFlag(false);
+				GameManager::GetGameManager()->Pose(false);
 				break;
 			}
 		}
@@ -341,6 +353,7 @@ namespace basecross{
 		{
 			// メインメニューでBボタンが押された場合はポーズ解除
 			m_pauseState = PauseMenuState::False;
+			game->Pose(false);
 		}
 	}
 
@@ -499,6 +512,9 @@ namespace basecross{
 		}
 		else if (pressBButton)
 		{
+			SetHideButtons(m_pauseData.AccelKey);
+			SetHideButtons(m_pauseData.BulletKey);
+			SetHideButtons(m_pauseData.ViewBehindKey);
 			m_pauseState = PauseMenuState::SettingMenu;
 		}
 
@@ -510,7 +526,7 @@ namespace basecross{
 	{
 		const wstring inputKey = input.GetPressedButton();
 
-		// 何も押されていない状態かBackであれば何もしないで戻る
+		// 何も押されていない状態かBackであれば何もしないで返る
 		if (inputKey == L"" || inputKey == L"Back")
 		{
 			return;
