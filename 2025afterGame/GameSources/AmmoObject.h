@@ -14,8 +14,11 @@ namespace basecross{
 		Vec3 m_siz;
 		int m_id;
 		int m_reload;
+		float m_countDown;
+		bool m_countDownFlug;
 
 		shared_ptr<BillBoard> m_billBoard;
+		shared_ptr<NumberSprite> m_number;
 
 	public:
 		AmmoObject(const shared_ptr<Stage>& StagePtr,
@@ -27,6 +30,10 @@ namespace basecross{
 		virtual ~AmmoObject();
 
 		virtual void OnCreate() override;
+
+		virtual void OnUpdate() override;
+
+		void DeleteIcon();
 
 		int GetObjectID();
 
