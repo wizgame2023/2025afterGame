@@ -470,6 +470,10 @@ namespace basecross {
 		m_countDownSEFlag = true;
 		m_gameStartPhase = GAMESTART_Start;
 		m_countTimeGameStart = 0.0f;
+		m_itemObj = false;
+		m_createScoreObj = false;
+		m_scoreObjecCout = 0;
+		ChangePhase(GamePhase::Score);
 	}
 }
 
