@@ -100,6 +100,15 @@ namespace basecross {
 		m_stateMachine->ChangeState(L"Tracking"); // 仮で最初のステートはベースステートに変更する
 
 		// レイキャスト生成
+
+		// Layerで前後ろ固定
+
+		// HPWakuとHPのBillBord作成
+		m_Gauge = GetStage()->AddGameObject<BillBoardGauge>(GetThis<FighterAircraftBase>(), L"HP_WAKU", Vec3(3.0f, 0.28f, 0.0f));
+		m_Gauge->SetDrawLayer(0);
+		auto enemyHP = GetStage()->AddGameObject<BillBoardGauge>(GetThis<FighterAircraftBase>(),L"HP",Vec3(3.0f,0.25f, 0.0f));
+		enemyHP->SetSpriteMove(true);
+		enemyHP->SetDrawLayer(1);
 	}
 
 	void Enemy::OnUpdate()
@@ -307,6 +316,9 @@ namespace basecross {
 
 				// リスポーンステートに遷移する
 				ChangeState(L"Respawn");
+				
+				// 死んだときにHP枠を見えないように
+				m_Gauge->SetInvisible(true);
 			}
 
 		}

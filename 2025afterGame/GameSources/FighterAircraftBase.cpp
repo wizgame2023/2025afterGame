@@ -128,17 +128,20 @@ namespace basecross {
 			auto bulletParentEnemy = dynamic_pointer_cast<Enemy>(bulletParentlock);
 
 			// ÷“n‚·‚éƒXƒRƒA‚ÌŒvŽZ(Šî–{“I‚É‚Í10%÷“n‚·‚é)
+			// Player‚ª“|‚µ‚½ê‡
 			if (bulletParentPlayer)
 			{
 				float tansferScore = scoreManager->GetScore(GetId()) * magnification;
 				scoreManager->SubScore(GetId(), tansferScore);
 				scoreManager->AddPlScore(tansferScore);
 			}
+			
 			// ÷“n‚·‚éƒXƒRƒA‚ÌŒvŽZ(Šî–{“I‚É‚Í10%÷“n‚·‚é)
-			else if (bulletParentEnemy)
+			// Enemy‚ª“|‚µ‚½ê‡
+			if (bulletParentEnemy)
 			{
 				float tansferScore = plScore * magnification;
-				scoreManager->SubPlScore(plScore - tansferScore);
+				scoreManager->SubPlScore(tansferScore);
 				scoreManager->AddScore(GetId(),tansferScore);
 			}
 

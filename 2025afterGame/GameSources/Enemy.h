@@ -46,6 +46,7 @@ namespace basecross {
 		float m_timeOfPlayerLock;
 		bool m_playerLock;
 
+		shared_ptr<BillBoardGauge> m_Gauge;
 
 	public:
 		// ¡Œã‚Íg‚í‚È‚¢
