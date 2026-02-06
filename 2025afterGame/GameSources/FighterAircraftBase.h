@@ -57,6 +57,9 @@ namespace basecross{
 		bool m_gunUseFlag = true;				// 弾を発射してよいかのフラグ
 		bool m_disableShieldFlag = true;		// バリア無効化をしてよいかのフラグ 
 
+		// 距離を取るために必要な変数群
+		float m_personalLength; // 自分とこれ以上近かったら離れようとする距離の大きさ
+
 		// 今後,ストリップストリーム,DRSを実装予定
 		int m_nextCheckPointID = 0;
 		int m_CurrentCheckPointID = 0;

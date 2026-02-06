@@ -106,6 +106,20 @@ namespace basecross {
 		bool GetInvincibleFlag();
 		// 無敵フラグをオンにする処理
 		void OnInvincibleFlag();
+
+		// ターゲットのセッタ
+		void SetTracking(const shared_ptr<Actor>& target);
+		// ターゲットのゲッタ
+		const weak_ptr<Actor>& GetTracking();
+
+		// 線形補間関数(Vec3用)
+		// 参考 : https://taketakeshi.hatenablog.jp/entry/2025/05/19/205447
+		// start : 開始地 end : 終了値 time : 補間係数(0.0f～1.0f)
+		// 戻り値 : 補間後の値
+		static Vec3 LerpV3(const Vec3& start, const Vec3& end, float time) {
+			return start + (end - start) * time;
+		}
+
 	};
 
 }

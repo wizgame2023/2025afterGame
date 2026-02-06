@@ -67,6 +67,8 @@ namespace basecross {
 
 	void Bullet::OnUpdate()
 	{
+		if (m_pauseFlag) return;
+
 		// åpè≥å≥ÇÃÇÃUpdateçXêV
 		Actor::OnUpdate();
 
