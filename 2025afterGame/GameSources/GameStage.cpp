@@ -45,8 +45,8 @@ namespace basecross {
 			m_count = 0;
 
 			auto& scrMana = ScoreManager::CreateScoreManager();
-
-			scrMana->CreateHighScoreBinary();
+			scrMana->ScoreManagerReset();
+			// scrMana->CreateHighScoreBinary();
 
 			auto backgroundPath = path + L"Backgrounds/";
 			for (const auto& keyName : Background::pairs) {
@@ -124,6 +124,7 @@ namespace basecross {
 			//AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
 			//AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
 			//auto enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+
 
 			UIManager::CreateUIManager();
 			auto& uiManager = UIManager::GetUIManager();

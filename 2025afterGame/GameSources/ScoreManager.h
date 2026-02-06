@@ -77,6 +77,8 @@ namespace basecross {
 
 
 	public:
+		// ScoreManagerのメンバ変数初期化
+		void ScoreManagerReset();
 
 		// ランキングソート
 		vector<ScoreInfo> GetSortedScores() const;
