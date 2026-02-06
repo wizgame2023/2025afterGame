@@ -82,6 +82,16 @@ namespace basecross{
 		m_count--;
 	}
 
+	// オブジェクトの配置処理を全て初期化する関数
+	void ScoreObjectManager::ResetObject()
+	{
+		for (int i = 0; i < m_current.size() - 1; i++)
+		{
+			m_current[i] = false;
+		}
+		m_count = 0;
+	}
+
 	void ScoreObjectManager::SetVector()
 	{
 		auto& manager = StageCreateManager::GetStageCreateManager();
