@@ -43,7 +43,7 @@ namespace basecross {
 	{
 		FighterAircraftBase::OnCreate();
 
-		m_hpMax = 10;
+		m_hpMax = 100;
 		m_hpCurrent = m_hpMax;
 
 		auto ptrTrans = GetComponent<Transform>();
