@@ -52,9 +52,6 @@ namespace basecross {
 		// スコア
 		vector<ScoreInfo> m_scores;
 
-		// スプライト
-		vector<shared_ptr<Sprite>> m_numberSprite;
-
 		// ステージ
 		shared_ptr<Stage> m_stage;
 
@@ -82,6 +79,8 @@ namespace basecross {
 
 
 	public:
+		// ScoreManagerのメンバ変数初期化
+		void ScoreManagerReset();
 
 		// ランキングソート
 		vector<ScoreInfo> GetSortedScores() const;
