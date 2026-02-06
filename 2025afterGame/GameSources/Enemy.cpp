@@ -104,10 +104,12 @@ namespace basecross {
 
 		// HPWakuとHPのBillBord作成
 		m_Gauge = GetStage()->AddGameObject<BillBoardGauge>(GetThis<FighterAircraftBase>(), L"HP_WAKU", Vec3(3.0f, 0.28f, 0.0f));
-		m_Gauge->SetDrawLayer(0);
+		m_Gauge->SetDrawLayer(1);
 		auto enemyHP = GetStage()->AddGameObject<BillBoardGauge>(GetThis<FighterAircraftBase>(),L"HP",Vec3(3.0f,0.25f, 0.0f));
 		enemyHP->SetSpriteMove(true);
-		enemyHP->SetDrawLayer(1);
+		enemyHP->SetDrawLayer(2);
+		// スコアに合わせたランキングビルボードの表示
+		m_rankNumber = GetStage()->AddGameObject<BillBoardNumber>(GetThis<FighterAircraftBase>());
 	}
 
 	void Enemy::OnUpdate()
@@ -292,6 +294,8 @@ namespace basecross {
 				
 				// 死んだときにHP枠を見えないように
 				m_Gauge->SetInvisible(true);
+				// 死んだときにナンバーを見えないように
+				m_rankNumber->SetInvisible(true);
 			}
 
 		}
