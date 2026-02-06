@@ -474,6 +474,10 @@ namespace basecross {
 		m_createScoreObj = false;
 		m_scoreObjecCout = 0;
 		ChangePhase(GamePhase::Score);
+
+		// スコアオブジェクトを管理するマネージャの初期化
+		auto& scoreObjectManager = ScoreObjectManager::GetScoreObjectManager();
+		scoreObjectManager->ResetObject();
 	}
 }
 
