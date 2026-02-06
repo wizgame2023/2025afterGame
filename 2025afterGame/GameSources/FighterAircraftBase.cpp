@@ -47,6 +47,7 @@ namespace basecross {
 	void FighterAircraftBase::OnCreate()
 	{
 		Actor::OnCreate();
+		ResetParameter();
 
 		auto stage = GetStage();
 		auto& scoreManager = ScoreManager::GetScoreManager();
@@ -130,15 +131,15 @@ namespace basecross {
 			if (bulletParentPlayer)
 			{
 				float tansferScore = scoreManager->GetScore(GetId()) * magnification;
-				scoreManager->AddScore(GetId(), scoreManager->GetScore(GetId()) - tansferScore);
-				scoreManager->SetPlScore(plScore + tansferScore);
+				scoreManager->SubScore(GetId(), tansferScore);
+				scoreManager->AddPlScore(tansferScore);
 			}
 			// 譲渡するスコアの計算(基本的には10%譲渡する)
 			else if (bulletParentEnemy)
 			{
 				float tansferScore = plScore * magnification;
-				scoreManager->SetPlScore(plScore - tansferScore);
-				scoreManager->AddScore(GetId(), scoreManager->GetScore(GetId()) + tansferScore);
+				scoreManager->SubPlScore(plScore - tansferScore);
+				scoreManager->AddScore(GetId(),tansferScore);
 			}
 
 			//if (player)
@@ -318,6 +319,14 @@ namespace basecross {
 	void FighterAircraftBase::SetId(int id)
 	{
 		m_id = id;
+	}
+
+	void FighterAircraftBase::ResetParameter()
+	{
+		auto& scoreManager = ScoreManager::GetScoreManager();
+		
+		//スコアのリセット
+		scoreManager->ResetScore(GetId());
 	}
 
 }
