@@ -67,7 +67,7 @@ namespace basecross{
 			m_countDown -= m_delta;
 			if (m_countDown <= 0)
 			{
-				m_number->OnDestory();
+				m_number->RemoveSprite();
 				auto& ammomg = AmmoObjectManager::GetAmmoObjectManager();
 				ammomg->RemoveObject(m_id);
 				GetStage()->RemoveGameObject<AmmoObject>(GetThis<AmmoObject>());
@@ -80,7 +80,6 @@ namespace basecross{
 		auto& app = App::GetApp();
 		auto scene = app->GetScene<Scene>();
 		auto stage = scene->GetActiveStage();
-		int plusNumber = 12;
 		auto body = dynamic_pointer_cast<FighterAircraftBase>(obj);
 		if (body)
 		{
@@ -89,8 +88,7 @@ namespace basecross{
 			m_audioManager->Start(L"GetScoreSE", 1, 1.0f);
 
 			// 弾UI作成
-			m_number = stage->AddGameObject<NumberSprite>(Vec2(40.0f, 80.0f), Vec3(0.0f, 0.0f, 0.0f));
-			m_number->SetSignedNumber(plusNumber, 30);
+			m_number = stage->AddGameObject<Sprite>(L"ReloadString", Vec2(500.0f, 100.0f), Vec3(0.0f, 0.0f, 0.0f));
 
 			int ammo = body->GetBulletNumCurrentNow();
 			ammo += m_reload;
@@ -100,11 +98,6 @@ namespace basecross{
 
 			m_countDownFlug = true;
 		}
-	}
-
-	void AmmoObject::DeleteIcon()
-	{
-		m_number->OnDestory();
 	}
 
 	int AmmoObject::GetObjectID()

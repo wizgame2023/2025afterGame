@@ -18,7 +18,7 @@ namespace basecross{
 		bool m_countDownFlug;
 
 		shared_ptr<BillBoard> m_billBoard;
-		shared_ptr<NumberSprite> m_number;
+		shared_ptr<Sprite> m_number;
 
 	public:
 		AmmoObject(const shared_ptr<Stage>& StagePtr,
@@ -32,8 +32,6 @@ namespace basecross{
 		virtual void OnCreate() override;
 
 		virtual void OnUpdate() override;
-
-		void DeleteIcon();
 
 		int GetObjectID();
 
