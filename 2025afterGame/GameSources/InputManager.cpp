@@ -80,8 +80,8 @@ namespace basecross
 		m_LStick = Vec2(m_pad.fThumbLX, m_pad.fThumbLY);
 		m_RStick = Vec2(m_pad.fThumbRX, m_pad.fThumbRY);
 
-		m_LeftTrigger = m_pad.bLeftTrigger;
-		m_RightTrigger = m_pad.bRightTrigger;
+		m_CrntLeftTrigger = m_pad.bLeftTrigger;
+		m_CrntRightTrigger = m_pad.bRightTrigger;
 
 		// Button
 		{
@@ -317,6 +317,9 @@ namespace basecross
 	// XV
 	void InputManager::Update()
 	{
+		m_LastLeftTrigger = m_CrntLeftTrigger;
+		m_LastRightTrigger = m_CrntRightTrigger;
+
 		auto& app = App::GetApp();
 		auto input = app->GetInputDevice();
 
@@ -326,8 +329,9 @@ namespace basecross
 		m_LStick = Vec2(m_pad.fThumbLX, m_pad.fThumbLY);
 		m_RStick = Vec2(m_pad.fThumbRX, m_pad.fThumbRY);
 
-		m_LeftTrigger = m_pad.bLeftTrigger;
-		m_RightTrigger = m_pad.bRightTrigger;
+
+		m_CrntLeftTrigger = m_pad.bLeftTrigger;
+		m_CrntRightTrigger = m_pad.bRightTrigger;
 
 		// Button
 		{

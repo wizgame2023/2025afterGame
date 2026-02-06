@@ -150,7 +150,7 @@ namespace basecross {
 		auto& uiManager = UIManager::GetUIManager();
 		uiManager->OnUpdate();
 
-		auto& obj = StageCreateManager::GetStageCreateManager();
+		auto& stobj = StageCreateManager::GetStageCreateManager();
 		auto& gameMana = GameManager::GetGameManager();
 		auto& input = InputManager::GetInputManager();
 		auto& scoreManager = ScoreManager::GetScoreManager();
