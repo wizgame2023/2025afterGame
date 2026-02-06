@@ -26,6 +26,8 @@ namespace basecross {
 
 		float m_speed = 15.0f; // 弾のスピード
 
+		int m_ownerId;   // 撃ったやつのID
+
 	public:
 		Bullet(const shared_ptr<Stage>& stagePtr,const shared_ptr<Actor>& parent);
 		~Bullet();
@@ -48,6 +50,10 @@ namespace basecross {
 		// 親オブジェクトのゲッタ
 		weak_ptr<Actor> GetParentObj();
 
+		// どのIDが所有者セッター
+		void SetOwnerId(int id);
+		// どのIDかゲッター
+		int  GetOwnerId();
 	};
 
 	class TestCube :public Actor
