@@ -77,6 +77,18 @@ namespace basecross{
 			Max
 		};
 
+		// ゲームスタートのカウントダウン
+		enum class GameStartCount
+		{
+			GAMESTART_Start,
+			GAMESTART_CountDown_One,
+			GAMESTART_CountDown_Two,
+			GAMESTART_CountDown_Three,
+			GAMESTART_CountDown_Start,
+			GAMESTART_End
+		};
+
+
 		// ==============================================================================
 		// 構造体群
 		// ==============================================================================

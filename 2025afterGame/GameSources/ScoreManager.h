@@ -29,14 +29,12 @@ namespace basecross {
 
 	class ScoreManager
 	{
-	public:
 		struct ScoreInfo
 		{
-			int id;		// スコアを持っているプレイヤー,NPCの名前
+			int id;		// スコアを持っているプレイヤー,NPCの番号(0はプレイヤー固定)
 			int crntScore = 0;		// 現在のスコア
 		};
 
-	private:
 		// 削除処理
 		struct ScoreManagerDeleter
 		{

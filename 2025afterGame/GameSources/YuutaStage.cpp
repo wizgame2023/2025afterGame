@@ -57,6 +57,23 @@ namespace basecross {
 			throw;
 		}
 
+		// 生成マネージャー
+		auto& createManager = StageCreateManager::GetStageCreateManager();
+
+		// ステージに出すオブジェクト
+		wstring DataDir;
+		App::GetApp()->GetDataDirectory(DataDir);
+		DataDir += L"Stage/";
+		//CSVファイルの読み込み
+		m_objectFile.SetFileName(DataDir + L"positions.csv");
+		m_objectFile.ReadCsv();
+
+		createManager->CreateStageObject();
+		createManager->CreateRingObject();
+		createManager->CreateWallObject();
+		createManager->CreateInvisibleCollision();
+
+
 		auto& gameManager = GameManager::GetGameManager();
 		gameManager->AddCheckPoint();
 		//gameManager->AddCheckPoint();
@@ -70,6 +87,12 @@ namespace basecross {
 		//auto debagPlayer =  dynamic_pointer_cast<Actor>(GetSharedGameObject<DebagPlayer>(L"Player"));
 		auto player = dynamic_pointer_cast<Actor>(GetSharedGameObject<Player>(L"Player"));
 		auto enemy = AddGameObject<Enemy>(Vec3(10.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+		SetSharedGameObject(L"Enemy1", enemy);
+		auto enemy2 = AddGameObject<Enemy>(Vec3(-10.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+		SetSharedGameObject(L"Enemy2", enemy2);
+		enemy->SetTracking(enemy2);
+		enemy2->SetTracking(enemy);
+
 
 		// バリア妨害のテスト処理
 		//auto testBullet = AddGameObject<Bullet>();
@@ -81,23 +104,23 @@ namespace basecross {
 		//auto barrier = AddGameObject<Barrier>(GetSharedGameObject<Player>(L"Player"));
 		//SetSharedGameObject(L"Barrier", barrier);
 
-		// テスト用のオブジェクト
-		wstring DataDir;
-		App::GetApp()->GetDataDirectory(DataDir);
-		DataDir += L"Stage/";
-		//CSVファイルの読み込み
-		m_objectFile.SetFileName(DataDir + L"testdodge.csv");
-		m_objectFile.ReadCsv();
+		//// テスト用のオブジェクト
+		////wstring DataDir;
+		//App::GetApp()->GetDataDirectory(DataDir);
+		//DataDir += L"Stage/";
+		////CSVファイルの読み込み
+		//m_objectFile.SetFileName(DataDir + L"testdodge.csv");
+		//m_objectFile.ReadCsv();
 
-		// 障害物のオブジェクト生成
-		CreateDodgeObject();
+		//// 障害物のオブジェクト生成
+		//CreateDodgeObject();
 
 
 
-		AddGameObject<TestCube>(Vec3(10.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(1.0f, 1.0f, 1.0f));
-		AddGameObject<TestCube>(Vec3(-10.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(1.0f, 1.0f, 1.0f));
-		AddGameObject<TestCube>(Vec3(0.0f, 0.0f, -10.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(1.0f, 1.0f, 1.0f));
-		AddGameObject<TestCube>(Vec3(0.0f, 0.0f, 10.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(1.0f, 1.0f, 1.0f));
+		//AddGameObject<TestCube>(Vec3(10.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(1.0f, 1.0f, 1.0f));
+		//AddGameObject<TestCube>(Vec3(-10.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(1.0f, 1.0f, 1.0f));
+		//AddGameObject<TestCube>(Vec3(0.0f, 0.0f, -10.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(1.0f, 1.0f, 1.0f));
+		//AddGameObject<TestCube>(Vec3(0.0f, 0.0f, 10.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(1.0f, 1.0f, 1.0f));
 
 
 		auto mainCamMana = AddGameObject<MainCameraManager>();
@@ -110,12 +133,12 @@ namespace basecross {
 			m_Func();
 			m_Func = nullptr;
 		}
-		// テストのために弾を出す
-		auto bButton = InputManager::GetInputManager()->GetDownButton(L"B");
-		if (bButton)
-		{
-			AddGameObject<Bullet>(GetSharedGameObject<Player>(L"Player"));
-		}
+		//// テストのために弾を出す
+		//auto bButton = InputManager::GetInputManager()->GetDownButton(L"B");
+		//if (bButton)
+		//{
+		//	AddGameObject<Bullet>(GetSharedGameObject<Player>(L"Player"));
+		//}
 
 		// テストのためにバリアをオンにする
 		//auto yButton = InputManager::GetInputManager()->GetDownButton(L"X");
@@ -129,6 +152,21 @@ namespace basecross {
 		//	GetSharedGameObject<Barrier>(L"Barrier")->SetUse(false);
 		//}
 
+		//デバック用
+		wstringstream wss(L"");
+		auto scene = App::GetApp()->GetScene<Scene>();
+
+		auto enemy1 = GetSharedGameObject<Enemy>(L"Enemy1");
+		auto enemy2 = GetSharedGameObject<Enemy>(L"Enemy2");
+
+		wss /* << L"デバッグ用文字列 "*/
+			//<< L"\ndifferenceRotVec.x : " << differenceRotVec.x
+			<< L"\n\n\n\nEnemy1.x軸 : " << XMConvertToDegrees(enemy1->GetComponent<Transform>()->GetRotation().x)
+			<< L"\nEnemy2.x軸 : " << XMConvertToDegrees(enemy2->GetComponent<Transform>()->GetRotation().x)
+			//<< L"\nrotVec.z : " << XMConvertToDegrees(m_rot.z)
+			<< endl;
+
+		scene->SetDebugString(wss.str());
 
 	}
 

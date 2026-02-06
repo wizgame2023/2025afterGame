@@ -60,15 +60,22 @@ namespace basecross{
 	{
 		MyGameObject::OnUpdate();
 
-		// ゲームマネージャーの取得
-		auto& game = GameManager::GetGameManager();
-
-		// カウントダウンが終わっていたらポーズ可能
-		if (game->GetGameStartCountDown() == static_cast<int>(GameStartCount::GAMESTART_End))
+		// 最初の1フレームだけの処理
+		if (!m_onceFlag)
 		{
-			// ポーズ中は更新しない
-			if (GetPauseFlag()) return; 
+			m_onceFlag = true;
+
+			// 初期設定
+			auto plPos = m_plTrans.lock()->GetPosition();
+			m_camPos = plPos - (m_plTrans.lock()->GetForward() * m_camDis) + Vec3(0.0f, m_camHeight, 0.0f);
+			m_atPos = plPos + (m_plTrans.lock()->GetForward() * m_atOffset);
+
+			m_mulCam->SetAt(m_atPos);
+			m_mulCam->SetEye(m_camPos);
 		}
+
+		// ポーズ中は更新しない
+		if (GetPauseFlag()) return; 
 
 		// コントローラーの取得
 		auto& input = InputManager::GetInputManager();
@@ -76,14 +83,14 @@ namespace basecross{
 		// 加速しているか
 		//bool isAccel = m_player->GetAcceleration();
 
-
+		auto& game = GameManager::GetGameManager();
 		wstring& accelKey = game->GetAccelKey();
 		wstring& viewBehindKey = game->GetViewBehindKey();
 
 		// ボタンの状態の取得
-		bool isAccel = input->GetDown(accelKey); // アクセルキーの状態
-		bool isViewBehind = input->GetDown(viewBehindKey); // 背面視点キーの状態
-		bool isViewBehindDownUp = input->GetNowUpdateButton(viewBehindKey);// Yボタンを押した瞬間と離した瞬間を取る
+		bool isAccel = input->GetButton(accelKey); // アクセルキーの状態
+		bool isViewBehind = input->GetButton(viewBehindKey); // 背面視点キーの状態
+		bool isViewBehindDownUp = input->GetNowUpdateButton(viewBehindKey);// 背面視点キーを押した瞬間と離した瞬間を取る
 
 		// プレイヤーの情報取得
 		m_plInfo.pos = m_plTrans.lock()->GetPosition();
