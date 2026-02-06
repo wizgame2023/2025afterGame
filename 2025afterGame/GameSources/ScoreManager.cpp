@@ -117,11 +117,7 @@ namespace basecross {
 
 	void ScoreManager::ResetScore(const int id)
 	{
-		// IDからスコア情報を探す
-		if (auto* entity = FindScoreInfo(id))
-		{
-			entity->crntScore = 0;
-		}
+		SetScore(id, 0);
 	}
 
 	// シングルトンによる生成
