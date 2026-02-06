@@ -1,6 +1,6 @@
-/*!
+ï»¿/*!
 @file BillBoardGauge.cpp
-@brief ƒLƒƒƒ‰ƒNƒ^[‚È‚ÇÀ‘Ì
+@brief ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ãªã©å®Ÿä½“
 */
 
 #include "stdafx.h"
@@ -9,18 +9,21 @@
 namespace basecross{
 	BillBoardGauge::BillBoardGauge(
 		const shared_ptr<Stage>& stagePtr,
-		const shared_ptr<GameObject>& actorPtr,
+		const shared_ptr<FighterAircraftBase>& fighetrAircaftPtr,
 		const wstring& spriteName,
+		Vec3 scale,
 		int layer,
 		float pushX,
 		float pushY,
-		Vec3 scale,
 		Col4 col,
 		int enemyIndex) :
 		BillBoard(stagePtr, actorPtr, spriteName, layer, pushX, pushY, scale,col),
 		m_indices(vector<uint16_t>()),
 		m_parsecond(1.0f),
-		m_enemyIndex(enemyIndex)
+		m_enemyIndex(enemyIndex),
+		m_fighterBase(fighetrAircaftPtr),
+		m_spriteMoveFlag(false),
+		m_invisibleFlag(false)
 	{
 
 	}
@@ -33,89 +36,120 @@ namespace basecross{
 	void BillBoardGauge::OnCreate()
 	{
 		auto ptrTrans = GetComponent<Transform>();
+		auto& app = App::GetApp();
+		auto scene = app->GetScene<Scene>();
+		auto stage = scene->GetActiveStage();
 
-		if (!m_actor.expired()) {
-			auto SeekPtr = m_actor.lock();
-			auto SeekTransPtr = SeekPtr->GetComponent<Transform>();
-			auto Pos = SeekTransPtr->GetPosition();
-			Pos.y += m_pushY;
-			ptrTrans->SetPosition(Pos);
+
+		// å­˜åœ¨ã—ã¦ã„ãªã‹ã£ãŸã‚‰
+		if (!m_fighterBase.expired())
+		{
+			auto seekPtr = m_fighterBase.lock();
+			auto seekPtrTrans = seekPtr->GetComponent<Transform>();
+			auto pos = seekPtrTrans->GetPosition();
+			pos.x += m_pushX;
+			pos.y += m_pushY;
+			ptrTrans->SetPosition(pos);
 			ptrTrans->SetScale(m_scale);
-			ptrTrans->SetQuaternion(SeekTransPtr->GetQuaternion());
-			//•ÏX‚Å‚«‚éƒXƒNƒGƒAƒŠƒ\[ƒX‚ğì¬
-
-			//Square‚Ìì¬(ƒwƒ‹ƒp[ŠÖ”‚ğ—˜—p)
+			ptrTrans->SetQuaternion(seekPtrTrans->GetQuaternion());
+			//Squareã®ä½œæˆ(ãƒ˜ãƒ«ãƒ‘ãƒ¼é–¢æ•°ã‚’åˆ©ç”¨)
 			MeshUtill::CreateSquare(1.0f, m_vertices, m_indices);
 
-			//UV’l‚Ì•ÏX
-			//¶ã’¸“_
+			//UVå€¤ã®å¤‰æ›´
+			//å·¦ä¸Šé ‚ç‚¹
 			m_vertices[0].textureCoordinate = Vec2(0.0f, 0.0f);
-			//‰Eã’¸“_
-			m_vertices[1].textureCoordinate = Vec2(1.0f * m_parsecond, 0.0f);
-			//¶‰º’¸“_
+			//å³ä¸Šé ‚ç‚¹
+			m_vertices[1].textureCoordinate = Vec2(1.0f, 0.0f);
+			//å·¦ä¸‹é ‚ç‚¹
 			m_vertices[2].textureCoordinate = Vec2(0.0f, 1.0f);
-			//‰E‰º’¸“_
-			m_vertices[3].textureCoordinate = Vec2(1.0f * m_parsecond, 1.0f);
+			//å³ä¸‹é ‚ç‚¹
+			m_vertices[3].textureCoordinate = Vec2(1.0f, 1.0f);
 
-			//’¸“_‚ÌŒ^‚ğ•Ï‚¦‚½V‚µ‚¢’¸“_‚ğì¬
+			//é ‚ç‚¹ã®å‹ã‚’å¤‰ãˆãŸæ–°ã—ã„é ‚ç‚¹ã‚’ä½œæˆ
+			// PCTã‚’ä½¿ã„ãŸã„ã®ã§é ‚ç‚¹ã‹ã‚‰Positionã€Colorã€UVã ã‘å–ã£ã¦
+			// new_verticesã«å…¥ã‚Œã¦ã„ã‚‹
 			vector<VertexPositionColorTexture> new_vertices;
-			for (auto& v : m_vertices) {
+			for (auto& v : m_vertices)
+			{
 				VertexPositionColorTexture nv;
 				nv.position = v.position;
-				nv.color = Col4(1.0f, 1.0f, 1.0f, 1.0f);//Ô
+				nv.color = Col4(1.0f, 1.0f, 1.0f, 1.0f);
 				nv.textureCoordinate = v.textureCoordinate;
 				new_vertices.push_back(nv);
 			}
 
-			//V‚µ‚¢’¸“_‚ğg‚Á‚ÄƒƒbƒVƒ…ƒŠƒ\[ƒX‚Ìì¬
+			//æ–°ã—ã„é ‚ç‚¹ã‚’ä½¿ã£ã¦ãƒ¡ãƒƒã‚·ãƒ¥ãƒªã‚½ãƒ¼ã‚¹ã®ä½œæˆ
 			m_SquareMeshResource = MeshResource::CreateMeshResource<VertexPositionColorTexture>(new_vertices, m_indices, true);
 
-			auto DrawComp = AddComponent<PCTStaticDraw>();
-			DrawComp->SetMeshResource(m_SquareMeshResource);
-			DrawComp->SetTextureResource(m_textureName);
-			DrawComp->SetDepthStencilState(DepthStencilState::Read);
+			// ãƒ¡ãƒƒã‚·ãƒ¥ä½œæˆ
+			m_drawComp = AddComponent<PCTStaticDraw>();
+			m_drawComp->SetMeshResource(m_SquareMeshResource);
+			m_drawComp->SetTextureResource(m_textureName);
 			SetAlphaActive(true);
 			SetDrawLayer(m_layer);
-			SetDrawActive(true);
 		}
 	}
 
 	void BillBoardGauge::OnUpdate()
 	{
-		if (m_parsecond <= 0.0f)
+		if (m_fighterBase.expired())
 		{
 			RemoveBillBoardGauge();
-			return;
 		}
 
-		SetPercent();
+		float dt = App::GetApp()->GetElapsedTime();
 
-		if (!m_actor.expired()) {
-			auto seekPtr = m_actor.lock();
-			auto seekPtrTrans = seekPtr->GetComponent<Transform>();
+		// è¡¨ç¤ºè¦æ±‚ãŒæ¥ãŸç¬é–“
+		if (m_invisibleFlag && !m_timerRunning)
+		{
+			SetDrawActive(false);
+			m_timerRunning = true;
+			m_delta = 0.0f;
+		}
 
-			//ƒAƒjƒ[ƒVƒ‡ƒ“ˆ—/////////////////////////////////////////
+		// ã‚¿ã‚¤ãƒãƒ¼é€²è¡Œä¸­
+		if (m_timerRunning)
+		{
+			m_delta += dt;
+			
+			// 1ç§’çµŒéå¾Œè¡¨ç¤º
+			if (m_delta >= 6.0f) 
+			{
+				SetDrawActive(true);
+				m_invisibleFlag = false;
+				m_timerRunning = false;
+			}
+		}
+
+		if (m_spriteMoveFlag)
+		{
+			SetPercent();
+		}
+
+		if (!m_fighterBase.expired())
+		{
 			m_vertices[1].position.x = -0.5f + (1.0f * m_parsecond);
 			m_vertices[3].position.x = -0.5f + (1.0f * m_parsecond);
 			m_vertices[1].position.y = 0.5f;
 			m_vertices[3].position.y = -0.5f;
-			//UVÀ•W‚Ìİ’è		
 			auto move = (1.0f * m_parsecond);
 			m_vertices[1].textureCoordinate.x = move;
 			m_vertices[3].textureCoordinate.x = move;
-			////////////////////////////////////////////////////////////
 
-			//V‚µ‚¢’¸“_‚ÉXV
 			vector<VertexPositionColorTexture> new_vertices;
 			for (auto& v : m_vertices) {
 				VertexPositionColorTexture nv;
 				nv.position = v.position;
-				nv.color = Col4(1.0f, 1.0f, 1.0f, 1.0f);//Ô
+				nv.color = Col4(1.0f, 1.0f, 1.0f, 1.0f);
 				nv.textureCoordinate = v.textureCoordinate;
 				new_vertices.push_back(nv);
 			}
-			//V‚µ‚¢’¸“_‚ğg‚Á‚ÄƒƒbƒVƒ…ƒŠƒ\[ƒX‚Ìì¬
+
 			m_SquareMeshResource->UpdateVirtexBuffer<VertexPositionColorTexture>(new_vertices);
+			
+			//
+			auto seekPtr = m_fighterBase.lock();
+			auto seekPtrTrans = seekPtr->GetComponent<Transform>();
 
 			auto PtrTransform = GetComponent<Transform>();
 			auto Pos = seekPtrTrans->GetPosition();
@@ -123,38 +157,37 @@ namespace basecross{
 			PtrTransform->SetPosition(Pos);
 			PtrTransform->SetScale(m_scale);
 
-			//ƒƒbƒVƒ…‚ÌXV
-			auto DrawComp = GetComponent<PCTStaticDraw>();
-			DrawComp->SetMeshResource(m_SquareMeshResource);
-			DrawComp->SetTextureResource(m_textureName);
-			// ƒGƒtƒFƒNƒg‚ÌÁ‚¦‚éŒ»Û‚Ì‰ğŒˆ
-			DrawComp->SetDepthStencilState(DepthStencilState::Read);
+			m_drawComp = GetComponent<PCTStaticDraw>();
+			m_drawComp->SetMeshResource(m_SquareMeshResource);
+			m_drawComp->SetTextureResource(m_textureName);
+
+			// 
+			if (m_spriteMoveFlag)
+			{
+				m_drawComp->SetDepthStencilState(DepthStencilState::None);
+			}
+			else
+			{
+				m_drawComp->SetDepthStencilState(DepthStencilState::Read);
+			}
 
 			auto PtrCamera = GetStage()->GetView()->GetTargetCamera();
 
 			Quat Qt;
-			//Œü‚«‚ğƒJƒƒ‰–Úü‚É‚·‚é
 			Qt = Billboard(PtrCamera->GetAt() - PtrCamera->GetEye());
 
 			PtrTransform->SetQuaternion(Qt);
-
 		}
+
 	}
 
-	//‰½ƒp[ƒZƒ“ƒgƒeƒNƒXƒ`ƒƒ‚ğo‚·‚©Œˆ‚ß‚é
+	//ä½•ãƒ‘ãƒ¼ã‚»ãƒ³ãƒˆãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’å‡ºã™ã‹æ±ºã‚ã‚‹
 	void BillBoardGauge::SetPercent()
 	{
-		auto& ui = UIManager::GetUIManager();
+		float current = (float)m_fighterBase.lock()->GetHpCurrent();
+		float maxHP = (float)m_fighterBase.lock()->GetHpMax();
 
-		// “G‚ÌHP”z—ñ‚ğæ“¾
-		auto currents = ui->GetCurrentEnemyHP();
-		auto maxs = ui->GetMaxEnemyHP();
-
-		// ©•ª‚ª‰½”Ô–Ú‚Ì“G‚©
-		float current = (float)currents[m_enemyIndex];
-		float maxHP = (float)maxs[m_enemyIndex];
-
-		// Š„‡‚ğì‚é
+		// å‰²åˆã‚’ä½œã‚‹
 		if (maxHP <= 0)
 		{
 			m_parsecond = 0.0f;
@@ -165,12 +198,38 @@ namespace basecross{
 		}
 
 		m_parsecond = clamp(m_parsecond, 0.0f, 1.0f);
-	}
 
+
+		if(m_parsecond < 0.4f)
+		{
+			m_color = Col4(1.0f, 0.0f, 0.0f, 1.0f);
+		}
+		else if (m_parsecond < 0.8f)
+		{
+			m_color = Col4(1.0f, 1.0f, 0.0f, 1.0f);
+		}
+		else
+		{
+			m_color = Col4(0.0f, 1.0f, 0.0f, 1.0f);
+		}
+
+
+		m_drawComp->SetDiffuse(m_color);
+	}
 
 	void BillBoardGauge::RemoveBillBoardGauge()
 	{
 		GetStage()->RemoveGameObject<BillBoardGauge>(GetThis<BillBoardGauge>());
+	}
+
+	void BillBoardGauge::SetSpriteMove(bool flag)
+	{
+		m_spriteMoveFlag = flag;
+	}
+
+	void BillBoardGauge::SetInvisible(bool flag)
+	{
+		m_invisibleFlag = flag;
 	}
 }
 //end basecross

@@ -45,9 +45,6 @@ namespace basecross
 			{
 				// 自分を作成
 				m_UIManager.reset(new UIManager());
-
-				// 初期化
-				m_UIManager->OnCreate();
 			}
 			return m_UIManager;
 		}
@@ -65,11 +62,15 @@ namespace basecross
 		return m_UIManager;
 	}
 
+	void UIManager::UIManagerCreate()
+	{
+		OnCreate();
+	}
+
 	// 初期化処理
 	void UIManager::OnCreate()
 	{
 		CreateUI();
-		// CreateGaugeUI();
 		CreateRankingUI();
 	}
 
@@ -90,21 +91,48 @@ namespace basecross
 
 		GetPlayerScore();
 
+		// リザルト生成
 		if (gameManager->GetGameEnd() && !m_createUIEnd)
 		{
-			m_score = stage->AddGameObject<NumberSprite>(Vec2(150.0f, 150.0f), Vec3(0.0f, 0.0f, 0.0f));
-			m_score->SetMyType(NumberType::Score);
-			m_score->SetLayer(999);
-			auto backGraund = stage->AddGameObject<Sprite>(L"PauseMenuBackGround_TX", Vec2(800.0f, 700.0f), Vec3(0.0f, 0.0f, 0.0f));
-			backGraund->SetDrawLayer(3);
+			auto backGraund = stage->AddGameObject<Sprite>(L"PauseMenuBackGround_TX", Vec2(600.0f, 750.0f), Vec3(0.0f, 0.0f, 0.0f));
+			backGraund->SetDrawLayer(1);
 			backGraund->SetColor(Col4(1.0f, 1.0f, 1.0f, 1.0f));
-			auto finalscore = stage->AddGameObject<Sprite>(L"Finalscore", Vec2(600.0f, 200.0f), Vec3(0.0f, 200.0f, 0.0f));
+
+			auto finalscore = stage->AddGameObject<Sprite>(L"Finalscore", Vec2(420.0f, 140.0f), Vec3(0.0f, 250.0f, 0.0f));
 			finalscore->SetDrawLayer(4);
 
-			m_createUIEnd = true;
+			int total = 8;
+
+			for (int i = 0; i < total; i++)
+			{
+				auto obj = stage->AddGameObject<RankingUI>(
+					Vec3(-50, 100 - i * 60, 0),
+					i + 1,
+					false
+				);
+
+				obj->SetLayer(2);
+
+				shared_ptr<FighterAircraftBase> fightBase;
+
+				if (i == 0)
+				{
+					fightBase = stage->GetSharedGameObject<Player>(L"Player");
+				}
+				else
+				{
+					fightBase = stage->GetSharedGameObject<Enemy>(L"Enemy" + to_wstring(i));
+				}
+
+				obj->SetFightBase(fightBase);
+
+
+				m_createUIEnd = true;
+			}
 		}
 
-		if (countDown == 2)
+		// カウントダウンが0になったら消える
+		if (countDown == 5)
 		{
 			m_countNumber->OnDestory();
 		}
@@ -128,13 +156,6 @@ namespace basecross
 		auto hp = stage->AddGameObject<HpSprite>(L"HP", Vec2(30.0f, 5.0f), Vec3(-600.0f, 375.0f, 0.0f));
 		hp->SetSpriteMove(true);
 
-		//auto finalscore = stage->AddGameObject<Sprite>(L"Finalscore", Vec2(600.0f, 200.0f), Vec3(0.0f, 325.0f, 0.0f));
-		//finalscore->SetDrawLayer(2);
-
-		//// 順位
-		//auto you = stage->AddGameObject<RankingUI>(Vec3(0, 0, 0), 1, true);
-		//you->SetLayer(4);
-
 		CreateSprite();
 		CreateNumberSprite();
 
@@ -146,15 +167,21 @@ namespace basecross
 		auto& app = App::GetApp();
 		auto scene = app->GetScene<Scene>();
 		auto stage = scene->GetActiveStage();
-		auto& gameMana = GameManager::GetGameManager();
 
-		//auto maxBullet = stage->AddGameObject<Sprite>(L"RemainingRounds", Vec2(170.0f, 85.0f), Vec3(-480.0f, 330.0f, 0.0f));
-
-		m_clon = stage->AddGameObject<NumberSprite>(Vec2(20.0f, 60.0f), Vec3(500.0f, 370.0f, 0.0f));
+		// コロンの作成
+		m_clon = stage->AddGameObject<Sprite>(L"Number", Vec2(50.0f, 100.0f), Vec3(500.0f, 350.0f, 0.0f));
 		m_clon->SetDigit(11);
 
-		auto crown = stage->AddGameObject<Sprite>(L"crown", Vec2(70.0f, 70.0f), Vec3(-600.0f, 205.0f, 0.0f));
+		// バックスラッシュの作成
+		auto backslash = stage->AddGameObject<Sprite>(L"Number", Vec2(40.0f, 80.0f), Vec3(-480.0f, 320.0f, 0.0f));
+		backslash->SetDigit(10);
 
+		// 弾の最大数の作成
+		auto maxBullet = stage->AddGameObject<NumberSprite>(Vec2(40.0f, 80.0f), Vec3(-400.0f, 320.0f, 0.0f));
+		maxBullet->SetMyType(NumberType::MaxBullet);
+
+		auto backGraund = stage->AddGameObject<Sprite>(L"PauseMenuBackGround_TX", Vec2(310.0f, 80.0f), Vec3(-445.0f, 200.0f, 0.0f));
+		backGraund->SetColor(Col4(1.0f, 1.0f, 1.0f, 0.5f));
 	}
 
 	void UIManager::CreateNumberSprite()
@@ -162,37 +189,30 @@ namespace basecross
 		auto& app = App::GetApp();
 		auto scene = app->GetScene<Scene>();
 		auto stage = scene->GetActiveStage();
-		auto& gameMana = GameManager::GetGameManager();
+		int plusNumber = 12;
 
+		// カウントダウン
 		m_countNumber = stage->AddGameObject<NumberSprite>(Vec2(50.0f, 100.0f), Vec3(0.0f, 0.0f, 0.0f));
 		m_countNumber->SetDigitCount(1);
 		m_countNumber->SetMyType(NumberType::Count);
 
-		auto minutu = stage->AddGameObject<NumberSprite>(Vec2(50.0f, 100.0f), Vec3(445.0f, 370.0f, 0.0f));
+		// 制限時間(分)
+		auto minutu = stage->AddGameObject<NumberSprite>(Vec2(50.0f, 100.0f), Vec3(445.0f, 350.0f, 0.0f));
 		minutu->SetMyType(NumberType::Minute);
 
-		auto second = stage->AddGameObject<NumberSprite>(Vec2(50.0f, 100.0f), Vec3(600.0f, 370.0f, 0.0f));
-		second->SetMyType(NumberType::Second);
-		second->SetDigitCount(2);
+		// 制限時間(秒)
+		m_secondUI = stage->AddGameObject<NumberSprite>(Vec2(50.0f, 100.0f), Vec3(600.0f, 350.0f, 0.0f));
+		m_secondUI->SetMyType(NumberType::Second);
+		m_secondUI->SetDigitCount(2);
 
-		// 5:6
-		auto bullet = stage->AddGameObject<NumberSprite>(Vec2(45.0f, 64.0f), Vec3(-415.0f, 325.0f, 0.0f));
+		// 弾UI作成
+		auto bullet = stage->AddGameObject<NumberSprite>(Vec2(40.0f, 80.0f), Vec3(-530.0f, 320.0f, 0.0f));
 		bullet->SetMyType(NumberType::Bullet);	
 		bullet->SetDigitCount(2);
 
-	}
-
-	void UIManager::CreateGaugeUI()
-	{
-		auto& app = App::GetApp();
-		auto scene = app->GetScene<Scene>();
-		auto stage = scene->GetActiveStage();
-
-		for (int i = 0; i < m_enemies.size(); i++)
-		{
-			auto enemyBillBoard = stage->AddGameObject<BillBoardGauge>(m_enemies[i], L"HP", 3, 2.0f, 1.5f, Vec3(2.0f, 0.2f, 5.0f),Col4(1.0f),i);
-			m_enemyGauges.push_back(enemyBillBoard);
-		}
+		//// 弾UI作成
+		//auto ana = stage->AddGameObject<NumberSprite>(Vec2(40.0f, 80.0f), Vec3(0.0f, 0.0f, 0.0f));
+		//ana->SetSignedNumber(plusNumber,30);
 	}
 
 	void UIManager::CreateRankingUI()
@@ -201,15 +221,16 @@ namespace basecross
 		auto scene = app->GetScene<Scene>();
 		auto stage = scene->GetActiveStage();
 		int total = 8;
+		bool playerOnlyRanking = true;
 
-		for (int i = 0; i < total; i++)
+		for (int i = 0; i < 1; i++)
 		{
 			auto obj = stage->AddGameObject<RankingUI>(
-				Vec3(-450, 200 - i * 50, 0),
+				Vec3(-500, 200 - i * 50, 0),
 				i + 1,
-				false
+				playerOnlyRanking
 			);
-			
+
 			shared_ptr<FighterAircraftBase> fightBase;
 
 			if (i == 0)

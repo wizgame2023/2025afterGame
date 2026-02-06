@@ -53,6 +53,7 @@ namespace basecross {
 
 		// 現在ポーズしているMyGameObjectを保存する配列
 		vector<weak_ptr<MyGameObject>> m_myGameObjectVec;
+		bool m_pauseActive = false;
 
 		//GameStartの流れ
 		enum GameStartCount
@@ -78,6 +79,7 @@ namespace basecross {
 		wstring m_bulletKey = L"RTrigger";
 		wstring m_viewBehindKey = L"Y";
 		wstring m_accelKey = L"A";
+ 
 	public:
 		float GetBGMVolume() const { return m_BGMVolume; };
 		void SetBGMVolume(const float volume) { m_BGMVolume = volume; };
@@ -191,7 +193,8 @@ namespace basecross {
 
 		// Gameが終わっているかの取得
 		bool  GetGameEnd();
-
+		
+		// 情報をリセット
 		void ResetGameManager();
 	};
 }
