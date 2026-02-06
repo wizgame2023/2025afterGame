@@ -7,6 +7,7 @@
 #include "stdafx.h"
 
 namespace basecross{
+	// スプライトの値を特定にしている
 	enum class NumberType
 	{
 		None,
@@ -24,13 +25,17 @@ namespace basecross{
 	private:
 		NumberType m_type;
 		vector<shared_ptr<Sprite>> m_digits;
-		int m_number;         // 表示する数値
+		// 表示する数値
+		int m_number;
 		int m_digit;          // 桁(0〜9)
 		int m_prevNumber;     // 初期値はありえない値にしておく
 		Vec3 m_pos;
 		int m_layer;
 		int m_rankingNumber;
 		int m_value;
+		
+		// 数字の更新フラグ
+		bool m_numberUpDater;
 
 	public:
 		NumberSprite(
@@ -47,27 +52,26 @@ namespace basecross{
 
 		// 初期化
 		void OnCreate() override;
-		
 		// 更新
 		void OnUpdate() override;
-		
 		// 数値変更
 		void SetNumber(int number);
-
-		// 表示する桁数
-		void SetDigit(int digit);
-		
+		// SetSignedNumber
+		void SetSignedNumber(int symbol,int number);
 		// 数値の種類を設定
 		void SetMyType(NumberType type);
-
 		// 数字の固定表示桁数を設定する。桁数が不足する場合はゼロ埋めする
 		void SetDigitCount(int digitCount);
-
+		// 削除
 		virtual void OnDestory();
+		// UIが生成された時のカウント
+		void AddRankingNumberCount(int number);
+		// Numberの更新のセッター
+		void SetNumberUpdateFlag(bool flag);
+		// Numberの更新のゲッター
+		bool GetNumberUpdateFlag();
 
-		void SetLayer(int layer);
-
-		void SetRankingNumberCount(int number);
+		void SetNumberLayer(int number);
 	};
 }
 //end basecross

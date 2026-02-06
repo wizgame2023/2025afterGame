@@ -212,7 +212,11 @@ namespace basecross
 			return m_RightTrigger;
 		}
 
-		// 押されているボタンの名前を取得
+		/*!
+		@brief 押されているボタンの名前を取得
+		@param[in] なし
+		@return wstring 押されているボタンの名前(押されていなければ空文字列)
+		*/
 		wstring GetPressedButton() const
 		{
 			for (const auto& button : m_Buttons)
@@ -231,6 +235,39 @@ namespace basecross
 				return L"RTrigger";
 			}
 			return L"";
+		}
+
+		/*!
+		@brief 指定したボタンが押されているか取得
+		@param[in] key : 確認したいボタンの名前 threshold : トリガーのしきい値(default : 30)
+		@return bool (押されていればtrue, 押されていなければfalse)
+		*/
+		bool GetDown(const wstring& key, const BYTE threshold = 30) const
+		{
+			// 空文字ならfalse
+			if (key == L"")
+			{
+				return false;
+			}
+			// トリガー以外はm_DownButtonsから取得
+			for (const auto& button : m_DownButtons)
+			{
+				if (button.first == key && button.second)
+				{
+					return true;
+				}
+			}
+
+			if (key == L"LTrigger")
+			{
+				return GetLeftTrigger() > threshold;
+			}
+			if (key == L"RTrigger")
+			{
+				return GetRightTrigger() > threshold;
+			}
+
+			return 0;
 		}
 
 		// 2P //////////////////////////////////

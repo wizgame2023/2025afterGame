@@ -14,7 +14,6 @@ namespace basecross {
 	private:
 		float m_countDebagBulletTime; // デバック用の弾を出す時間計測変数
 
-
 		// 追いかける目標のオブジェクト
 		weak_ptr<Actor> m_trackingObj;
 		//shared_ptr<Actor> m_trakingObjLock;
@@ -69,6 +68,9 @@ namespace basecross {
 
 		// ステートの変更処理
 		void ChangeState(wstring stateName);
+
+		// 目標の変更処理
+		void ChangeTarget(GamePhase currentPhase, const vector<shared_ptr<GameObject>>& objVec);
 
 		// 対象に向かって追いかける処理
 		void TrackingMove(const Vec3& posPlayerDifference);

@@ -33,11 +33,6 @@ namespace basecross {
 
     void NumberSprite::OnCreate()
     {
-        Sprite::OnCreate();
-        m_trans->SetPosition(m_pos.x, m_pos.y,m_pos.z);
-        SetDrawActive(false);
-        SetLayer(3);
-
         SetDrawLayer(m_layer);
     }
 
@@ -85,11 +80,10 @@ namespace basecross {
             SetNumber(m_value);
         }
     }
-
+    
     void NumberSprite::SetNumber(int number)
     {
         m_number = number;
-
         int n = max(0, number);
 
         // 表示する桁数
@@ -126,12 +120,67 @@ namespace basecross {
         }
 
         // 下位桁から数字を入れる
-        for (int i = digitCount - 1; i >= 0; --i)
+
+        if (!m_numberUpDater)
+        {
+            for (int i = digitCount - 1; i >= 0; --i)
+            {
+                int digit = n % 10;
+                n /= 10;
+
+                m_digits[i]->SetDigit(digit);
+            }
+        }
+    }
+
+    void NumberSprite::SetSignedNumber(int symbol, int number)
+    {
+        m_number = number;
+        int n = max(0, number);
+
+        // 数値部分の桁数
+        int numberDigitCount = max(1, (int)to_string(n).size());
+
+        // 記号 + 数値
+        int digitCount = numberDigitCount + 1;
+
+        // 桁数が違えば作り直す
+        if ((int)m_digits.size() != digitCount)
+        {
+            for (auto& d : m_digits)
+            {
+                if (d) d->MyDestroy();
+            }
+            m_digits.clear();
+            m_digits.reserve(digitCount);
+
+            float totalWidth = m_size.x * digitCount;
+
+            for (int i = 0; i < digitCount; ++i)
+            {
+                float x = m_pos.x + (i * m_size.x) - totalWidth + m_size.x;
+
+                auto digitSprite = GetStage()->AddGameObject<Sprite>(
+                    m_textureName,
+                    m_size,
+                    Vec3(round(x), m_pos.y, m_pos.z),
+                    m_rot,
+                    m_color,
+                    m_layer
+                );
+                m_digits.push_back(digitSprite);
+            }
+        }
+
+        // 先頭の記号
+        m_digits[0]->SetDigit(symbol);
+
+        // 数値部分を下位桁からセット
+        for (int i = digitCount - 1; i >= 1; --i)
         {
             int digit = n % 10;
             n /= 10;
-
-            m_digits[i]->SetDigit(digit); 
+            m_digits[i]->SetDigit(digit);
         }
     }
 
@@ -161,14 +210,24 @@ namespace basecross {
         GetStage()->RemoveGameObject<NumberSprite>(GetThis<NumberSprite>());
     }
 
-    void NumberSprite::SetLayer(int layer)
-    {
-        m_layer = layer;
-    }
-
-    void NumberSprite::SetRankingNumberCount(int number)
+    void NumberSprite::AddRankingNumberCount(int number)
     {
         m_rankingNumber += number;
+    }
+
+    void NumberSprite::SetNumberUpdateFlag(bool flag)
+    {
+        m_numberUpDater = flag;
+    }
+
+    bool NumberSprite::GetNumberUpdateFlag()
+    {
+        return m_numberUpDater;
+    }
+
+    void NumberSprite::SetNumberLayer(int number)
+    {
+        m_layer = number;
     }
 }
 //end basecross
