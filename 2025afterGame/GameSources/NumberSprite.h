@@ -56,6 +56,8 @@ namespace basecross{
 		void OnUpdate() override;
 		// 数値変更
 		void SetNumber(int number);
+		// SetSignedNumber
+		void SetSignedNumber(int symbol,int number);
 		// 数値の種類を設定
 		void SetMyType(NumberType type);
 		// 数字の固定表示桁数を設定する。桁数が不足する場合はゼロ埋めする
@@ -68,6 +70,8 @@ namespace basecross{
 		void SetNumberUpdateFlag(bool flag);
 		// Numberの更新のゲッター
 		bool GetNumberUpdateFlag();
+
+		void SetNumberLayer(int number);
 	};
 }
 //end basecross

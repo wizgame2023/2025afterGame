@@ -137,6 +137,8 @@ namespace basecross{
 		int GetId();
 		// idのセッタ
 		void SetId(int id);
+		// リセット
+		void ResetParameter();
 
 		virtual void CreateChildObjects()
 		{
