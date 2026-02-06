@@ -72,7 +72,7 @@ namespace basecross {
 		m_draw->AddAnimation(L"PropellerDown", 40, 20, 30.0f);
 		m_draw->AddAnimation(L"PropellerStop", 0, 1, 0.0f);
 
-		m_draw->ChangeCurrentAnimation(L"PropellerStop");
+		m_draw->ChangeCurrentAnimation(L"PropellerMove");
 
 
 		// 敵タグ追加
@@ -109,6 +109,10 @@ namespace basecross {
 		}
 		// レイを表示したい数
 		//RayCast::InitRay(1);
+
+		// アニメーション再生
+		m_draw->UpdateAnimation(m_delta);
+
 
 
 
