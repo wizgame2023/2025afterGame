@@ -18,17 +18,6 @@ namespace basecross{
 		// enum
 		// ==============================================================================
 
-		// ゲームスタートのカウントダウン
-		enum class GameStartCount
-		{
-			GAMESTART_Start,
-			GAMESTART_CountDown_One,
-			GAMESTART_CountDown_Two,
-			GAMESTART_CountDown_Three,
-			GAMESTART_CountDown_Start,
-			GAMESTART_End
-		};
-
 		// ==============================================================================
 		// 構造体
 		// ==============================================================================
@@ -71,6 +60,8 @@ namespace basecross{
 		// カメラ関係の変数
 		Vec3 m_camPos;
 		Vec3 m_atPos;
+
+		bool m_onceFlag = false;
 
 		// ==============================================================================
 		// メンバ定数
