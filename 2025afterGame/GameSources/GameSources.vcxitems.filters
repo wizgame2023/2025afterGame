@@ -181,6 +181,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)PlayerGrv.cpp">
       <Filter>Script</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)BillBoardNumber.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Actor.h">
@@ -364,6 +367,9 @@
       <Filter>Header\PrivateStage</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)PlayerGrv.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)BillBoardNumber.h">
       <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>
