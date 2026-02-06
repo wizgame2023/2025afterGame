@@ -62,6 +62,12 @@ namespace basecross {
 		return nullptr;
 	}
 
+	void ScoreManager::ScoreManagerReset()
+	{
+		m_scores.clear();
+		m_fighterBases.clear();
+	}
+
 	vector<ScoreManager::ScoreInfo> ScoreManager::GetSortedScores() const
 	{
 		// スコア情報のコピーを作成
@@ -117,11 +123,7 @@ namespace basecross {
 
 	void ScoreManager::ResetScore(const int id)
 	{
-		// IDからスコア情報を探す
-		if (auto* entity = FindScoreInfo(id))
-		{
-			entity->crntScore = 0;
-		}
+		SetScore(id, 0);
 	}
 
 	// シングルトンによる生成

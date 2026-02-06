@@ -29,14 +29,12 @@ namespace basecross {
 
 	class ScoreManager
 	{
-	public:
 		struct ScoreInfo
 		{
-			int id;		// スコアを持っているプレイヤー,NPCの名前
+			int id;		// スコアを持っているプレイヤー,NPCの番号(0はプレイヤー固定)
 			int crntScore = 0;		// 現在のスコア
 		};
 
-	private:
 		// 削除処理
 		struct ScoreManagerDeleter
 		{
@@ -51,9 +49,6 @@ namespace basecross {
 
 		// スコア
 		vector<ScoreInfo> m_scores;
-
-		// スプライト
-		vector<shared_ptr<Sprite>> m_numberSprite;
 
 		// ステージ
 		shared_ptr<Stage> m_stage;
@@ -82,6 +77,8 @@ namespace basecross {
 
 
 	public:
+		// ScoreManagerのメンバ変数初期化
+		void ScoreManagerReset();
 
 		// ランキングソート
 		vector<ScoreInfo> GetSortedScores() const;

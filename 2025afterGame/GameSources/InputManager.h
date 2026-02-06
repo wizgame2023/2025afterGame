@@ -1,7 +1,7 @@
 /*!
 @file InputManager.h
 @brief 入力マネージャー
-@authors 吉田智貴
+@authors 吉田智貴　佐藤海斗
 */
 
 #pragma once
@@ -20,6 +20,34 @@ namespace basecross
 
 		InputManager();
 		virtual ~InputManager() {}
+
+		/*!
+		@brief ボタンの状態を取得する(ヘルパー関数)
+		@param[in] buttonfind ボタンの状態のタイプ button 取得したいボタンの名前
+		@return ボタンの状態
+		*/
+		bool FindButtonState(const map<wstring, bool>& buttonMap, const wstring& button) const
+		{
+			auto it = buttonMap.find(button);
+			if (it != buttonMap.end())
+			{
+				return it->second;
+			}
+			return false;
+		}
+
+		/*!
+		@brief トリガーの状態を取得する(ヘルパー関数)
+		@param[in] buttonfind ボタンの状態のタイプ button 取得したいボタンの名前
+		@return ボタンの状態
+		*/
+		bool TriggerState(const wstring& button, const BYTE threshold) const
+		{
+			if (button == L"LTrigger") return GetLeftTrigger() > threshold;
+			if (button == L"RTrigger") return GetRightTrigger() > threshold;
+			return false;
+		}
+
 
 		/*
 			L"DUp"    XINPUT_GAMEPAD_DPAD_UP
@@ -122,20 +150,24 @@ namespace basecross
 			return m_RStick;
 		}
 
+
 		/*!
 		@brief ボタンの状態を取得
 		@param[in] button 取得したいボタンの名前
 		@return ボタンの状態
 		*/
-		bool GetButton(wstring button)
+		bool GetButton(const wstring& button, const BYTE threshold = 30) const
 		{
-			auto it = m_Buttons.find(button);
-			if (it != m_Buttons.end())
+			// 空文字ならfalse
+			if (button == L"") return false;
+
+			// トリガーの場合、しきい値を超えていればtrue
+			if (button == L"LTrigger" || button == L"RTrigger")
 			{
-				return it->second;
+				return TriggerState(button, threshold);
 			}
 
-			return false;
+			return FindButtonState(m_Buttons, button);
 		}
 
 		/*!
@@ -143,15 +175,18 @@ namespace basecross
 		@param[in] button 取得したいボタンの名前
 		@return ボタンの押下状態
 		*/
-		bool GetDownButton(wstring button)
+		bool GetDownButton(const wstring& button, const BYTE threshold = 30) const
 		{
-			auto it = m_DownButtons.find(button);
-			if (it != m_DownButtons.end())
+			// 空文字ならfalse
+			if (button == L"") return false;
+
+			// トリガーの場合、しきい値を超えていればtrue
+			if (button == L"LTrigger" || button == L"RTrigger")
 			{
-				return it->second;
+				return TriggerState(button, threshold);
 			}
 
-			return false;
+			return FindButtonState(m_DownButtons, button);
 		}
 
 		/*!
@@ -159,15 +194,18 @@ namespace basecross
 		@param[in] button 取得したいボタンの名前
 		@return ボタンの離脱状態
 		*/
-		bool GetUpButton(wstring button)
+		bool GetUpButton(const wstring& button, const BYTE threshold = 30) const
 		{
-			auto it = m_UpButtons.find(button);
-			if (it != m_UpButtons.end())
+			// 空文字ならfalse
+			if (button == L"") return false;
+
+			// トリガーの場合、しきい値以内であればfalse
+			if (button == L"LTrigger" || button == L"RTrigger")
 			{
-				return it->second;
+				return !TriggerState(button, threshold);
 			}
 
-			return false;
+			return FindButtonState(m_UpButtons, button);
 		}
 
 		/*!
@@ -175,15 +213,18 @@ namespace basecross
 		@param[in] button 取得したいボタンの名前
 		@return ボタンの変更状態
 		*/
-		bool GetNowUpdateButton(wstring button)
+		bool GetNowUpdateButton(const wstring& button/*, const BYTE threshold = 30*/) const
 		{
-			auto it = m_NowUpdateButtons.find(button);
-			if (it != m_NowUpdateButtons.end())
-			{
-				return it->second;
-			}
+			// 空文字ならfalse
+			if (button == L"") return false;
 
-			return false;
+			//// トリガーの場合、しきい値を超えていればtrue
+			//if (button == L"LTrigger" || button == L"RTrigger")
+			//{
+			//	return TriggerState(button, threshold);
+			//}
+
+			return FindButtonState(m_NowUpdateButtons, button);
 		}
 
 		/*!
@@ -191,15 +232,18 @@ namespace basecross
 		@param[in] button 取得したいボタンの名前
 		@return 前フレームのボタンの状態
 		*/
-		bool GetLastButton(wstring button)
+		bool GetLastButton(const wstring& button/*, const BYTE threshold = 30*/) const
 		{
-			auto it = m_LastButtons.find(button);
-			if (it != m_LastButtons.end())
-			{
-				return it->second;
-			}
+			// 空文字ならfalse
+			if (button == L"") return false;
 
-			return false;
+			// トリガーの場合、しきい値を超えていればtrue
+			//if (button == L"LTrigger" || button == L"RTrigger")
+			//{
+			//	return TriggerState(button, threshold);
+			//}
+
+			return FindButtonState(m_LastButtons, button);
 		}
 
 		BYTE GetLeftTrigger() const
@@ -238,37 +282,27 @@ namespace basecross
 		}
 
 		/*!
-		@brief 指定したボタンが押されているか取得
+		@brief 指定したボタンが押されているか取得()
 		@param[in] key : 確認したいボタンの名前 threshold : トリガーのしきい値(default : 30)
 		@return bool (押されていればtrue, 押されていなければfalse)
 		*/
-		bool GetDown(const wstring& key, const BYTE threshold = 30) const
-		{
-			// 空文字ならfalse
-			if (key == L"")
-			{
-				return false;
-			}
-			// トリガー以外はm_DownButtonsから取得
-			for (const auto& button : m_DownButtons)
-			{
-				if (button.first == key && button.second)
-				{
-					return true;
-				}
-			}
-
-			if (key == L"LTrigger")
-			{
-				return GetLeftTrigger() > threshold;
-			}
-			if (key == L"RTrigger")
-			{
-				return GetRightTrigger() > threshold;
-			}
-
-			return 0;
-		}
+		//bool GetDown(const wstring& key, const BYTE threshold = 30) const
+		//{
+		//	// 空文字ならfalse
+		//	if (key == L"")
+		//	{
+		//		return false;
+		//	}
+		//	if (key == L"LTrigger")
+		//	{
+		//		return GetLeftTrigger() > threshold;
+		//	}
+		//	if (key == L"RTrigger")
+		//	{
+		//		return GetRightTrigger() > threshold;
+		//	}
+		//	return false;
+		//}
 
 		// 2P //////////////////////////////////
 		/*!
