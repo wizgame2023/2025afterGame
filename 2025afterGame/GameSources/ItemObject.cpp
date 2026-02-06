@@ -18,7 +18,9 @@ namespace basecross{
 		m_rot(Rot),
 		m_siz(Siz),
 		m_id(ID),
-		m_repair(10)
+		m_repair(10),
+		m_countDown(5.0f),
+		m_countDownFlug(false)
 	{
 		try
 		{
@@ -56,21 +58,46 @@ namespace basecross{
 		m_billBoard = GetStage()->AddGameObject<BillBoard>(GetThis<GameObject>(), L"Repair", 2, 0, 0, Vec3(1.5f, 1.5f, 1.5f));
 	}
 
+	void ItemObject::OnUpdate()
+	{
+		Actor::OnUpdate();
+
+		if (m_countDownFlug)
+		{
+			m_countDown -= m_delta;
+			if (m_countDown <= 0)
+			{
+				m_number->RemoveSprite();
+				auto& repairmg = RepairObjectManager::GetRepairObjectManager();
+				repairmg->RemoveObject(m_id);
+				GetStage()->RemoveGameObject<ItemObject>(GetThis<ItemObject>());
+			}
+		}
+	}
+
 	void ItemObject::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
 		auto body = dynamic_pointer_cast<FighterAircraftBase>(obj);
+		auto& app = App::GetApp();
+		auto scene = app->GetScene<Scene>();
+		auto stage = scene->GetActiveStage();
+
 		if (body)
 		{
 			// BGM、SE用のマネージャー作成
 			auto m_audioManager = App::GetApp()->GetXAudio2Manager();
 			m_audioManager->Start(L"GetScoreSE", 1, 1.0f);
 
-			auto& score = ScoreObjectManager::GetScoreObjectManager();
-			//score->RemoveObject();
+			// 回復UI作成
+			m_number = stage->AddGameObject<Sprite>(L"RepairString", Vec2(500.0f, 100.0f), Vec3(0.0f, 0.0f, 0.0f));
+
 			float hp = body->GetHpCurrent();
 			hp += 30.0f;
 			body->SetHPCurrent(hp);
-			GetStage()->RemoveGameObject<ItemObject>(GetThis<ItemObject>());
+
+			m_billBoard->RemoveBill();
+
+			m_countDownFlug = true;
 		}
 	}
 

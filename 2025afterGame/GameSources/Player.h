@@ -66,6 +66,7 @@ namespace basecross{
 		bool m_moveAnimationFlag;
 		bool m_stopAnimationFlag;
 		bool m_isGrounded;
+		bool m_aliveflag;
 
 		float m_pitchAngle; // ラジアン
 		float m_yawAngle;

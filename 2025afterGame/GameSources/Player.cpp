@@ -29,7 +29,8 @@ namespace basecross {
 		m_moveAnimationFlag(false),
 		m_stopAnimationFlag(false),
 		m_aButton(false),
-		m_isGrounded(false)
+		m_isGrounded(false),
+		m_aliveflag(true)
 	{
 	}
 
@@ -110,6 +111,7 @@ namespace basecross {
 		ChangController();
 
 		PlayerRespon();
+		
 	}
 
 	void Player::OnCollisionEnter(shared_ptr<GameObject>& obj)
@@ -134,6 +136,7 @@ namespace basecross {
 			{
 				// スコアを10%倒した敵に譲渡する
 				DownTransferScore(bullet, 0.1f);
+				m_aliveflag = false;
 			}
 		}
 	}
@@ -539,41 +542,15 @@ namespace basecross {
 
 	void Player::PlayerRespon()
 	{
-		if (m_hpCurrent == 0)
+		if (m_hpCurrent <= 0)
 		{
 			auto trans = GetComponent<Transform>();
 			trans->SetPosition(Vec3(0.0f,-14.0f, -1.0f));
+			m_aliveflag = true;
 
 			m_hpCurrent = m_hpMax;
 		}
 	}
-
-	//void Player::CreateBarrier()
-	//{
-	//	auto stage = GetStage();
-	//	auto& input = InputManager::GetInputManager();
-
-	//	Vec3 pos = GetComponent<Transform>()->GetPosition();
-
-	//	if (!m_barrier)
-	//	{
-	//		m_barrier = stage->AddGameObject<Barrier>(GetThis<Player>());
-	//	}
-
-	//	auto useflag = m_barrier->GetUse();
-
-	//	if (input->GetDownButton(L"X", m_playerIndex))
-	//	{
-	//		if (!useflag)
-	//		{
-	//			m_barrier->SetUse(true);
-	//		}
-	//		else
-	//		{
-	//			m_barrier->SetUse(false);
-	//		}
-	//	}
-	//}
 
 	void Player::CreateBullet()
 	{
@@ -692,8 +669,6 @@ namespace basecross {
 			lstick = input->GetLStick2();
 		}
 	}
-
-
 }
 //end basecross
 

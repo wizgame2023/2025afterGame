@@ -62,6 +62,12 @@ namespace basecross {
 		return nullptr;
 	}
 
+	void ScoreManager::ScoreManagerReset()
+	{
+		m_scores.clear();
+		m_fighterBases.clear();
+	}
+
 	vector<ScoreManager::ScoreInfo> ScoreManager::GetSortedScores() const
 	{
 		// スコア情報のコピーを作成
