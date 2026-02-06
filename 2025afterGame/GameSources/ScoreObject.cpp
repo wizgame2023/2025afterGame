@@ -91,7 +91,6 @@ namespace basecross{
 			// BGM、SE用のマネージャー作成
 			auto m_audioManager = App::GetApp()->GetXAudio2Manager();
 			m_audioManager->Start(L"GetScoreSE", 0, 1.0f);
-
 			score->RemoveObject(m_id);
 			body->AddScoreCurrent(m_score);
 			gameManager->RemoveScoreObjectCout();
@@ -102,6 +101,8 @@ namespace basecross{
 
 		if (player)
 		{
+			auto stage = App::GetApp()->GetScene<Scene>()->GetActiveStage();
+			stage->AddGameObject<Sprite>(L"TitleBackGround_TX", Vec2(1280.0f, 800.0f), Vec3(0.0f, 0.0f, 0.0f));
 			auto plScore = scoreMana->GetPlScore();
 			scoreMana->SetPlScore(plScore + m_score);
 		}
