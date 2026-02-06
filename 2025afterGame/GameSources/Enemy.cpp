@@ -36,15 +36,14 @@ namespace basecross {
 		m_trans->SetPosition(m_pos);
 		//m_trans->SetQuaternion(m_qt);
 		m_trans->SetRotation(m_rot);
-		m_trans->SetScale(Vec3(1.0f));
-
+		m_trans->SetScale(Vec3(m_scale));
 		//// 回転度取得
 		//m_rot = m_trans->GetRotation();
 		m_rot = Vec3(AdjustmentAngle(m_rot.x), AdjustmentAngle(m_rot.y), AdjustmentAngle(m_rot.z));
 
 		Mat4x4 spanMat;
 		spanMat.affineTransformation(
-			Vec3(0.25f, 0.25f, 0.25f),
+			Vec3(1.0f, 1.0f, 1.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, XMConvertToRadians(180.0f), 0.0f),
 			Vec3(0.0f, -0.5f, 0.0f)
@@ -73,7 +72,7 @@ namespace basecross {
 		m_draw->AddAnimation(L"PropellerDown", 40, 20, 30.0f);
 		m_draw->AddAnimation(L"PropellerStop", 0, 1, 0.0f);
 
-		m_draw->ChangeCurrentAnimation(L"PropellerStop");
+		m_draw->ChangeCurrentAnimation(L"PropellerMove");
 
 
 		// 敵タグ追加
@@ -111,6 +110,10 @@ namespace basecross {
 		// レイを表示したい数
 		//RayCast::InitRay(1);
 
+		// アニメーション再生
+		m_draw->UpdateAnimation(m_delta);
+
+
 
 
 		FighterAircraftBase::OnUpdate();
@@ -120,43 +123,8 @@ namespace basecross {
 		
 		auto objVec = GetStage()->GetGameObjectVec();
 
-		// 追跡対象がいなくなったら一番近いものを決めて追跡すると決める
+		// 追跡対象がいなくなったら一番近いものを決めて追跡すると決める		
 		ChangeTarget(currentPhase, objVec);
-		//if (currentPhase == GamePhase::Score)
-		//{
-		//	int minLenght = 999999.9f;
-		//	int minDefault = 999999.9f;
-		//	// スコアオブジェクトを継承しているものだけ取得
-		//	for (auto obj : objVec)
-		//	{
-		//		auto scoreObjectCast = dynamic_pointer_cast<ScoreObject>(obj);
-		//		//アクターを継承しているオブジェクト停止
-		//		if (scoreObjectCast)
-		//		{
-		//			auto scorePos = scoreObjectCast->GetComponent<Transform>()->GetPosition();
-
-		//			auto differenceVec = scorePos - m_pos;
-		//			float differenceLength = differenceVec.length();
-
-		//			if (minLenght >= abs(differenceLength))
-		//			{
-		//				m_trackingObj = scoreObjectCast;
-		//				minLenght = differenceLength;
-		//			}
-		//		}
-		//	}
-		//	// スコアオブジェクトが無かったら他の戦闘機たちを倒す
-		//	if (!m_trackingObj.lock())
-		//	{
-		//		m_trackingObj = GetStage()->GetSharedGameObject<Player>(L"Player");
-		//		m_playerLock = true;
-		//	}
-		//}
-		//// アイテムフェーズ時でだれを狙うか決める
-		//if (currentPhase == GamePhase::Item)
-		//{
-		//	m_trackingObj = GetStage()->GetSharedGameObject<Player>(L"Player");
-		//}
 
 		// Playerを狙っているときの処理(応急処置)
 		if (m_playerLock)
@@ -247,8 +215,8 @@ namespace basecross {
 		Invincible();
 
 		// Transform反映
-		//m_trans->SetQuaternion(m_qt); // qt反映
-		m_trans->SetRotation(m_rot);
+		m_trans->SetQuaternion(m_qt); // qt反映
+		//m_trans->SetRotation(m_rot);
 		m_trans->SetPosition(m_pos + m_moveVec); // pos反映
 
 		// 位置取得
@@ -276,6 +244,11 @@ namespace basecross {
 	// 当たり判定
 	void Enemy::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
+		// リスポーンステートの時は当たり判定処理取らない
+		wstring currentState = m_stateMachine->GetCurrentStateWString();
+		if (currentState == L"Respawn") return;
+
+
 		FighterAircraftBase::OnCollisionEnter(obj);
 
 		auto bullet = dynamic_pointer_cast<Bullet>(obj);
@@ -424,7 +397,7 @@ namespace basecross {
 		// なす角を求める
 		m_pitchAngle = acosf(dotf);
 
-		// 敵から見てプレイヤーが下にいたら角度をマイナスにする
+		// 敵から見て目標が下にいたら角度をマイナスにする
 		if (posPlayerDifference.y > 0)
 		{
 			m_pitchAngle = -m_pitchAngle;
@@ -439,14 +412,14 @@ namespace basecross {
 		// デバック用のロール回転
 		static float debugYX = 0.0f;
 		auto& input = InputManager::GetInputManager();
-		if (input->GetButton(L"DLeft"))
-		{
-			debugYX -= m_delta * 3.0f;
-		}
-		if (input->GetButton(L"DRight"))
-		{
-			debugYX += m_delta * 3.0f;
-		}
+		//if (input->GetButton(L"DLeft"))
+		//{
+		//	debugYX -= m_delta * 3.0f;
+		//}
+		//if (input->GetButton(L"DRight"))
+		//{
+		//	debugYX += m_delta * 3.0f;
+		//}
 		m_rollAngle = debugYX;
 		//
 
@@ -466,41 +439,38 @@ namespace basecross {
 		// 進みたい方向に回転
 		// ピッチヨーロールをrotateに変換
 		m_goalRotVec = Vec3(AdjustmentAngle(m_pitchAngle), AdjustmentAngle(m_yawAngle), AdjustmentAngle(m_rollAngle));
-		Vec3 differenceRotVec = m_goalRotVec - m_rot;
+		// 閾値(みなし距離)
+		float Threshold = 1.0f;
+		
+		Vec3 differenceRotVec = m_goalRotVec - m_rot;// ここ内積でいくつの数値が少なかったらという形でやるべきだった
 
-		// 回転度の差が別の方向に回転したほうが小さいなら逆にする
-		differenceRotVec.y = CorrectRotationDirection(differenceRotVec.y);
-		differenceRotVec.x = CorrectRotationDirection(differenceRotVec.x);
+		m_qt = m_trans->GetQuaternion();
 
-		Vec3 addRotVec = differenceRotVec;
-		addRotVec.normalize();//正規化
+		Quat goalqt;
+		goalqt.rotationRollPitchYawFromVector(m_goalRotVec);
 
-		// 少しずつ回転する処理
-		if (differenceRotVec.length() > 0.01f)
+		m_qt = m_qt.Slerp(m_qt, goalqt, 0.1f);
+
+		// 現在の向きと目標の向きがほぼ同じなら目標の向きに代入する
+		//if (differenceRotVec.length() <= 0.1f)
+		//{
+		//	m_rot = m_goalRotVec;
+		//}
+
+		// クォータニオンの内積計算
+		float dot;
+		dot = m_qt.dot(goalqt);
+		dot = abs(dot);
+
+		// ドット積から角度(ラジアン)計算
+		float differenceAngle = 2.0f * acos(min(dot, 1.0f));
+
+		// 閾値以下の回転の差なら、目標の回転にする
+		if (differenceAngle <= XMConvertToRadians(Threshold))
 		{
-			m_rot += addRotVec * m_delta;
-		}
-		else if (differenceRotVec.length() <= 0.01f)
-		{
-			m_rot = m_goalRotVec;
+			m_qt = goalqt;
 		}
 
-		// 回転度の整理
-		m_rot = Vec3(AdjustmentAngle(m_rot.x), AdjustmentAngle(m_rot.y), m_rot.z);
-
-
-		////デバック用
-		//wstringstream wss(L"");
-		//auto scene = App::GetApp()->GetScene<Scene>();
-
-		//wss /* << L"デバッグ用文字列 "*/
-		//	//<< L"\ndifferenceRotVec.x : " << differenceRotVec.x
-		//	<< L"\n\n\n\nrotVec.x : " << XMConvertToDegrees(m_rot.x)
-		//	<< L"\nrotVec.y : " << XMConvertToDegrees(m_rot.y)
-		//	<< L"\nrotVec.z : " << XMConvertToDegrees(m_rot.z)
-		//	<< endl;
-
-		//scene->SetDebugString(wss.str());
 		return;
 	}
 
@@ -673,6 +643,18 @@ namespace basecross {
 	{
 		m_invincibleFlag = true;
 		return;
+	}
+
+	// ターゲットのセッタ
+	void Enemy::SetTracking(const shared_ptr<Actor>& target)
+	{
+		m_trackingObj = target;
+	}
+
+	// ターゲットのゲッタ
+	const weak_ptr<Actor>& Enemy::GetTracking()
+	{
+		return m_trackingObj;
 	}
 
 
