@@ -67,7 +67,7 @@ namespace basecross{
 			m_countDown -= m_delta;
 			if (m_countDown <= 0)
 			{
-				m_number->RemoveSprite();
+				//m_number->RemoveSprite();
 				auto& ammomg = AmmoObjectManager::GetAmmoObjectManager();
 				ammomg->RemoveObject(m_id);
 				GetStage()->RemoveGameObject<AmmoObject>(GetThis<AmmoObject>());
@@ -88,7 +88,7 @@ namespace basecross{
 			m_audioManager->Start(L"GetScoreSE", 1, 1.0f);
 
 			// 弾UI作成
-			m_number = stage->AddGameObject<Sprite>(L"ReloadString", Vec2(500.0f, 100.0f), Vec3(0.0f, 0.0f, 0.0f));
+			//m_number = stage->AddGameObject<Sprite>(L"ReloadString", Vec2(500.0f, 100.0f), Vec3(0.0f, 0.0f, 0.0f));
 
 			int ammo = body->GetBulletNumCurrentNow();
 			ammo += m_reload;
