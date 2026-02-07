@@ -101,7 +101,7 @@ namespace basecross
 			auto finalscore = stage->AddGameObject<Sprite>(L"Finalscore", Vec2(420.0f, 140.0f), Vec3(0.0f, 250.0f, 0.0f));
 			finalscore->SetDrawLayer(4);
 
-			int total = 8;
+			int total = 5;
 
 			for (int i = 0; i < total; i++)
 			{
