@@ -567,7 +567,7 @@ namespace basecross {
 
 		if (bulletKeyDown && m_bulletNumCurrentNow > 0)
 		{
-			ptrMana->Start(L"ShotSE", 0, 0.1f);
+			ptrMana->Start(L"ShotSE", 0, 1.0f);
 			m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
 			m_bulletNumCurrentNow -= 1;
 		}
