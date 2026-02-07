@@ -126,6 +126,7 @@ namespace basecross
 
 				obj->SetFightBase(fightBase);
 
+				gameManager->Pose(true);
 
 				m_createUIEnd = true;
 			}
