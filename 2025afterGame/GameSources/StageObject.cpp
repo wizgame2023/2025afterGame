@@ -88,7 +88,7 @@ namespace basecross {
 				Vec3(0.45f, 3.3f, 0.45f),
 				Vec3(0.0f, 0.0f, 0.0f),
 				Vec3(0.0f, XMConvertToRadians(-90.0f), 0.0f),
-				Vec3(0.0f, -6.0f, 0.0f)
+				Vec3(0.0f, -6.4f, 0.0f)
 			);
 
 			ptrDraw->SetOwnShadowActive(true);
@@ -187,7 +187,7 @@ namespace basecross {
 				Vec3(0.2f, 0.2f, 0.43f),
 				Vec3(0.0f, 0.0f, 0.0f),
 				Vec3(0.0f, 0.0f, 0.0f),
-				Vec3(0.0f, -0.5f, -0.15f)
+				Vec3(0.0f, -0.6f, -0.15f)
 			);
 
 			ptrDraw->SetOwnShadowActive(true);

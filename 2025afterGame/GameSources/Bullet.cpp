@@ -61,6 +61,8 @@ namespace basecross {
 		else if (enemy) // “G
 		{
 			m_affiliation = false;
+			// ‚Ç‚ÌEnemy‚ªŒ‚‚Á‚½‚©
+			m_ownerId = enemy->GetId();
 		}
 
 	}
@@ -130,6 +132,16 @@ namespace basecross {
 	weak_ptr<Actor> Bullet::GetParentObj()
 	{
 		return m_parent;
+	}
+
+	void Bullet::SetOwnerId(int id)
+	{
+		m_ownerId = id;
+	}
+
+	int Bullet::GetOwnerId()
+	{
+		return m_ownerId;
 	}
 
 

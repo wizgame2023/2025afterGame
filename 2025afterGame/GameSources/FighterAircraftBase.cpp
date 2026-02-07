@@ -127,19 +127,27 @@ namespace basecross {
 			auto bulletParentPlayer = dynamic_pointer_cast<Player>(bulletParentlock);
 			auto bulletParentEnemy = dynamic_pointer_cast<Enemy>(bulletParentlock);
 
-			// 譲渡するスコアの計算(基本的には10%譲渡する)
+			// Playerが倒した時
 			if (bulletParentPlayer)
 			{
 				float tansferScore = scoreManager->GetScore(GetId()) * magnification;
-				scoreManager->SubScore(GetId(), tansferScore);
-				scoreManager->AddPlScore(tansferScore);
+				scoreManager->SubScore(GetId(),tansferScore);
+				scoreManager->SetPlScore(plScore + tansferScore);
 			}
-			// 譲渡するスコアの計算(基本的には10%譲渡する)
-			else if (bulletParentEnemy)
+
+			// Enemyが倒した時
+			if (bulletParentEnemy)
 			{
-				float tansferScore = plScore * magnification;
-				scoreManager->SubPlScore(plScore - tansferScore);
-				scoreManager->AddScore(GetId(),tansferScore);
+				float transferScore = plScore * magnification;
+
+				// Player から引く
+				scoreManager->SubPlScore(transferScore);
+
+				// 弾を撃った Enemy の ID を取得
+				int enemyId = bullet->GetOwnerId();
+
+				// Enemy に加算
+				scoreManager->AddScore(enemyId, transferScore);
 			}
 		}
 	}

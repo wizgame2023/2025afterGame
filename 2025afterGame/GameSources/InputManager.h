@@ -38,13 +38,25 @@ namespace basecross
 
 		/*!
 		@brief トリガーの状態を取得する(ヘルパー関数)
-		@param[in] buttonfind ボタンの状態のタイプ button 取得したいボタンの名前
-		@return ボタンの状態
+		@param[in] button 取得したいボタンの名前 threshold しきい値
+		@return ボタンが押されているか
 		*/
 		bool TriggerState(const wstring& button, const BYTE threshold) const
 		{
 			if (button == L"LTrigger") return GetLeftTrigger() > threshold;
 			if (button == L"RTrigger") return GetRightTrigger() > threshold;
+			return false;
+		}
+
+		/*!
+		@brief 前フレームのトリガーの状態を取得する(ヘルパー関数)
+		@param[in] button 取得したいボタンの名前 threshold しきい値
+		@return ボタンが押されているか
+		*/
+		bool LastTriggerState(const wstring& button, const BYTE threshold) const
+		{
+			if (button == L"LTrigger") return GetLastLeftTrigger() > threshold;
+			if (button == L"RTrigger") return GetLastRightTrigger() > threshold;
 			return false;
 		}
 
@@ -78,8 +90,11 @@ namespace basecross
 		map<wstring, bool> m_NowUpdateButtons;
 		map<wstring, bool> m_LastButtons;
 
-		BYTE m_LeftTrigger;
-		BYTE m_RightTrigger;
+		BYTE m_CrntLeftTrigger;
+		BYTE m_CrntRightTrigger;
+
+		BYTE m_LastLeftTrigger;
+		BYTE m_LastRightTrigger;
 
 		CONTROLER_STATE m_pad;
 
@@ -183,7 +198,7 @@ namespace basecross
 			// トリガーの場合、しきい値を超えていればtrue
 			if (button == L"LTrigger" || button == L"RTrigger")
 			{
-				return TriggerState(button, threshold);
+				return TriggerState(button, threshold) && !LastTriggerState(button, threshold);
 			}
 
 			return FindButtonState(m_DownButtons, button);
@@ -248,12 +263,22 @@ namespace basecross
 
 		BYTE GetLeftTrigger() const
 		{
-			return m_LeftTrigger;
+			return m_CrntLeftTrigger;
 		}
 
 		BYTE GetRightTrigger() const
 		{
-			return m_RightTrigger;
+			return m_CrntRightTrigger;
+		}
+
+		BYTE GetLastLeftTrigger() const
+		{
+			return m_LastLeftTrigger;
+		}
+
+		BYTE GetLastRightTrigger() const
+		{
+			return m_LastRightTrigger;
 		}
 
 		/*!
