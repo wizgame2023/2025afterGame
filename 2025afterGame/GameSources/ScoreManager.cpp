@@ -74,6 +74,7 @@ namespace basecross {
 		vector<ScoreInfo> sortedScores = m_scores;
 
 		// スコアの高い順にソート
+		// スコアの最初から最後まで見ていって大きい順に並び替え
 		sort(sortedScores.begin(), sortedScores.end(),
 			// ラムダ式(aとbを比較して並び替え)
 			[](const ScoreInfo& a, const ScoreInfo& b)
