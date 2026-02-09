@@ -296,6 +296,7 @@ namespace basecross{
 				ScalingSelectedSprite(spVec, crntSelect, max);
 
 				// ‚ ‚Æ‚Í‰¹‚ğ–Â‚ç‚·‚È‚Ç‚Ìˆ—‚ğ“ü‚ê‚é
+
 			}
 		}
 

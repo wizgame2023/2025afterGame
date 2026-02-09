@@ -184,6 +184,9 @@ namespace basecross{
 		auto menuBackground = uiMenuPath + L"PauseMenuBackGround.png";
 		App::GetApp()->RegisterTexture(L"PauseMenuBackGround_TX", menuBackground);
 
+		auto pauseMenuCheckBox = uiMenuPath + L"PauseMenuCheckBox.png";
+		App::GetApp()->RegisterTexture(L"PauseMenuCheckBox_TX", pauseMenuCheckBox);
+
 		// StageUI////////////////////////
 
 		auto stageTex = uiStagePath + L"GameStart.png";

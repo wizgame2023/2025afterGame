@@ -119,6 +119,7 @@ namespace basecross{
 		// m_pauseKeyConfigMenu[1] : 加速文字列
 		// m_pauseKeyConfigMenu[2] : 弾発射文字列
 		// m_pauseKeyConfigMenu[3] : 背面視点文字列
+		// m_pauseKeyConfigMenu[4] : チェックボックス
 
 		// キーコンフィグメニュー ------
 		spInfo.textureName = L"PauseMenuKeyConfig_TX";
@@ -132,6 +133,15 @@ namespace basecross{
 			spInfo.rightBotUV = Vec2(1.0f, (mainUVHeight * (i + 1)));
 			PushBackPauseMenuSprite(m_pauseKeyConfigMenuSprites, spInfo);
 		}
+
+		// チェックボックス
+		spInfo.textureName = L"PauseMenuCheckBox_TX";
+		spInfo.size = Vec2(100.0f, 100.0f);
+		constexpr float CheckBoxUVWidth = 1.0f / 2.0f;
+		spInfo.pos = m_pauseKeyConfigMenuSprites[0]->GetPosition() + Vec3(200.0f, 0, 0);
+		spInfo.leftTopUV = Vec2(0.0f, 0.0f);
+		spInfo.rightBotUV = Vec2(CheckBoxUVWidth, 1.0f);
+		PushBackPauseMenuSprite(m_pauseKeyConfigMenuSprites, spInfo);
 
 		// ボタン群 ------
 		spInfo.textureName = L"Buttons_TX";
@@ -502,7 +512,10 @@ namespace basecross{
 			{
 			case PauseKeyConfigMenuSelect::UpDownSwap:
 				// 上下移動入れ替え
-				//m_pauseData.UpDownSwap = !m_pauseData.UpDownSwap;
+				m_pauseData.UpDownSwap = !m_pauseData.UpDownSwap;
+				m_pauseKeyConfigMenuSprites[4]->SetUVRect(Vec2(static_cast<float>(m_pauseData.UpDownSwap) / 2.0f, 0.0f), 
+														  Vec2(static_cast<float>(m_pauseData.UpDownSwap) / 2.0f + 0.5f, 1.0f));
+				GameManager::GetGameManager()->SetUpDownSwapFlag(m_pauseData.UpDownSwap);
 				break;
 
 			case PauseKeyConfigMenuSelect::Accel:
