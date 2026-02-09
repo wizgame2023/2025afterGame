@@ -11,6 +11,7 @@ namespace basecross{
 	class HpSprite : public Sprite
 	{
 	private:
+		weak_ptr<FighterAircraftBase> m_fightBase;
 		float m_Rate;
 		Vec3 m_size;
 		Vec3 m_pos;

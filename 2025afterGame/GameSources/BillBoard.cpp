@@ -102,13 +102,20 @@ namespace basecross{
 			auto ptrTrans = GetComponent<Transform>();
 			auto pos = seekPtrTrans->GetPosition();
 			pos.y += m_pushY;
-			ptrTrans->SetPosition(pos);
 			ptrTrans->SetScale(m_scale);
 
 			auto DrawComp = GetComponent<PCTStaticDraw>();
 			DrawComp->SetTextureResource(m_textureName);//テクスチャ更新
-
 			auto PtrCamera = GetStage()->GetView()->GetTargetCamera();
+
+			// カメラの位置を基準としたPushXの位置に置く
+			Vec3 forward = PtrCamera->GetAt() - PtrCamera->GetEye();
+			forward.normalize();
+			Vec3 right = cross(PtrCamera->GetUp(), forward);
+			right.normalize();
+			pos += right * m_pushX;
+			// 位置確定
+			ptrTrans->SetPosition(pos);
 
 			Quat Qt;
 			//向きをカメラ目線にする

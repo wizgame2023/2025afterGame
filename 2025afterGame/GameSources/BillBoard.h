@@ -54,7 +54,7 @@ namespace basecross {
 		//出現する高さ変更
 		void SetPushY(float pushY);
 
-		//出現する高さ変更
+		//出現する横の位置変更
 		void SetPushX(float pushX);
 
 		// ビルボードの削除
