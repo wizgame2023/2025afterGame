@@ -46,7 +46,10 @@ namespace basecross {
 		float m_timeOfPlayerLock;
 		bool m_playerLock;
 
+		// HPゲージ
 		shared_ptr<BillBoardGauge> m_Gauge;
+		// ランキング
+		shared_ptr<BillBoardNumber> m_rankNumber;
 
 	public:
 		// 今後は使わない

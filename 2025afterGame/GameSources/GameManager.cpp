@@ -381,6 +381,10 @@ namespace basecross {
 				obj->CreateScoreObject();
 				obj->CreateScoreObject();
 				obj->CreateScoreObject();
+				obj->CreateScoreObject();
+				obj->CreateScoreObject();
+				obj->CreateScoreObject();
+				obj->CreateScoreObject();
 				m_createScoreObj = true;
 			}
 
@@ -478,6 +482,14 @@ namespace basecross {
 		// スコアオブジェクトを管理するマネージャの初期化
 		auto& scoreObjectManager = ScoreObjectManager::GetScoreObjectManager();
 		scoreObjectManager->ResetObject();
+
+		// アイテムオブジェクトを管理するマネージャの初期化
+		auto& repairObjectManager = RepairObjectManager::GetRepairObjectManager();
+		repairObjectManager->ResetObject();
+
+		// 弾オブジェクトを管理するマネージャの初期化
+		auto& ammoObjectManager = AmmoObjectManager::GetAmmoObjectManager();
+		ammoObjectManager->ResetObject();
 	}
 }
 

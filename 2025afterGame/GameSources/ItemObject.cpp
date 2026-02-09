@@ -67,7 +67,7 @@ namespace basecross{
 			m_countDown -= m_delta;
 			if (m_countDown <= 0)
 			{
-				m_number->RemoveSprite();
+				//m_number.lock()->RemoveSprite();
 				auto& repairmg = RepairObjectManager::GetRepairObjectManager();
 				repairmg->RemoveObject(m_id);
 				GetStage()->RemoveGameObject<ItemObject>(GetThis<ItemObject>());
@@ -86,10 +86,10 @@ namespace basecross{
 		{
 			// BGM、SE用のマネージャー作成
 			auto m_audioManager = App::GetApp()->GetXAudio2Manager();
-			m_audioManager->Start(L"GetScoreSE", 1, 1.0f);
+			m_audioManager->Start(L"GetScoreSE", 1, 3.0f);
 
 			// 回復UI作成
-			m_number = stage->AddGameObject<Sprite>(L"RepairString", Vec2(500.0f, 100.0f), Vec3(0.0f, 0.0f, 0.0f));
+			//m_number = stage->AddGameObject<Sprite>(L"RepairString", Vec2(500.0f, 100.0f), Vec3(0.0f, 0.0f, 0.0f));
 
 			float hp = body->GetHpCurrent();
 			hp += 30.0f;

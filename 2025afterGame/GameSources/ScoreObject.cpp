@@ -112,7 +112,7 @@ namespace basecross{
 		{
 			// BGM、SE用のマネージャー作成
 			auto m_audioManager = App::GetApp()->GetXAudio2Manager();
-			m_audioManager->Start(L"GetScoreSE", 0, 1.0f);
+			m_audioManager->Start(L"GetScoreSE", 0, 3.0f);
 			score->RemoveObject(m_id);
 			body->AddScoreCurrent(m_score);
 			gameManager->RemoveScoreObjectCout();

@@ -131,8 +131,8 @@ namespace basecross {
 				m_hpCurrent -= bullet->GetDamage();
 			}
 
-			// HPが０になったらリスポーンする
-			if (m_hpCurrent <= 0)
+			// HPが0になったら相手にスコアを渡す
+			if (m_hpCurrent <= 0 && m_aliveflag)
 			{
 				// スコアを10%倒した敵に譲渡する
 				DownTransferScore(bullet, 0.1f);
@@ -542,7 +542,7 @@ namespace basecross {
 
 	void Player::PlayerRespon()
 	{
-		if (m_hpCurrent <= 0)
+		if (m_hpCurrent <= 0 && m_aliveflag == false)
 		{
 			auto trans = GetComponent<Transform>();
 			trans->SetPosition(Vec3(0.0f,-14.0f, -1.0f));
@@ -567,7 +567,7 @@ namespace basecross {
 
 		if (bulletKeyDown && m_bulletNumCurrentNow > 0)
 		{
-			ptrMana->Start(L"ShotSE", 0, 0.1f);
+			ptrMana->Start(L"ShotSE", 0, 1.0f);
 			m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
 			m_bulletNumCurrentNow -= 1;
 		}

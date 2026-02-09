@@ -115,12 +115,12 @@ namespace basecross {
 			SetSharedGameObject(L"Enemy3", enemy);
 			enemy = AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, 25.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
 			SetSharedGameObject(L"Enemy4", enemy);
-			enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
-			SetSharedGameObject(L"Enemy5", enemy);
-			enemy = AddGameObject<Enemy>(Vec3(50.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
-			SetSharedGameObject(L"Enemy6", enemy);
-			enemy = AddGameObject<Enemy>(Vec3(25.0f, 0.0f, -20.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
-			SetSharedGameObject(L"Enemy7", enemy);
+			//enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			//SetSharedGameObject(L"Enemy5", enemy);
+			//enemy = AddGameObject<Enemy>(Vec3(50.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			//SetSharedGameObject(L"Enemy6", enemy);
+			//enemy = AddGameObject<Enemy>(Vec3(25.0f, 0.0f, -20.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			//SetSharedGameObject(L"Enemy7", enemy);
 			//AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
 			//AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
 			//auto enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);

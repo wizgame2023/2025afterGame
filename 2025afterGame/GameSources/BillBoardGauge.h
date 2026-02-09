@@ -47,6 +47,7 @@ namespace basecross{
 		void RemoveBillBoardGauge();
 		// HP‚ª“®‚­‚Ì‚©‚»‚ê‚Æ‚à˜g‚È‚Ì‚©
 		void SetSpriteMove(bool flag);
+		// HP‚ª‚È‚¢‚Æ‚«‚Ì“§–¾‚É‚·‚é
 		void SetInvisible(bool flag);
 	};
 

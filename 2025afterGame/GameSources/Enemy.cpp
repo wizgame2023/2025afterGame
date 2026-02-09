@@ -36,17 +36,18 @@ namespace basecross {
 		m_trans->SetPosition(m_pos);
 		//m_trans->SetQuaternion(m_qt);
 		m_trans->SetRotation(m_rot);
-		m_trans->SetScale(Vec3(m_scale));
+		//m_trans->SetScale(Vec3(m_scale));
 		//// 回転度取得
 		//m_rot = m_trans->GetRotation();
 		m_rot = Vec3(AdjustmentAngle(m_rot.x), AdjustmentAngle(m_rot.y), AdjustmentAngle(m_rot.z));
 
+		// モデルとトランスフォーム間の差分行列
 		Mat4x4 spanMat;
 		spanMat.affineTransformation(
-			Vec3(1.0f, 1.0f, 1.0f),
+			Vec3(0.2f),
 			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, XMConvertToRadians(180.0f), 0.0f),
-			Vec3(0.0f, -0.5f, 0.0f)
+			Vec3(0.0f, XM_PI, 0.0f),
+			Vec3(0.0f, -0.59f, 0.0f)
 		);
 
 		// コリジョン追加
@@ -104,10 +105,12 @@ namespace basecross {
 
 		// HPWakuとHPのBillBord作成
 		m_Gauge = GetStage()->AddGameObject<BillBoardGauge>(GetThis<FighterAircraftBase>(), L"HP_WAKU", Vec3(3.0f, 0.28f, 0.0f));
-		m_Gauge->SetDrawLayer(0);
+		m_Gauge->SetDrawLayer(1);
 		auto enemyHP = GetStage()->AddGameObject<BillBoardGauge>(GetThis<FighterAircraftBase>(),L"HP",Vec3(3.0f,0.25f, 0.0f));
 		enemyHP->SetSpriteMove(true);
-		enemyHP->SetDrawLayer(1);
+		enemyHP->SetDrawLayer(2);
+		// スコアに合わせたランキングビルボードの表示
+		m_rankNumber = GetStage()->AddGameObject<BillBoardNumber>(GetThis<FighterAircraftBase>());
 	}
 
 	void Enemy::OnUpdate()
@@ -292,6 +295,8 @@ namespace basecross {
 				
 				// 死んだときにHP枠を見えないように
 				m_Gauge->SetInvisible(true);
+				// 死んだときにナンバーを見えないように
+				m_rankNumber->SetInvisible(true);
 			}
 
 		}
