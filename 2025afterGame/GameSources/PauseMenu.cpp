@@ -181,8 +181,11 @@ namespace basecross{
 	// =============================================================================================
 	void PauseMenu::OnUpdate()
 	{
-		// カウントダウンが終わっていたらポーズ可能
-		if (GameManager::GetGameManager()->GetGameStartCountDown() < static_cast<int>(GameStartCount::GAMESTART_End))
+		auto& game = GameManager::GetGameManager();
+
+		// カウントダウンが終わっているか、ゲームが終わっていなければポーズ可能
+		if (game->GetGameStartCountDown() < static_cast<int>(GameStartCount::GAMESTART_End) ||
+			game->GetGameEnd())
 		{
 			return;
 		}
