@@ -47,9 +47,6 @@ namespace basecross {
 
 		shared_ptr<Stage> m_currentStage; // 現在ステージ
 
-		// BGM,SE音量
-		float m_BGMVolume = 1.0f;
-		float m_SEVolume = 1.0f;
 
 		// 現在ポーズしているMyGameObjectを保存する配列
 		vector<weak_ptr<MyGameObject>> m_myGameObjectVec;
@@ -72,10 +69,15 @@ namespace basecross {
 		int m_gameStartPhase = GAMESTART_Start;
 		shared_ptr<Sprite> m_startSprite; // カウントダウン時のStartスプライト
 
+		// BGM,SE音量
+		float m_BGMVolume = 1.0f;
+		float m_SEVolume = 1.0f;
+
 		// BGM、SE用
 		shared_ptr<XAudio2Manager> m_audioManager;
 		shared_ptr<SoundItem> m_se;
 
+		bool m_upDownSwap = false;
 		wstring m_bulletKey = L"RTrigger";
 		wstring m_viewBehindKey = L"Y";
 		wstring m_accelKey = L"A";
@@ -85,6 +87,8 @@ namespace basecross {
 		void SetBGMVolume(const float volume) { m_BGMVolume = volume; };
 		float GetSEVolume() const { return m_SEVolume; };
 		void SetSEVolume(const float volume) { m_SEVolume = volume; };
+		bool GetUpDownSwapFlag() const { return m_upDownSwap; };
+		void SetUpDownSwapFlag(const bool flag) { m_upDownSwap = flag; };
 		wstring GetBulletKey() const { return m_bulletKey; };
 		void SetBulletKey(const wstring& key) { m_bulletKey = key; };
 		wstring GetViewBehindKey() const { return m_viewBehindKey; };
