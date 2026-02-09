@@ -21,6 +21,9 @@ namespace basecross
 		InputManager();
 		virtual ~InputManager() {}
 
+		const wstring& m_rTriggerSt = L"RTrigger";
+		const wstring& m_lTriggerSt = L"LTrigger";
+
 		/*!
 		@brief ボタンの状態を取得する(ヘルパー関数)
 		@param[in] buttonfind ボタンの状態のタイプ button 取得したいボタンの名前
@@ -37,14 +40,23 @@ namespace basecross
 		}
 
 		/*!
+		@brief トリガーかどうかを判定
+		@param[in] button 取得したいボタンの名前
+		@return 入れられたwstringがLTrigger,RTriggerかどうか
+		*/
+		bool IsTrigger(const wstring& button) const {
+			return button == m_lTriggerSt || button == m_rTriggerSt;
+		}
+
+		/*!
 		@brief トリガーの状態を取得する(ヘルパー関数)
 		@param[in] button 取得したいボタンの名前 threshold しきい値
 		@return ボタンが押されているか
 		*/
 		bool TriggerState(const wstring& button, const BYTE threshold) const
 		{
-			if (button == L"LTrigger") return GetLeftTrigger() > threshold;
-			if (button == L"RTrigger") return GetRightTrigger() > threshold;
+			if (button == m_lTriggerSt) return GetLeftTrigger() > threshold;
+			if (button == m_rTriggerSt) return GetRightTrigger() > threshold;
 			return false;
 		}
 
@@ -55,8 +67,8 @@ namespace basecross
 		*/
 		bool LastTriggerState(const wstring& button, const BYTE threshold) const
 		{
-			if (button == L"LTrigger") return GetLastLeftTrigger() > threshold;
-			if (button == L"RTrigger") return GetLastRightTrigger() > threshold;
+			if (button == m_lTriggerSt) return GetLastLeftTrigger() > threshold;
+			if (button == m_rTriggerSt) return GetLastRightTrigger() > threshold;
 			return false;
 		}
 
@@ -177,7 +189,7 @@ namespace basecross
 			if (button == L"") return false;
 
 			// トリガーの場合、しきい値を超えていればtrue
-			if (button == L"LTrigger" || button == L"RTrigger")
+			if (IsTrigger(button))
 			{
 				return TriggerState(button, threshold);
 			}
@@ -196,7 +208,7 @@ namespace basecross
 			if (button == L"") return false;
 
 			// トリガーの場合、しきい値を超えていればtrue
-			if (button == L"LTrigger" || button == L"RTrigger")
+			if (IsTrigger(button))
 			{
 				return TriggerState(button, threshold) && !LastTriggerState(button, threshold);
 			}
@@ -215,7 +227,7 @@ namespace basecross
 			if (button == L"") return false;
 
 			// トリガーの場合、しきい値以内であればfalse
-			if (button == L"LTrigger" || button == L"RTrigger")
+			if (IsTrigger(button))
 			{
 				return !TriggerState(button, threshold);
 			}
@@ -247,16 +259,16 @@ namespace basecross
 		@param[in] button 取得したいボタンの名前
 		@return 前フレームのボタンの状態
 		*/
-		bool GetLastButton(const wstring& button/*, const BYTE threshold = 30*/) const
+		bool GetLastButton(const wstring& button, const BYTE threshold = 30) const
 		{
 			// 空文字ならfalse
 			if (button == L"") return false;
 
 			// トリガーの場合、しきい値を超えていればtrue
-			//if (button == L"LTrigger" || button == L"RTrigger")
-			//{
-			//	return TriggerState(button, threshold);
-			//}
+			if (IsTrigger(button))
+			{
+				return LastTriggerState(button, threshold);
+			}
 
 			return FindButtonState(m_LastButtons, button);
 		}
