@@ -181,8 +181,11 @@ namespace basecross{
 	// =============================================================================================
 	void PauseMenu::OnUpdate()
 	{
-		// カウントダウンが終わっていたらポーズ可能
-		if (GameManager::GetGameManager()->GetGameStartCountDown() < static_cast<int>(GameStartCount::GAMESTART_End))
+		auto& game = GameManager::GetGameManager();
+
+		// カウントダウンが終わっているか、ゲームが終わっていなければポーズ可能
+		if (game->GetGameStartCountDown() < static_cast<int>(GameStartCount::GAMESTART_End) ||
+			game->GetGameEnd())
 		{
 			return;
 		}
@@ -264,6 +267,8 @@ namespace basecross{
 		float BGMVolume = game->GetBGMVolume();
 		auto& input = InputManager::GetInputManager();
 		auto& pressedButton = input->GetPressedButton();
+		auto bytecr = input->GetRightTrigger();
+		auto bytela = input->GetLastRightTrigger();
 
 		DebugLog(L"\nBGMVolume : ", BGMVolume);
 		DebugLog(L"SEVolume : ", GetSEVolume());
@@ -271,6 +276,9 @@ namespace basecross{
 		DebugLog(L"Accel Key : ", m_pauseData.AccelKey);
 		DebugLog(L"Bullet Key : ", m_pauseData.BulletKey);
 		DebugLog(L"ViewBehind Key : ", m_pauseData.ViewBehindKey);
+		DebugLog(L"Crnt : ", bytecr);
+		DebugLog(L"Last : ", bytela);
+
 	}
 
 	// ==============================================================================

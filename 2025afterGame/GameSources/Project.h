@@ -41,6 +41,7 @@
 #include "Sprite.h"
 #include "BillBoard.h"
 #include "ScoreManager.h"
+#include "BillBoardNumber.h"
 ///////////////////////////////////////////////////
 
 // EffectManager
