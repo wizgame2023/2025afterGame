@@ -108,7 +108,6 @@ namespace basecross{
 			auto scene = app->GetScene<Scene>();
 			auto stage = scene->GetActiveStage();
 			int plusNumber = 12;
-			m_countDownFlug = true;
 
 
 			if (body)
@@ -131,6 +130,7 @@ namespace basecross{
 				// スコアUI作成
 				//m_number = stage->AddGameObject<NumberSprite>(Vec2(40.0f, 80.0f), Vec3(0.0f, 0.0f, 0.0f));
 				//m_number->SetSignedNumber(plusNumber, m_score);
+				m_countDownFlug = true;
 			}
 
 			if (enemy)
@@ -139,6 +139,7 @@ namespace basecross{
 				scoreMana->AddScore(enemyID, m_score);
 				GetStage()->RemoveGameObject<ScoreObject>(GetThis<ScoreObject>());
 				m_billBoard = nullptr;
+				m_countDownFlug = true;
 			}
 		}
 	}

@@ -19,7 +19,7 @@ namespace basecross{
 		m_siz(Siz),
 		m_id(ID),
 		m_reload(30),
-		m_countDown(5.0f),
+		m_countDown(3.0f),
 		m_countDownFlug(false)
 	{
 		try
@@ -67,7 +67,7 @@ namespace basecross{
 			m_countDown -= m_delta;
 			if (m_countDown <= 0)
 			{
-				//m_number->RemoveSprite();
+				m_number->RemoveSprite();
 				auto& ammomg = AmmoObjectManager::GetAmmoObjectManager();
 				ammomg->RemoveObject(m_id);
 				GetStage()->RemoveGameObject<AmmoObject>(GetThis<AmmoObject>());
