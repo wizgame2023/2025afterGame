@@ -96,49 +96,51 @@ namespace basecross{
 
 	void ScoreObject::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
-		auto& gameManager = GameManager::GetGameManager();
-		auto& score = ScoreObjectManager::GetScoreObjectManager();
-		auto& scoreMana = ScoreManager::GetScoreManager();
-		auto body = dynamic_pointer_cast<FighterAircraftBase>(obj);
-		auto player = dynamic_pointer_cast<Player>(obj);
-		auto enemy = dynamic_pointer_cast<Enemy>(obj);
-		auto& app = App::GetApp();
-		auto scene = app->GetScene<Scene>();
-		auto stage = scene->GetActiveStage();
-		int plusNumber = 12;
-
-
-		if (body)
+		if (!m_countDownFlug)
 		{
-			// BGM、SE用のマネージャー作成
-			auto m_audioManager = App::GetApp()->GetXAudio2Manager();
-			m_audioManager->Start(L"GetScoreSE", 0, 3.0f);
-			score->RemoveObject(m_id);
-			body->AddScoreCurrent(m_score);
-			gameManager->RemoveScoreObjectCout();
-			//GetStage()->RemoveGameObject<BillBoard>(m_billBoard);
-		}
-
-		if (player)
-		{
+			auto& gameManager = GameManager::GetGameManager();
+			auto& score = ScoreObjectManager::GetScoreObjectManager();
+			auto& scoreMana = ScoreManager::GetScoreManager();
+			auto body = dynamic_pointer_cast<FighterAircraftBase>(obj);
+			auto player = dynamic_pointer_cast<Player>(obj);
+			auto enemy = dynamic_pointer_cast<Enemy>(obj);
+			auto& app = App::GetApp();
+			auto scene = app->GetScene<Scene>();
+			auto stage = scene->GetActiveStage();
+			int plusNumber = 12;
 			m_countDownFlug = true;
-			auto stage = App::GetApp()->GetScene<Scene>()->GetActiveStage();
-			auto plScore = scoreMana->GetPlScore();
-			scoreMana->SetPlScore(plScore + m_score);
-			m_billBoard->RemoveBill();
-			// スコアUI作成
-			//m_number = stage->AddGameObject<NumberSprite>(Vec2(40.0f, 80.0f), Vec3(0.0f, 0.0f, 0.0f));
-			//m_number->SetSignedNumber(plusNumber, m_score);
-		}
 
-		if (enemy)
-		{
-			auto enemyID = enemy->GetId();
-			scoreMana->AddScore(enemyID, m_score);
-			GetStage()->RemoveGameObject<ScoreObject>(GetThis<ScoreObject>());
-			m_billBoard = nullptr;
-		}
 
+			if (body)
+			{
+				// BGM、SE用のマネージャー作成
+				auto m_audioManager = App::GetApp()->GetXAudio2Manager();
+				m_audioManager->Start(L"GetScoreSE", 0, 1.0f);
+				score->RemoveObject(m_id);
+				body->AddScoreCurrent(m_score);
+				gameManager->RemoveScoreObjectCout();
+				//GetStage()->RemoveGameObject<BillBoard>(m_billBoard);
+			}
+
+			if (player)
+			{
+				auto stage = App::GetApp()->GetScene<Scene>()->GetActiveStage();
+				auto plScore = scoreMana->GetPlScore();
+				scoreMana->SetPlScore(plScore + m_score);
+				m_billBoard->RemoveBill();
+				// スコアUI作成
+				//m_number = stage->AddGameObject<NumberSprite>(Vec2(40.0f, 80.0f), Vec3(0.0f, 0.0f, 0.0f));
+				//m_number->SetSignedNumber(plusNumber, m_score);
+			}
+
+			if (enemy)
+			{
+				auto enemyID = enemy->GetId();
+				scoreMana->AddScore(enemyID, m_score);
+				GetStage()->RemoveGameObject<ScoreObject>(GetThis<ScoreObject>());
+				m_billBoard = nullptr;
+			}
+		}
 	}
 
 	int ScoreObject::GetObjectID()
