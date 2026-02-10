@@ -7,6 +7,7 @@
 #pragma once
 #include "stdafx.h"
 #include "fstream"
+#include<array>
 
 namespace basecross {
 	// ==============================================================================
@@ -60,6 +61,12 @@ namespace basecross {
 
 		// playerのID
 		static constexpr int PLAYER_ID = 0;
+
+		// ハイスコア最大保存数
+		static constexpr int MAX_HIGHSCORE_COUNT = 5;
+
+		// ハイスコア保存用
+		std::array<int, MAX_HIGHSCORE_COUNT> m_highScores;
 		
 		// ==============================================================================
 		// 関数

@@ -175,7 +175,9 @@ namespace basecross {
 		{
 			// ofstreamでファイルを生成
 			ofstream ofs(scorePath, ios::binary);
-			ofs.write(reinterpret_cast<const char*>(&initFirstHighScore), sizeof(initFirstHighScore));
+			m_highScores.fill(0);
+			m_highScores[0] = initFirstHighScore;
+			ofs.write(reinterpret_cast<const char*>(m_highScores.data()), sizeof(m_highScores));
 		}
 		// あるならスコアを確認して初期スコアより低ければ上書き
 		else if (LoadHighScoreBinary() < initFirstHighScore)
