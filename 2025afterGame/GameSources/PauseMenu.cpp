@@ -20,6 +20,8 @@ namespace basecross{
 	// =============================================================================================
 	void PauseMenu::OnCreate()
 	{
+		m_audioManager = App::GetApp()->GetXAudio2Manager();
+
 		// m_pauseMainMenu[0] : 再開
 		// m_pauseMainMenu[1] : リスタート
 		// m_pauseMainMenu[2] : 設定
@@ -564,6 +566,7 @@ namespace basecross{
 
 		function<void(const wstring&)> keySetter;	// 未定義
 		auto& game = GameManager::CreateGameManager();
+		Vec3 offset = Vec3(200.0f, 0.0f, 0.0f);
 
 		// keySetterの定義
 		switch (m_pauseState)
@@ -573,7 +576,7 @@ namespace basecross{
 				m_pauseData.AccelKey = k;
 				game->SetAccelKey(k);
 				auto& accelStringPos = m_pauseKeyConfigMenuSprites[1]->GetPosition();
-				SetShowAndPosButtons(k, accelStringPos + Vec3(200.0f, 0.0f, 0.0f));
+				SetShowAndPosButtons(k, accelStringPos + offset);
 			};
 			break;
 		case PauseMenuState::BulletSetting:
@@ -581,7 +584,7 @@ namespace basecross{
 				m_pauseData.BulletKey = k;
 				game->SetBulletKey(k);
 				auto& bulletStringPos = m_pauseKeyConfigMenuSprites[2]->GetPosition();
-				SetShowAndPosButtons(k, bulletStringPos + Vec3(200.0f, 0.0f, 0.0f));
+				SetShowAndPosButtons(k, bulletStringPos + offset);
 			};
 			break;
 		case PauseMenuState::ViewBehindSetting:
@@ -589,7 +592,7 @@ namespace basecross{
 				m_pauseData.ViewBehindKey = k;
 				game->SetViewBehindKey(k);
 				auto& viewBehindStringPos = m_pauseKeyConfigMenuSprites[3]->GetPosition();
-				SetShowAndPosButtons(k, viewBehindStringPos + Vec3(200.0f, 0.0f, 0.0f));
+				SetShowAndPosButtons(k, viewBehindStringPos + offset);
 			};
 			break;
 		}
@@ -609,17 +612,18 @@ namespace basecross{
 		if(isDuplicate)
 		{
 			// 重複があれば音を鳴らすなどの処理
-			
+			m_se = m_audioManager->Start(L"KeyConfigErrorSE", 0, game->GetSEVolume());
+
 			// 重複して設定は変えられないが、消してしまったアイコンを再表示する
 			auto& currentPos = m_pauseKeyConfigMenuSprites[static_cast<int>(m_crntKeyConfigSelect)]->GetPosition();
 
 			// 現在のステートに合わせて、元のキーを再表示
 			if (m_pauseState == PauseMenuState::AccelSetting)
-				SetShowAndPosButtons(m_pauseData.AccelKey, currentPos + Vec3(200.0f, 0.0f, 0.0f));
+				SetShowAndPosButtons(m_pauseData.AccelKey, currentPos + offset);
 			else if (m_pauseState == PauseMenuState::BulletSetting)
-				SetShowAndPosButtons(m_pauseData.BulletKey, currentPos + Vec3(200.0f, 0.0f, 0.0f));
+				SetShowAndPosButtons(m_pauseData.BulletKey, currentPos + offset);
 			else if (m_pauseState == PauseMenuState::ViewBehindSetting)
-				SetShowAndPosButtons(m_pauseData.ViewBehindKey, currentPos + Vec3(200.0f, 0.0f, 0.0f));
+				SetShowAndPosButtons(m_pauseData.ViewBehindKey, currentPos + offset);
 			return;
 		}
 		else

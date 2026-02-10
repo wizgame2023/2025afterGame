@@ -141,6 +141,7 @@ namespace basecross{
 		unordered_map<wstring, ButtonsType> m_buttonTypeMap; 
 		// [自分用メモ]mapは<キー, 値>の形で宣言(この場合はwstring型とButtonsType型のマップ)
 		// m_buttonTypeMap[L"A"]でButtonsType::Aが取れるように設定する必要がある
+		// 
 		// データ駆動と呼ぶらしい(画面に対してこうしろ、と命令するのではなく
 		//						　データが変わったから画面を変える、という考え方)
 
@@ -155,6 +156,8 @@ namespace basecross{
 
 		// ======================================
 		
+		shared_ptr<XAudio2Manager> m_audioManager;
+		shared_ptr<SoundItem> m_se;
 
 		// ポーズメニューの状態
 		PauseMenuState m_pauseState;
@@ -296,6 +299,8 @@ namespace basecross{
 				ScalingSelectedSprite(spVec, crntSelect, max);
 
 				// あとは音を鳴らすなどの処理を入れる
+				m_audioManager = App::GetApp()->GetXAudio2Manager();
+				m_se = m_audioManager->Start(L"ChangeSelectionSE", 0, GameManager::GetGameManager()->GetSEVolume());
 
 			}
 		}
