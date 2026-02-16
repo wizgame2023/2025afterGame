@@ -233,5 +233,10 @@ namespace basecross{
 	{
 		m_trackingActive = flag;
 	}
+
+	void BillBoard::SetColor(Col4 col)
+	{
+		m_color = col;
+	}
 }
 //end basecross

@@ -62,6 +62,9 @@ namespace basecross {
 
 		// ’ÇÕ‚·‚éBillBord‚É‚·‚é‚©
 		void SetTrackingActive(bool flag);
+
+		// F‚ğ•Ï‚¦‚é
+		void SetColor(Col4 col);
 	};
 }
 //end basecross
