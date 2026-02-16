@@ -19,7 +19,7 @@ namespace basecross{
 		m_siz(Siz),
 		m_id(ID),
 		m_reload(30),
-		m_countDown(3.0f),
+		m_countDown(2.0f),
 		m_countDownFlug(false)
 	{
 		try
