@@ -73,6 +73,8 @@ namespace basecross{
 		bool GetNumberUpdateFlag();
 
 		void SetNumberLayer(int number);
+
+		void SetPosition(const Vec3& pos);
 	};
 }
 //end basecross

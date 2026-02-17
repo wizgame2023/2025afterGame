@@ -33,6 +33,8 @@ namespace basecross {
 
     void NumberSprite::OnCreate()
     {
+        auto trans = GetComponent<Transform>();
+
         SetDrawLayer(m_layer);
     }
 
@@ -229,6 +231,19 @@ namespace basecross {
     void NumberSprite::SetNumberLayer(int number)
     {
         m_layer = number;
+    }
+
+    void NumberSprite::SetPosition(const Vec3& pos)
+    {
+        Vec3 diff = pos - m_pos;
+
+        m_pos = pos;
+
+        for (auto& digit : m_digits)
+        {
+            Vec3 digitPos = digit->GetPosition();
+            digit->SetPosition(digitPos + diff);
+        }
     }
 }
 //end basecross
