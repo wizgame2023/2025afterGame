@@ -12,19 +12,10 @@ namespace basecross
 {
 	UIManager::UIManager() :
 		m_createUI(false),
-		m_initialized(false),
-		m_createRankingflag(false),
-		m_playerHpCurrent(0),
-		m_playerHpMax(0),
-		m_enemyHpCurrent(0),
-		m_enemyHpMax(0),
 		m_minute(0),
 		m_second(0),
-		m_bulletNumCurrentNow(0),
-		m_bulletNumMax(0),
-		m_playerScoreCurrent(0),
 		m_createUIEnd(false),
-		m_deleteUI(false)
+		m_enemyCount(4)
 	{
 
 	}
@@ -62,11 +53,6 @@ namespace basecross
 		return m_UIManager;
 	}
 
-	void UIManager::UIManagerCreate()
-	{
-		OnCreate();
-	}
-
 	// 初期化処理
 	void UIManager::OnCreate()
 	{
@@ -84,53 +70,7 @@ namespace basecross
 		auto limit  = gameManager->GetTimeLimit();
 		auto countDown = gameManager->GetGameStartCountDown();
 
-		GetPlayerHP();
-		GetEnemies();
-
 		UpdateTime(limit);
-
-		GetPlayerScore();
-
-		// リザルト生成
-		if (gameManager->GetGameEnd() && !m_createUIEnd)
-		{
-			auto backGraund = stage->AddGameObject<Sprite>(L"PauseMenuBackGround_TX", Vec2(600.0f, 750.0f), Vec3(0.0f, 0.0f, 0.0f));
-			backGraund->SetDrawLayer(1);
-			backGraund->SetColor(Col4(1.0f, 1.0f, 1.0f, 1.0f));
-
-			auto finalscore = stage->AddGameObject<Sprite>(L"Finalscore", Vec2(420.0f, 140.0f), Vec3(0.0f, 250.0f, 0.0f));
-			finalscore->SetDrawLayer(4);
-
-			int total = 5;
-
-			for (int i = 0; i < total; i++)
-			{
-				auto obj = stage->AddGameObject<RankingUI>(
-					Vec3(-50, 100 - i * 60, 0),
-					i + 1,
-					false
-				);
-
-				obj->SetLayer(2);
-
-				shared_ptr<FighterAircraftBase> fightBase;
-
-				if (i == 0)
-				{
-					fightBase = stage->GetSharedGameObject<Player>(L"Player");
-				}
-				else
-				{
-					fightBase = stage->GetSharedGameObject<Enemy>(L"Enemy" + to_wstring(i));
-				}
-
-				obj->SetFightBase(fightBase);
-
-				gameManager->Pose(true);
-
-				m_createUIEnd = true;
-			}
-		}
 
 		// カウントダウンが0になったら消える
 		if (countDown == 5)
@@ -177,10 +117,7 @@ namespace basecross
 		auto backslash = stage->AddGameObject<Sprite>(L"Number", Vec2(40.0f, 80.0f), Vec3(-480.0f, 320.0f, 0.0f));
 		backslash->SetDigit(10);
 
-		// 弾の最大数の作成
-		auto maxBullet = stage->AddGameObject<NumberSprite>(Vec2(40.0f, 80.0f), Vec3(-400.0f, 320.0f, 0.0f));
-		maxBullet->SetMyType(NumberType::MaxBullet);
-
+		// 自分のスコアの後ろに置く背景
 		auto backGraund = stage->AddGameObject<Sprite>(L"PauseMenuBackGround_TX", Vec2(310.0f, 80.0f), Vec3(-445.0f, 200.0f, 0.0f));
 		backGraund->SetColor(Col4(1.0f, 1.0f, 1.0f, 0.5f));
 	}
@@ -211,9 +148,46 @@ namespace basecross
 		bullet->SetMyType(NumberType::Bullet);	
 		bullet->SetDigitCount(2);
 
-		//// 弾UI作成
-		//auto ana = stage->AddGameObject<NumberSprite>(Vec2(40.0f, 80.0f), Vec3(0.0f, 0.0f, 0.0f));
-		//ana->SetSignedNumber(plusNumber,30);
+		// 弾の最大数の作成
+		auto maxBullet = stage->AddGameObject<NumberSprite>(Vec2(40.0f, 80.0f), Vec3(-400.0f, 320.0f, 0.0f));
+		maxBullet->SetMyType(NumberType::MaxBullet);
+	}
+
+	void UIManager::CreateResult()
+	{
+		auto& gameManager = GameManager::GetGameManager();
+		auto& app = App::GetApp();
+		auto scene = app->GetScene<Scene>();
+		auto stage = scene->GetActiveStage();
+
+		// リザルト生成
+		if (gameManager->GetGameEnd() && !m_createUIEnd)
+		{
+			auto backGraund = stage->AddGameObject<Sprite>(L"PauseMenuBackGround_TX", Vec2(600.0f, 750.0f), Vec3(0.0f, 0.0f, 0.0f));
+			backGraund->SetDrawLayer(1);
+			backGraund->SetColor(Col4(1.0f, 1.0f, 1.0f, 1.0f));
+
+			auto finalscore = stage->AddGameObject<Sprite>(L"Finalscore", Vec2(420.0f, 140.0f), Vec3(0.0f, 250.0f, 0.0f));
+			finalscore->SetDrawLayer(4);
+			bool playerOnly = false;
+			bool rankingDraw = true;
+
+			for (int i = 0; i < m_enemyCount + 1; i++)
+			{
+				auto obj = stage->AddGameObject<RankingUI>(
+					Vec3(-50, 100 - i * 60, 0),
+					i + 1,
+					playerOnly,
+					rankingDraw
+				);
+
+				obj->SetLayer(2);
+
+				gameManager->Pose(true);
+
+				m_createUIEnd = true;
+			}
+		}
 	}
 
 	void UIManager::CreateRankingUI()
@@ -221,96 +195,31 @@ namespace basecross
 		auto& app = App::GetApp();
 		auto scene = app->GetScene<Scene>();
 		auto stage = scene->GetActiveStage();
-		int total = 8;
 		bool playerOnlyRanking = true;
+		bool rankingDraw = true;
+		int playerCount = 1;
 
-		for (int i = 0; i < 1; i++)
+		for (int i = 0; i < playerCount; i++)
 		{
 			auto obj = stage->AddGameObject<RankingUI>(
 				Vec3(-500, 200 - i * 50, 0),
 				i + 1,
-				playerOnlyRanking
+				playerOnlyRanking,
+				rankingDraw
+			);
+		}
+
+		for (int i = 0; i < m_enemyCount + playerCount; i++)
+		{
+			auto obj = stage->AddGameObject<RankingUI>(
+				Vec3(500, 200 - i * 50, 0),
+				i + 1,
+				!playerOnlyRanking,
+				!rankingDraw
 			);
 
-			shared_ptr<FighterAircraftBase> fightBase;
-
-			if (i == 0)
-			{
-				fightBase = stage->GetSharedGameObject<Player>(L"Player");
-			}
-			else
-			{
-				fightBase = stage->GetSharedGameObject<Enemy>(L"Enemy" + to_wstring(i));
-			}
-
-			obj->SetFightBase(fightBase);
+			obj->SetScoreUIDraw(false);
 		}
-	}
-
-	void UIManager::GetPlayerHP()
-	{
-		auto& app = App::GetApp();
-		auto scene = app->GetScene<Scene>();
-		auto activeStage = scene->GetActiveStage();
-		auto objets = activeStage->GetGameObjectVec();
-
-		for (auto obj : objets)
-		{
-			auto player = dynamic_pointer_cast<Player>(obj);
-		
-			if (player)
-			{
-				m_playerHpCurrent = player->GetHpCurrent();
-				m_playerHpMax = player->GetHpMax();
-				m_bulletNumCurrentNow = player->GetBulletNumCurrentNow();
-				m_bulletNumMax = player->GetBulletNumMax();
-				m_playerScoreCurrent = player->GetScoreCurrent();
-			}
-		}
-	}
-	
-	void UIManager::GetEnemies()
-	{
-		auto& app = App::GetApp();
-		auto scene = app->GetScene<Scene>();
-		auto activeStage = scene->GetActiveStage();
-		auto objets = activeStage->GetGameObjectVec();
-
-		m_enemies.clear();
-		m_enemyHpCurrent.clear();
-		m_enemyHpMax.clear();
-
-		for (auto obj : objets)
-		{
-			auto enemy = dynamic_pointer_cast<Enemy>(obj);
-			
-			if (enemy)
-			{
-				m_enemies.push_back(enemy);
-				m_enemyHpCurrent.push_back(enemy->GetHpCurrent());
-				m_enemyHpMax.push_back(enemy->GetHpMax());
-			}
-		}
-	}
-
-	int UIManager::GetCurrentPlayerHP()
-	{
-		return m_playerHpCurrent;
-	}
-
-	int UIManager::GetMaxPlayerHP()
-	{
-		return m_playerHpMax;
-	}
-
-	vector<int> UIManager::GetCurrentEnemyHP()
-	{
-		return m_enemyHpCurrent;
-	}
-
-	vector<int> UIManager::GetMaxEnemyHP()
-	{
-		return m_enemyHpMax;
 	}
 
 	void UIManager::UpdateTime(int limit)
@@ -327,21 +236,6 @@ namespace basecross
 	int UIManager::GetSecondTimer()
 	{
 		return m_second;
-	}
-
-	int UIManager::GetBulletNumCurrentNow()
-	{
-		return m_bulletNumCurrentNow;
-	}
-
-	int UIManager::GetBulletNumMax()
-	{
-		return m_bulletNumMax;
-	}
-
-	int UIManager::GetPlayerScore()
-	{
-		return m_playerScoreCurrent;
 	}
 
 	void UIManager::SetCreateUIFlag(bool flag)
