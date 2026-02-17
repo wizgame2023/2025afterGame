@@ -19,7 +19,7 @@ namespace basecross{
 		m_siz(Siz),
 		m_id(ID),
 		m_reload(30),
-		m_countDown(5.0f),
+		m_countDown(2.0f),
 		m_countDownFlug(false)
 	{
 		try
@@ -67,7 +67,7 @@ namespace basecross{
 			m_countDown -= m_delta;
 			if (m_countDown <= 0)
 			{
-				//m_number->RemoveSprite();
+				m_number->RemoveSprite();
 				auto& ammomg = AmmoObjectManager::GetAmmoObjectManager();
 				ammomg->RemoveObject(m_id);
 				GetStage()->RemoveGameObject<AmmoObject>(GetThis<AmmoObject>());
@@ -77,26 +77,29 @@ namespace basecross{
 
 	void AmmoObject::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
-		auto& app = App::GetApp();
-		auto scene = app->GetScene<Scene>();
-		auto stage = scene->GetActiveStage();
-		auto body = dynamic_pointer_cast<FighterAircraftBase>(obj);
-		if (body)
+		if (!m_countDownFlug)
 		{
-			// BGM、SE用のマネージャー作成
-			auto m_audioManager = App::GetApp()->GetXAudio2Manager();
-			m_audioManager->Start(L"GetScoreSE", 1, 1.0f);
+			auto& app = App::GetApp();
+			auto scene = app->GetScene<Scene>();
+			auto stage = scene->GetActiveStage();
+			auto body = dynamic_pointer_cast<FighterAircraftBase>(obj);
+			if (body)
+			{
+				// BGM、SE用のマネージャー作成
+				auto m_audioManager = App::GetApp()->GetXAudio2Manager();
+				m_audioManager->Start(L"GetScoreSE", 1, 1.0f);
 
-			// 弾UI作成
-			//m_number = stage->AddGameObject<Sprite>(L"ReloadString", Vec2(500.0f, 100.0f), Vec3(0.0f, 0.0f, 0.0f));
+				// 弾UI作成
+				m_number = stage->AddGameObject<Sprite>(L"ReloadString", Vec2(500.0f, 100.0f), Vec3(0.0f, 0.0f, 0.0f));
 
-			int ammo = body->GetBulletNumCurrentNow();
-			ammo += m_reload;
-			body->SetBulletNumCurrentNow(ammo);
+				int ammo = body->GetBulletNumCurrentNow();
+				ammo += m_reload;
+				body->SetBulletNumCurrentNow(ammo);
 
-			m_billBoard->RemoveBill();
+				m_billBoard->RemoveBill();
 
-			m_countDownFlug = true;
+				m_countDownFlug = true;
+			}
 		}
 	}
 
