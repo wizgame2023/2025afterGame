@@ -11,6 +11,7 @@ namespace basecross{
 		const Vec3& pos, 
 		const int& rankingNumber,
 		const bool& isPlayerOnly,
+		const bool& rankingDraw,
 		const int& layer,
 		const Vec3& rot,
 		const Col4& color
@@ -19,7 +20,8 @@ namespace basecross{
 		m_pos(pos),
 		m_rankingNumber(rankingNumber),
 		m_isPlayerOnly(isPlayerOnly),
-		m_layer(layer)
+		m_layer(layer),
+		m_scoreDraw(rankingDraw)
 	{
 
 	}
@@ -59,9 +61,12 @@ namespace basecross{
 		m_nameSprite->SetDrawLayer(m_layer);
 
 
-		// 右：スコア
-		m_scoreUI = stage->AddGameObject<NumberSprite>(Vec2(30,60), scorePos);
-		m_scoreUI->SetNumberLayer(m_layer);
+		if (m_scoreDraw)
+		{
+			// 右：スコア
+			m_scoreUI = stage->AddGameObject<NumberSprite>(Vec2(30, 60), scorePos);
+			m_scoreUI->SetNumberLayer(m_layer);
+		}
 	}
 
 	void RankingUI::OnUpdate()
@@ -70,6 +75,10 @@ namespace basecross{
 		if (m_isPlayerOnly)
 		{
 			PlayerOnlyRanking();
+		}
+		else if (!m_scoreDraw)
+		{
+			NameOnly();
 		}
 		else
 		{
@@ -85,94 +94,40 @@ namespace basecross{
 	void RankingUI::AllRanking()
 	{	
 		auto& scoreManager = ScoreManager::GetScoreManager();
-		// ソート化されたスコアの情報
+		// スコア順にソート済み
 		auto scores = scoreManager->GetSortedScores();
-		// Playerのスコア
-		auto plScore = scoreManager->GetPlScore();
-		// ランキング順位
+		// このUIが担当する順位
 		int index = m_rankingNumber - 1;
+		// この順位にいる人
+		const auto& info = scores[index];
+		int playerID = 0;
 
-		// Player順位を計算
-		int playerRank = 1;
-		for (const auto& s : scores)
-		{
-			if (s.crntScore > plScore)
-			{
-				playerRank++;
-			}
-			else
-			{
-				break;
-			}
-		}
-
-		// Player
-		if (m_rankingNumber == playerRank)
+		// PlayerかEnemy 判定
+		if (info.id == playerID)
 		{
 			m_nameSprite->SetTexture(L"ResultPlayer");
-			m_scoreUI->SetNumber(plScore);
-			return;
+			m_scoreUI->SetNumber(info.crntScore);
 		}
-
-		// Player分のズレを補正
-		int enemyIndex = index;
-		if (m_rankingNumber > playerRank)
+		else
 		{
-			enemyIndex--;
+			m_nameSprite->SetTexture(L"ResultEnemy");
+			m_scoreUI->SetNumber(info.crntScore);
 		}
-
-		if (enemyIndex < 0 || enemyIndex >= (int)scores.size())
-		{
-			return;
-		}
-
-		const auto& info = scores[enemyIndex];
-		m_nameSprite->SetTexture(L"ResultEnemy");
-		m_scoreUI->SetNumber(info.crntScore);
 	}
 
-	void RankingUI::PlayerOnlyRanking()
-	{
+	void RankingUI::NameOnly()
+	{	
 		auto& scoreManager = ScoreManager::GetScoreManager();
-		// ソート化されたスコアの情報
+		// スコア順にソート済み
 		auto scores = scoreManager->GetSortedScores();
-		// Playerのスコア
-		auto plScore = scoreManager->GetPlScore();
-		// ランキング順位
+		// このUIが担当する順位
 		int index = m_rankingNumber - 1;
-		// 同じ要素から名前とスコアを取る
+		// この順位にいる人
 		const auto& info = scores[index];
+		int playerID = 0;
 
-
-		// Player順位を計算
-		int playerRank = 1;
-		for (const auto& s : scores)
-		{
-			if (s.crntScore > plScore)
-			{
-				playerRank++;
-			}
-			else
-			{
-				break;
-			}
-		}
-
-		// ランキングを動かす
-		if (m_rankUI)
-		{
-			m_rankUI->SetNumber(playerRank);
-		}
-
-
-		// 名前
-		// 0番目は必ずPlayer
-		if (info.id == 0)
-		{
-			m_rankUI->SetNumber(m_rankingNumber);
-		}
-
-		if (index == 0)
+		// PlayerかEnemy 判定
+		if (info.id == playerID)
 		{
 			m_nameSprite->SetTexture(L"ResultPlayer");
 		}
@@ -180,10 +135,52 @@ namespace basecross{
 		{
 			m_nameSprite->SetTexture(L"ResultEnemy");
 		}
+	}
+
+	void RankingUI::PlayerOnlyRanking()
+	{
+		// ランキングの情報の獲得
+		auto& scoreManager = ScoreManager::GetScoreManager();
+		// ソート化されたスコアの情報
+		auto scores = scoreManager->GetSortedScores();
+		// Playerのスコア
+		auto plScore = scoreManager->GetPlScore();
+
+		// ランキング順位をIndexに入れる
+		int index = m_rankingNumber - 1;
+		// 同じ要素から名前とスコアを取る
+		const auto& info = scores[index];
+
+		// Player順位を計算
+		int playerRank = 1;
+		for (const auto& s : scores)
+		{
+			if (s.crntScore > plScore)
+			{
+				playerRank++;
+			}
+			else
+			{
+				break;
+			}
+		}
+
+		// 順位表示
+		if (m_rankUI)
+		{
+			m_rankUI->SetNumber(playerRank);
+		}
+
+		// 名前表示
+		m_nameSprite->SetTexture(L"ResultPlayer");
 
 		// スコアの表示
 		m_scoreUI->SetNumber(plScore);
 	}
 
+	void RankingUI::SetScoreUIDraw(bool flag)
+	{
+		m_scoreDraw = flag;
+	}
 }
 //end basecross

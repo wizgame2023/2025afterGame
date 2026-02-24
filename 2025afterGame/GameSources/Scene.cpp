@@ -122,7 +122,22 @@ namespace basecross{
 
 		auto hpwaku = uiPlayerPath + L"HP_waku.png";
 		app->RegisterTexture(L"HP_WAKU", hpwaku);
-    
+
+		auto st = uiPlayerPath + L"Ranking_ST.png";
+		app->RegisterTexture(L"ST", st);
+
+		auto nd = uiPlayerPath + L"Ranking_ND.png";
+		app->RegisterTexture(L"ND", nd);
+		
+		auto rd = uiPlayerPath + L"Ranking_RD.png";
+		app->RegisterTexture(L"RD", rd);
+		
+		auto th = uiPlayerPath + L"Ranking_TH.png";
+		app->RegisterTexture(L"TH", th);
+
+		auto sighting = uiPlayerPath + L"Sighting.png";
+		app->RegisterTexture(L"Sighting", sighting);
+
 		auto resultPlayer = uiPath + L"Result_Player.png";
 		app->RegisterTexture(L"ResultPlayer", resultPlayer);
     

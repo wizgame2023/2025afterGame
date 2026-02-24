@@ -33,6 +33,8 @@ namespace basecross {
 
     void NumberSprite::OnCreate()
     {
+        auto trans = GetComponent<Transform>();
+
         SetDrawLayer(m_layer);
     }
 
@@ -40,11 +42,12 @@ namespace basecross {
     {
         auto& gameManger = GameManager::GetGameManager();
         auto& uiManager = UIManager::GetUIManager();
-        auto currentHP = uiManager->GetCurrentPlayerHP();
         auto& scoreManager = ScoreManager::GetScoreManager();
-
         auto countDown = gameManger->GetGameStartCountDown();
-
+        auto stage = App::GetApp()->GetScene<Scene>()->GetActiveStage();
+        m_fightBase = stage->GetSharedGameObject<Player>(L"Player");
+        auto fightBase = m_fightBase.lock();
+        
         if (m_type == NumberType::None)
         {
             return;
@@ -53,7 +56,7 @@ namespace basecross {
         switch (m_type)
         {
         case NumberType::Bullet:
-            m_value = uiManager->GetBulletNumCurrentNow();
+            m_value = fightBase->GetBulletNumCurrentNow();
             break;
         case NumberType::Minute:
             m_value = uiManager->GetMinuteTimer();
@@ -62,7 +65,7 @@ namespace basecross {
             m_value = uiManager->GetSecondTimer();
             break;
         case NumberType::MaxBullet:
-            m_value = uiManager->GetBulletNumMax();
+            m_value = fightBase->GetBulletNumMax();
             break;
         case NumberType::Score:
             m_value = scoreManager->GetPlScore();
@@ -228,6 +231,19 @@ namespace basecross {
     void NumberSprite::SetNumberLayer(int number)
     {
         m_layer = number;
+    }
+
+    void NumberSprite::SetPosition(const Vec3& pos)
+    {
+        Vec3 diff = pos - m_pos;
+
+        m_pos = pos;
+
+        for (auto& digit : m_digits)
+        {
+            Vec3 digitPos = digit->GetPosition();
+            digit->SetPosition(digitPos + diff);
+        }
     }
 }
 //end basecross
