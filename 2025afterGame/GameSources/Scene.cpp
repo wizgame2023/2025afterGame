@@ -219,6 +219,7 @@ namespace basecross{
 		app->RegisterWav(L"ShotSE", SEPath + L"Shot.wav");
 		app->RegisterWav(L"ChangeSelectionSE", SEPath + L"ChangeSelection.wav");
 		app->RegisterWav(L"KeyConfigErrorSE", SEPath + L"Error.wav");
+		app->RegisterWav(L"ButtonPushSE", SEPath + L"ButtonPush.wav");
 	}
 	
 	void Scene::OnCreate(){

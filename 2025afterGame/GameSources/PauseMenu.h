@@ -121,6 +121,7 @@ namespace basecross{
 
 		const Vec3 m_normalScale = Vec3(1.0f, 1.0f, 1.0f);    // 通常のスケール
 		const Vec3 m_selectionScale = Vec3(1.3f, 1.3f, 1.0f); // 選択中のスケール
+		const Vec3 m_buttonsOffset = Vec3(200.0f, 0, 0);	  // ボタンのオフセット
 		static constexpr int ButtonsTypeCount = 16;           // ボタンの種類数
 
 		// ======================================
@@ -182,7 +183,7 @@ namespace basecross{
 		void InitButtonTypeMap();
 
 		// ボタンの可視管理
-		void SetShowAndPosButtons(const wstring& buttonsName, const Vec3& setPos);
+		void SetPosAndShowButtons(const wstring& buttonsName, const Vec3& setPos);
 		void SetHideButtons(const wstring& buttonsName);
 
 		// ポーズが始まった瞬間の処理

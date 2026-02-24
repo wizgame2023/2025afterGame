@@ -56,7 +56,7 @@ namespace basecross {
 			scrMana->SetID(1);
 			scrMana->SetID(2);
 
-			scrMana->AddPlScore(50);
+			scrMana->AddPlScore(300);
 			scrMana->AddScore(1, 150);
 			scrMana->AddScore(2, 300);
 
@@ -107,6 +107,7 @@ namespace basecross {
 		if (input->GetDownButton(L"X"))
 		{
 			ptrMana->Start(L"ShotSE", 0, m_player->GetSEVolume());
+			scrMana->SaveHighScoreBinary();
 		}
 
 		scrMana->AddPlScore(1);
@@ -115,13 +116,22 @@ namespace basecross {
 		//DebugLog(L"\n\n\n\n\nPLScore : ", scrMana->GetPlScore());
 		//DebugLog(L"Enemy1Score : ", scrMana->GetScore(L"Enemy1"));
 		//DebugLog(L"fileScore : ", scrMana->LoadHighScoreBinary());
-		auto SortedScores = scrMana->GetSortedScores();
-		for (size_t i = 0; i < SortedScores.size(); i++)
+		//auto SortedScores = scrMana->GetSortedScores();
+		//for (size_t i = 0; i < SortedScores.size(); i++)
+		//{
+		//	DebugLog(L"\nRank ", i + 1);
+		//	DebugLog(L" ID : ", SortedScores[i].id);
+		//	DebugLog(L" Score : ", SortedScores[i].crntScore);
+		//}
+
+		auto& highScores = scrMana->GetHighScores();
+
+		for (int i = 0; i < highScores.size(); i++)
 		{
-			DebugLog(L"\nRank ", i + 1);
-			DebugLog(L" ID : ", SortedScores[i].id);
-			DebugLog(L" Score : ", SortedScores[i].crntScore);
+			DebugLog(L"\nHigh Score : ", i + 1);
+			DebugLog(L"", highScores[i]);
 		}
+
 		FlushDebugLog();
 	}
 
