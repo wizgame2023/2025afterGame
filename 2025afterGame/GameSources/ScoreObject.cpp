@@ -22,7 +22,8 @@ namespace basecross{
 		m_point(Point),
 		m_score(0),
 		m_countDown(2.0f),
-		m_countDownFlug(false)
+		m_countDownFlug(false),
+		m_uiPos(0.0f, 0.0f, 0.0f)
 	{
 		try
 		{
@@ -85,6 +86,7 @@ namespace basecross{
 		if (m_countDownFlug)
 		{
 			m_countDown -= m_delta;
+
 			if (m_countDown <= 0)
 			{
 				m_number->OnDestory();
@@ -128,7 +130,7 @@ namespace basecross{
 				scoreMana->SetPlScore(plScore + m_score);
 				m_billBoard->RemoveBill();
 				// スコアUI作成
-				m_number = stage->AddGameObject<NumberSprite>(Vec2(40.0f, 80.0f), Vec3(0.0f, 0.0f, 0.0f));
+				m_number = stage->AddGameObject<NumberSprite>(Vec2(40.0f, 80.0f), Vec3(m_uiPos));
 				m_number->SetSignedNumber(plusNumber, m_score);
 				m_countDownFlug = true;
 			}
@@ -139,7 +141,6 @@ namespace basecross{
 				scoreMana->AddScore(enemyID, m_score);
 				GetStage()->RemoveGameObject<ScoreObject>(GetThis<ScoreObject>());
 				m_billBoard = nullptr;
-				m_countDownFlug = true;
 			}
 		}
 	}

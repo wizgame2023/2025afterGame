@@ -65,6 +65,12 @@ namespace basecross{
 		if (m_countDownFlug)
 		{
 			m_countDown -= m_delta;
+
+			m_uiPos.y += m_delta * 150;
+			m_uiPos.x -= m_delta * 150;
+
+			m_number->SetPosition(m_uiPos);
+
 			if (m_countDown <= 0)
 			{
 				m_number->RemoveSprite();
@@ -91,7 +97,7 @@ namespace basecross{
 				m_audioManager->Start(L"GetScoreSE", 1, 1.0f);
 
 				// 回復UI作成
-				m_number = stage->AddGameObject<Sprite>(L"RepairString", Vec2(500.0f, 100.0f), Vec3(0.0f, 0.0f, 0.0f));
+				m_number = stage->AddGameObject<Sprite>(L"RepairString", Vec2(500.0f, 100.0f), Vec3(m_uiPos));
 
 				float hp = body->GetHpCurrent();
 				hp += 30.0f;
