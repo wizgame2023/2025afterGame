@@ -137,6 +137,7 @@ namespace basecross{
 
 			if (enemy)
 			{
+				m_countDownFlug = true;
 				auto enemyID = enemy->GetId();
 				scoreMana->AddScore(enemyID, m_score);
 				GetStage()->RemoveGameObject<ScoreObject>(GetThis<ScoreObject>());
