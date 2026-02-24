@@ -164,52 +164,68 @@ namespace basecross {
 		// スコアデータのパスを取得
 		wstring scorePath = GetBinaryPath() + L"HighScore.bin";
 
-		// 初期ハイスコア
-		int initFirstHighScore = 10000;
-
 		// バイナリがあるかを確認
 		ifstream ifs(scorePath, ios::binary);
 
 		// ないなら生成
 		if (!ifs)
 		{
-			// ofstreamでファイルを生成
-			ofstream ofs(scorePath, ios::binary);
-			m_highScores.fill(0);
-			m_highScores[0] = initFirstHighScore;
-			ofs.write(reinterpret_cast<const char*>(m_highScores.data()), sizeof(m_highScores));
+			ResetHighScoreBinary();
+			return;
 		}
-		// あるならスコアを確認して初期スコアより低ければ上書き
-		else if (LoadHighScoreBinary() < initFirstHighScore)
-		{
-			// ofstreamでファイルを開く
-			ofstream ofs(scorePath, ios::binary);
-			ofs.write(reinterpret_cast<const char*>(&initFirstHighScore), sizeof(initFirstHighScore));
-		}
+
+		// ファイルがあるならファイル内のデータをm_highScoresに入れる
+		LoadHighScoreBinary();
+
 	}
 
 	void ScoreManager::SaveHighScoreBinary()
 	{
-		// スコアデータのパスを取得
-		wstring scorePath = GetBinaryPath() + L"HighScore.bin";
-
-		ifstream ifs(scorePath, ios::binary);
-
 		int plScore = GetPlScore();
 
-		// ファイルが存在し、スコアがハイスコアより高ければ上書き
-		if (ifs && LoadHighScoreBinary() < plScore)
+		// 5番目より高ければ
+		if (plScore > m_highScores[4])
 		{
-			// ofstreamでファイルを開く or 生成
-			ofstream ofs(scorePath, ios::binary);
-			assert(ofs);
+			// 仮置き
+			m_highScores[4] = plScore;
 
+			// 降順ソート
+			sort(m_highScores.begin(), m_highScores.end(),
+				[](const int a, const int b){ return a > b;	}
+			);
+
+			wstring scorePath = GetBinaryPath() + L"HighScore.bin";
+			ofstream ofs(scorePath, ios::binary);
+			
 			// スコアを書き込み
-			ofs.write(reinterpret_cast<const char*>(&plScore), sizeof(plScore));
+			ofs.write(reinterpret_cast<const char*>(m_highScores.data()), sizeof(m_highScores));
 		}
 	}
 
-	int ScoreManager::LoadHighScoreBinary()
+	//int ScoreManager::LoadHighScoreBinary()
+	//{
+	//	// スコアデータのパスを取得
+	//	wstring scorePath = GetBinaryPath() + L"HighScore.bin";
+
+	//	// [注意]ofstreamではなくifstream
+	//	// ifstreamでファイルを開く
+	//	ifstream ifs(scorePath, ios::binary);
+
+	//	if (!ifs)
+	//	{
+	//		// ファイルが存在しない場合は0を返す
+	//		return 0;
+	//	}
+
+	//	int loadedScore = 0;
+
+	//	// スコアを読み込み
+	//	ifs.read(reinterpret_cast<char*>(&loadedScore), sizeof(loadedScore));
+
+	//	return loadedScore;
+	//}
+
+	void ScoreManager::LoadHighScoreBinary()
 	{
 		// スコアデータのパスを取得
 		wstring scorePath = GetBinaryPath() + L"HighScore.bin";
@@ -220,16 +236,37 @@ namespace basecross {
 
 		if (!ifs)
 		{
-			// ファイルが存在しない場合は0を返す
-			return 0;
+			return;
 		}
 
-		int loadedScore = 0;
+		ifs.read(reinterpret_cast<char*>(m_highScores.data()), sizeof(m_highScores));
+	}
 
-		// スコアを読み込み
-		ifs.read(reinterpret_cast<char*>(&loadedScore), sizeof(loadedScore));
+	void ScoreManager::ResetHighScoreBinary()
+	{
+		// スコアデータのパスを取得
+		wstring scorePath = GetBinaryPath() + L"HighScore.bin";
+		
+		// 初期ハイスコア
+		int initFirstHighScore = 10000;
 
-		return loadedScore; 
+		// ofstreamでファイルを生成
+		ofstream ofs(scorePath, ios::binary);
+		m_highScores.fill(0);
+		m_highScores[0] = initFirstHighScore;
+		ofs.write(reinterpret_cast<const char*>(m_highScores.data()), sizeof(m_highScores));
+		return;
+
+	}
+
+	void ScoreManager::WriteHighScoreBinary()
+	{
+		const wstring& scorePath = GetBinaryPath() + L"HighScore.bin";
+		ofstream ofs(scorePath, ios::binary);
+		if (ofs)
+		{
+			ofs.write(reinterpret_cast<const char*>(m_highScores.data()), sizeof(m_highScores));
+		}
 	}
 
 	// 戦闘機配列に対し戦闘機の中身を追加する
