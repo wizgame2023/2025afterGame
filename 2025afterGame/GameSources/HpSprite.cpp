@@ -71,9 +71,11 @@ namespace basecross{
 	{
 		auto hpMin = 0.0f;
 		auto deltaTime = App::GetApp()->GetElapsedTime();
-		auto& uiManager = UIManager::GetUIManager();
-		auto currentHP = uiManager->GetCurrentPlayerHP();
-		auto maxHP = uiManager->GetMaxPlayerHP();
+		auto stage = App::GetApp()->GetScene<Scene>()->GetActiveStage();
+		m_fightBase = stage->GetSharedGameObject<Player>(L"Player");
+		auto fightBase = m_fightBase.lock();
+		auto currentHP = fightBase->GetHpCurrent();
+		auto maxHP = fightBase->GetHpMax();
 
 		// ‘Ì—Í‚ÌŠ„‡
 		m_Rate = static_cast<float>(currentHP) / static_cast<float>(maxHP);
