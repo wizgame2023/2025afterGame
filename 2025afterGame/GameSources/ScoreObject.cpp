@@ -87,6 +87,11 @@ namespace basecross{
 		{
 			m_countDown -= m_delta;
 
+			m_uiPos.x -= m_delta * 120;
+			m_uiPos.y += m_delta * 100;
+
+			m_number->SetPosition(m_uiPos);
+
 			if (m_countDown <= 0)
 			{
 				m_number->OnDestory();
