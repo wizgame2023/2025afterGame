@@ -24,6 +24,7 @@ namespace basecross{
 	{
 	private:
 		NumberType m_type;
+		weak_ptr<FighterAircraftBase> m_fightBase;
 		vector<shared_ptr<Sprite>> m_digits;
 		// 表示する数値
 		int m_number;
@@ -72,6 +73,8 @@ namespace basecross{
 		bool GetNumberUpdateFlag();
 
 		void SetNumberLayer(int number);
+
+		void SetPosition(const Vec3& pos);
 	};
 }
 //end basecross

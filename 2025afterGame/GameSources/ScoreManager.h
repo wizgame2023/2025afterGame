@@ -7,6 +7,7 @@
 #pragma once
 #include "stdafx.h"
 #include "fstream"
+#include<array>
 
 namespace basecross {
 	// ==============================================================================
@@ -60,6 +61,12 @@ namespace basecross {
 
 		// playerのID
 		static constexpr int PLAYER_ID = 0;
+
+		// ハイスコア最大保存数
+		static constexpr int MAX_HIGHSCORE_COUNT = 5;
+
+		// ハイスコア保存用
+		std::array<int, MAX_HIGHSCORE_COUNT> m_highScores;
 		
 		// ==============================================================================
 		// 関数
@@ -75,6 +82,7 @@ namespace basecross {
 		// 読み取りのみ
 		const ScoreInfo* FindScoreInfo(const int id) const;
 
+		void WriteHighScoreBinary();
 
 	public:
 		// ScoreManagerのメンバ変数初期化
@@ -144,7 +152,29 @@ namespace basecross {
 		void SaveHighScoreBinary();
 
 		// スコアバイナリ読み込み
-		int LoadHighScoreBinary();
+		//int LoadHighScoreBinary();
+
+		// スコアバイナリ読み込み
+		void LoadHighScoreBinary();
+
+		// リセット
+		void ResetHighScoreBinary();
+
+		// 配列でほしい場合
+		const array<int, MAX_HIGHSCORE_COUNT>& GetHighScores() const
+		{
+			return m_highScores;
+		}
+
+		// 個別でほしい場合
+		const int GetHighScore(int rank) const
+		{
+			if (rank >= 0 && rank < MAX_HIGHSCORE_COUNT)
+			{
+				return m_highScores[rank];
+			}
+			return 0;
+		}
 
 		// 戦闘機配列に対し戦闘機の中身を追加する
 		void PushBackFighterBase(const shared_ptr<FighterAircraftBase>& fighterAircraftBase);

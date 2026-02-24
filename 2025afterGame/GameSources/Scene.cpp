@@ -122,7 +122,22 @@ namespace basecross{
 
 		auto hpwaku = uiPlayerPath + L"HP_waku.png";
 		app->RegisterTexture(L"HP_WAKU", hpwaku);
-    
+
+		auto st = uiPlayerPath + L"Ranking_ST.png";
+		app->RegisterTexture(L"ST", st);
+
+		auto nd = uiPlayerPath + L"Ranking_ND.png";
+		app->RegisterTexture(L"ND", nd);
+		
+		auto rd = uiPlayerPath + L"Ranking_RD.png";
+		app->RegisterTexture(L"RD", rd);
+		
+		auto th = uiPlayerPath + L"Ranking_TH.png";
+		app->RegisterTexture(L"TH", th);
+
+		auto sighting = uiPlayerPath + L"Sighting.png";
+		app->RegisterTexture(L"Sighting", sighting);
+
 		auto resultPlayer = uiPath + L"Result_Player.png";
 		app->RegisterTexture(L"ResultPlayer", resultPlayer);
     
@@ -166,23 +181,26 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"ReloadString", AmmoItemString);
 
 		// MenuUI ///////////////////////
-		auto pauseMenuMain = uiMenuPath + L"PauseMenuMain.png";
+		auto& pauseMenuMain = uiMenuPath + L"PauseMenuMain.png";
 		App::GetApp()->RegisterTexture(L"PauseMenuMain_TX", pauseMenuMain);
 
-		auto pauseMenuVolume = uiMenuPath + L"PauseMenuSetting.png";
+		auto& pauseMenuVolume = uiMenuPath + L"PauseMenuSetting.png";
 		App::GetApp()->RegisterTexture(L"PauseMenuSetting_TX", pauseMenuVolume);
     
-		auto pauseMenuKeyConfig = uiMenuPath + L"PauseMenuKeyConfig.png";
+		auto& pauseMenuKeyConfig = uiMenuPath + L"PauseMenuKeyConfig.png";
 		App::GetApp()->RegisterTexture(L"PauseMenuKeyConfig_TX", pauseMenuKeyConfig);
 
-		auto pauseMenuVolumeGauge = uiMenuPath + L"PauseMenuVolumeGauge.png";
+		auto& pauseMenuVolumeGauge = uiMenuPath + L"PauseMenuVolumeGauge.png";
 		App::GetApp()->RegisterTexture(L"PauseMenuVolumeGauge_TX", pauseMenuVolumeGauge);
 
-		auto buttonsTex = uiMenuPath + L"Buttons.png";
+		auto& buttonsTex = uiMenuPath + L"Buttons.png";
 		App::GetApp()->RegisterTexture(L"Buttons_TX", buttonsTex);
 
-		auto menuBackground = uiMenuPath + L"PauseMenuBackGround.png";
+		auto& menuBackground = uiMenuPath + L"PauseMenuBackGround.png";
 		App::GetApp()->RegisterTexture(L"PauseMenuBackGround_TX", menuBackground);
+
+		auto& pauseMenuCheckBox = uiMenuPath + L"PauseMenuCheckBox.png";
+		App::GetApp()->RegisterTexture(L"PauseMenuCheckBox_TX", pauseMenuCheckBox);
 
 		// StageUI////////////////////////
 
@@ -214,6 +232,9 @@ namespace basecross{
 		app->RegisterWav(L"SpeedUpSE", SEPath + L"SpeedUp.wav");
 		app->RegisterWav(L"GetScoreSE", SEPath + L"GetScore.wav");
 		app->RegisterWav(L"ShotSE", SEPath + L"Shot.wav");
+		app->RegisterWav(L"ChangeSelectionSE", SEPath + L"ChangeSelection.wav");
+		app->RegisterWav(L"KeyConfigErrorSE", SEPath + L"Error.wav");
+		app->RegisterWav(L"ButtonPushSE", SEPath + L"ButtonPush.wav");
 	}
 	
 	void Scene::OnCreate(){

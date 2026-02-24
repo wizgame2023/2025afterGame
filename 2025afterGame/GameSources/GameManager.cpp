@@ -123,7 +123,7 @@ namespace basecross {
 			{
 				// BGM、SE用のマネージャー作成
 				m_audioManager = App::GetApp()->GetXAudio2Manager();
-				m_se = m_audioManager->Start(L"CountDownSE", 0, 1.0f);
+				m_se = m_audioManager->Start(L"CountDownSE", 0, GetSEVolume());
 				m_countDownSEFlag = false;// なんどもSEを鳴らさない
 			}
 
