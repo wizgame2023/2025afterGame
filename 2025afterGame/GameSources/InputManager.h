@@ -21,15 +21,15 @@ namespace basecross
 		InputManager();
 		virtual ~InputManager() {}
 
-		const wstring& m_rTriggerSt = L"RTrigger";
-		const wstring& m_lTriggerSt = L"LTrigger";
+		const wstring m_rTriggerSt = L"RTrigger";
+		const wstring m_lTriggerSt = L"LTrigger";
 
 		/*!
 		@brief ボタンの状態を取得する(ヘルパー関数)
 		@param[in] buttonfind ボタンの状態のタイプ button 取得したいボタンの名前
 		@return ボタンの状態
 		*/
-		bool FindButtonState(const map<wstring, bool>& buttonMap, const wstring& button) const
+		bool FindButtonState(const unordered_map<wstring, bool>& buttonMap, const wstring& button) const
 		{
 			auto it = buttonMap.find(button);
 			if (it != buttonMap.end())
@@ -96,11 +96,11 @@ namespace basecross
 
 		Vec2 m_LStick;
 		Vec2 m_RStick;
-		map<wstring, bool> m_Buttons;
-		map<wstring, bool> m_DownButtons;
-		map<wstring, bool> m_UpButtons;
-		map<wstring, bool> m_NowUpdateButtons;
-		map<wstring, bool> m_LastButtons;
+		unordered_map<wstring, bool> m_Buttons;
+		unordered_map<wstring, bool> m_DownButtons;
+		unordered_map<wstring, bool> m_UpButtons;
+		unordered_map<wstring, bool> m_NowUpdateButtons;
+		unordered_map<wstring, bool> m_LastButtons;
 
 		BYTE m_CrntLeftTrigger;
 		BYTE m_CrntRightTrigger;

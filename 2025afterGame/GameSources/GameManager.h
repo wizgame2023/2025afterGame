@@ -63,6 +63,14 @@ namespace basecross {
 			GAMESTART_End
 		};
 
+		enum class KeyType
+		{
+			Accel,
+			Bullet,
+			ViewBehind,
+			Max
+		};
+
 		// カウントダウンの状態
 		bool m_countDown;
 		bool m_countDownSEFlag = true;
@@ -90,11 +98,24 @@ namespace basecross {
 		bool GetUpDownSwapFlag() const { return m_upDownSwap; };
 		void SetUpDownSwapFlag(const bool flag) { m_upDownSwap = flag; };
 		wstring GetBulletKey() const { return m_bulletKey; };
-		void SetBulletKey(const wstring& key) { m_bulletKey = key; };
 		wstring GetViewBehindKey() const { return m_viewBehindKey; };
-		void SetViewBehindKey(const wstring& key) { m_viewBehindKey = key; };
 		wstring GetAccelKey() const { return m_accelKey; };
-		void SetAccelKey(const wstring& key) { m_accelKey = key; };
+
+		void SetKey(unsigned int keyType, const wstring& key)
+		{
+			if (keyType >= static_cast<int>(KeyType::Max)) return;
+
+			KeyType localKeyType = static_cast<KeyType>(keyType);
+
+			switch (localKeyType)
+			{
+				case KeyType::Accel:		m_accelKey = key; break;
+				case KeyType::Bullet:		m_bulletKey = key; break;
+				case KeyType::ViewBehind:	m_viewBehindKey = key; break;
+				default:
+					break;
+			};
+		}
 
 		//構築と破棄
 		GameManager();
