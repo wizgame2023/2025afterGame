@@ -156,6 +156,9 @@ namespace basecross{
 		startTex = uiTitlePath + L"rogo.png";
 		App::GetApp()->RegisterTexture(L"rogo_TX", startTex);
 
+		startTex = uiTitlePath + L"SceneFeid.png";
+		App::GetApp()->RegisterTexture(L"SceneFeid_TX", startTex);
+
 		startTex = uiTitlePath + L"TitleBackGround.png";
 		App::GetApp()->RegisterTexture(L"TitleBackGround_TX", startTex);
 
