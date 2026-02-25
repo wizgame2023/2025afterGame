@@ -114,29 +114,29 @@ namespace basecross{
 		app->RegisterResource(L"Basket", modelMesh);
 
 		// UI /////////////////////////////////////////////////
-		auto numberSprite = uiPlayerPath + L"Number.png";
-		app->RegisterTexture(L"Number", numberSprite);
+		auto playerTex = uiPlayerPath + L"Number.png";
+		app->RegisterTexture(L"Number", playerTex);
     
-		auto hp = uiPlayerPath + L"Hp.png";
-		app->RegisterTexture(L"HP", hp);
+		playerTex = uiPlayerPath + L"Hp.png";
+		app->RegisterTexture(L"HP", playerTex);
 
-		auto hpwaku = uiPlayerPath + L"HP_waku.png";
-		app->RegisterTexture(L"HP_WAKU", hpwaku);
+		playerTex = uiPlayerPath + L"HP_waku.png";
+		app->RegisterTexture(L"HP_WAKU", playerTex);
 
-		auto st = uiPlayerPath + L"Ranking_ST.png";
-		app->RegisterTexture(L"ST", st);
+		playerTex = uiPlayerPath + L"Ranking_ST.png";
+		app->RegisterTexture(L"ST", playerTex);
 
-		auto nd = uiPlayerPath + L"Ranking_ND.png";
-		app->RegisterTexture(L"ND", nd);
+		playerTex = uiPlayerPath + L"Ranking_ND.png";
+		app->RegisterTexture(L"ND", playerTex);
 		
-		auto rd = uiPlayerPath + L"Ranking_RD.png";
-		app->RegisterTexture(L"RD", rd);
+		playerTex = uiPlayerPath + L"Ranking_RD.png";
+		app->RegisterTexture(L"RD", playerTex);
 		
-		auto th = uiPlayerPath + L"Ranking_TH.png";
-		app->RegisterTexture(L"TH", th);
+		playerTex = uiPlayerPath + L"Ranking_TH.png";
+		app->RegisterTexture(L"TH", playerTex);
 
-		auto sighting = uiPlayerPath + L"Sighting.png";
-		app->RegisterTexture(L"Sighting", sighting);
+		playerTex = uiPlayerPath + L"Ballet.png";
+		app->RegisterTexture(L"Ballet", playerTex);
 
 		auto resultPlayer = uiPath + L"Result_Player.png";
 		app->RegisterTexture(L"ResultPlayer", resultPlayer);
@@ -207,13 +207,16 @@ namespace basecross{
 		auto stageTex = uiStagePath + L"GameStart.png";
 		App::GetApp()->RegisterTexture(L"GameStart_TX", stageTex);
 
-		uiStagePath + L"GameEnd.png";
+		stageTex = uiStagePath + L"GameEnd.png";
 		App::GetApp()->RegisterTexture(L"GameEnd_TX", stageTex);
 
 
 		// Effect /////////////////////////////////////////////
 		EffectManager::Instance().CreateEfkInterface();
 		EffectManager::Instance().RegisterEffect(L"Fire", efkPath + L"Sword.efk");
+		EffectManager::Instance().RegisterEffect(L"Smoke", efkPath + L"Smoke.efk");
+		EffectManager::Instance().RegisterEffect(L"SmokeBlack", efkPath + L"SmokeBlack.efk");
+		EffectManager::Instance().RegisterEffect(L"Spark", efkPath + L"Spark.efk");
 		
 
 		//BGM

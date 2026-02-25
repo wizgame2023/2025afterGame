@@ -52,6 +52,8 @@ namespace basecross
 		void PlayerOnlyRanking();
 		// ScoerのUIを表示させるか
 		void SetScoreUIDraw(bool flag);
+		// ランキングによって色を変える処理
+		void ApplyRankColor(int number);
 	};
 
 }

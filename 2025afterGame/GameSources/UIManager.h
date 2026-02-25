@@ -11,8 +11,8 @@ namespace basecross
 {
 	class Enemy;
 	class BillBoardGauge;
-	class NumberSprite;
 	class Sprite;
+	class NumberSprite;
 	class UIManager
 	{
 	private:

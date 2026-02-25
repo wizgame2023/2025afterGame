@@ -11,7 +11,10 @@ namespace basecross {
 	TitleStage::TitleStage() :
 		m_Transparency(1.0f),
 		m_Transparent(true),
-		m_elapsedTime(0.0f)
+		m_elapsedTime(0.0f),
+		m_sceneMoveTime(2.5f),
+		m_sceneMoveActive(false),
+		m_sceneFeidAlpth(0.0f)
 	{
 	}
 
@@ -42,13 +45,15 @@ namespace basecross {
 	{
 		AddGameObject<Sprite>(L"TitleBackGround_TX", Vec2(1280.0f, 800.0f), Vec3(0.0f, 0.0f, 0.0f));
 
-
 		float test2 = 412 * 0.75;
 		float test3 = 128 * 0.75;
 		m_testTitle = AddGameObject<Sprite>(L"Start_TX", Vec2(test2, test3), Vec3(0.0f, -260.0f, 0.0f));
 
 		float test = 1000.0f;
 		AddGameObject<Sprite>(L"rogo_TX", Vec2(test, test / 2), Vec3(15.0f, 200.0f, 0.0f));
+
+		m_fide = AddGameObject<Sprite>(L"SceneFeid_TX",Vec2(1980.0f,1020.0f),Vec3(0.0f,0.0f,0.0f));
+		m_fide->SetColor(Col4(1.0f, 1.0f, 1.0f, 0.0f));
 
 	}
 
@@ -132,9 +137,10 @@ namespace basecross {
 		//Aボタンを押すとシーン遷移
 		if (inputMgr->GetDownButton(L"A"))
 		{
-			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
-			return;
+			m_sceneMoveActive = true;
 		}
+
+		SceneFeid();
 
 		////デバッグ用文字
 		//wstringstream wss(L"");
@@ -174,5 +180,23 @@ namespace basecross {
 
 		blinksprite->SetColor(Col4(1.0f, 1.0f, 1.0f, m_Transparency));
 	}
+
+	void TitleStage::SceneFeid()
+	{
+		if (m_sceneMoveActive)
+		{
+			m_sceneFeidAlpth += 0.45f * m_elapsedTime;
+			m_fide->SetColor(Col4(1.0f, 1.0f, 1.0f, m_sceneFeidAlpth));
+			m_sceneMoveTime -= m_elapsedTime;
+
+			if (m_sceneMoveTime <= 0.0f)
+			{
+				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
+				m_sceneMoveActive = false;
+				return;
+			}
+		}
+	}
+
 }
 //end basecross
