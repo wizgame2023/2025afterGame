@@ -37,6 +37,9 @@ namespace basecross {
 		float m_timeGamePlaying = 0.0f; // ゲームの経過時間
 		float m_timeLimit = 180.0f;
 		float m_itemPhaseLimit = 5.0f;
+		float m_endDrawTime = 3.0f;
+		bool m_endDraw = false;
+		bool m_resultDrawActive = false;
 		int m_scoreObjecCout = 0;
 		bool m_createScoreObj = false;
 		bool m_itemObj = true;
@@ -71,6 +74,7 @@ namespace basecross {
 		bool m_countDownSEFlag = true;
 		int m_gameStartPhase = GAMESTART_Start;
 		shared_ptr<Sprite> m_startSprite; // カウントダウン時のStartスプライト
+		shared_ptr<Sprite> m_endSprite; // 時間制限が0になったら
 
 		// BGM、SE用
 		shared_ptr<XAudio2Manager> m_audioManager;
@@ -196,6 +200,12 @@ namespace basecross {
 		
 		// 情報をリセット
 		void ResetGameManager();
+
+		// リザルトを出すかをSet
+		void SetResultDrawActive(bool flag);
+
+		// リザルトを出すかを取得
+		bool GetResultDrawActive();
 	};
 }
 //end basecross
