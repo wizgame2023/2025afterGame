@@ -67,10 +67,16 @@ namespace basecross
 		auto scene = app->GetScene<Scene>();
 		auto stage = scene->GetActiveStage();
 		auto& gameManager = GameManager::GetGameManager();
+		auto elapsed = gameManager->GetDeltaTime();
 		auto limit  = gameManager->GetTimeLimit();
 		auto countDown = gameManager->GetGameStartCountDown();
-
+		auto player = stage->GetSharedGameObject<Player>(L"Player");
 		UpdateTime(limit);
+
+		if (gameManager->GetResultDrawActive())
+		{
+			CreateResult();
+		}
 
 		// カウントダウンが0になったら消える
 		if (countDown == 5)
@@ -97,7 +103,11 @@ namespace basecross
 		auto hp = stage->AddGameObject<HpSprite>(L"HP", Vec2(30.0f, 5.0f), Vec3(-600.0f, 375.0f, 0.0f));
 		hp->SetSpriteMove(true);
 
+		auto Ballet = stage->AddGameObject<HpSprite>(L"Ballet",Vec2(15,10),Vec3(-625.0f, 320.0f, 0.0f));
+
+		// スプライト
 		CreateSprite();
+		// ナンバースプライト
 		CreateNumberSprite();
 
 		auto pauseMenu = stage->AddGameObject<PauseMenu>();
@@ -114,12 +124,13 @@ namespace basecross
 		m_clon->SetDigit(11);
 
 		// バックスラッシュの作成
-		auto backslash = stage->AddGameObject<Sprite>(L"Number", Vec2(40.0f, 80.0f), Vec3(-480.0f, 320.0f, 0.0f));
+		auto backslash = stage->AddGameObject<Sprite>(L"Number", Vec2(40.0f, 80.0f), Vec3(-400.0f, 320.0f, 0.0f));
 		backslash->SetDigit(10);
 
 		// 自分のスコアの後ろに置く背景
 		auto backGraund = stage->AddGameObject<Sprite>(L"PauseMenuBackGround_TX", Vec2(310.0f, 80.0f), Vec3(-445.0f, 200.0f, 0.0f));
 		backGraund->SetColor(Col4(1.0f, 1.0f, 1.0f, 0.5f));
+		backGraund->SetDrawLayer(-1);
 	}
 
 	void UIManager::CreateNumberSprite()
@@ -144,12 +155,12 @@ namespace basecross
 		m_secondUI->SetDigitCount(2);
 
 		// 弾UI作成
-		auto bullet = stage->AddGameObject<NumberSprite>(Vec2(40.0f, 80.0f), Vec3(-530.0f, 320.0f, 0.0f));
+		auto bullet = stage->AddGameObject<NumberSprite>(Vec2(40.0f, 80.0f), Vec3(-450.0f, 320.0f, 0.0f));
 		bullet->SetMyType(NumberType::Bullet);	
 		bullet->SetDigitCount(2);
 
 		// 弾の最大数の作成
-		auto maxBullet = stage->AddGameObject<NumberSprite>(Vec2(40.0f, 80.0f), Vec3(-400.0f, 320.0f, 0.0f));
+		auto maxBullet = stage->AddGameObject<NumberSprite>(Vec2(40.0f, 80.0f), Vec3(-320.0f, 320.0f, 0.0f));
 		maxBullet->SetMyType(NumberType::MaxBullet);
 	}
 
@@ -169,6 +180,9 @@ namespace basecross
 
 			auto finalscore = stage->AddGameObject<Sprite>(L"Finalscore", Vec2(420.0f, 140.0f), Vec3(0.0f, 250.0f, 0.0f));
 			finalscore->SetDrawLayer(4);
+
+			auto pushA = stage->AddGameObject<Sprite>(L"Start_TX", Vec2(309.0f, 96.0f), Vec3(0.0f, -260.0f, 0.0f));
+
 			bool playerOnly = false;
 			bool rankingDraw = true;
 
@@ -182,11 +196,9 @@ namespace basecross
 				);
 
 				obj->SetLayer(2);
-
-				gameManager->Pose(true);
-
-				m_createUIEnd = true;
 			}
+
+			m_createUIEnd = true;
 		}
 	}
 
