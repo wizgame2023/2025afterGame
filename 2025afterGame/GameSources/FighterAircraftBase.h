@@ -70,6 +70,11 @@ namespace basecross{
 
 		shared_ptr<PlayerGrv> m_playerGrv;
 
+		// –³“Gƒtƒ‰ƒO
+		bool m_isInvincible = false;
+		// –³“G‚ÌŽžŠÔ
+		float m_invincibleTimer = 1.0f;
+	
 	public:
 		FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& ptrStage);
 		FighterAircraftBase(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 rot, Vec3 scale, const shared_ptr<CheckPoint>& startCheckPoint, Col4 color = Col4(1.0f));
