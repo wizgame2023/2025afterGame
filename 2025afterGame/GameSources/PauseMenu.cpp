@@ -20,6 +20,8 @@ namespace basecross{
 	// =============================================================================================
 	void PauseMenu::OnCreate()
 	{
+		m_audioManager = App::GetApp()->GetXAudio2Manager();
+
 		// m_pauseMainMenu[0] : 再開
 		// m_pauseMainMenu[1] : リスタート
 		// m_pauseMainMenu[2] : 設定
@@ -119,6 +121,7 @@ namespace basecross{
 		// m_pauseKeyConfigMenu[1] : 加速文字列
 		// m_pauseKeyConfigMenu[2] : 弾発射文字列
 		// m_pauseKeyConfigMenu[3] : 背面視点文字列
+		// m_pauseKeyConfigMenu[4] : チェックボックス
 
 		// キーコンフィグメニュー ------
 		spInfo.textureName = L"PauseMenuKeyConfig_TX";
@@ -132,6 +135,15 @@ namespace basecross{
 			spInfo.rightBotUV = Vec2(1.0f, (mainUVHeight * (i + 1)));
 			PushBackPauseMenuSprite(m_pauseKeyConfigMenuSprites, spInfo);
 		}
+
+		// チェックボックス
+		spInfo.textureName = L"PauseMenuCheckBox_TX";
+		spInfo.size = Vec2(100.0f, 100.0f);
+		constexpr float CheckBoxUVWidth = 1.0f / 2.0f;
+		spInfo.pos = m_pauseKeyConfigMenuSprites[0]->GetPosition() + Vec3(200.0f, 0, 0);
+		spInfo.leftTopUV = Vec2(0.0f, 0.0f);
+		spInfo.rightBotUV = Vec2(CheckBoxUVWidth, 1.0f);
+		PushBackPauseMenuSprite(m_pauseKeyConfigMenuSprites, spInfo);
 
 		// ボタン群 ------
 		spInfo.textureName = L"Buttons_TX";
@@ -192,6 +204,7 @@ namespace basecross{
 		// コントローラーの取得
 		auto& input = InputManager::GetInputManager();
 		bool isStartButtonDown = input->GetNowUpdateButton(L"Start"); // スタートボタンを押した瞬間を取る
+
 		//bool testX = input->GetNowUpdateButton(L"X"); // デバッグ用
 		//if (testX)
 		//{
@@ -408,6 +421,8 @@ namespace basecross{
 
 		if (pressAButton)
 		{
+			m_se = m_audioManager->Start(L"ButtonPushSE", 0, GameManager::GetGameManager()->GetSEVolume());
+
 			switch (m_crntVolumeSelect)
 			{
 				case PauseVolumeMenuSelect::BGMVolume:
@@ -421,6 +436,7 @@ namespace basecross{
 		}
 		else if (pressBButton)
 		{
+			m_se = m_audioManager->Start(L"ButtonPushSE", 0, GameManager::GetGameManager()->GetSEVolume());
 			m_pauseState = PauseMenuState::SettingMenu;
 		}
 
@@ -433,6 +449,15 @@ namespace basecross{
 		auto& game = GameManager::CreateGameManager();
 		float crntVol = 0.0f;
 		function<void(float)> volSetter;	// 未定義
+
+		bool pressAButton = input.GetDownButton(L"A");
+		bool pressBButton = input.GetDownButton(L"B");
+		if (pressAButton || pressBButton)
+		{
+			m_se = m_audioManager->Start(L"ButtonPushSE", 0, game->GetSEVolume());
+			m_pauseState = PauseMenuState::VolumeMenu;
+			// SavePauseData();
+		}
 
 		// ゲージとスライダーの取得
 		shared_ptr<Sprite> gauge;
@@ -475,14 +500,6 @@ namespace basecross{
 			volSetter(clampedVol);
 		}
 
-		bool pressAButton = input.GetDownButton(L"A");
-		bool pressBButton = input.GetDownButton(L"B");
-		if (pressAButton || pressBButton)
-		{
-			m_pauseState = PauseMenuState::VolumeMenu;
-
-			// SavePauseData();
-		}
 
 	}
 
@@ -502,7 +519,10 @@ namespace basecross{
 			{
 			case PauseKeyConfigMenuSelect::UpDownSwap:
 				// 上下移動入れ替え
-				//m_pauseData.UpDownSwap = !m_pauseData.UpDownSwap;
+				m_pauseData.UpDownSwap = !m_pauseData.UpDownSwap;
+				m_pauseKeyConfigMenuSprites[4]->SetUVRect(Vec2(static_cast<float>(m_pauseData.UpDownSwap) / 2.0f, 0.0f), 
+														  Vec2(static_cast<float>(m_pauseData.UpDownSwap) / 2.0f + 0.5f, 1.0f));
+				GameManager::GetGameManager()->SetUpDownSwapFlag(m_pauseData.UpDownSwap);
 				break;
 
 			case PauseKeyConfigMenuSelect::Accel:
@@ -532,7 +552,7 @@ namespace basecross{
 
 	void PauseMenu::UpdateKeyConfigSettingMenu(InputManager& input)
 	{
-		const wstring inputKey = input.GetPressedButton();
+		const wstring& inputKey = input.GetPressedButton();
 
 		// 何も押されていない状態かBackであれば何もしないで返る
 		if (inputKey == L"" || inputKey == L"Back")
@@ -549,36 +569,14 @@ namespace basecross{
 			return;
 		}
 
-		function<void(const wstring&)> keySetter;	// 未定義
-		auto& game = GameManager::CreateGameManager();
+		auto& game = GameManager::GetGameManager();
+		unsigned int keyType = 0;
 
-		// keySetterの定義
 		switch (m_pauseState)
 		{
-		case PauseMenuState::AccelSetting:
-			keySetter = [&](const wstring& k) { 
-				m_pauseData.AccelKey = k;
-				game->SetAccelKey(k);
-				auto& accelStringPos = m_pauseKeyConfigMenuSprites[1]->GetPosition();
-				SetShowAndPosButtons(k, accelStringPos + Vec3(200.0f, 0.0f, 0.0f));
-			};
-			break;
-		case PauseMenuState::BulletSetting:
-			keySetter = [&](const wstring& k) {
-				m_pauseData.BulletKey = k;
-				game->SetBulletKey(k);
-				auto& bulletStringPos = m_pauseKeyConfigMenuSprites[2]->GetPosition();
-				SetShowAndPosButtons(k, bulletStringPos + Vec3(200.0f, 0.0f, 0.0f));
-			};
-			break;
-		case PauseMenuState::ViewBehindSetting:
-			keySetter = [&](const wstring& k) {
-				m_pauseData.ViewBehindKey = k;
-				game->SetViewBehindKey(k);
-				auto& viewBehindStringPos = m_pauseKeyConfigMenuSprites[3]->GetPosition();
-				SetShowAndPosButtons(k, viewBehindStringPos + Vec3(200.0f, 0.0f, 0.0f));
-			};
-			break;
+		case PauseMenuState::AccelSetting:		keyType = 0; break;
+		case PauseMenuState::BulletSetting:		keyType = 1; break;
+		case PauseMenuState::ViewBehindSetting: keyType = 2; break;
 		}
 
 		// ボタンが押されたその瞬間に、今の設定アイコンを全部一回消す
@@ -596,25 +594,27 @@ namespace basecross{
 		if(isDuplicate)
 		{
 			// 重複があれば音を鳴らすなどの処理
-			
+			m_se = m_audioManager->Start(L"KeyConfigErrorSE", 0, game->GetSEVolume());
+
 			// 重複して設定は変えられないが、消してしまったアイコンを再表示する
 			auto& currentPos = m_pauseKeyConfigMenuSprites[static_cast<int>(m_crntKeyConfigSelect)]->GetPosition();
 
 			// 現在のステートに合わせて、元のキーを再表示
-			if (m_pauseState == PauseMenuState::AccelSetting)
-				SetShowAndPosButtons(m_pauseData.AccelKey, currentPos + Vec3(200.0f, 0.0f, 0.0f));
-			else if (m_pauseState == PauseMenuState::BulletSetting)
-				SetShowAndPosButtons(m_pauseData.BulletKey, currentPos + Vec3(200.0f, 0.0f, 0.0f));
-			else if (m_pauseState == PauseMenuState::ViewBehindSetting)
-				SetShowAndPosButtons(m_pauseData.ViewBehindKey, currentPos + Vec3(200.0f, 0.0f, 0.0f));
+			if (m_pauseState == PauseMenuState::AccelSetting)				SetPosAndShowButtons(m_pauseData.AccelKey, currentPos + m_buttonsOffset);
+			else if (m_pauseState == PauseMenuState::BulletSetting)			SetPosAndShowButtons(m_pauseData.BulletKey, currentPos + m_buttonsOffset);
+			else if (m_pauseState == PauseMenuState::ViewBehindSetting)		SetPosAndShowButtons(m_pauseData.ViewBehindKey, currentPos + m_buttonsOffset);
+				
 			return;
 		}
 		else
 		{
-
-
 			// 重複がなければ設定
-			keySetter(inputKey);
+			game->SetKey(keyType, inputKey);
+			if (keyType == 0)			m_pauseData.AccelKey = inputKey;
+			else if (keyType == 1)		m_pauseData.BulletKey = inputKey;
+			else if (keyType == 2)		m_pauseData.ViewBehindKey = inputKey;
+			auto& stringPos = m_pauseKeyConfigMenuSprites[keyType + 1]->GetPosition();
+			SetPosAndShowButtons(inputKey, stringPos + m_buttonsOffset);
 			// SavePauseData();
 		}
 	}
@@ -680,9 +680,9 @@ namespace basecross{
 					m_pauseState == PauseMenuState::ViewBehindSetting)
 				{
 					// 各キー設定のボタンを表示
-					SetShowAndPosButtons(m_pauseData.AccelKey, m_pauseKeyConfigMenuSprites[1]->GetPosition() + Vec3(200.0f, 0.0f, 0.0f));
-					SetShowAndPosButtons(m_pauseData.BulletKey, m_pauseKeyConfigMenuSprites[2]->GetPosition() + Vec3(200.0f, 0.0f, 0.0f));
-					SetShowAndPosButtons(m_pauseData.ViewBehindKey, m_pauseKeyConfigMenuSprites[3]->GetPosition() + Vec3(200.0f, 0.0f, 0.0f));
+					SetPosAndShowButtons(m_pauseData.AccelKey, m_pauseKeyConfigMenuSprites[1]->GetPosition() + m_buttonsOffset);
+					SetPosAndShowButtons(m_pauseData.BulletKey, m_pauseKeyConfigMenuSprites[2]->GetPosition() + m_buttonsOffset);
+					SetPosAndShowButtons(m_pauseData.ViewBehindKey, m_pauseKeyConfigMenuSprites[3]->GetPosition() + m_buttonsOffset);
 				}
 				else
 				{
@@ -773,7 +773,7 @@ namespace basecross{
 
 	// ==============================================================================
 
-	void PauseMenu::SetShowAndPosButtons(const wstring& buttonsName, const Vec3& setPos)
+	void PauseMenu::SetPosAndShowButtons(const wstring& buttonsName, const Vec3& setPos)
 	{
 		// ボタン種類を取得
 		auto it = m_buttonTypeMap.find(buttonsName);

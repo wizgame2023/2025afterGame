@@ -361,7 +361,9 @@ namespace basecross {
 
 			if (fabs(lstick.y) > deadZone)
 			{
-				m_pitchSpeed += lstick.y * accel * deltaTime;
+				bool upDownFlag = GameManager::GetGameManager()->GetUpDownSwapFlag();
+				float lstickUp = upDownFlag ? -lstick.y : lstick.y;
+				m_pitchSpeed += lstickUp * accel * deltaTime;
 			}
 
 			float maxPitchSpeed = XMConvertToRadians(60.0f);
@@ -631,7 +633,7 @@ namespace basecross {
 
 		if (bulletKeyDown && m_bulletNumCurrentNow > 0)
 		{
-			ptrMana->Start(L"ShotSE", 0, 1.0f);
+			ptrMana->Start(L"ShotSE", 0, game->GetSEVolume());
 			m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
 			m_bulletNumCurrentNow -= 1;
 		}
