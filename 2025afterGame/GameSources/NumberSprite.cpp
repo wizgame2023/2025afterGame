@@ -245,5 +245,13 @@ namespace basecross {
             digit->SetPosition(digitPos + diff);
         }
     }
+
+    void NumberSprite::SetColor(const Col4& col)
+    {
+        for (auto& digit : m_digits)
+        {
+            digit->SetColor(col);
+        }
+    }
 }
 //end basecross

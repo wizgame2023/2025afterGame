@@ -16,6 +16,7 @@ namespace basecross{
 		int m_reload;
 		float m_countDown;
 		bool m_countDownFlug;
+		Vec3 m_uiPos;
 
 		shared_ptr<BillBoard> m_billBoard;
 		shared_ptr<Sprite> m_number;
