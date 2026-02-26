@@ -138,6 +138,9 @@ namespace basecross{
 		playerTex = uiPlayerPath + L"Ballet.png";
 		app->RegisterTexture(L"Ballet", playerTex);
 
+		playerTex = uiPlayerPath + L"UP.png";
+		app->RegisterTexture(L"UP", playerTex);
+
 		auto resultPlayer = uiPath + L"Result_Player.png";
 		app->RegisterTexture(L"ResultPlayer", resultPlayer);
     
