@@ -512,6 +512,7 @@ namespace basecross {
 
 		auto& uiManager = UIManager::GetUIManager();
 		uiManager->ForceRefreshOperationUI();
+		uiManager->ForceRefreshKeyConfigSprite();
 	}
 
 	void GameManager::SetResultDrawActive(bool flag)
