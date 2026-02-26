@@ -17,6 +17,8 @@ namespace basecross {
 
 		CsvFile m_objectFile;
 
+		shared_ptr<Player> m_player;
+
 		// BGMÅASEóp
 		shared_ptr<XAudio2Manager> m_audioManager;
 		shared_ptr<SoundItem> m_bgm;

@@ -86,6 +86,24 @@ namespace basecross {
 		if (m_timeLimit < 0.0f)
 		{
 			SetGameEnd(true);
+			Pose(true);
+
+			if (!m_endDraw)
+			{
+				m_endSprite = m_currentStage->AddGameObject<Sprite>(L"GameEnd_TX", Vec2(500.0f, 250.0f));
+				m_endDraw = true;
+			}
+
+			if (m_endDraw)
+			{
+				m_endDrawTime -= m_deltaTime;
+			}
+
+			if (m_endDrawTime <= 0.0f)
+			{
+				m_currentStage->RemoveGameObject<Sprite>(m_endSprite);
+				m_resultDrawActive = true;
+			}
 		}
 
 		// ゲーム開始時のカウントダウン処理
@@ -469,6 +487,7 @@ namespace basecross {
 		SetGameEnd(false);
 		SetTimeLimit(180.0f);
 
+		m_resultDrawActive = false;
 		m_countDown = false;
 		m_gameStartFlag = false;
 		m_countDownSEFlag = true;
@@ -490,6 +509,16 @@ namespace basecross {
 		// 弾オブジェクトを管理するマネージャの初期化
 		auto& ammoObjectManager = AmmoObjectManager::GetAmmoObjectManager();
 		ammoObjectManager->ResetObject();
+	}
+
+	void GameManager::SetResultDrawActive(bool flag)
+	{
+		m_resultDrawActive = flag;
+	}
+
+	bool GameManager::GetResultDrawActive()
+	{
+		return m_resultDrawActive;
 	}
 }
 

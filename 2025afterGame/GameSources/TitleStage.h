@@ -20,11 +20,15 @@ namespace basecross {
 
 		//タイトルのスプライト
 		shared_ptr<Sprite> m_testTitle;
+		shared_ptr<Sprite> m_fide;
 
 		//メンバ変数
 		float m_Transparency;
-		bool m_Transparent;
+		bool  m_Transparent;
 		float m_elapsedTime;
+		float m_sceneMoveTime;
+		bool  m_sceneMoveActive;
+		float m_sceneFeidAlpth;
 
 		// BGM、SE用
 		shared_ptr<XAudio2Manager> m_audioManager;
@@ -40,6 +44,8 @@ namespace basecross {
 		virtual void OnDestroy()override;
 
 		void BlinkUI(shared_ptr<Sprite> blinksprite);
+
+		void SceneFeid();
 	};
 
 

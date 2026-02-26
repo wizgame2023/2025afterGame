@@ -69,9 +69,8 @@ namespace basecross {
 			//	max++;
 			//}
 
-			auto player = AddGameObject<Player>();
-			player->SetPlayerIndex(0);
-			SetSharedGameObject(L"Player", player);
+			m_player = AddGameObject<Player>();
+			SetSharedGameObject(L"Player", m_player);
 
 
 			//auto player2 = AddGameObject<Player>();
@@ -107,13 +106,13 @@ namespace basecross {
 			gameManager->SetGameStageNow(1);
 			auto startCheckPoint = gameManager->GetCheckPoint(0);
 
-			auto enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			auto enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, m_player);
 			SetSharedGameObject(L"Enemy1",enemy);
-			enemy = AddGameObject<Enemy>(Vec3(50.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			enemy = AddGameObject<Enemy>(Vec3(50.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, m_player);
 			SetSharedGameObject(L"Enemy2", enemy);
-			enemy = AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			enemy = AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, m_player);
 			SetSharedGameObject(L"Enemy3", enemy);
-			enemy = AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, 25.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			enemy = AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, 25.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, m_player);
 			SetSharedGameObject(L"Enemy4", enemy);
 			//enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
 			//SetSharedGameObject(L"Enemy5", enemy);
@@ -125,6 +124,10 @@ namespace basecross {
 			//AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
 			//auto enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
 
+			//auto plPos = m_player->GetComponent<Transform>()->GetPosition();
+			//EffectManager::Instance().PlayEffect(L"SmokeBlack", Vec3(plPos));
+			
+			AddGameObject<EffectUpdateDrawManager>();
 
 			UIManager::CreateUIManager();
 			auto& uiManager = UIManager::GetUIManager();
@@ -138,6 +141,7 @@ namespace basecross {
 			//// スコアマネージャーのテスト
 			//auto& testScoreManager = ScoreObjectManager::GetScoreObjectManager();
 			//testScoreManager->OnCreate();
+
 		}
 		catch (...) {
 			throw;
@@ -156,7 +160,7 @@ namespace basecross {
 		auto& scoreManager = ScoreManager::GetScoreManager();
 
 		m_bgm->m_SourceVoice->SetVolume(GameManager::GetGameManager()->GetBGMVolume());
-		if (gameMana->GetGameEnd() == true)
+		if (gameMana->GetResultDrawActive() == true)
 		{
 			if (input->GetDownButton(L"A"))
 			{
