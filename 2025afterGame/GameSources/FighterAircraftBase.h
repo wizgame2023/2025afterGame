@@ -71,10 +71,16 @@ namespace basecross{
 		shared_ptr<PlayerGrv> m_playerGrv;
 
 		// 無敵フラグ
-		bool m_isInvincible = false;
+		bool m_invincibleFlag = false;
 		// 無敵の時間
 		float m_invincibleTimer = 1.0f;
-	
+		// 無敵になる時間
+		float m_timeOfInvincible = 5.0f;
+		// どのくらい無敵になっているか計測する変数
+		float m_countTimeOfInvincible;
+		// 点滅している時間計測変数
+		float m_countTimeOfBlinking; 
+
 	public:
 		FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& ptrStage);
 		FighterAircraftBase(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 rot, Vec3 scale, const shared_ptr<CheckPoint>& startCheckPoint, Col4 color = Col4(1.0f));
@@ -94,6 +100,8 @@ namespace basecross{
 
 		// 倒された場合のスコア譲渡処理
 		void DownTransferScore(const shared_ptr<Bullet>& bullet,float magnification);
+		// collisionで倒された場合のスコア譲渡処理
+		void DownTransferScoreByCollision(const shared_ptr<FighterAircraftBase>& obj,float magnification);
 
 		// 当たり判定(当たった時)
 		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
@@ -147,6 +155,17 @@ namespace basecross{
 		void SetId(int id);
 		// リセット
 		void ResetParameter();
+
+		// 無敵時の処理
+		void Invincible();
+		// 無敵時の点滅処理
+		void DrawBlinking();
+
+		// 無敵フラグのゲッタ
+		bool GetInvincibleFlag();
+
+		// 無敵フラグをオンにする処理
+		void OnInvincibleFlag();
 
 		virtual void CreateChildObjects()
 		{

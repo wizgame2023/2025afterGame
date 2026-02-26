@@ -90,6 +90,11 @@ namespace basecross {
 		//	}
 		//}
 
+		auto& app = App::GetApp();
+		auto deltaTime = app->GetElapsedTime();
+
+		Invincible();
+
 	}
 
 	// バリア使用関数
@@ -152,11 +157,91 @@ namespace basecross {
 		}
 	}
 
+	// 倒された場合のスコア譲渡処理
+	// 第一引数　ぶつかったオブジェクトポインタ 第二引数  譲渡する割合(0.0f~1.0f)
+	void FighterAircraftBase::DownTransferScoreByCollision(const shared_ptr<FighterAircraftBase>& obj, float magnification)
+	{
+		auto& scoreManager = ScoreManager::GetScoreManager();
+		auto plScore = scoreManager->GetPlScore();
+
+		if (!obj) return;
+
+		// 攻撃者を Fighter として取得
+		auto attackerFighter = dynamic_pointer_cast<FighterAircraftBase>(obj);
+		if (!attackerFighter) return;
+
+		// Player判定
+		auto attackerPlayer = dynamic_pointer_cast<Player>(attackerFighter);
+		// Enemy 判定
+		auto attackerEnemy = dynamic_pointer_cast<Enemy>(attackerFighter);
+
+		// Player が倒した場合
+		if (attackerPlayer)
+		{
+			float transferScore = scoreManager->GetScore(GetId()) * magnification;
+
+			// 倒された側から減らす
+			scoreManager->SubScore(GetId(), transferScore);
+
+			// Player に加算
+			scoreManager->SetPlScore(plScore + transferScore);
+		}
+
+		// Enemy が倒した場合
+		if (attackerEnemy)
+		{
+			// 倒されたのがPlayerの場合
+			// shared_ptr版のthis
+			auto victimPlayer = dynamic_pointer_cast<Player>(shared_from_this());
+			if (victimPlayer)
+			{
+				float transferScore = scoreManager->GetPlScore() * magnification;
+
+				// Player から減らす
+				scoreManager->SubPlScore(transferScore);
+
+				// Enemy に加算
+				scoreManager->AddScore(attackerEnemy->GetId(), transferScore);
+			}
+
+			// 倒されたのがPlayerの場合Enemyの場合
+			auto victimEnemy = dynamic_pointer_cast<Enemy>(shared_from_this());
+			if (victimEnemy && victimEnemy->GetId() != attackerEnemy->GetId())
+			{
+				float transferScore = scoreManager->GetScore(victimEnemy->GetId()) * magnification;
+
+				// 倒された Enemy から減らす
+				scoreManager->SubScore(victimEnemy->GetId(), transferScore);
+
+				// 攻撃 Enemy に加算
+				scoreManager->AddScore(attackerEnemy->GetId(), transferScore);
+			}
+		}
+	}
+
 	// 当たり判定(当たった時)
 	// 引数１ ぶつかったオブジェクト
 	void FighterAircraftBase::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
+		auto fighteBase = dynamic_pointer_cast<FighterAircraftBase>(obj);
 
+		if (fighteBase)
+		{
+			if (m_invincibleFlag == false)
+			{
+				// 与えるダメージ
+				m_hpCurrent -= 5;
+
+				// 無敵フラグON
+				OnInvincibleFlag();
+			}
+
+			if (m_hpCurrent <= 0.0f)
+			{
+				// 敵を倒した時にスコアを譲渡
+				DownTransferScoreByCollision(fighteBase, 0.3f);
+			}
+		}
 	}
 
 	// 現在耐久値のゲッタ
@@ -316,6 +401,63 @@ namespace basecross {
 		scoreManager->ResetScore(GetId());
 	}
 
+	// 無敵時の処理
+	void FighterAircraftBase::Invincible()
+	{
+		if (m_invincibleFlag)
+		{
+			m_countTimeOfInvincible += m_delta;
+			if (m_timeOfInvincible < m_countTimeOfInvincible)
+			{
+				// 無敵が切れる
+				m_invincibleFlag = false;
+				m_countTimeOfInvincible = 0.0f;
+
+				// 点滅用の数値も初期化する
+				m_color.w = 1.0f;
+				m_countTimeOfBlinking = 0.0f;
+			}
+
+			// 無敵状態の時自分自身は点滅する
+			DrawBlinking();
+		}
+
+		return;
+	}
+
+	// 無敵時の点滅処理
+	void FighterAircraftBase::DrawBlinking()
+	{
+		// 無敵状態の時自分自身は点滅する
+		m_countTimeOfBlinking += m_delta;
+		if (0.3f < m_countTimeOfBlinking)
+		{
+			if (m_color.w > 0.0f)
+			{
+				m_color.w = 0.0f;
+			}
+			else if (m_color.w <= 0.0f)
+			{
+				m_color.w = 1.0f;
+			}
+
+			m_countTimeOfBlinking = 0.0f;
+		}
+
+		return;
+	}
+
+	bool FighterAircraftBase::GetInvincibleFlag()
+	{
+		return m_invincibleFlag;
+	}
+
+	void FighterAircraftBase::OnInvincibleFlag()
+	{
+		m_invincibleFlag = true;
+		return;
+
+	}
 }
 //end basecross
 

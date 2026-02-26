@@ -298,8 +298,20 @@ namespace basecross {
 				// 死んだときにナンバーを見えないように
 				m_rankNumber->SetInvisible(true);
 			}
-
 		}
+
+		// HPが０になったらリスポーンする
+		if (m_hpCurrent <= 0)
+		{
+			// リスポーンステートに遷移する
+			ChangeState(L"Respawn");
+
+			// 死んだときにHP枠を見えないように
+			m_Gauge->SetInvisible(true);
+			// 死んだときにナンバーを見えないように
+			m_rankNumber->SetInvisible(true);
+		}
+
 	}
 
 
@@ -538,53 +550,6 @@ namespace basecross {
 
 	}
 
-	// 無敵時の処理
-	void Enemy::Invincible()
-	{
-		if (m_invincibleFlag)
-		{
-
-			m_countTimeOfInvincible += m_delta;
-			if (m_timeOfInvincible < m_countTimeOfInvincible)
-			{
-				// 無敵が切れる
-				m_invincibleFlag = false;
-				m_countTimeOfInvincible = 0.0f;
-
-				// 点滅用の数値も初期化する
-				m_color.w = 1.0f;
-				m_countTimeOfBlinking = 0.0f;
-			}
-
-			// 無敵状態の時自分自身は点滅する
-			DrawBlinking();
-		}
-
-		return;
-	}
-
-	// 無敵時の点滅処理
-	void Enemy::DrawBlinking()
-	{
-		// 無敵状態の時自分自身は点滅する
-		m_countTimeOfBlinking += m_delta;
-		if (0.3f < m_countTimeOfBlinking)
-		{
-			if (m_color.w > 0.0f)
-			{
-				m_color.w = 0.0f;
-			}
-			else if (m_color.w <= 0.0f)
-			{
-				m_color.w = 1.0f;
-			}
-
-			m_countTimeOfBlinking = 0.0f;
-		}
-
-		return;
-	}
-
 	// 障害物を避けるルートを考える処理
 	shared_ptr<ObstaclesDodge> Enemy::DodgeRoute()
 	{
@@ -647,19 +612,6 @@ namespace basecross {
 		}
 
 		return trackingObjLock;
-	}
-
-	// 無敵フラグのゲッタ
-	bool Enemy::GetInvincibleFlag()
-	{
-		return m_invincibleFlag;
-	}
-
-	// 無敵フラグをオンにする処理
-	void Enemy::OnInvincibleFlag()
-	{
-		m_invincibleFlag = true;
-		return;
 	}
 
 	// ターゲットのセッタ
