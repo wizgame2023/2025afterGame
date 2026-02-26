@@ -28,6 +28,13 @@ namespace basecross {
 
 		int m_ownerId;   // 撃ったやつのID
 
+		float m_time = 0.0f;
+		float m_delay = 0.1f;        // 初動直進
+		float m_turnAccel = 3.0f;    // 曲がり加速
+		float m_maxTurn = 0.01f;     // 最大旋回量
+
+		weak_ptr<Enemy> m_target;
+
 	public:
 		Bullet(const shared_ptr<Stage>& stagePtr,const shared_ptr<Actor>& parent);
 		~Bullet();
@@ -54,6 +61,10 @@ namespace basecross {
 		void SetOwnerId(int id);
 		// どのIDかゲッター
 		int  GetOwnerId();
+		// ターゲット探索
+		void SearchTarget();
+		// ホーミング旋回
+		void HomingUpdate(float dt);
 	};
 
 	class TestCube :public Actor

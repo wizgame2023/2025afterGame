@@ -1,7 +1,7 @@
-/*!
+ï»¿/*!
 @file Bullet.cpp
-@brief ’e‚ÌÀ‘Ì
-’S“–FO•r—T‘¾
+@brief å¼¾ã®å®Ÿä½“
+æ‹…å½“ï¼šä¸‰ç“¶è£•å¤ª
 */
 
 #include "stdafx.h"
@@ -25,7 +25,7 @@ namespace basecross {
 	{
 		Actor::OnCreate();
 
-		// eƒNƒ‰ƒX‚ÌŒü‚¢‚Ä‚¢‚é•ûŒü‚ğæ“¾
+		// è¦ªã‚¯ãƒ©ã‚¹ã®å‘ã„ã¦ã„ã‚‹æ–¹å‘ã‚’å–å¾—
 		auto parentLock = m_parent.lock();
 		m_parentForward = parentLock->GetComponent<Transform>()->GetForward();
 		auto parentPos = parentLock->GetComponent<Transform>()->GetPosition();
@@ -38,30 +38,30 @@ namespace basecross {
 
 		auto ptrCol = AddComponent<CollisionSphere>();
 		ptrCol->SetDrawActive(false);
-		ptrCol->SetAfterCollision(AfterCollision::None); // •¨—”»’è–³‚µ
+		ptrCol->SetAfterCollision(AfterCollision::None); // ç‰©ç†åˆ¤å®šç„¡ã—
 
 		auto ptrDraw = AddComponent<PNTStaticDraw>();
 		ptrDraw->SetMeshResource(L"Bullet_Mesh");
 		ptrDraw->SetTextureResource(L"BulletTex");
 
-		// i‚Ş•ûŒü‚ÉŒü‚­
+		// é€²ã‚€æ–¹å‘ã«å‘ã
 		m_qt = SetRotate(m_parentForward);
 		m_trans->SetQuaternion(m_qt);
 	
 		AddTag(L"Bullet");
 
-		// ’e‚ÌŠ‘®‚ğ“o˜^
+		// å¼¾ã®æ‰€å±ã‚’ç™»éŒ²
 		shared_ptr<Player> player = dynamic_pointer_cast<Player>(m_parent.lock());
 		shared_ptr<Enemy> enemy = dynamic_pointer_cast<Enemy>(m_parent.lock());
 		
-		if (player) // –¡•û
+		if (player) // å‘³æ–¹
 		{
 			m_affiliation = true;
 		}
-		else if (enemy) // “G
+		else if (enemy) // æ•µ
 		{
 			m_affiliation = false;
-			// ‚Ç‚ÌEnemy‚ªŒ‚‚Á‚½‚©
+			// ã©ã®EnemyãŒæ’ƒã£ãŸã‹
 			m_ownerId = enemy->GetId();
 		}
 
@@ -71,13 +71,13 @@ namespace basecross {
 	{
 		if (m_pauseFlag) return;
 
-		// Œp³Œ³‚Ì‚ÌUpdateXV
+		// ç¶™æ‰¿å…ƒã®ã®Updateæ›´æ–°
 		Actor::OnUpdate();
 
-		// ˆÚ“®ˆ—
+		// ç§»å‹•å‡¦ç†
 		Move();
 
-		// Ë’ö”ÍˆÍŠO‚É‚¢‚é‚È‚ç‚±‚ÌƒIƒuƒWƒFƒNƒg‚Ííœ‚³‚ê‚é
+		// å°„ç¨‹ç¯„å›²å¤–ã«ã„ã‚‹ãªã‚‰ã“ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¯å‰Šé™¤ã•ã‚Œã‚‹
 		if (m_limitLenght < m_limitLenghtCount)
 		{
 			GetStage()->RemoveGameObject<Bullet>(GetThis<Bullet>());
@@ -91,44 +91,46 @@ namespace basecross {
 		m_trans->SetPosition(m_pos);
 	}
 
-	// ˆÚ“®—p‚ÌŠÖ”
+	// ç§»å‹•ç”¨ã®é–¢æ•°
 	void Bullet::Move()
 	{
-		// eƒIƒuƒWƒFƒNƒg‚ÌŒü‚¢‚Ä‚¢‚½•ûŒü(OnCreate)‚ÉŒü‚©‚Á‚ÄˆÚ“®‚·‚é
 		m_pos = m_trans->GetPosition();
+
+		SearchTarget();
+		HomingUpdate(m_delta);
+
 		auto addPosVec = (m_speed * m_parentForward) * m_delta;
 		m_pos += addPosVec;
 
-		// ‚Ç‚Ì‚­‚ç‚¢ˆÚ“®‚µ‚½‚Ì‚©‚ğ‹L˜^‚·‚é
 		m_limitLenghtCount += abs(addPosVec.x) + abs(addPosVec.y) + abs(addPosVec.z);
 	}
 
-	// “–‚½‚è”»’è
+	// å½“ãŸã‚Šåˆ¤å®š
 	void Bullet::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
 
 	}
 
-	// ’e‚ÌŠ‘®‚ÌƒQƒbƒ^
+	// å¼¾ã®æ‰€å±ã®ã‚²ãƒƒã‚¿
 	bool Bullet::GetAffiliation()
 	{
 		return m_affiliation;
 	}
 
-	// ƒ_ƒ[ƒW‚ÌƒZƒbƒ^
+	// ãƒ€ãƒ¡ãƒ¼ã‚¸ã®ã‚»ãƒƒã‚¿
 	void Bullet::SetDamage(int damage)
 	{
 		m_damage = damage;
 	}
 
 
-	// ƒ_ƒ[ƒW‚ÌƒQƒbƒ^
+	// ãƒ€ãƒ¡ãƒ¼ã‚¸ã®ã‚²ãƒƒã‚¿
 	int Bullet::GetDamage()
 	{
 		return m_damage;
 	}
 
-	// eƒIƒuƒWƒFƒNƒg‚ÌƒQƒbƒ^
+	// è¦ªã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚²ãƒƒã‚¿
 	weak_ptr<Actor> Bullet::GetParentObj()
 	{
 		return m_parent;
@@ -144,7 +146,109 @@ namespace basecross {
 		return m_ownerId;
 	}
 
+	void Bullet::SearchTarget()
+	{
+		// ã‚¹ãƒ†ãƒ¼ã‚¸ã‹ã‚‰å…¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå–å¾—
+		auto stage = GetStage();
+		auto objVec = stage->GetGameObjectVec();
+		
+		// æœ€è‰¯ã‚¿ãƒ¼ã‚²ãƒƒãƒˆæ¢ç´¢ç”¨
+		float bestScore = -FLT_MAX;
+		weak_ptr<Enemy> bestTarget;
+		
+		// è‡ªåˆ†ã®ä½ç½®ã¨å‰æ–¹
+		auto myPos = m_pos;
+		auto myForward = m_parentForward;
 
+		// å…¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆèµ°æŸ»
+		for (auto& obj : objVec)
+		{
+			// Enemy ã ã‘å¯¾è±¡
+			auto enemy = dynamic_pointer_cast<Enemy>(obj);
+			
+			if (!enemy) continue;
+
+			// æ‰€å±åˆ¤å®š
+			if (!m_affiliation && enemy->GetId() == m_ownerId) continue;
+
+			// æ•µä½ç½®å–å¾—
+			Vec3 enemyPos = enemy->GetComponent<Transform>()->GetPosition();
+			
+			// è‡ªåˆ†ã‹ã‚‰æ•µæ–¹å‘
+			Vec3 dir = enemyPos - myPos;
+			float dist = dir.length();
+
+			// è·é›¢ã‚¼ãƒ­é˜²æ­¢
+			if (dist <= 0.001f) continue;
+			
+			dir.normalize();
+
+			// ã‚¹ã‚³ã‚¢è¨ˆç®—ã‚¹ã‚³ã‚¢ãŒé«˜ã„å¥´ã«ã‚ˆã‚‹
+			// è·é›¢ã‚¹ã‚³ã‚¢ã€€è¿‘ã„ã»ã¨é«˜ã‚
+			float distScore = 1.0f - min(dist / 15.0f, 1.0f);
+			// æ–¹å‘ã‚¹ã‚³ã‚¢ã€€å‰æ–¹ã»ã©é«˜ã„
+			float dirScore = max(dot(myForward, dir), 0.0f);
+			// åˆæˆã‚¹ã‚³ã‚¢
+			float score = distScore * 2.0f + dirScore * 0.5f;
+	
+			// æœ€å¤§ã‚¹ã‚³ã‚¢æ›´æ–°
+			if (score > bestScore)
+			{
+				bestScore = score; bestTarget = enemy;
+			}
+
+			// ç¾åœ¨ã®æœ€è‰¯ã‚¿ãƒ¼ã‚²ãƒƒãƒˆä¿å­˜
+			m_target = bestTarget;
+		}
+	}
+
+
+	void Bullet::HomingUpdate(float dt)
+	{
+		// ã‚¿ãƒ¼ã‚²ãƒƒãƒˆå–å¾—
+		auto enemy = m_target.lock();
+		if (!enemy) return;
+
+		// çµŒéæ™‚é–“æ›´æ–°
+		m_time += dt;
+		// è‡ªåˆ†ä½ç½®
+		Vec3 pos = m_pos;
+		
+		// ã‚¿ãƒ¼ã‚²ãƒƒãƒˆæ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«
+		Vec3 targetDir = enemy->GetComponent<Transform>()->GetPosition() - pos; 
+		float dist = targetDir.length();
+
+		// è·é›¢ã‚¼ãƒ­é˜²æ­¢
+		if (dist <= 0.0001f) return;
+		
+		targetDir.normalize(); 
+
+		// ãƒ›ãƒ¼ãƒŸãƒ³ã‚°é…å»¶
+		if (m_time <= m_delay) return;
+
+		// æ™‚é–“çµŒéã§æ—‹å›å¼·ããªã‚‹
+		float timeFactor = (m_time - m_delay) * m_turnAccel;
+		// è¿‘ã„ã»ã©æ—‹å›å¼·ã
+		float distanceFactor = 1.0f - min(dist / 10.0f, 1.0f);
+		
+		// è§’åº¦å·®,æ­£é¢ãªã‚‰0ã€æ¨ªã€œå¾Œã‚ã§å¤§
+		float dotA = dot(m_parentForward, targetDir);
+		float angleFactor = 1.0f - max(dotA, 0.0f);
+
+		// æœ€çµ‚æ—‹å›é‡
+		float turn = timeFactor * distanceFactor * angleFactor;
+		turn = min(turn, m_maxTurn);
+
+		// æ—‹å›é©å¿œ
+		// å‰æ–¹ãƒ™ã‚¯ãƒˆãƒ«ã‚’ã‚¿ãƒ¼ã‚²ãƒƒãƒˆæ–¹å‘ã¸å°‘ã—å¯„ã›ã‚‹
+		m_parentForward = m_parentForward + targetDir * turn;
+		// æ­£è¦åŒ–
+		m_parentForward.normalize(); 
+		
+		// å›è»¢ã¸å¤‰æ›
+		m_qt = SetRotate(m_parentForward); 
+		m_trans->SetQuaternion(m_qt); 
+	}
 
 
 	TestCube::TestCube(const shared_ptr<Stage>& stagePtr,Vec3 pos,Quat qt,Vec3 scale) :
@@ -180,7 +284,7 @@ namespace basecross {
 
 	}
 
-	// “–‚½‚è”»’è
+	// å½“ãŸã‚Šåˆ¤å®š
 	void TestCube::OnCollisionEnter(shared_ptr<GameObject>& obj)
 	{
 
