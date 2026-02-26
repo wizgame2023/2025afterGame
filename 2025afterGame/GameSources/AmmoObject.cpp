@@ -102,6 +102,7 @@ namespace basecross{
 				{
 					// 弾UI作成
 					m_number = stage->AddGameObject<Sprite>(L"ReloadString", Vec2(500.0f, 100.0f), Vec3(m_uiPos));
+					m_countDownFlug = true;
 				}
 
 				int ammo = body->GetBulletNumCurrentNow();
@@ -110,7 +111,6 @@ namespace basecross{
 
 				m_billBoard->RemoveBill();
 
-				m_countDownFlug = true;
 			}
 		}
 	}
