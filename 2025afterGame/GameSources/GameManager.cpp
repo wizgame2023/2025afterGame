@@ -509,6 +509,10 @@ namespace basecross {
 		// 弾オブジェクトを管理するマネージャの初期化
 		auto& ammoObjectManager = AmmoObjectManager::GetAmmoObjectManager();
 		ammoObjectManager->ResetObject();
+
+		auto& uiManager = UIManager::GetUIManager();
+		uiManager->ForceRefreshOperationUI();
+		uiManager->ForceRefreshKeyConfigSprite();
 	}
 
 	void GameManager::SetResultDrawActive(bool flag)

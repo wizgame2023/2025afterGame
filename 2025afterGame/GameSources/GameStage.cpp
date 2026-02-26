@@ -142,6 +142,9 @@ namespace basecross {
 			//auto& testScoreManager = ScoreObjectManager::GetScoreObjectManager();
 			//testScoreManager->OnCreate();
 
+			m_fide = AddGameObject<Sprite>(L"SceneFeid_TX", Vec2(1980.0f, 1020.0f), Vec3(0.0f, 0.0f, 0.0f));
+			m_fide->SetColor(Col4(1.0f, 1.0f, 1.0f, 0.0f));
+			m_fide->SetDrawLayer(5);
 		}
 		catch (...) {
 			throw;
@@ -158,11 +161,26 @@ namespace basecross {
 		auto& gameMana = GameManager::GetGameManager();
 		auto& input = InputManager::GetInputManager();
 		auto& scoreManager = ScoreManager::GetScoreManager();
+		auto elapsedTime = App::GetApp()->GetElapsedTime();
 
 		m_bgm->m_SourceVoice->SetVolume(GameManager::GetGameManager()->GetBGMVolume());
+		
+		
 		if (gameMana->GetResultDrawActive() == true)
 		{
 			if (input->GetDownButton(L"A"))
+			{
+				m_sceneMoveActive = true;
+			}
+		}
+
+		if (m_sceneMoveActive == true)
+		{
+			m_sceneFeidAlpth += 0.45f * elapsedTime;
+			m_fide->SetColor(Col4(1.0f, 1.0f, 1.0f, m_sceneFeidAlpth));
+			m_sceneMoveTime -= elapsedTime;
+
+			if (m_sceneMoveTime <= 0.0f)
 			{
 				uiManager->SetCreateUIFlag(false);
 				gameMana->ResetGameManager();

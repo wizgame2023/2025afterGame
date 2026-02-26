@@ -17,7 +17,7 @@ namespace basecross {
 		m_respawnPos(Vec3(0.0f)),
 		m_visualRoll(0.0f),
 		m_bankRoll(0.0f),
-		m_turnPower(1.0f),
+		m_turnPower(2.0f),
 		m_pitchSpeed(0.0f),
 		m_yawSpeed(0.0f),
 		m_recoveryTime(0.0f),
@@ -34,8 +34,9 @@ namespace basecross {
 		m_aliveflag(true),
 		m_isMove(true),
 		m_deadTime(2.0f),
-		m_effectTimer(10.0f),
-		m_playEffect(false)
+		m_effectTimer(40.0f),
+		m_replayTime(10.0f),
+		m_smokePlayEffect(false)
 	{
 	}
 
@@ -50,7 +51,7 @@ namespace basecross {
 
 		m_hpMax = 100;
 		m_hpCurrent = m_hpMax;
-
+		m_color = Col4(1.0f);
 		auto ptrTrans = GetComponent<Transform>();
 		ptrTrans->SetPosition(Vec3(0.0f, -14.0f, -1.0f));
 		auto ptrShadow = AddComponent<Shadowmap>();
@@ -59,6 +60,7 @@ namespace basecross {
 		m_draw->SetMeshResource(L"Sentouki");
 		m_draw->SetTextureResource(L"diffuse_TX");
 		// 透明化アクティブにすることでSetDiffuseで半透明に出来る
+		m_draw->SetDiffuse(m_color);
 		SetAlphaActive(true);
 
 		auto ptrCol = AddComponent<CollisionObb>();
@@ -126,28 +128,57 @@ namespace basecross {
 
 		PlayerDead();
 
-		Invincible();
-
 		auto plPos = GetComponent<Transform>()->GetPosition();
 
-		if (m_playerHpRate < 0.4f)
+
+		if (m_invincibleFlag)
 		{
-			m_effectTimer -= deltaTime;
-
-			// 生成
-			if (m_effectTimer <= 0.0f && !m_playEffect)
+			if (m_sparkPlayEffect == false)
 			{
-				EffectManager::Instance().PlayEffect(L"Spark", Vec3(plPos));
-				m_smokeEffect = EffectManager::Instance().PlayEffect(L"SmokeBlack", Vec3(plPos));
-				m_playEffect = true;
-			}
-
-			// 追従
-			if (m_playEffect)
-			{
-				EffectManager::Instance().SetPosition(m_smokeEffect, plPos);
+				auto plPos = GetComponent<Transform>()->GetPosition();
+				auto spark = EffectManager::Instance().PlayEffect(L"Spark", Vec3(plPos));
+				m_sparkPlayEffect = true;
 			}
 		}
+		else
+		{
+			m_sparkPlayEffect = false;
+		}
+
+
+		//if (m_playerHpRate < 0.4f)
+		//{
+		//	m_replayTime -= deltaTime;
+
+		//	// 生成
+		//	if (m_replayTime <= 0.0f && !m_smokePlayEffect)
+		//	{
+		//		EffectManager::Instance().PlayEffect(L"Spark", Vec3(plPos));
+		//		m_smokeEffect = EffectManager::Instance().PlayEffect(L"SmokeBlack", Vec3(plPos));
+		//		m_replayTime = 10.0f;
+		//		m_smokePlayEffect = true;
+		//	}
+
+		//	// 追従
+		//	if (m_smokePlayEffect)
+		//	{
+		//		m_effectTimer -= deltaTime;
+		//		
+		//		if (m_effectTimer >= 0.0f)
+		//		{
+		//			EffectManager::Instance().SetPosition(m_smokeEffect, plPos);
+		//			m_smokePlayEffect = false;
+		//		}
+		//		else
+		//		{
+		//			m_effectTimer = 10.0f;
+		//		}
+		//	}
+		//}
+
+		// カラー適応
+		m_draw->SetDiffuse(m_color);
+
 	}
 
 	void Player::OnCollisionEnter(shared_ptr<GameObject>& obj)
@@ -167,11 +198,11 @@ namespace basecross {
 			// 弾の所属がエネミーならダメージを受ける
 			if (bulletAffiliation == false)
 			{
-				if (m_isInvincible == false)
+				if (m_invincibleFlag == false)
 				{
 					m_hpCurrent -= bullet->GetDamage();
 
-					m_isInvincible = true;
+					m_invincibleFlag = true;
 				}
 			}
 
@@ -184,24 +215,17 @@ namespace basecross {
 			}
 		}
 
-		if (enemy)
-		{
-			if (m_isInvincible == false)
-			{
-				m_hpCurrent -= 10;
+		//if (m_invincibleFlag == true)
+		//{
+		//	auto plPos = GetComponent<Transform>()->GetPosition();
+		//	auto spark = EffectManager::Instance().PlayEffect(L"Spark", Vec3(plPos));
+		//}
 
-				auto plPos = GetComponent<Transform>()->GetPosition();
-				EffectManager::Instance().PlayEffect(L"Spark", Vec3(plPos));
-
-				m_isInvincible = true;
-			}
-
-			// HPが0になったら相手にスコアを渡す
-			if (m_hpCurrent <= 0 && m_aliveflag)
-			{
-				m_aliveflag = false;
-			}
-		}
+		//// HPが0になったら相手にスコアを渡す
+		//if (m_hpCurrent <= 0 && m_aliveflag)
+		//{
+		//	m_aliveflag = false;
+		//}
 	}
 
 	void Player::PlayerMove() 
@@ -357,7 +381,7 @@ namespace basecross {
 		{
 			m_yawSpeed = 0.0f;
 
-			float accel = 0.7f;
+			float accel = 1.7f;
 
 			if (fabs(lstick.y) > deadZone)
 			{
@@ -612,7 +636,7 @@ namespace basecross {
 		m_isMove = true;
 		m_aliveflag = true;
 		m_deadTime = 2.0f;
-		m_isInvincible = true;
+		m_invincibleFlag = true;
 		m_invincibleTimer = 5.0f;
 
 		m_hpCurrent = m_hpMax;
@@ -736,32 +760,6 @@ namespace basecross {
 		}
 	}
 
-	void Player::Invincible()
-	{
-		auto& app = App::GetApp();
-		auto deltaTime = app->GetElapsedTime();
-
-		if (m_isInvincible)
-		{
-			m_invincibleTimer -= deltaTime;
-
-			if (m_invincibleTimer <= 0.0f)
-			{
-				m_isInvincible = false;
-				m_invincibleTimer = 1.0f;
-				// 元に戻す
-				m_draw->SetDiffuse(Col4(1, 1, 1, 1));
-			}
-			else
-			{
-				// 高速点滅
-				float alpha = (sinf(m_invincibleTimer * 30.0f) + 1.0f) * 0.5f;
-
-				m_draw->SetDiffuse(Col4(1, 1, 1, alpha));
-			}
-		}
-	}
-
 	void Player::SetMove(bool flag)
 	{
 		m_isMove = flag;
@@ -788,7 +786,6 @@ namespace basecross {
 	{
 		return m_aliveflag;
 	}
-
 
 }
 //end basecross

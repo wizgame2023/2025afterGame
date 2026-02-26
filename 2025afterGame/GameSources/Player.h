@@ -77,12 +77,20 @@ namespace basecross{
 		float m_playerHpRate;
 		float m_explosionRate;
 
-		bool m_isMove;
+		bool  m_isMove;
 		float m_deadTime;
-		float m_effectTimer;
-		bool m_playEffect;
 
+		// エフェクト
+		float m_replayTime;
+		float m_effectTimer;
+		bool  m_smokePlayEffect;
+		bool  m_sparkPlayEffect;
+
+		// エフェクト
+		// 黒煙
 		Effekseer::Handle m_smokeEffect;
+		// 衝突時
+		Effekseer::Handle m_sparkEffect;
 
 	public:
 		Player::Player(const shared_ptr<Stage>& ptrStage);

@@ -18,6 +18,11 @@ namespace basecross {
 		CsvFile m_objectFile;
 
 		shared_ptr<Player> m_player;
+		shared_ptr<Sprite> m_fide;
+
+		float m_sceneMoveTime = 2.5f;
+		bool  m_sceneMoveActive = false;
+		float m_sceneFeidAlpth = 0.0f;
 
 		// BGMÅASEóp
 		shared_ptr<XAudio2Manager> m_audioManager;
