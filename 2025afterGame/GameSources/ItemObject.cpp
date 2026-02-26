@@ -101,6 +101,7 @@ namespace basecross{
 				{
 					// 回復UI作成
 					m_number = stage->AddGameObject<Sprite>(L"RepairString", Vec2(500.0f, 100.0f), Vec3(m_uiPos));
+					m_countDownFlug = true;
 				}
 
 				float hp = body->GetHpCurrent();
@@ -108,8 +109,6 @@ namespace basecross{
 				body->SetHPCurrent(hp);
 
 				m_billBoard->RemoveBill();
-
-				m_countDownFlug = true;
 			}
 		}
 	}
