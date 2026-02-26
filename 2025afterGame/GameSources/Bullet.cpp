@@ -96,8 +96,8 @@ namespace basecross {
 	{
 		m_pos = m_trans->GetPosition();
 
-		SearchTarget();
-		HomingUpdate(m_delta);
+		//SearchTarget();
+		//HomingUpdate(m_delta);
 
 		auto addPosVec = (m_speed * m_parentForward) * m_delta;
 		m_pos += addPosVec;
@@ -194,7 +194,8 @@ namespace basecross {
 			// 最大スコア更新
 			if (score > bestScore)
 			{
-				bestScore = score; bestTarget = enemy;
+				bestScore = score;
+				bestTarget = enemy;
 			}
 
 			// 現在の最良ターゲット保存
