@@ -50,10 +50,6 @@ namespace basecross {
         m_ordinalNumber->SetPushY(2.0f);
         m_ordinalNumber->SetPushX(1.0f);
         m_ordinalNumber->SetScale(Vec3(1.0f));
-
-
-        UpdateRank();
-        ApplyUV();
     }
 
     void BillBoardNumber::OnUpdate()
@@ -102,6 +98,7 @@ namespace basecross {
         // 毎フレーム順位を更新
         UpdateRank();
         ApplyUV();
+        ApplyRankColor(m_number);
     }
 
     void BillBoardNumber::UpdateRank()
@@ -179,4 +176,31 @@ namespace basecross {
         m_invisibleFlag = flag;
     }
 
+
+    void BillBoardNumber::ApplyRankColor(int number)
+    {
+        Col4 color;
+
+        if (number == 1)
+        {
+            color = Col4(1.0f, 0.85f, 0.2f, 1.0f);
+        }
+        else if (number == 2)
+        {
+            color = Col4(0.8f, 0.8f, 0.8f, 1.0f);
+        }
+        else if (number == 3)
+        {
+            color = Col4(0.8f, 0.5f, 0.2f, 1.0f);
+        }
+        else
+        {
+            color = Col4(1, 1, 1, 1);
+        }
+
+        if (m_billboard)
+        {
+            m_billboard->SetColor(color);
+        }
+    }
 }

@@ -28,7 +28,6 @@ namespace basecross{
 	
 	RankingUI::~RankingUI()
 	{
-
 	}
 
 	void RankingUI::OnCreate()
@@ -208,14 +207,13 @@ namespace basecross{
 		}
 		else
 		{
-			color = Col4(1, 1, 1, 1);
+			color = Col4(1.0f);
 		}
 
 		if (m_rankUI)
 		{
 			m_rankUI->SetColor(color);
 		}
-
 	}
 }
 //end basecross
