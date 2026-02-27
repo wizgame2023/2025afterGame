@@ -241,6 +241,9 @@ namespace basecross {
 		m_enemyLock->GetComponent<SmBaseDraw>()->SetDrawActive(false);
 		// –³“Gó‘Ô‚ðƒIƒ“‚É‚·‚é
 		m_enemyLock->OnInvincibleFlag();
+
+		// •œŠˆˆ—
+		m_enemyLock->SetPos(Vec3(0.0f, -200.0f, 200.0f));
 	}
 
 	void StateRespawnEnemy::OnUpdate()
