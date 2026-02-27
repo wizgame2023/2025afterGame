@@ -151,47 +151,18 @@ namespace basecross {
 		}
 
 
-		// 射線上に敵対する相手がいたら攻撃する
-		Vec3 hitPos;			// 出力用：レイの交差地点(衝突点)
-		TRIANGLE triangle;		// レイが交差したポリゴンを構成する頂点の座標
-		size_t triangleNumber;	// レイが交差したポリゴンの番号
-		float min = 9999999.9f;	//Playerから見てカメラの障害となる距離の最小値
-		bool moveEnd = false;	//移動処理が終わったかを保存する変数
+		// 向いている方向のレイ処理
+		DirectionalRay(objVec);
 
-		// レイの長さを求める
-		auto forward = GetComponent<Transform>()->GetForward();
-		forward = forward.normalize();
-		Vec3 rayLength = (forward *15.0f);
-		//GetStage()->AddGameObject<>
-		
-
-		// 射線上に敵戦闘機がいるか確認
-		for (auto obj : objVec)
-		{
-
-			auto fighter = dynamic_pointer_cast<FighterAircraftBase>(obj);
-
-			// 戦闘機のメッシュがレイに当たっているか確認する
-			if (fighter)
-			{
-				auto fighterPos = fighter->GetPos();
-				auto ptrDraw = fighter->GetComponent<SmBaseDraw>();
-				//RayCast::DebugRay(Line(m_pos, m_pos + rayLength), Col4(1.0f, 0.5f, 1.0f, 1.0f), GetStage());
-				ptrDraw->HitTestStaticMeshSegmentTriangles(m_pos, m_pos + rayLength, hitPos, triangle, triangleNumber);
-			}
-
-		}
-
-
+		// 弾発射クールタイム計測
 		m_countDebagBulletTime += m_delta;
 
 		// レイ射線上に飛行機が当たったら弾を発射する
-		if (hitPos != Vec3(0.0f) && m_countDebagBulletTime >= 0.5f)
+		if (m_CollisionRayFlag && m_countDebagBulletTime >= 0.5f)
 		{
 			GetStage()->AddGameObject<Bullet>(GetThis<Actor>());
 			m_countDebagBulletTime = 0.0f;
 		}
-
 
 
 		// ステートのUpdate
@@ -226,17 +197,24 @@ namespace basecross {
 		// 無敵時用の処理
 		Invincible();
 
+		// パーソナルレンジの処理
+		//PersonalRange(objVec);
+
 		// Transform反映
 		m_trans->SetQuaternion(m_qt); // qt反映
 		//m_trans->SetRotation(m_rot);
 		m_trans->SetPosition(m_pos + m_moveVec); // pos反映
 
+		auto qt = m_trans->GetQuaternion();
+		qt = qt * Quat(0.0f, 1.0f * (sin(XMConvertToRadians(1.0f) / 2.0f)), 0.0f, cos(XMConvertToRadians(1.0f) / 2.0f));
+		m_trans->SetQuaternion(qt);
+
 		// 位置取得
 		m_pos = GetComponent<Transform>()->GetPosition();
 
-		// カラー適応
-		m_draw->SetEmissive(m_color);
-		m_draw->SetDiffuse(m_color);
+		//// カラー適応
+		//m_draw->SetEmissive(m_color);
+		//m_draw->SetDiffuse(m_color);
 
 		//アニメーション再生
 		//GetComponent<PNTBoneModelDraw>()->UpdateAnimation(m_delta);
@@ -314,6 +292,127 @@ namespace basecross {
 
 	}
 
+	// 向いている方向のレイ処理
+	void Enemy::DirectionalRay(const vector<shared_ptr<GameObject>>& objVec)
+	{
+		// 初期化
+		m_CollisionRayFlag = false;
+
+		// 射線上に敵対する相手がいたら攻撃する
+		Vec3 hitPos;			// 出力用：レイの交差地点(衝突点)
+		TRIANGLE triangle;		// レイが交差したポリゴンを構成する頂点の座標
+		size_t triangleNumber;	// レイが交差したポリゴンの番号
+		float min = 9999999.9f;	//Playerから見てカメラの障害となる距離の最小値
+		bool moveEnd = false;	//移動処理が終わったかを保存する変数
+
+		// レイの長さを求める
+		auto forward = GetComponent<Transform>()->GetForward();
+		forward = forward.normalize();
+		Vec3 rayLength = (forward * 15.0f);
+
+		// 射線上に敵戦闘機がいるか確認
+		for (auto obj : objVec)
+		{
+			auto fighter = dynamic_pointer_cast<FighterAircraftBase>(obj);
+
+			// 戦闘機のメッシュがレイに当たっているか確認する
+			if (fighter)
+			{
+				auto fighterPos = fighter->GetPos();
+				auto ptrDraw = fighter->GetComponent<SmBaseDraw>();
+				//RayCast::DebugRay(Line(m_pos, m_pos + rayLength), Col4(1.0f, 0.5f, 1.0f, 1.0f), GetStage());
+				ptrDraw->HitTestStaticMeshSegmentTriangles(m_pos, m_pos + rayLength, hitPos, triangle, triangleNumber);
+				m_rayEndPos = m_pos + rayLength; // パーソナルレンジの計算
+			}
+
+			// レイが衝突したとみなす
+			if (hitPos != Vec3(0.0f))
+			{
+				m_CollisionRayFlag = true;
+			}
+			
+		}
+
+
+	}
+
+
+	// 現在進んでいる方向が衝突してしまう可能性があるか確認する処理
+	void Enemy::PersonalRange(const vector<shared_ptr<GameObject>>& objVec)
+	{
+		for (auto obj : objVec)
+		{
+			auto fighter = dynamic_pointer_cast<FighterAircraftBase>(obj);
+
+
+			if (fighter)
+			{
+				auto ts = 0;
+				auto fierPos = fighter->GetComponent<Transform>()->GetPosition();
+				if (m_pos == fierPos) return;
+
+
+				auto fighterPos = fighter->GetComponent<Transform>()->GetPosition();
+
+				// 移動予定の位置と個別の戦闘機位置の差を取得
+				Vec3 distanceVec = m_pos - fighterPos;
+				Vec3 directionVec = distanceVec;
+				directionVec.normalize();
+				float distanceLenght = distanceVec.length();
+
+				// 敵のいる方向が自分が向いている方向にほとんど近いか確認する
+				auto forward = m_moveVec; // 移動ベクトル取得
+				forward.normalize();
+
+				// 内積を求める
+				float dotf = dot(forward, directionVec);
+				dotf = clamp(dotf, -1.0f, 1.0f);
+				float differenceAngle = acosf(dotf); // なす角
+
+				//デバック用
+				wstringstream wss(L"");
+				auto scene = App::GetApp()->GetScene<Scene>();
+
+
+				differenceAngle = AdjustmentAngle(differenceAngle);
+
+				wss /* << L"デバッグ用文字列 "*/
+					<< L"\n\n\n\n\n\n\n\n\n\n\n"
+					<< L"\nforward : (" << forward.x << "," << forward.y << "," << forward.z << ")"
+					<< L"\ndirectionVec : (" << directionVec.x << "," << directionVec.y << "," << directionVec.z << ")"
+					<< L"\nnasukaku : " << XMConvertToDegrees(differenceAngle)
+					<< L"\ndistanceLenght : " << distanceLenght
+					<< endl;
+
+				scene->SetDebugString(wss.str());
+
+				// ある程度レイに近ければ避ける動作をする
+				if (distanceLenght <= 15.0f && abs(differenceAngle) >= XMConvertToRadians(150.0f) && abs(differenceAngle) <= XMConvertToRadians(210.0f))
+				{
+					m_draw->SetDiffuse(Col4(1.0f, 0.0f, 0.0f, 1.0f));
+					m_draw->SetEmissive(Col4(1.0f, 0.0f, 0.0f, 1.0f));
+
+
+					// 自分の向きと相手のいる方向の外積を求める
+					m_avoidVec = cross(distanceVec,forward);
+					m_avoidVec.normalize();
+					m_avoidFlag = true;
+				}
+				else
+				{
+					m_draw->SetDiffuse(Col4(0.0f, 1.0f, 1.0f, 1.0f));
+					m_draw->SetEmissive(Col4(0.0f, 1.0f, 1.0f, 1.0f));
+
+					// 初期化
+					m_avoidFlag = false;
+				}
+
+			}
+
+		}
+
+	}
+
 
 	//角度の調整0~360度までしか出ないようにする
 	float Enemy::AdjustmentAngle(float angle)
@@ -356,8 +455,11 @@ namespace basecross {
 
 	// 目標の変更処理
 	void Enemy::ChangeTarget(GamePhase currentPhase, const vector<shared_ptr<GameObject>>& objVec)
-	{
-		// 追跡対象がいなくなったら一番近いものを決めて追跡すると決める
+	{	
+		// 追跡対象がいなくなったら(Player狙いは例外)一番近いものを決めて追跡すると決める
+		auto player = dynamic_pointer_cast<Player>(m_trackingObj.lock());
+		if (m_trackingObj.lock() && !player) return;
+
 		if (currentPhase == GamePhase::Score)
 		{
 			int minLenght = 999999.9f;
@@ -374,19 +476,34 @@ namespace basecross {
 					auto differenceVec = scorePos - m_pos;
 					float differenceLength = differenceVec.length();
 
-					if (minLenght >= abs(differenceLength))
+					int targetedNum = scoreObjectCast->GetTargeted();
+
+					// 狙っている敵が一定以下で一番近い時狙う
+					if ((minLenght >= abs(differenceLength) || minLenght == 999999.9f) && targetedNum <= 2)
 					{
 						m_trackingObj = scoreObjectCast;
 						minLenght = differenceLength;
 					}
 				}
 			}
+
+			auto trackingObjLock = m_trackingObj.lock();
 			// スコアオブジェクトが無かったら他の戦闘機たちを倒す
-			if (!m_trackingObj.lock())
+			if (!trackingObjLock)
 			{
 				m_trackingObj = GetStage()->GetSharedGameObject<Player>(L"Player");
 				m_playerLock = true;
 			}
+			else if (trackingObjLock)
+			{
+				auto scoreObjectCast = dynamic_pointer_cast<ScoreObject>(trackingObjLock);
+
+				if (scoreObjectCast)
+				{
+					scoreObjectCast->Addtargeted();
+				}
+			}
+
 		}
 		// アイテムフェーズ時でだれを狙うか決める
 		if (currentPhase == GamePhase::Item)
@@ -478,7 +595,7 @@ namespace basecross {
 		Quat goalqt;
 		goalqt.rotationRollPitchYawFromVector(m_goalRotVec);
 
-		m_qt = m_qt.Slerp(m_qt, goalqt, 0.1f);
+		m_qt = m_qt.Slerp(m_qt, goalqt, 0.05f);
 
 		// 現在の向きと目標の向きがほぼ同じなら目標の向きに代入する
 		//if (differenceRotVec.length() <= 0.1f)
@@ -612,6 +729,18 @@ namespace basecross {
 		}
 
 		return trackingObjLock;
+	}
+
+	// 回避処理をするかのフラグゲッタ
+	bool Enemy::GetAvoidFlag()
+	{
+		return m_avoidFlag;
+	}
+
+	// 回避するために必要な方向ベクトルゲッタ
+	Vec3 Enemy::GetAvoidVec()
+	{
+		return m_avoidVec;
 	}
 
 	// ターゲットのセッタ
