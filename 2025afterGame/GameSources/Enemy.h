@@ -14,7 +14,6 @@ namespace basecross {
 	private:
 		float m_countDebagBulletTime; // デバック用の弾を出す時間計測変数
 
-
 		// 追いかける目標のオブジェクト
 		weak_ptr<Actor> m_trackingObj;
 		//shared_ptr<Actor> m_trakingObjLock;
@@ -31,12 +30,6 @@ namespace basecross {
 		// 回転の目的地
 		Vec3 m_goalRotVec;
 
-		// 無敵フラグ
-		bool m_invincibleFlag;
-		float m_timeOfInvincible = 5.0f; // 無敵になる時間
-		float m_countTimeOfInvincible; // どのくらい無敵になっているか計測する変数
-		float m_countTimeOfBlinking; // 点滅している時間計測変数
-
 		// 進みたいベクトル
 		Vec3 m_moveVec;
 
@@ -47,6 +40,10 @@ namespace basecross {
 		float m_timeOfPlayerLock;
 		bool m_playerLock;
 
+		// HPゲージ
+		shared_ptr<BillBoardGauge> m_Gauge;
+		// ランキング
+		shared_ptr<BillBoardNumber> m_rankNumber;
 
 	public:
 		// 今後は使わない
@@ -70,6 +67,9 @@ namespace basecross {
 		// ステートの変更処理
 		void ChangeState(wstring stateName);
 
+		// 目標の変更処理
+		void ChangeTarget(GamePhase currentPhase, const vector<shared_ptr<GameObject>>& objVec);
+
 		// 対象に向かって追いかける処理
 		void TrackingMove(const Vec3& posPlayerDifference);
 
@@ -88,22 +88,25 @@ namespace basecross {
 		// 障害物を避ける処理
 		void DodgeObstacles(const Vec3& posPlayerDifference);
 
-		// 無敵時の処理
-		void Invincible();
-
-		// 無敵時の点滅処理
-		void DrawBlinking();
-
 		// 障害物を避けるルートを考える処理
 		shared_ptr<ObstaclesDodge> DodgeRoute();
 
 		// 追いかける対象ポインタのゲッタ
 		shared_ptr<Actor> GetTrackingObj();
 
-		// 無敵フラグのゲッタ
-		bool GetInvincibleFlag();
-		// 無敵フラグをオンにする処理
-		void OnInvincibleFlag();
+		// ターゲットのセッタ
+		void SetTracking(const shared_ptr<Actor>& target);
+		// ターゲットのゲッタ
+		const weak_ptr<Actor>& GetTracking();
+
+		// 線形補間関数(Vec3用)
+		// 参考 : https://taketakeshi.hatenablog.jp/entry/2025/05/19/205447
+		// start : 開始地 end : 終了値 time : 補間係数(0.0f～1.0f)
+		// 戻り値 : 補間後の値
+		static Vec3 LerpV3(const Vec3& start, const Vec3& end, float time) {
+			return start + (end - start) * time;
+		}
+
 	};
 
 }

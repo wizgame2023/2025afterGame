@@ -6,6 +6,7 @@
 
 #include "stdafx.h"
 #include "Project.h"
+#include "Player.h"
 
 namespace basecross {
 	Player::Player(const shared_ptr<Stage>& ptrStage) :
@@ -16,7 +17,7 @@ namespace basecross {
 		m_respawnPos(Vec3(0.0f)),
 		m_visualRoll(0.0f),
 		m_bankRoll(0.0f),
-		m_turnPower(1.0f),
+		m_turnPower(2.0f),
 		m_pitchSpeed(0.0f),
 		m_yawSpeed(0.0f),
 		m_recoveryTime(0.0f),
@@ -28,7 +29,14 @@ namespace basecross {
 		m_baseMeshMat(),
 		m_moveAnimationFlag(false),
 		m_stopAnimationFlag(false),
-		m_aButton(false)
+		m_aButton(false),
+		m_isGrounded(false),
+		m_aliveflag(true),
+		m_isMove(true),
+		m_deadTime(2.0f),
+		m_effectTimer(40.0f),
+		m_replayTime(10.0f),
+		m_smokePlayEffect(false)
 	{
 	}
 
@@ -43,13 +51,17 @@ namespace basecross {
 
 		m_hpMax = 100;
 		m_hpCurrent = m_hpMax;
-
+		m_color = Col4(1.0f);
 		auto ptrTrans = GetComponent<Transform>();
 		ptrTrans->SetPosition(Vec3(0.0f, -14.0f, -1.0f));
+		auto ptrShadow = AddComponent<Shadowmap>();
 
 		m_draw = AddComponent<PNTBoneModelDraw>();
 		m_draw->SetMeshResource(L"Sentouki");
 		m_draw->SetTextureResource(L"diffuse_TX");
+		// 透明化アクティブにすることでSetDiffuseで半透明に出来る
+		m_draw->SetDiffuse(m_color);
+		SetAlphaActive(true);
 
 		auto ptrCol = AddComponent<CollisionObb>();
 		ptrCol->SetDrawActive(false);
@@ -65,6 +77,8 @@ namespace basecross {
 
 		m_baseMeshMat = spanMat;
 		m_draw->SetMeshToTransformMatrix(spanMat);
+		ptrShadow->SetMeshResource(L"Sentouki");
+		ptrShadow->SetMeshToTransformMatrix(spanMat);
 
 		m_draw->AddAnimation(L"PropellerMove",  0, 50, 60.0f);
 		m_draw->AddAnimation(L"PropellerDown", 40, 20, 30.0f);
@@ -73,6 +87,10 @@ namespace basecross {
 		m_draw->ChangeCurrentAnimation(L"PropellerStop");
 
 		// m_gravity = AddComponent<Gravity>();
+
+		m_playerGrv->SetBindPos(Vec3(0, -1.0f, 0));
+		m_playerGrv->GetComponent<CollisionSphere>()->SetMakedRadius(0.5f);
+		m_playerGrv->GetComponent<Transform>()->SetScale(Vec3(1.0f, 0.5f, 1.0f));
 
 	}
 
@@ -83,25 +101,84 @@ namespace basecross {
 		FighterAircraftBase::OnUpdate();
 		auto& app = App::GetApp();
 		auto deltaTime = app->GetElapsedTime();
+		auto stage = app->GetScene<Scene>()->GetActiveStage();
 		auto pos = GetComponent<Transform>()->GetPosition();
 		auto& gameManager = GameManager::GetGameManager();
 		auto start = gameManager->GetGameStartCountDown();
 
+		m_playerHpRate = static_cast<float>(m_hpCurrent) / static_cast<float>(m_hpMax);
+		m_explosionRate = 1.0f - m_playerHpRate;
+
 		if (start == 0) return;
 		
 		// プレイヤーの挙動
-		PlayerMove();
-		TurnUpdate(deltaTime);
+		if (m_isMove == true)
+		{
+			PlayerMove();
+			TurnUpdate(deltaTime);
+		}
+
 		PlayerGravity(deltaTime);
 
 		// プレイヤーの装備
-		// CreateBarrier();
 		CreateBullet();
 		
 		// dpadでコントローラーを変える
 		ChangController();
 
-		PlayerRespon();
+		PlayerDead();
+
+		auto plPos = GetComponent<Transform>()->GetPosition();
+
+
+		if (m_invincibleFlag)
+		{
+			if (m_sparkPlayEffect == false)
+			{
+				auto plPos = GetComponent<Transform>()->GetPosition();
+				auto spark = EffectManager::Instance().PlayEffect(L"Spark", Vec3(plPos));
+				m_sparkPlayEffect = true;
+			}
+		}
+		else
+		{
+			m_sparkPlayEffect = false;
+		}
+
+
+		//if (m_playerHpRate < 0.4f)
+		//{
+		//	m_replayTime -= deltaTime;
+
+		//	// 生成
+		//	if (m_replayTime <= 0.0f && !m_smokePlayEffect)
+		//	{
+		//		EffectManager::Instance().PlayEffect(L"Spark", Vec3(plPos));
+		//		m_smokeEffect = EffectManager::Instance().PlayEffect(L"SmokeBlack", Vec3(plPos));
+		//		m_replayTime = 10.0f;
+		//		m_smokePlayEffect = true;
+		//	}
+
+		//	// 追従
+		//	if (m_smokePlayEffect)
+		//	{
+		//		m_effectTimer -= deltaTime;
+		//		
+		//		if (m_effectTimer >= 0.0f)
+		//		{
+		//			EffectManager::Instance().SetPosition(m_smokeEffect, plPos);
+		//			m_smokePlayEffect = false;
+		//		}
+		//		else
+		//		{
+		//			m_effectTimer = 10.0f;
+		//		}
+		//	}
+		//}
+
+		// カラー適応
+		m_draw->SetDiffuse(m_color);
+
 	}
 
 	void Player::OnCollisionEnter(shared_ptr<GameObject>& obj)
@@ -109,6 +186,9 @@ namespace basecross {
 		FighterAircraftBase::OnCollisionEnter(obj);
 		
 		auto bullet = dynamic_pointer_cast<Bullet>(obj);
+		auto enemy = dynamic_pointer_cast<Enemy>(obj);
+		// 0.0～1.0fの値になる
+		float r = (float)rand() / RAND_MAX;
 
 		if (bullet)
 		{
@@ -118,16 +198,34 @@ namespace basecross {
 			// 弾の所属がエネミーならダメージを受ける
 			if (bulletAffiliation == false)
 			{
-				m_hpCurrent -= bullet->GetDamage();
+				if (m_invincibleFlag == false)
+				{
+					m_hpCurrent -= bullet->GetDamage();
+
+					m_invincibleFlag = true;
+				}
 			}
 
-			// HPが０になったらリスポーンする
-			if (m_hpCurrent <= 0)
+			// HPが0になったら相手にスコアを渡す
+			if (m_hpCurrent <= 0 && m_aliveflag)
 			{
 				// スコアを10%倒した敵に譲渡する
-				DownTransferScore(bullet, 0.1f);
+				DownTransferScore(bullet, 0.3f);
+				m_aliveflag = false;
 			}
 		}
+
+		//if (m_invincibleFlag == true)
+		//{
+		//	auto plPos = GetComponent<Transform>()->GetPosition();
+		//	auto spark = EffectManager::Instance().PlayEffect(L"Spark", Vec3(plPos));
+		//}
+
+		//// HPが0になったら相手にスコアを渡す
+		//if (m_hpCurrent <= 0 && m_aliveflag)
+		//{
+		//	m_aliveflag = false;
+		//}
 	}
 
 	void Player::PlayerMove() 
@@ -162,7 +260,7 @@ namespace basecross {
 
 		ChangePlayer(lstick);
 
-		m_aButton = input->GetButton(L"A");
+		m_aButton = input->GetButton(game->GetAccelKey());
 
 		// Aボタンを押して加速移動
 		if (m_aButton)
@@ -283,11 +381,13 @@ namespace basecross {
 		{
 			m_yawSpeed = 0.0f;
 
-			float accel = 0.7f;
+			float accel = 1.7f;
 
 			if (fabs(lstick.y) > deadZone)
 			{
-				m_pitchSpeed += lstick.y * accel * deltaTime;
+				bool upDownFlag = GameManager::GetGameManager()->GetUpDownSwapFlag();
+				float lstickUp = upDownFlag ? -lstick.y : lstick.y;
+				m_pitchSpeed += lstickUp * accel * deltaTime;
 			}
 
 			float maxPitchSpeed = XMConvertToRadians(60.0f);
@@ -467,6 +567,7 @@ namespace basecross {
 	{
 		auto& input = InputManager::GetInputManager();
 		auto transform = GetComponent<Transform>();
+		auto& game = GameManager::GetGameManager();
 
 		Vec3 pos = transform->GetPosition();
 
@@ -479,7 +580,7 @@ namespace basecross {
 		// ----------------------------
 		// 入力判定（Aボタン）
 		// ----------------------------
-		bool isFlyInput = input->GetButton(L"A");
+		bool isFlyInput = input->GetButton(game->GetAccelKey());
 
 		// ----------------------------
 		// 落下制御
@@ -489,13 +590,18 @@ namespace basecross {
 		const float slowFallTime = 4.0f;     // ゆっくり落ちる時間
 
 
-		if (isFlyInput)
+		if (isFlyInput && m_isMove == true)
 		{
 			// A押下中は完全停止
 			verticalVelocity = 0.0f;
 			fallTimer = 0.0f;
 		}
 		else if (pos.y <= -14.0f)
+		{
+			verticalVelocity = 0.0f;
+			fallTimer = 0.0f;
+		}
+		else if (m_playerGrv->GetLand())
 		{
 			verticalVelocity = 0.0f;
 			fallTimer = 0.0f;
@@ -525,41 +631,16 @@ namespace basecross {
 
 	void Player::PlayerRespon()
 	{
-		if (m_hpCurrent == 0)
-		{
-			auto trans = GetComponent<Transform>();
-			trans->SetPosition(Vec3(0.0f,-14.0f, -1.0f));
+		auto trans = GetComponent<Transform>();
+		trans->SetPosition(Vec3(0.0f, -14.0f, -1.0f));
+		m_isMove = true;
+		m_aliveflag = true;
+		m_deadTime = 2.0f;
+		m_invincibleFlag = true;
+		m_invincibleTimer = 5.0f;
 
-			m_hpCurrent = m_hpMax;
-		}
+		m_hpCurrent = m_hpMax;
 	}
-
-	//void Player::CreateBarrier()
-	//{
-	//	auto stage = GetStage();
-	//	auto& input = InputManager::GetInputManager();
-
-	//	Vec3 pos = GetComponent<Transform>()->GetPosition();
-
-	//	if (!m_barrier)
-	//	{
-	//		m_barrier = stage->AddGameObject<Barrier>(GetThis<Player>());
-	//	}
-
-	//	auto useflag = m_barrier->GetUse();
-
-	//	if (input->GetDownButton(L"X", m_playerIndex))
-	//	{
-	//		if (!useflag)
-	//		{
-	//			m_barrier->SetUse(true);
-	//		}
-	//		else
-	//		{
-	//			m_barrier->SetUse(false);
-	//		}
-	//	}
-	//}
 
 	void Player::CreateBullet()
 	{
@@ -571,60 +652,68 @@ namespace basecross {
 
 		auto& game = GameManager::GetGameManager();
 		wstring& bulletKey = game->GetBulletKey();
+		
+		bool bulletKeyDown = input->GetDownButton(bulletKey);
 
+		if (bulletKeyDown && m_bulletNumCurrentNow > 0)
+		{
+			ptrMana->Start(L"ShotSE", 0, game->GetSEVolume());
+			m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
+			m_bulletNumCurrentNow -= 1;
+		}
 
 		// 右か左トリガーに設定されていれば
-		if (bulletKey == L"LTrigger" || bulletKey == L"RTrigger")
-		{
-			function<BYTE(wstring)> getTrigger = nullptr;
-			if (bulletKey == L"LTrigger")
-			{
-				getTrigger = [&](wstring key)
-					{
-						return input->GetLeftTrigger();
-					};
-			}
-			else if (bulletKey == L"RTrigger")
-			{
-				getTrigger = [&](wstring key)
-					{
-						return input->GetRightTrigger();
-					};
-			}
+		//if (bulletKey == L"LTrigger" || bulletKey == L"RTrigger")
+		//{
+		//	function<BYTE(wstring)> getTrigger = nullptr;
+		//	if (bulletKey == L"LTrigger")
+		//	{
+		//		getTrigger = [&](wstring key)
+		//			{
+		//				return input->GetLeftTrigger();
+		//			};
+		//	}
+		//	else if (bulletKey == L"RTrigger")
+		//	{
+		//		getTrigger = [&](wstring key)
+		//			{
+		//				return input->GetRightTrigger();
+		//			};
+		//	}
 
-			//BYTE nowTrigger = input->GetRightTrigger();
-			BYTE threshold = 30;
+		//	//BYTE nowTrigger = input->GetRightTrigger();
+		//	BYTE threshold = 30;
 
 
-			//「押した瞬間」だけ発射する
-			if ((prevTrigger <= threshold && getTrigger(bulletKey) > threshold))
-			{
-				if (m_bulletNumCurrentNow > 0)
-				{
-					ptrMana->Start(L"ShotSE", 0, 0.1f);
+		//	//「押した瞬間」だけ発射する
+		//	if ((prevTrigger <= threshold && getTrigger(bulletKey) > threshold))
+		//	{
+		//		if (m_bulletNumCurrentNow > 0)
+		//		{
+		//			ptrMana->Start(L"ShotSE", 0, 0.1f);
 
-					m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
-					m_bulletNumCurrentNow -= 1;
-				}
-			}
+		//			m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
+		//			m_bulletNumCurrentNow -= 1;
+		//		}
+		//	}
 
-			// 前フレーム値の更新を忘れない
-			prevTrigger = getTrigger(bulletKey);
+		//	// 前フレーム値の更新を忘れない
+		//	prevTrigger = getTrigger(bulletKey);
 
-		}
-		else
-		{
-			if (input->GetDownButton(bulletKey))
-			{
-				if (m_bulletNumCurrentNow > 0)
-				{
-					ptrMana->Start(L"ShotSE", 0, 0.1f);
+		//}
+		//else
+		//{
+		//	if (input->GetDownButton(bulletKey))
+		//	{
+		//		if (m_bulletNumCurrentNow > 0)
+		//		{
+		//			ptrMana->Start(L"ShotSE", 0, 0.1f);
 
-					m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
-					m_bulletNumCurrentNow -= 1;
-				}
-			}
-		}
+		//			m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
+		//			m_bulletNumCurrentNow -= 1;
+		//		}
+		//	}
+		//}
 
 	}
 
@@ -671,6 +760,32 @@ namespace basecross {
 		}
 	}
 
+	void Player::SetMove(bool flag)
+	{
+		m_isMove = flag;
+	}
+
+	void Player::PlayerDead()
+	{
+		auto& app = App::GetApp();
+		auto deltaTime = app->GetElapsedTime();
+
+		if (m_hpCurrent <= 0 && m_aliveflag == false)
+		{
+			m_isMove = false;
+			m_deadTime -= deltaTime;
+
+			if (m_deadTime <= 0.0f)
+			{
+				PlayerRespon();
+			}
+		}
+	}
+
+	bool Player::GetAliveFlag()
+	{
+		return m_aliveflag;
+	}
 
 }
 //end basecross

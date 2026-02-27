@@ -7,6 +7,7 @@
 #pragma once
 #include "stdafx.h"
 #include "Actor.h"
+#include "PlayerGrv.h"
 
 namespace basecross{
 	class Barrier;
@@ -20,6 +21,10 @@ namespace basecross{
 
 		// 名前
 		wstring m_name;
+
+		// id保存用
+		int m_id;
+		wstring m_idWstring; // intでid保存が難しいとき用の物
 
 		// パラメーター
 		int m_hpCurrent = 0;			// 耐久値
@@ -52,6 +57,9 @@ namespace basecross{
 		bool m_gunUseFlag = true;				// 弾を発射してよいかのフラグ
 		bool m_disableShieldFlag = true;		// バリア無効化をしてよいかのフラグ 
 
+		// 距離を取るために必要な変数群
+		float m_personalLength; // 自分とこれ以上近かったら離れようとする距離の大きさ
+
 		// 今後,ストリップストリーム,DRSを実装予定
 		int m_nextCheckPointID = 0;
 		int m_CurrentCheckPointID = 0;
@@ -59,6 +67,20 @@ namespace basecross{
 		//float m_timeCheckPointDifferece = 0.0f;	  // 自分が通ったチェックポイントのタイムと前の機体のタイムの差
 		//Vec3 m_nextCheckPointPos = Vec3(0.0f);	  // 次のチェックポイントの位置
 		//Vec3 m_currentCheckPointPos = Vec3(0.0f);	  // 次のチェックポイントの位置
+
+		shared_ptr<PlayerGrv> m_playerGrv;
+
+		// 無敵フラグ
+		bool m_invincibleFlag = false;
+		// 無敵の時間
+		float m_invincibleTimer = 1.0f;
+		// 無敵になる時間
+		float m_timeOfInvincible = 5.0f;
+		// どのくらい無敵になっているか計測する変数
+		float m_countTimeOfInvincible;
+		// 点滅している時間計測変数
+		float m_countTimeOfBlinking; 
+
 	public:
 		FighterAircraftBase::FighterAircraftBase(const shared_ptr<Stage>& ptrStage);
 		FighterAircraftBase(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 rot, Vec3 scale, const shared_ptr<CheckPoint>& startCheckPoint, Col4 color = Col4(1.0f));
@@ -78,6 +100,8 @@ namespace basecross{
 
 		// 倒された場合のスコア譲渡処理
 		void DownTransferScore(const shared_ptr<Bullet>& bullet,float magnification);
+		// collisionで倒された場合のスコア譲渡処理
+		void DownTransferScoreByCollision(const shared_ptr<FighterAircraftBase>& obj,float magnification);
 
 		// 当たり判定(当たった時)
 		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
@@ -125,7 +149,31 @@ namespace basecross{
 		void AddScoreCurrent(int addScore);
 		// 現在HPのセッタ
 		void SetHPCurrent(float hp);
+		// idのゲッタ
+		int GetId();
+		// idのセッタ
+		void SetId(int id);
+		// リセット
+		void ResetParameter();
 
+		// 無敵時の処理
+		void Invincible();
+		// 無敵時の点滅処理
+		void DrawBlinking();
+
+		// 無敵フラグのゲッタ
+		bool GetInvincibleFlag();
+
+		// 無敵フラグをオンにする処理
+		void OnInvincibleFlag();
+
+		virtual void CreateChildObjects()
+		{
+			auto stage = GetStage();
+
+			m_playerGrv = stage->AddGameObject<PlayerGrv>();
+			m_playerGrv->GetComponent<Transform>()->SetParent(dynamic_pointer_cast<GameObject>(GetThis<Actor>()));
+		}
 	};
 }
 //end basecross

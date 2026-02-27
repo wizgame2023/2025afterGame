@@ -219,19 +219,19 @@ namespace basecross {
 		m_drawComp->SetDiffuse(m_color);
 
 		SetAlphaActive(true);
-
 	};
 
 	void Sprite::SetDigit(int digit)
 	{
-		digit = clamp(digit, 0, 9);
+		digit = clamp(digit, 0, 13);
 
-		float piece = 1.0f / 10.0f;
-		float u0 = piece * digit;
+		float piece = 1.0f / 14.0f;
+		float u0 = piece *  digit;
 		float u1 = piece * (digit + 1);
 
-		SetUVRect(Vec2(u0, 0.0f), Vec2(u1, 1.0f));
-	}
+		float eps = piece * 0.02f;
 
+		SetUVRect(Vec2(u0 + eps, 0.0f), Vec2(u1 - eps, 1.0f));
+	}
 }
 //end basecross

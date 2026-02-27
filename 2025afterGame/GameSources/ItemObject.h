@@ -14,8 +14,12 @@ namespace basecross{
 		Vec3 m_siz;
 		int m_id;
 		int m_repair;
+		float m_countDown;
+		bool m_countDownFlug;
+		Vec3 m_uiPos;
 
 		shared_ptr<BillBoard> m_billBoard;
+		shared_ptr<Sprite> m_number;
 
 	public:
 		ItemObject(const shared_ptr<Stage>& StagePtr,
@@ -27,6 +31,8 @@ namespace basecross{
 		virtual ~ItemObject();
 
 		virtual void OnCreate() override;
+
+		virtual void OnUpdate() override;
 
 		int GetObjectID();
 

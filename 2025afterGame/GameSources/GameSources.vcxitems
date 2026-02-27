@@ -22,6 +22,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Background.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)BillBoard.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)BillBoardGauge.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)BillBoardNumber.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Bullet.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Camera.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Character.h" />
@@ -50,6 +51,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)PauseMenu.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Plane.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Player.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)PlayerGrv.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Project.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ProjectBehavior.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ProjectShader.h" />
@@ -69,7 +71,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)StateBase.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StateDisableBarrier.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StateEnemy.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)TestCsv.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)StageObject.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TitleStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TomokiStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)UIManager.h" />
@@ -84,6 +86,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Background.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)BillBoard.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)BillBoardGauge.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)BillBoardNumber.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Bullet.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)CheckPoint.cpp" />
@@ -112,6 +115,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)PauseMenu.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Plane.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Player.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)PlayerGrv.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectBehavior.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectShader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)RankingUI.cpp" />
@@ -129,7 +133,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)StateBase.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StateDisableBarrier.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StateEnemy.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)TestCsv.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)StageObject.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TitleStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TomokiStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)UIManager.cpp" />

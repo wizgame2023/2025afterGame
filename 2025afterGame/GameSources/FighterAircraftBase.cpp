@@ -1,7 +1,7 @@
 /*!
 @file Player.cpp
-@brief ƒvƒŒƒCƒ„[‚È‚ÇÀ‘Ì
-’S“–F‹g“c ’q‹M
+@brief ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãªã©å®Ÿä½“
+æ‹…å½“ï¼šå‰ç”° æ™ºè²´
 */
 
 #include "stdafx.h"
@@ -18,7 +18,7 @@ namespace basecross {
 		Actor(stagePtr, pos, rot, scale, color)
 		//m_nextCheckPointPos(Vec3(0.0f, 0.0f, 20.0f))
 	{
-		// Ÿ‚Ìƒ`ƒFƒbƒNƒ|ƒCƒ“ƒg‚Ìİ’è
+		// æ¬¡ã®ãƒã‚§ãƒƒã‚¯ãƒã‚¤ãƒ³ãƒˆã®è¨­å®š
 		//SetCheckPoint(startCheckPoint);
 		//SetNextCheckPointPos(Vec3(0.0f, 0.0f, 10.0f));
 	}
@@ -34,7 +34,7 @@ namespace basecross {
 		Actor(stagePtr,pos,qt,scale,color)
 		//m_nextCheckPointPos(Vec3(0.0f, 0.0f, 20.0f))
 	{
-		// Ÿ‚Ìƒ`ƒFƒbƒNƒ|ƒCƒ“ƒg‚Ìİ’è
+		// æ¬¡ã®ãƒã‚§ãƒƒã‚¯ãƒã‚¤ãƒ³ãƒˆã®è¨­å®š
 		//SetCheckPoint(startCheckPoint);
 		//SetNextCheckPointPos(Vec3(0.0f, 0.0f, 10.0f));
 	}
@@ -47,16 +47,20 @@ namespace basecross {
 	void FighterAircraftBase::OnCreate()
 	{
 		Actor::OnCreate();
+		ResetParameter();
 
 		auto stage = GetStage();
+		auto& scoreManager = ScoreManager::GetScoreManager();
 
-		// ƒoƒŠƒA‘•”õ
+		scoreManager->PushBackFighterBase(GetThis<FighterAircraftBase>());
+
+		// ãƒãƒªã‚¢è£…å‚™
 		m_barrier = stage->AddGameObject<Barrier>(GetThis<FighterAircraftBase>());
-		// ƒoƒŠƒA–WŠQ‘•”õ
+		// ãƒãƒªã‚¢å¦¨å®³è£…å‚™
 		//m_disableShield = stage->AddGameObject<DisableBarrier>(GetThis<FighterAircraftBase>());
 		//m_nextCheckPointPos = Vec3(0.0f, 0.0f, 20.0f);
 
-		// ©•ª‚Ì–¼‘O‚ğƒ^ƒO‚Æ‚µ‚Ä’Ç‰Á
+		// è‡ªåˆ†ã®åå‰ã‚’ã‚¿ã‚°ã¨ã—ã¦è¿½åŠ 
 		//AddTag(m_name);
 
 	}
@@ -65,11 +69,11 @@ namespace basecross {
 	{
 		Actor::OnUpdate();
 		m_pos = GetComponent<Transform>()->GetPosition();
-		//// Ÿ‚Ìƒ`ƒFƒbƒNƒ|ƒCƒ“ƒg‚ğ’Ê‚è‰ß‚¬‚Ä‚¢‚È‚¢‚©‚Ìˆ—
+		//// æ¬¡ã®ãƒã‚§ãƒƒã‚¯ãƒã‚¤ãƒ³ãƒˆã‚’é€šã‚Šéãã¦ã„ãªã„ã‹ã®å‡¦ç†
 		//if (m_pos.z > m_nextCheckPointPos.z)
 		//{
-		//	// ‚à‚µAƒ`ƒFƒbƒNƒ|ƒCƒ“ƒg‚ÉG‚ê‚Ä’Ê‚è‰ß‚¬‚Ä‚¢‚È‚©‚Á‚½‚çƒXƒs[ƒhŒyŒ¸
-		//	// ’Ê‚è‰ß‚¬‚½‚Ì‚ªƒS[ƒ‹‚¾‚Á‚½‚ç‘O‚Ìƒ`ƒFƒbƒNƒ|ƒCƒ“ƒg‚ÌˆÊ’u‚É–ß‚é
+		//	// ã‚‚ã—ã€ãƒã‚§ãƒƒã‚¯ãƒã‚¤ãƒ³ãƒˆã«è§¦ã‚Œã¦é€šã‚Šéãã¦ã„ãªã‹ã£ãŸã‚‰ã‚¹ãƒ”ãƒ¼ãƒ‰è»½æ¸›
+		//	// é€šã‚ŠéããŸã®ãŒã‚´ãƒ¼ãƒ«ã ã£ãŸã‚‰å‰ã®ãƒã‚§ãƒƒã‚¯ãƒã‚¤ãƒ³ãƒˆã®ä½ç½®ã«æˆ»ã‚‹
 		//	auto& gameManager = GameManager::GetGameManager();
 		//	int checkPointSize = gameManager->GetChackPointsSize();
 
@@ -86,129 +90,232 @@ namespace basecross {
 		//	}
 		//}
 
+		auto& app = App::GetApp();
+		auto deltaTime = app->GetElapsedTime();
+
+		Invincible();
+
 	}
 
-	// ƒoƒŠƒAg—pŠÖ”
+	// ãƒãƒªã‚¢ä½¿ç”¨é–¢æ•°
 	void FighterAircraftBase::UseBarrier(bool use)
 	{
 		m_barrier->SetUse(use);
 	}
 
-	// ƒoƒŠƒA–WŠQg—pŠÖ”
+	// ãƒãƒªã‚¢å¦¨å®³ä½¿ç”¨é–¢æ•°
 	void FighterAircraftBase::UseDisableShield()
 	{
 		m_disableShield->SetUse(true);
 	}
 
-	// ’e”­ËŠÖ”
+	// å¼¾ç™ºå°„é–¢æ•°
 	void FighterAircraftBase::UseBullet()
 	{
-		// ’e”­Ë
+		// å¼¾ç™ºå°„
 		GetStage()->AddGameObject<Bullet>(GetThis<FighterAircraftBase>());
 	}
 
-	// “|‚³‚ê‚½ê‡‚ÌƒXƒRƒA÷“nˆ—
-	// ‘æˆêˆø”@‚Ô‚Â‚©‚Á‚½’e‚Ìƒ|ƒCƒ“ƒ^ ‘æ“ñˆø”  ÷“n‚·‚éŠ„‡(0.0f~1.0f)
+	// å€’ã•ã‚ŒãŸå ´åˆã®ã‚¹ã‚³ã‚¢è­²æ¸¡å‡¦ç†
+	// ç¬¬ä¸€å¼•æ•°ã€€ã¶ã¤ã‹ã£ãŸå¼¾ã®ãƒã‚¤ãƒ³ã‚¿ ç¬¬äºŒå¼•æ•°  è­²æ¸¡ã™ã‚‹å‰²åˆ(0.0f~1.0f)
 	void FighterAircraftBase::DownTransferScore(const shared_ptr<Bullet>& bullet, float magnification)
 	{
-		// ‹…‚ğ‘Å‚Á‚½ƒIƒuƒWƒFƒNƒg‚ğŠm”F‚·‚é
+		// çƒã‚’æ‰“ã£ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç¢ºèªã™ã‚‹
 		auto bulletParent = bullet->GetParentObj();
 		auto bulletParentlock = bulletParent.lock();
 
+		auto& scoreManager = ScoreManager::GetScoreManager();
+		auto plScore = scoreManager->GetPlScore();
+
 		if (bulletParentlock)
 		{
-			auto bulletParentFighter = dynamic_pointer_cast<FighterAircraftBase>(bulletParentlock);
+			auto bulletParentPlayer = dynamic_pointer_cast<Player>(bulletParentlock);
+			auto bulletParentEnemy = dynamic_pointer_cast<Enemy>(bulletParentlock);
 
-			// ÷“n‚·‚éƒXƒRƒA‚ÌŒvZ(Šî–{“I‚É‚Í10%÷“n‚·‚é)
-			float transferScore = m_scoreCurrent * magnification;
-			m_scoreCurrent -= transferScore;
-
-			if (bulletParentFighter)
+			// PlayerãŒå€’ã—ãŸæ™‚
+			if (bulletParentPlayer)
 			{
-				bulletParentFighter->AddScoreCurrent(transferScore);
+				float tansferScore = scoreManager->GetScore(GetId()) * magnification;
+				scoreManager->SubScore(GetId(),tansferScore);
+				scoreManager->SetPlScore(plScore + tansferScore);
+			}
+
+			// EnemyãŒå€’ã—ãŸæ™‚
+			if (bulletParentEnemy)
+			{
+				float transferScore = plScore * magnification;
+
+				// Player ã‹ã‚‰å¼•ã
+				scoreManager->SubPlScore(transferScore);
+
+				// å¼¾ã‚’æ’ƒã£ãŸ Enemy ã® ID ã‚’å–å¾—
+				int enemyId = bullet->GetOwnerId();
+
+				// Enemy ã«åŠ ç®—
+				scoreManager->AddScore(enemyId, transferScore);
 			}
 		}
 	}
 
-	// “–‚½‚è”»’è(“–‚½‚Á‚½)
-	// ˆø”‚P ‚Ô‚Â‚©‚Á‚½ƒIƒuƒWƒFƒNƒg
-	void FighterAircraftBase::OnCollisionEnter(shared_ptr<GameObject>& obj)
+	// å€’ã•ã‚ŒãŸå ´åˆã®ã‚¹ã‚³ã‚¢è­²æ¸¡å‡¦ç†
+	// ç¬¬ä¸€å¼•æ•°ã€€ã¶ã¤ã‹ã£ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãƒã‚¤ãƒ³ã‚¿ ç¬¬äºŒå¼•æ•°  è­²æ¸¡ã™ã‚‹å‰²åˆ(0.0f~1.0f)
+	void FighterAircraftBase::DownTransferScoreByCollision(const shared_ptr<FighterAircraftBase>& obj, float magnification)
 	{
+		auto& scoreManager = ScoreManager::GetScoreManager();
+		auto plScore = scoreManager->GetPlScore();
 
+		if (!obj) return;
+
+		// æ”»æ’ƒè€…ã‚’ Fighter ã¨ã—ã¦å–å¾—
+		auto attackerFighter = dynamic_pointer_cast<FighterAircraftBase>(obj);
+		if (!attackerFighter) return;
+
+		// Playeråˆ¤å®š
+		auto attackerPlayer = dynamic_pointer_cast<Player>(attackerFighter);
+		// Enemy åˆ¤å®š
+		auto attackerEnemy = dynamic_pointer_cast<Enemy>(attackerFighter);
+
+		// Player ãŒå€’ã—ãŸå ´åˆ
+		if (attackerPlayer)
+		{
+			float transferScore = scoreManager->GetScore(GetId()) * magnification;
+
+			// å€’ã•ã‚ŒãŸå´ã‹ã‚‰æ¸›ã‚‰ã™
+			scoreManager->SubScore(GetId(), transferScore);
+
+			// Player ã«åŠ ç®—
+			scoreManager->SetPlScore(plScore + transferScore);
+		}
+
+		// Enemy ãŒå€’ã—ãŸå ´åˆ
+		if (attackerEnemy)
+		{
+			// å€’ã•ã‚ŒãŸã®ãŒPlayerã®å ´åˆ
+			// shared_ptrç‰ˆã®this
+			auto victimPlayer = dynamic_pointer_cast<Player>(shared_from_this());
+			if (victimPlayer)
+			{
+				float transferScore = scoreManager->GetPlScore() * magnification;
+
+				// Player ã‹ã‚‰æ¸›ã‚‰ã™
+				scoreManager->SubPlScore(transferScore);
+
+				// Enemy ã«åŠ ç®—
+				scoreManager->AddScore(attackerEnemy->GetId(), transferScore);
+			}
+
+			// å€’ã•ã‚ŒãŸã®ãŒPlayerã®å ´åˆEnemyã®å ´åˆ
+			auto victimEnemy = dynamic_pointer_cast<Enemy>(shared_from_this());
+			if (victimEnemy && victimEnemy->GetId() != attackerEnemy->GetId())
+			{
+				float transferScore = scoreManager->GetScore(victimEnemy->GetId()) * magnification;
+
+				// å€’ã•ã‚ŒãŸ Enemy ã‹ã‚‰æ¸›ã‚‰ã™
+				scoreManager->SubScore(victimEnemy->GetId(), transferScore);
+
+				// æ”»æ’ƒ Enemy ã«åŠ ç®—
+				scoreManager->AddScore(attackerEnemy->GetId(), transferScore);
+			}
+		}
 	}
 
-	// Œ»İ‘Ï‹v’l‚ÌƒQƒbƒ^
+	// å½“ãŸã‚Šåˆ¤å®š(å½“ãŸã£ãŸæ™‚)
+	// å¼•æ•°ï¼‘ ã¶ã¤ã‹ã£ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+	void FighterAircraftBase::OnCollisionEnter(shared_ptr<GameObject>& obj)
+	{
+		auto fighteBase = dynamic_pointer_cast<FighterAircraftBase>(obj);
+
+		if (fighteBase)
+		{
+			if (m_invincibleFlag == false)
+			{
+				// ä¸ãˆã‚‹ãƒ€ãƒ¡ãƒ¼ã‚¸
+				m_hpCurrent -= 5;
+
+				// ç„¡æ•µãƒ•ãƒ©ã‚°ON
+				OnInvincibleFlag();
+			}
+
+			if (m_hpCurrent <= 0.0f)
+			{
+				// æ•µã‚’å€’ã—ãŸæ™‚ã«ã‚¹ã‚³ã‚¢ã‚’è­²æ¸¡
+				DownTransferScoreByCollision(fighteBase, 0.3f);
+			}
+		}
+	}
+
+	// ç¾åœ¨è€ä¹…å€¤ã®ã‚²ãƒƒã‚¿
 	int FighterAircraftBase::GetHpCurrent()
 	{
 		return m_hpCurrent;
 	}
 
-	// Å‘å‘Ï‹v’l‚ÌƒQƒbƒ^
+	// æœ€å¤§è€ä¹…å€¤ã®ã‚²ãƒƒã‚¿
 	int FighterAircraftBase::GetHpMax()
 	{
 		return m_hpMax;
 	}
 
-	//// Œ»İ‚ÌƒGƒlƒ‹ƒM[‚ÌƒQƒbƒ^
+	//// ç¾åœ¨ã®ã‚¨ãƒãƒ«ã‚®ãƒ¼ã®ã‚²ãƒƒã‚¿
 	//float FighterAircraftBase::GetEnergyCurrent()
 	//{
 	//	return m_energyCurrent;
 	//}
 
-	//// Å‘å‚ÌƒGƒlƒ‹ƒM[’l‚ÌƒQƒbƒ^
+	//// æœ€å¤§ã®ã‚¨ãƒãƒ«ã‚®ãƒ¼å€¤ã®ã‚²ãƒƒã‚¿
 	//float FighterAircraftBase::GetEnergyMax()
 	//{
 	//	return m_energyMax;
 	//}
 
-	//// ƒGƒlƒ‹ƒM[Ø‚ê‚É‚È‚Á‚½‚©‚Ìƒtƒ‰ƒOƒQƒbƒ^
+	//// ã‚¨ãƒãƒ«ã‚®ãƒ¼åˆ‡ã‚Œã«ãªã£ãŸã‹ã®ãƒ•ãƒ©ã‚°ã‚²ãƒƒã‚¿
 	//bool FighterAircraftBase::GetOutEnergyFlag()
 	//{
 	//	return m_outEnergyFlag;
 	//}
 
-	// ƒoƒŠƒAg—p‚µ‚Ä‚¢‚¢‚©‚Ìƒtƒ‰ƒOƒQƒbƒ^
+	// ãƒãƒªã‚¢ä½¿ç”¨ã—ã¦ã„ã„ã‹ã®ãƒ•ãƒ©ã‚°ã‚²ãƒƒã‚¿
 	bool FighterAircraftBase::GetBarrierUseFlag()
 	{
 		return m_barrierUseFlag;
 	}
 
-	// ’e‚ğg—p‚µ‚Ä‚¢‚¢‚©‚Ìƒtƒ‰ƒOƒQƒbƒ^
+	// å¼¾ã‚’ä½¿ç”¨ã—ã¦ã„ã„ã‹ã®ãƒ•ãƒ©ã‚°ã‚²ãƒƒã‚¿
 	bool FighterAircraftBase::GetGunUseFlag()
 	{
 		return m_gunUseFlag;
 	}
 
-	// ƒoƒŠƒA–³Œø‰»‚ğ‚µ‚ÄˆÈ‰º‚Ìƒtƒ‰ƒOƒQƒbƒ^
+	// ãƒãƒªã‚¢ç„¡åŠ¹åŒ–ã‚’ã—ã¦ä»¥ä¸‹ã®ãƒ•ãƒ©ã‚°ã‚²ãƒƒã‚¿
 	bool FighterAircraftBase::GetDisableShieldFlag()
 	{
 		return m_disableShieldFlag;
 	}
 
-	//// Ÿ‚Ìƒ`ƒFƒbƒNƒ|ƒCƒ“ƒ^‚ğ“ü‚ê‚éƒZƒbƒ^
+	//// æ¬¡ã®ãƒã‚§ãƒƒã‚¯ãƒã‚¤ãƒ³ã‚¿ã‚’å…¥ã‚Œã‚‹ã‚»ãƒƒã‚¿
 	//void FighterAircraftBase::SetCheckPoint(const shared_ptr<CheckPoint>& nextCheckPoint)
 	//{
 	//	m_nextCheckPoint = nextCheckPoint;
 	//	auto checkPointLock = m_nextCheckPoint.lock();
 	//	m_nextCheckPointID++;
 
-	//	// Ÿ‚Ìƒ`ƒFƒbƒNƒ|ƒCƒ“ƒgˆÊ’uæ“¾
+	//	// æ¬¡ã®ãƒã‚§ãƒƒã‚¯ãƒã‚¤ãƒ³ãƒˆä½ç½®å–å¾—
 	//	m_nextCheckPointPos = checkPointLock->GetPos();
 	//}
 
-	//// Œ»İ‚ÌƒGƒlƒ‹ƒM[ƒZƒbƒ^
+	//// ç¾åœ¨ã®ã‚¨ãƒãƒ«ã‚®ãƒ¼ã‚»ãƒƒã‚¿
 	//void FighterAircraftBase::SetEnergyCurrent(float energyCurrent)
 	//{
 	//	m_energyCurrent = energyCurrent;
 	//}
 
-	//// ©•ª‚ª’Ê‚Á‚½ƒ`ƒFƒbƒNƒ|ƒCƒ“ƒg‚Ìƒ^ƒCƒ€‚Æ‘O‚Ì‹@‘Ì‚Ìƒ^ƒCƒ€‚Ì·‚ÌƒZƒbƒ^
+	//// è‡ªåˆ†ãŒé€šã£ãŸãƒã‚§ãƒƒã‚¯ãƒã‚¤ãƒ³ãƒˆã®ã‚¿ã‚¤ãƒ ã¨å‰ã®æ©Ÿä½“ã®ã‚¿ã‚¤ãƒ ã®å·®ã®ã‚»ãƒƒã‚¿
 	//void FighterAircraftBase::SetTimeCheckPointDifferece(float TimeCheckPointDifferece)
 	//{
 	//	m_timeCheckPointDifferece = TimeCheckPointDifferece;
 	//}
 
-	//// Ÿ‚Ìƒ`ƒFƒbƒNƒ|ƒCƒ“ƒg‚ÌˆÊ’u‚ÌƒZƒbƒ^
+	//// æ¬¡ã®ãƒã‚§ãƒƒã‚¯ãƒã‚¤ãƒ³ãƒˆã®ä½ç½®ã®ã‚»ãƒƒã‚¿
 	//void FighterAircraftBase::SetNextCheckPointPos(Vec3 nextCheckPointPos)
 	//{
 	//	m_currentCheckPointPos = m_nextCheckPointPos;
@@ -216,13 +323,13 @@ namespace basecross {
 	//	m_nextCheckPointID++;
 	//}
 
-	// Œ»İ‚Ì’e”‚ÌƒQƒbƒ^
+	// ç¾åœ¨ã®å¼¾æ•°ã®ã‚²ãƒƒã‚¿
 	int FighterAircraftBase::GetBulletNumCurrentNow()
 	{
 		return m_bulletNumCurrentNow;
 	}
 
-	// Œ»İ‚Ì’e”‚ÌƒZƒbƒ^
+	// ç¾åœ¨ã®å¼¾æ•°ã®ã‚»ãƒƒã‚¿
 	void FighterAircraftBase::SetBulletNumCurrentNow(int bullet)
 	{
 		m_bulletNumCurrentNow = bullet;
@@ -232,38 +339,38 @@ namespace basecross {
 		}
 	}
 
-	// Å‘å‚Ì’e”‚ÌƒQƒbƒ^
+	// æœ€å¤§ã®å¼¾æ•°ã®ã‚²ãƒƒã‚¿
 	int FighterAircraftBase::GetBulletNumMax()
 	{
 		return m_bulletNumMax;
 	}
 
-	//  •œŠˆ‚Ü‚Å‚Ì–³“G•t—^ŠÔ‚ÌƒQƒbƒ^
+	//  å¾©æ´»ã¾ã§ã®ç„¡æ•µä»˜ä¸æ™‚é–“ã®ã‚²ãƒƒã‚¿
 	float FighterAircraftBase::GetTimeOfReturn()
 	{
 		return m_timeOfReturn;
 	}
 
-	// •œŠˆ‚Ü‚Å‚Ì–³“G•t—^ŠÔ
+	// å¾©æ´»ã¾ã§ã®ç„¡æ•µä»˜ä¸æ™‚é–“
 	float FighterAircraftBase::GetTimeOfReturnUnDamage()
 	{
 		return m_timeOfReturnUnDamage;
 	}
 
-	// Œ»İƒXƒRƒA‚ÌƒQƒbƒ^
+	// ç¾åœ¨ã‚¹ã‚³ã‚¢ã®ã‚²ãƒƒã‚¿
 	float FighterAircraftBase::GetScoreCurrent()
 	{
 		return m_scoreCurrent;
 	}
 
-	// ƒXƒRƒA‚Ì’Ç‰Áˆ—
+	// ã‚¹ã‚³ã‚¢ã®è¿½åŠ å‡¦ç†
 	void FighterAircraftBase::AddScoreCurrent(int addScore)
 	{
 		m_scoreCurrent += addScore;
 		return;
 	}
 
-	// Œ»İHP‚ÌƒZƒbƒ^
+	// ç¾åœ¨HPã®ã‚»ãƒƒã‚¿
 	void FighterAircraftBase::SetHPCurrent(float hp)
 	{
 		m_hpCurrent = hp;
@@ -274,6 +381,83 @@ namespace basecross {
 		}
 	}
 
+	// idã®ã‚²ãƒƒã‚¿
+	int FighterAircraftBase::GetId()
+	{
+		return m_id;
+	}
+
+	// idã®ã‚»ãƒƒã‚¿
+	void FighterAircraftBase::SetId(int id)
+	{
+		m_id = id;
+	}
+
+	void FighterAircraftBase::ResetParameter()
+	{
+		auto& scoreManager = ScoreManager::GetScoreManager();
+		
+		//ã‚¹ã‚³ã‚¢ã®ãƒªã‚»ãƒƒãƒˆ
+		scoreManager->ResetScore(GetId());
+	}
+
+	// ç„¡æ•µæ™‚ã®å‡¦ç†
+	void FighterAircraftBase::Invincible()
+	{
+		if (m_invincibleFlag)
+		{
+			m_countTimeOfInvincible += m_delta;
+			if (m_timeOfInvincible < m_countTimeOfInvincible)
+			{
+				// ç„¡æ•µãŒåˆ‡ã‚Œã‚‹
+				m_invincibleFlag = false;
+				m_countTimeOfInvincible = 0.0f;
+
+				// ç‚¹æ»…ç”¨ã®æ•°å€¤ã‚‚åˆæœŸåŒ–ã™ã‚‹
+				m_color.w = 1.0f;
+				m_countTimeOfBlinking = 0.0f;
+			}
+
+			// ç„¡æ•µçŠ¶æ…‹ã®æ™‚è‡ªåˆ†è‡ªèº«ã¯ç‚¹æ»…ã™ã‚‹
+			DrawBlinking();
+		}
+
+		return;
+	}
+
+	// ç„¡æ•µæ™‚ã®ç‚¹æ»…å‡¦ç†
+	void FighterAircraftBase::DrawBlinking()
+	{
+		// ç„¡æ•µçŠ¶æ…‹ã®æ™‚è‡ªåˆ†è‡ªèº«ã¯ç‚¹æ»…ã™ã‚‹
+		m_countTimeOfBlinking += m_delta;
+		if (0.3f < m_countTimeOfBlinking)
+		{
+			if (m_color.w > 0.0f)
+			{
+				m_color.w = 0.0f;
+			}
+			else if (m_color.w <= 0.0f)
+			{
+				m_color.w = 1.0f;
+			}
+
+			m_countTimeOfBlinking = 0.0f;
+		}
+
+		return;
+	}
+
+	bool FighterAircraftBase::GetInvincibleFlag()
+	{
+		return m_invincibleFlag;
+	}
+
+	void FighterAircraftBase::OnInvincibleFlag()
+	{
+		m_invincibleFlag = true;
+		return;
+
+	}
 }
 //end basecross
 

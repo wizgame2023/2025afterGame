@@ -31,6 +31,8 @@ namespace basecross{
 
 		void RemoveObject(int id);
 
+		void ResetObject();
+
 		void SetVector();
 
 		int m_count;

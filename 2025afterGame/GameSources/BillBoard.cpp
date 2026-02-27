@@ -22,7 +22,8 @@ namespace basecross{
 		m_pushY(pushY),
 		m_scale(scale),
 		m_color(color),
-		m_layer(layer)
+		m_layer(layer),
+		m_trackingActive(false)
 	{
 	}
 
@@ -92,8 +93,40 @@ namespace basecross{
 			RemoveBill();
 		}
 
+		if(!m_actor.expired() && m_trackingActive)
+		{
+			auto seekPtr = m_actor.lock();
+			auto seekPtrTrans = seekPtr->GetComponent<Transform>();
+
+			//トランスフォーム取得
+			auto ptrTrans = GetComponent<Transform>();
+			auto pos = seekPtrTrans->GetPosition();
+			pos.y += m_pushY;
+			ptrTrans->SetScale(m_scale);
+
+			auto DrawComp = GetComponent<PCTStaticDraw>();
+			DrawComp->SetTextureResource(m_textureName);//テクスチャ更新
+			auto PtrCamera = GetStage()->GetView()->GetTargetCamera();
+
+			// カメラの位置を基準としたPushXの位置に置く
+			Vec3 forward = PtrCamera->GetAt() - PtrCamera->GetEye();
+			forward.normalize();
+			Vec3 right = cross(PtrCamera->GetUp(), forward);
+			right.normalize();
+			pos += right * m_pushX;
+			// 位置確定
+			ptrTrans->SetPosition(pos);
+
+			Quat Qt;
+			//向きをカメラ目線にする
+			Qt = Billboard(PtrCamera->GetAt() - PtrCamera->GetEye());
+
+			ptrTrans->SetQuaternion(Qt);
+		}
+
+
 		// actorがいたら
-		if (!m_actor.expired()) {
+		if (!m_actor.expired() && !m_trackingActive) {
 			auto seekPtr = m_actor.lock();
 			auto seekPtrTrans = seekPtr->GetComponent<Transform>();
 
@@ -168,7 +201,6 @@ namespace basecross{
 		return Qt;
 	}
 
-
 	//ビルボードのテクスチャ変更
 	void BillBoard::ChangeTexture(wstring textureName)
 	{
@@ -187,9 +219,24 @@ namespace basecross{
 		m_pushY = pushY;
 	}
 
+	void BillBoard::SetPushX(float pushX)
+	{
+		m_pushX = pushX;
+	}
+
 	void BillBoard::RemoveBill()
 	{
 		GetStage()->RemoveGameObject<BillBoard>(GetThis<BillBoard>());
+	}
+
+	void BillBoard::SetTrackingActive(bool flag)
+	{
+		m_trackingActive = flag;
+	}
+
+	void BillBoard::SetColor(Col4 col)
+	{
+		m_color = col;
 	}
 }
 //end basecross

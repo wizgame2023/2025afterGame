@@ -70,6 +70,15 @@ namespace basecross{
 		m_count--;
 	}
 
+	void AmmoObjectManager::ResetObject()
+	{
+		for (int i = 0; i < m_current.size() - 1; i++)
+		{
+			m_current[i] = false;
+		}
+		m_count = 0;
+	}
+
 	void AmmoObjectManager::SetVector()
 	{
 		auto& manager = StageCreateManager::GetStageCreateManager();

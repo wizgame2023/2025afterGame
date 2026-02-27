@@ -60,7 +60,22 @@ namespace basecross{
 	{
 		MyGameObject::OnUpdate();
 
-		//if (GetPauseFlag()) return; // ポーズ中は更新しない
+		// 最初の1フレームだけの処理
+		if (!m_onceFlag)
+		{
+			m_onceFlag = true;
+
+			// 初期設定
+			auto plPos = m_plTrans.lock()->GetPosition();
+			m_camPos = plPos - (m_plTrans.lock()->GetForward() * m_camDis) + Vec3(0.0f, m_camHeight, 0.0f);
+			m_atPos = plPos + (m_plTrans.lock()->GetForward() * m_atOffset);
+
+			m_mulCam->SetAt(m_atPos);
+			m_mulCam->SetEye(m_camPos);
+		}
+
+		// ポーズ中は更新しない
+		if (GetPauseFlag()) return; 
 
 		// コントローラーの取得
 		auto& input = InputManager::GetInputManager();
@@ -68,10 +83,14 @@ namespace basecross{
 		// 加速しているか
 		//bool isAccel = m_player->GetAcceleration();
 
-		// ボタンの状態の取得(デバッグ用になると思われる)
-		bool isAButton = input->GetButton(L"A"); // Aボタンの状態
-		bool isYButton = input->GetButton(L"Y"); // Yボタンの状態
-		bool isYButtonDownUp = input->GetNowUpdateButton(L"Y");// Yボタンを押した瞬間と離した瞬間を取る
+		auto& game = GameManager::GetGameManager();
+		wstring& accelKey = game->GetAccelKey();
+		wstring& viewBehindKey = game->GetViewBehindKey();
+
+		// ボタンの状態の取得
+		bool isAccel = input->GetButton(accelKey); // アクセルキーの状態
+		bool isViewBehind = input->GetButton(viewBehindKey); // 背面視点キーの状態
+		bool isViewBehindDownUp = input->GetNowUpdateButton(viewBehindKey);// 背面視点キーを押した瞬間と離した瞬間を取る
 
 		// プレイヤーの情報取得
 		m_plInfo.pos = m_plTrans.lock()->GetPosition();
@@ -87,17 +106,17 @@ namespace basecross{
 		Vec3 currentCamPos = m_mulCam->GetEye();
 
 		// カメラが前方を映すか後方を映すか
-		SetCameraNormalBehindMode(isYButton);
+		SetCameraNormalBehindMode(isViewBehind);
 
 
 		// 加速に合わせて視野角を広げる
-		AdjustFov(isAButton);
+		AdjustFov(isAccel);
 
 		// 障害物がカメラの機能を邪魔していないかを見る
 		UpdateCameraObstruction();
 
 		// 滑らかに補間		Yボタンを押した(カメラを後ろに向かせた)瞬間は補間OFF
-		Vec3 newCamPos = isYButtonDownUp ?
+		Vec3 newCamPos = isViewBehindDownUp ?
 			m_camPos :
 			LerpV3(currentCamPos, m_camPos, m_delta * m_followSpeed);
 		

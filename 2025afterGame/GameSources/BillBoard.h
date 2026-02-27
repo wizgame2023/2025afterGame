@@ -6,7 +6,7 @@
 #pragma once
 #include "stdafx.h"
 
-namespace basecross{
+namespace basecross {
 	class BillBoard : public MyGameObject
 	{
 	protected:
@@ -17,6 +17,7 @@ namespace basecross{
 		float m_pushY;
 		Vec3 m_scale;
 		Col4 m_color;
+		bool m_trackingActive;
 
 		// 空のvectorを用意
 		vector<VertexPositionNormalTexture> m_vertices;
@@ -39,11 +40,11 @@ namespace basecross{
 		virtual void OnCreate() override;
 		// 更新
 		virtual void OnUpdate() override;
-		
+
 		Quat Billboard(const Vec3& Line);
 
 		void SetBillUV(Vec2 topLeft, Vec2 botRight);
-		
+
 		//スプライト変更
 		void ChangeTexture(wstring spriteName);
 
@@ -53,8 +54,17 @@ namespace basecross{
 		//出現する高さ変更
 		void SetPushY(float pushY);
 
+		//出現する横の位置変更
+		void SetPushX(float pushX);
+
 		// ビルボードの削除
 		void RemoveBill();
+
+		// 追跡するBillBordにするか
+		void SetTrackingActive(bool flag);
+
+		// 色を変える
+		void SetColor(Col4 col);
 	};
 }
 //end basecross

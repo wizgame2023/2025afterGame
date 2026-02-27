@@ -69,23 +69,25 @@ namespace basecross{
 		// ボタンのスプライトの種類
 		enum class ButtonsType : int
 		{
-			A,
-			B,
-			X,
-			Y,
-			LB,
-			RB,
-			LT,
-			RT,
-			Back,
-			Start,
-			LS,
-			RS,
-			Up,
-			Right,
-			Down,
-			Left
+			A, B, X, Y,
+			LB,	RB,	LT,	RT,
+			Back, Start,
+			LS,	RS,
+			Up,	Right, Down, Left,
+			Max
 		};
+
+		// ゲームスタートのカウントダウン
+		enum class GameStartCount
+		{
+			GAMESTART_Start,
+			GAMESTART_CountDown_One,
+			GAMESTART_CountDown_Two,
+			GAMESTART_CountDown_Three,
+			GAMESTART_CountDown_Start,
+			GAMESTART_End
+		};
+
 
 		// ==============================================================================
 		// 構造体群
@@ -115,14 +117,34 @@ namespace basecross{
 		// メンバ変数
 		// ==============================================================================
 
+		// 定数群================================
+
+		const Vec3 m_normalScale = Vec3(1.0f, 1.0f, 1.0f);    // 通常のスケール
+		const Vec3 m_selectionScale = Vec3(1.3f, 1.3f, 1.0f); // 選択中のスケール
+		const Vec3 m_buttonsOffset = Vec3(200.0f, 0, 0);	  // ボタンのオフセット
+		static constexpr int ButtonsTypeCount = 16;           // ボタンの種類数
+
+		// ======================================
+		
 		// ポーズメニュースプライト群============
 
 		vector<shared_ptr<Sprite>> m_pauseMainMenuSprites;			// メインメニューのスプライトの数
 		vector<shared_ptr<Sprite>> m_pauseSettingMenuSprites;		// 設定メニューのスプライトの数
 		vector<shared_ptr<Sprite>> m_pauseVolumeMenuSprites;		// 音量メニューのスプライトの数
 		vector<shared_ptr<Sprite>> m_pauseKeyConfigMenuSprites;		// キーコンフィグメニューのスプライトの数
-		vector<shared_ptr<Sprite>> m_pauseButtonsSprites;			// ボタンのスプライトの数
 		shared_ptr<Sprite> m_pauseBackGroundSprite;					// ポーズメニューの背景スプライト
+
+		// ボタンのスプライトの数
+		array<shared_ptr<Sprite>, ButtonsTypeCount> m_pauseButtonsSprites;
+		// [自分用メモ]arrayは<型, 要素数>の形で宣言(この場合はshared_ptr<Sprite>型の16個の要素配列)
+		
+		// ボタン名と種類のマップ
+		unordered_map<wstring, ButtonsType> m_buttonTypeMap; 
+		// [自分用メモ]mapは<キー, 値>の形で宣言(この場合はwstring型とButtonsType型のマップ)
+		// m_buttonTypeMap[L"A"]でButtonsType::Aが取れるように設定する必要がある
+		// 
+		// データ駆動と呼ぶらしい(画面に対してこうしろ、と命令するのではなく
+		//						　データが変わったから画面を変える、という考え方)
 
 		// ======================================
 
@@ -135,6 +157,9 @@ namespace basecross{
 
 		// ======================================
 		
+		shared_ptr<XAudio2Manager> m_audioManager;
+		shared_ptr<SoundItem> m_se;
+
 		// ポーズメニューの状態
 		PauseMenuState m_pauseState;
 
@@ -154,6 +179,67 @@ namespace basecross{
 		// スプライトを追加する(vector専用)
 		void PushBackPauseMenuSprite(vector<shared_ptr<Sprite>>& vecSprite, const SpriteInfo& spInfo);
 
+		// ボタンの辞書登録
+		void InitButtonTypeMap();
+
+		// ボタンの可視管理
+		void SetPosAndShowButtons(const wstring& buttonsName, const Vec3& setPos);
+		void SetHideButtons(const wstring& buttonsName);
+
+		// ポーズが始まった瞬間の処理
+		void StartPause();
+
+		// メニューの可視管理
+		void MenuVisibleManagement();
+
+		// ポーズメニューの更新	==========================================
+
+		// 全メニュー更新の管理
+		void UpdatePauseMenu();
+
+		// 各メニューの更新
+		void UpdateMainMenu(InputManager& input);
+		void UpdateSettingMenu(InputManager& input);
+		void UpdateVolumeMenu(InputManager& input);
+		void UpdateVolumeSettingMenu(InputManager& input);
+		void UpdateKeyConfigMenu(InputManager& input);
+		void UpdateKeyConfigSettingMenu(InputManager& input);
+		
+		// ポーズメニューの更新	==========================================
+
+		// デバッグログ群
+		void DebugLogs();
+
+	public : 
+		PauseMenu(const shared_ptr<Stage>& stage);
+		~PauseMenu() {};
+
+		// 全メニューのスプライトを表示するか
+		void IsVisibleAllMenuSprites(const bool flag); 
+
+		virtual void OnCreate() override;
+		virtual void OnUpdate() override;
+
+		//void CreatePauseBinary();
+		//void SavePauseBinary();
+		//PauseData LoadPauseBinary();
+
+		// ==============================================================================
+		// テンプレート関数
+		// ==============================================================================
+		
+		// メニュー別でスプライトを表示するか
+		template<typename T>
+		void IsVisibleMenuSprites(const T& spVec, const bool flag)
+		{
+			// それぞれのスプライトに対して透明化処理を行う
+			for (const auto& sp : spVec)
+			{
+				sp->OnClear(!flag);
+			}
+		}
+
+	private:
 		// 選択肢が変わったかどうか
 		template<typename T>
 		bool UpdateSelection(T& crntSelect, T maxEnum)
@@ -188,54 +274,38 @@ namespace basecross{
 				// 計算結果を元の enum 型に戻して保存
 				crntSelect = static_cast<T>(current);
 				m_selectChanged = true;
-				
+
 				return true; // 選択が変わった瞬間
 			}
 
 			return false;
 		}
 
-		// ポーズが始まった瞬間の処理
-		void StartPause();
+		// 選ばれている選択肢のスケールを変更
+		template<typename Se, typename Max>
+		void ScalingSelectedSprite(vector<shared_ptr<Sprite>>& spVec, const Se& crntSelect, const Max& selectMax)
+		{
+			for (int i = 0; i < static_cast<int>(selectMax); i++)
+			{
+				spVec[i]->SetScale(m_normalScale);
+			}
+			spVec[static_cast<int>(crntSelect)]->SetScale(m_selectionScale);
+		}
 
-		// メニューの可視管理
-		void MenuVisibleManagement();
+		// 選択肢が変わった時の処理
+		template<typename T, typename EnumMax>
+		void HandleMenuSelection(vector<shared_ptr<Sprite>>& spVec, T& crntSelect, EnumMax max) {
+			if (UpdateSelection(crntSelect, max)) {
+				// 選択が変わった時だけスケーリングを更新
+				ScalingSelectedSprite(spVec, crntSelect, max);
 
-		// ポーズメニューの更新	==========================================
+				// あとは音を鳴らすなどの処理を入れる
+				m_audioManager = App::GetApp()->GetXAudio2Manager();
+				m_se = m_audioManager->Start(L"ChangeSelectionSE", 0, GameManager::GetGameManager()->GetSEVolume());
 
-		// 全メニュー更新の管理
-		void UpdatePauseMenu();
+			}
+		}
 
-		// 各メニューの更新
-		void UpdateMainMenu(InputManager& input);
-		void UpdateSettingMenu(InputManager& input);
-		void UpdateVolumeMenu(InputManager& input);
-		void UpdateVolumeSettingMenu(InputManager& input);
-		void UpdateKeyConfigMenu(InputManager& input);
-		void UpdateKeyConfigSettingMenu(InputManager& input);
-		
-		// ポーズメニューの更新	==========================================
-
-		// デバッグログ群
-		void DebugLogs();
-
-	public : 
-		PauseMenu(const shared_ptr<Stage>& stage);
-		~PauseMenu() {};
-
-		// 全メニューのスプライトを表示するか
-		void IsVisibleAllMenuSprites(const bool flag); 
-
-		// メニュー別でスプライトを表示するか
-		void IsVisibleMenuSprites(const vector<shared_ptr<Sprite>>& spVec, const bool flag);
-
-		virtual void OnCreate() override;
-		virtual void OnUpdate() override;
-
-		//void CreatePauseBinary();
-		//void SavePauseBinary();
-		//PauseData LoadPauseBinary();
 	};
-
 }
 //end basecross

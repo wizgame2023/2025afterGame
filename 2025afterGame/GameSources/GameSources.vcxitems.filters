@@ -154,7 +154,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)StateEnemy.cpp">
       <Filter>Script</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)TestCsv.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)StageObject.cpp">
       <Filter>Script</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)TitleStage.cpp">
@@ -177,6 +177,12 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)YuutaStage.cpp">
       <Filter>Script\PrivateStage</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)PlayerGrv.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)BillBoardNumber.cpp">
+      <Filter>Script</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -339,7 +345,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)StateEnemy.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)TestCsv.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)StageObject.h">
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)TitleStage.h">
@@ -359,6 +365,12 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)YuutaStage.h">
       <Filter>Header\PrivateStage</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)PlayerGrv.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)BillBoardNumber.h">
+      <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

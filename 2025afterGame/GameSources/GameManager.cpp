@@ -76,16 +76,37 @@ namespace basecross {
 		// ゲーム経過時間を計測
 		if (m_gameStartFlag)
 		{
-			m_timeGamePlaying += m_deltaTime;
-			m_timeLimit -= m_deltaTime;
+			if (!m_pauseActive)
+			{
+				m_timeGamePlaying += m_deltaTime;
+				m_timeLimit -= m_deltaTime;
+			}
 		}
 
 		if (m_timeLimit < 0.0f)
 		{
 			SetGameEnd(true);
+			Pose(true);
+
+			if (!m_endDraw)
+			{
+				m_endSprite = m_currentStage->AddGameObject<Sprite>(L"GameEnd_TX", Vec2(500.0f, 250.0f));
+				m_endDraw = true;
+			}
+
+			if (m_endDraw)
+			{
+				m_endDrawTime -= m_deltaTime;
+			}
+
+			if (m_endDrawTime <= 0.0f)
+			{
+				m_currentStage->RemoveGameObject<Sprite>(m_endSprite);
+				m_resultDrawActive = true;
+			}
 		}
 
-		// カウントダウン処理
+		// ゲーム開始時のカウントダウン処理
 		if (m_countDown && !m_gameStartFlag)
 		{
 			CountDown(true);
@@ -120,9 +141,8 @@ namespace basecross {
 			{
 				// BGM、SE用のマネージャー作成
 				m_audioManager = App::GetApp()->GetXAudio2Manager();
-				m_se = m_audioManager->Start(L"CountDownSE", 0, 1.0f);
+				m_se = m_audioManager->Start(L"CountDownSE", 0, GetSEVolume());
 				m_countDownSEFlag = false;// なんどもSEを鳴らさない
-				SetCountEnd(true);
 			}
 
 			if (m_countTimeGameStart >= 2.0f)
@@ -155,6 +175,7 @@ namespace basecross {
 				{
 					m_startSprite = m_currentStage->AddGameObject<Sprite>(L"GameEnd_TX", Vec2(500.0f, 250.0f));
 				}
+				SetCountEnd(true);
 
 				m_gameStartPhase = GAMESTART_End;
 			}
@@ -171,6 +192,7 @@ namespace basecross {
 				m_countDown = false; // カウントダウンの使用状態を解除
 				m_countDownSEFlag = true; // SEも使用可能に
 				m_gameStartFlag = true;
+				m_countTimeGameStart = 0.0f; // 終わったら時間計測リセット
 				
 				// ポーズ解除
 				Pose(false);
@@ -189,6 +211,8 @@ namespace basecross {
 		// ポーズ開始
 		if (OnOff)
 		{
+			m_pauseActive = true;
+
 			// MyGameObjectの物を全て停止する
 			auto objVec = m_currentStage->GetGameObjectVec();
 			//アクターを継承しているものだけ取得
@@ -208,6 +232,8 @@ namespace basecross {
 		// ポーズ終了
 		if (!OnOff)
 		{
+			m_pauseActive = false;
+
 			for (auto obj : m_myGameObjectVec)
 			{
 				auto gameObjectCheck = obj.lock();
@@ -282,7 +308,7 @@ namespace basecross {
 		{
 			throw BaseException
 			{
-				L"配列外の物を指定しようとしています。\",
+				L"配列外の物を指定しようとしています。\n",
 				L"if(number > m_checkPoints.size() - 1 || number < 0)",
 				L"GameManager::GetCheckPoint(int number)"
 			};
@@ -326,6 +352,11 @@ namespace basecross {
 		m_checkPoints.clear();
 	}
 
+	void GameManager::SetTimeLimit(float limit)
+	{
+		m_timeLimit = limit;
+	}
+
 	float GameManager::GetTimeLimit()
 	{
 		return m_timeLimit;
@@ -365,6 +396,12 @@ namespace basecross {
 		{	
 			if (!m_createScoreObj)
 			{
+				obj->CreateScoreObject();
+				obj->CreateScoreObject();
+				obj->CreateScoreObject();
+				obj->CreateScoreObject();
+				obj->CreateScoreObject();
+				obj->CreateScoreObject();
 				obj->CreateScoreObject();
 				m_createScoreObj = true;
 			}
@@ -442,6 +479,50 @@ namespace basecross {
 	bool GameManager::GetGameEnd()
 	{
 		return m_gameEnd;
+	}
+
+	// ゲーム終了時のゲームマネージャリセット処理
+	void GameManager::ResetGameManager()
+	{
+		SetGameEnd(false);
+		SetTimeLimit(180.0f);
+
+		m_resultDrawActive = false;
+		m_countDown = false;
+		m_gameStartFlag = false;
+		m_countDownSEFlag = true;
+		m_gameStartPhase = GAMESTART_Start;
+		m_countTimeGameStart = 0.0f;
+		m_itemObj = false;
+		m_createScoreObj = false;
+		m_scoreObjecCout = 0;
+		ChangePhase(GamePhase::Score);
+
+		// スコアオブジェクトを管理するマネージャの初期化
+		auto& scoreObjectManager = ScoreObjectManager::GetScoreObjectManager();
+		scoreObjectManager->ResetObject();
+
+		// アイテムオブジェクトを管理するマネージャの初期化
+		auto& repairObjectManager = RepairObjectManager::GetRepairObjectManager();
+		repairObjectManager->ResetObject();
+
+		// 弾オブジェクトを管理するマネージャの初期化
+		auto& ammoObjectManager = AmmoObjectManager::GetAmmoObjectManager();
+		ammoObjectManager->ResetObject();
+
+		auto& uiManager = UIManager::GetUIManager();
+		uiManager->ForceRefreshOperationUI();
+		uiManager->ForceRefreshKeyConfigSprite();
+	}
+
+	void GameManager::SetResultDrawActive(bool flag)
+	{
+		m_resultDrawActive = flag;
+	}
+
+	bool GameManager::GetResultDrawActive()
+	{
+		return m_resultDrawActive;
 	}
 }
 

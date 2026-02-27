@@ -45,10 +45,8 @@ namespace basecross {
 			m_count = 0;
 
 			auto& scrMana = ScoreManager::CreateScoreManager();
-
-			scrMana->CreateHighScoreBinary();
-			scrMana->SetID(L"Player");
-			scrMana->SetID(L"Enemy1");
+			scrMana->ScoreManagerReset();
+			// scrMana->CreateHighScoreBinary();
 
 			auto backgroundPath = path + L"Backgrounds/";
 			for (const auto& keyName : Background::pairs) {
@@ -71,9 +69,8 @@ namespace basecross {
 			//	max++;
 			//}
 
-			auto player = AddGameObject<Player>();
-			player->SetPlayerIndex(0);
-			SetSharedGameObject(L"Player", player);
+			m_player = AddGameObject<Player>();
+			SetSharedGameObject(L"Player", m_player);
 
 
 			//auto player2 = AddGameObject<Player>();
@@ -109,27 +106,45 @@ namespace basecross {
 			gameManager->SetGameStageNow(1);
 			auto startCheckPoint = gameManager->GetCheckPoint(0);
 
-			auto enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
-			auto testenemy = AddGameObject<Enemy>(Vec3(50.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
-			AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
-			AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, 25.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
-			AddGameObject<Enemy>(Vec3(0.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
-			AddGameObject<Enemy>(Vec3(50.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
-			AddGameObject<Enemy>(Vec3(25.0f, 0.0f, -20.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
-			AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			auto enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, m_player);
+			SetSharedGameObject(L"Enemy1",enemy);
+			enemy = AddGameObject<Enemy>(Vec3(50.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, m_player);
+			SetSharedGameObject(L"Enemy2", enemy);
+			enemy = AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, m_player);
+			SetSharedGameObject(L"Enemy3", enemy);
+			enemy = AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, 25.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, m_player);
+			SetSharedGameObject(L"Enemy4", enemy);
+			//enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			//SetSharedGameObject(L"Enemy5", enemy);
+			//enemy = AddGameObject<Enemy>(Vec3(50.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			//SetSharedGameObject(L"Enemy6", enemy);
+			//enemy = AddGameObject<Enemy>(Vec3(25.0f, 0.0f, -20.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
+			//SetSharedGameObject(L"Enemy7", enemy);
+			//AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
 			//AddGameObject<Enemy>(Vec3(-50.0f, 0.0f, -50.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
 			//auto enemy = AddGameObject<Enemy>(Vec3(0.0f, 0.0f, 0.0f), Quat(0.0f, 0.0f, 0.0f, 1.0f), Vec3(0.25f), startCheckPoint, player);
 
+			//auto plPos = m_player->GetComponent<Transform>()->GetPosition();
+			//EffectManager::Instance().PlayEffect(L"SmokeBlack", Vec3(plPos));
+			
+			AddGameObject<EffectUpdateDrawManager>();
+
 			UIManager::CreateUIManager();
 			auto& uiManager = UIManager::GetUIManager();
-			uiManager->UIManagerCreate();
+			uiManager->OnCreate();
 
 			auto mainCamMana = AddGameObject<MainCameraManager>();
 			SetSharedGameObject(L"MainCameraManager", mainCamMana);
 
+			auto pauseMenu = AddGameObject<PauseMenu>();
+
 			//// スコアマネージャーのテスト
 			//auto& testScoreManager = ScoreObjectManager::GetScoreObjectManager();
 			//testScoreManager->OnCreate();
+
+			m_fide = AddGameObject<Sprite>(L"SceneFeid_TX", Vec2(1980.0f, 1020.0f), Vec3(0.0f, 0.0f, 0.0f));
+			m_fide->SetColor(Col4(1.0f, 1.0f, 1.0f, 0.0f));
+			m_fide->SetDrawLayer(5);
 		}
 		catch (...) {
 			throw;
@@ -139,15 +154,36 @@ namespace basecross {
 
 	void GameStage::OnUpdate()
 	{
-		UIManager::GetUIManager()->OnUpdate();
-		auto& obj = StageCreateManager::GetStageCreateManager();
+		auto& uiManager = UIManager::GetUIManager();
+		uiManager->OnUpdate();
+
+		auto& stobj = StageCreateManager::GetStageCreateManager();
 		auto& gameMana = GameManager::GetGameManager();
 		auto& input = InputManager::GetInputManager();
+		auto& scoreManager = ScoreManager::GetScoreManager();
+		auto elapsedTime = App::GetApp()->GetElapsedTime();
 
-		if (gameMana->GetGameEnd() == true)
+		m_bgm->m_SourceVoice->SetVolume(GameManager::GetGameManager()->GetBGMVolume());
+		
+		
+		if (gameMana->GetResultDrawActive() == true)
 		{
-			if (input->GetButton(L"A"))
+			if (input->GetDownButton(L"A"))
 			{
+				m_sceneMoveActive = true;
+			}
+		}
+
+		if (m_sceneMoveActive == true)
+		{
+			m_sceneFeidAlpth += 0.45f * elapsedTime;
+			m_fide->SetColor(Col4(1.0f, 1.0f, 1.0f, m_sceneFeidAlpth));
+			m_sceneMoveTime -= elapsedTime;
+
+			if (m_sceneMoveTime <= 0.0f)
+			{
+				uiManager->SetCreateUIFlag(false);
+				gameMana->ResetGameManager();
 				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
 				return;
 			}
@@ -158,6 +194,10 @@ namespace basecross {
 	void GameStage::OnDestroy()
 	{
 		m_audioManager->Stop(m_bgm);
+
+		// ゲームマネージャ取得
+		auto& gameManager = GameManager::GetGameManager();
+		gameManager->ResetGameManager();
 	}
 
 }

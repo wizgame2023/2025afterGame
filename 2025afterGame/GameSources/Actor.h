@@ -28,7 +28,6 @@ namespace basecross {
 		float m_angleX = 0.0f; // 向いている方向X軸
 		float m_angleY = 0.0f; // 向いている方向Y軸
 
-
 	private:
 
 	public:
@@ -39,6 +38,9 @@ namespace basecross {
 
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
+
+		// 回転処理
+		Quat SetRotate(Vec3 directionVec);
 
 		// 判定用の子オブジェクトを生成し、Actorに紐付ける
 		virtual void CreateChildObjects()

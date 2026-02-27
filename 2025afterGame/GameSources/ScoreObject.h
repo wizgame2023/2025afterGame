@@ -15,8 +15,12 @@ namespace basecross{
 		int m_id;
 		int m_point;
 		int m_score;
+		float m_countDown;
+		bool m_countDownFlug;
+		Vec3 m_uiPos;
 
 		shared_ptr<BillBoard> m_billBoard;
+		shared_ptr<NumberSprite> m_number;
 
 	public:
 		ScoreObject(const shared_ptr<Stage>& StagePtr,
@@ -29,6 +33,8 @@ namespace basecross{
 		virtual ~ScoreObject();
 
 		virtual void OnCreate() override;
+
+		virtual void OnUpdate() override;
 
 		int GetObjectID();
 

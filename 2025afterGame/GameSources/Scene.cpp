@@ -71,6 +71,15 @@ namespace basecross{
 
 		modelTex = modelPath + L"Tama.png";
 		app->RegisterTexture(L"BulletTex", modelTex);
+    
+		modelTex = modelPath + L"Clock.png";
+		app->RegisterTexture(L"ClockTex", modelTex);
+
+		modelTex = modelPath + L"house.png";
+		app->RegisterTexture(L"HouseTex", modelTex);
+
+		modelTex = modelPath + L"Basket.png";
+		app->RegisterTexture(L"BasketTex", modelTex);
 
 		// Model /////////////////////////////////////////////////
 		// Player
@@ -94,16 +103,43 @@ namespace basecross{
 
 		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"Tama.bmf");
 		app->RegisterResource(L"Bullet_Mesh", modelMesh);
+    
+		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"clock.bmf");
+		app->RegisterResource(L"Clock", modelMesh);
+
+		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"house.bmf");
+		app->RegisterResource(L"House", modelMesh);
+
+		modelMesh = MeshResource::CreateStaticModelMesh(modelPath, L"Basket.bmf");
+		app->RegisterResource(L"Basket", modelMesh);
 
 		// UI /////////////////////////////////////////////////
-		auto numberSprite = uiPlayerPath + L"Number.png";
-		app->RegisterTexture(L"Number", numberSprite);
+		auto playerTex = uiPlayerPath + L"Number.png";
+		app->RegisterTexture(L"Number", playerTex);
     
-		auto hp = uiPlayerPath + L"Hp.png";
-		app->RegisterTexture(L"HP", hp);
-    
-		auto colon = uiPlayerPath + L"Colon.png";
-		app->RegisterTexture(L"Colon", colon);
+		playerTex = uiPlayerPath + L"Hp.png";
+		app->RegisterTexture(L"HP", playerTex);
+
+		playerTex = uiPlayerPath + L"HP_waku.png";
+		app->RegisterTexture(L"HP_WAKU", playerTex);
+
+		playerTex = uiPlayerPath + L"Ranking_ST.png";
+		app->RegisterTexture(L"ST", playerTex);
+
+		playerTex = uiPlayerPath + L"Ranking_ND.png";
+		app->RegisterTexture(L"ND", playerTex);
+		
+		playerTex = uiPlayerPath + L"Ranking_RD.png";
+		app->RegisterTexture(L"RD", playerTex);
+		
+		playerTex = uiPlayerPath + L"Ranking_TH.png";
+		app->RegisterTexture(L"TH", playerTex);
+
+		playerTex = uiPlayerPath + L"Ballet.png";
+		app->RegisterTexture(L"Ballet", playerTex);
+
+		playerTex = uiPlayerPath + L"UP.png";
+		app->RegisterTexture(L"UP", playerTex);
 
 		auto resultPlayer = uiPath + L"Result_Player.png";
 		app->RegisterTexture(L"ResultPlayer", resultPlayer);
@@ -123,11 +159,11 @@ namespace basecross{
 		startTex = uiTitlePath + L"rogo.png";
 		App::GetApp()->RegisterTexture(L"rogo_TX", startTex);
 
+		startTex = uiTitlePath + L"SceneFeid.png";
+		App::GetApp()->RegisterTexture(L"SceneFeid_TX", startTex);
+
 		startTex = uiTitlePath + L"TitleBackGround.png";
 		App::GetApp()->RegisterTexture(L"TitleBackGround_TX", startTex);
-
-		auto remainingRounds = uiPlayerPath + L"RemainingRounds.png";
-		app->RegisterTexture(L"RemainingRounds", remainingRounds);
 
 		auto ScoreLow = uiScorePath + L"bear.png";
 		App::GetApp()->RegisterTexture(L"Bear", ScoreLow);
@@ -144,37 +180,49 @@ namespace basecross{
 		auto AmmoItem = uiItemPath + L"BulletRecovery.png";
 		App::GetApp()->RegisterTexture(L"Reload", AmmoItem);
 
+		auto RepairItemString = uiItemPath + L"Heal_string.png";
+		App::GetApp()->RegisterTexture(L"RepairString", RepairItemString);
+
+		auto AmmoItemString = uiItemPath + L"Reload_string.png";
+		App::GetApp()->RegisterTexture(L"ReloadString", AmmoItemString);
+
 		// MenuUI ///////////////////////
-		auto pauseMenuMain = uiMenuPath + L"PauseMenuMain.png";
+		auto& pauseMenuMain = uiMenuPath + L"PauseMenuMain.png";
 		App::GetApp()->RegisterTexture(L"PauseMenuMain_TX", pauseMenuMain);
 
-		auto pauseMenuVolume = uiMenuPath + L"PauseMenuSetting.png";
+		auto& pauseMenuVolume = uiMenuPath + L"PauseMenuSetting.png";
 		App::GetApp()->RegisterTexture(L"PauseMenuSetting_TX", pauseMenuVolume);
     
-		auto pauseMenuKeyConfig = uiMenuPath + L"PauseMenuKeyConfig.png";
+		auto& pauseMenuKeyConfig = uiMenuPath + L"PauseMenuKeyConfig.png";
 		App::GetApp()->RegisterTexture(L"PauseMenuKeyConfig_TX", pauseMenuKeyConfig);
 
-		auto pauseMenuVolumeGauge = uiMenuPath + L"PauseMenuVolumeGauge.png";
+		auto& pauseMenuVolumeGauge = uiMenuPath + L"PauseMenuVolumeGauge.png";
 		App::GetApp()->RegisterTexture(L"PauseMenuVolumeGauge_TX", pauseMenuVolumeGauge);
 
-		auto buttonsTex = uiMenuPath + L"Buttons.png";
+		auto& buttonsTex = uiMenuPath + L"Buttons.png";
 		App::GetApp()->RegisterTexture(L"Buttons_TX", buttonsTex);
 
-		auto menuBackground = uiMenuPath + L"PauseMenuBackGround.png";
+		auto& menuBackground = uiMenuPath + L"PauseMenuBackGround.png";
 		App::GetApp()->RegisterTexture(L"PauseMenuBackGround_TX", menuBackground);
+
+		auto& pauseMenuCheckBox = uiMenuPath + L"PauseMenuCheckBox.png";
+		App::GetApp()->RegisterTexture(L"PauseMenuCheckBox_TX", pauseMenuCheckBox);
 
 		// StageUI////////////////////////
 
 		auto stageTex = uiStagePath + L"GameStart.png";
 		App::GetApp()->RegisterTexture(L"GameStart_TX", stageTex);
 
-		uiStagePath + L"GameEnd.png";
+		stageTex = uiStagePath + L"GameEnd.png";
 		App::GetApp()->RegisterTexture(L"GameEnd_TX", stageTex);
 
 
 		// Effect /////////////////////////////////////////////
 		EffectManager::Instance().CreateEfkInterface();
 		EffectManager::Instance().RegisterEffect(L"Fire", efkPath + L"Sword.efk");
+		EffectManager::Instance().RegisterEffect(L"Smoke", efkPath + L"Smoke.efk");
+		EffectManager::Instance().RegisterEffect(L"SmokeBlack", efkPath + L"SmokeBlack.efk");
+		EffectManager::Instance().RegisterEffect(L"Spark", efkPath + L"Spark.efk");
 		
 
 		//BGM
@@ -193,6 +241,9 @@ namespace basecross{
 		app->RegisterWav(L"SpeedUpSE", SEPath + L"SpeedUp.wav");
 		app->RegisterWav(L"GetScoreSE", SEPath + L"GetScore.wav");
 		app->RegisterWav(L"ShotSE", SEPath + L"Shot.wav");
+		app->RegisterWav(L"ChangeSelectionSE", SEPath + L"ChangeSelection.wav");
+		app->RegisterWav(L"KeyConfigErrorSE", SEPath + L"Error.wav");
+		app->RegisterWav(L"ButtonPushSE", SEPath + L"ButtonPush.wav");
 	}
 	
 	void Scene::OnCreate(){

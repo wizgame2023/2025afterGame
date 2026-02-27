@@ -53,6 +53,19 @@ namespace basecross {
 		MyGameObject::OnUpdate();
 	}
 
+	// 回転処理
+	// 第一引数　方向ベクトル
+	Quat Actor::SetRotate(Vec3 directionVec)
+	{
+		// 方向ベクトルに向かって回転する
+		Mat4x4 rotMatrix = static_cast<Mat4x4>(XMMatrixLookToLH(Vec3(0.0f), -directionVec, Vec3(0.0f, 1.0f, 0.0f)));
+		rotMatrix = inverse(rotMatrix);
+		Quat qt = rotMatrix.quatInMatrix();
+		qt.normalize();
+
+		return qt;
+	}
+
 	// m_posのゲッタ
 	Vec3 Actor::GetPos()
 	{

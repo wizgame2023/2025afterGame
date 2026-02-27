@@ -7,20 +7,20 @@
 #include "stdafx.h"
 
 namespace basecross {
-	class TestCsv : public GameObject {
+	class StageObject : public GameObject {
 		Vec3 m_pos;
 		Vec3 m_rot;
 		Vec3 m_siz;
 		wstring m_tag;
 
 	public:
-		TestCsv(const shared_ptr<Stage>& StagePtr,
+		StageObject(const shared_ptr<Stage>& StagePtr,
 			const Vec3& Pos,
 			const Vec3& Rot,
 			const Vec3& Siz,
 			const wstring& Tag
 		);
-		virtual ~TestCsv();
+		virtual ~StageObject();
 
 		virtual void OnCreate() override;
 	};

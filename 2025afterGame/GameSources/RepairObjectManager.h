@@ -31,6 +31,9 @@ namespace basecross{
 
 		void RemoveObject(int id);
 
+		// オブジェクトの配置処理を全て初期化する関数
+		void ResetObject();
+
 		void SetVector();
 
 		int m_count;

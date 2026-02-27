@@ -33,10 +33,7 @@ namespace basecross {
 
     void NumberSprite::OnCreate()
     {
-        Sprite::OnCreate();
-        m_trans->SetPosition(m_pos.x, m_pos.y,m_pos.z);
-        SetDrawActive(false);
-        SetLayer(99);
+        auto trans = GetComponent<Transform>();
 
         SetDrawLayer(m_layer);
     }
@@ -45,11 +42,12 @@ namespace basecross {
     {
         auto& gameManger = GameManager::GetGameManager();
         auto& uiManager = UIManager::GetUIManager();
-        auto currentHP = uiManager->GetCurrentPlayerHP();
         auto& scoreManager = ScoreManager::GetScoreManager();
-
         auto countDown = gameManger->GetGameStartCountDown();
-
+        auto stage = App::GetApp()->GetScene<Scene>()->GetActiveStage();
+        m_fightBase = stage->GetSharedGameObject<Player>(L"Player");
+        auto fightBase = m_fightBase.lock();
+        
         if (m_type == NumberType::None)
         {
             return;
@@ -58,7 +56,7 @@ namespace basecross {
         switch (m_type)
         {
         case NumberType::Bullet:
-            m_value = uiManager->GetBulletNumCurrentNow();
+            m_value = fightBase->GetBulletNumCurrentNow();
             break;
         case NumberType::Minute:
             m_value = uiManager->GetMinuteTimer();
@@ -67,10 +65,10 @@ namespace basecross {
             m_value = uiManager->GetSecondTimer();
             break;
         case NumberType::MaxBullet:
-            m_value = uiManager->GetBulletNumMax();
+            m_value = fightBase->GetBulletNumMax();
             break;
         case NumberType::Score:
-            m_value = uiManager->GetPlayerScore();
+            m_value = scoreManager->GetPlScore();
 			break;
         case NumberType::Count:
             m_value = 4 - countDown;
@@ -85,75 +83,36 @@ namespace basecross {
             SetNumber(m_value);
         }
     }
-
+    
     void NumberSprite::SetNumber(int number)
     {
         m_number = number;
+        int n = max(0, number);
 
-        wstring str;
+        // 表示する桁数
+        // 最初1桁固定そこらnumberで数を変える
+        int digitCount = (m_digit > 0) ? m_digit : max(1, (int)to_string(n).size());
 
-        // m_digit が 1以上なら「ゼロ埋めして桁数固定」
-        if (m_digit > 0)
+        // 桁が違えば作り直す
+        if ((int)m_digits.size() != digitCount)
         {
-            int n = max(0, number);  // マイナスはとりあえず0扱い
-            str.clear();
-
-            // とりあえず 「m_digit 桁」ぶん 0埋めして作る（下位桁から）
-            for (int i = 0; i < m_digit; ++i)
+            for (auto& d : m_digits)
             {
-                int d = n % 10;
-                wchar_t ch = L'0' + d;
-                // 先頭に詰めていく
-                str.insert(str.begin(), ch);
-                n /= 10;
-            }
-
-            // もし number が m_digit より大きい桁数だった場合（例: m_digit=2 で number=123）
-            // 余った桁をさらに前に足す
-            while (n > 0)
-            {
-                int d = n % 10;
-                wchar_t ch = L'0' + d;
-                str.insert(str.begin(), ch);
-                n /= 10;
-            }
-        }
-        else
-        {
-            // そのまま文字列化
-            str = to_wstring(number);
-        }
-
-        float totalWidth = m_size.x * str.size();
-
-        // 桁数が変わったらスプライト作り直し
-        if (m_digits.size() != str.size())
-        {
-            // 既存の桁を削除
-            for (auto& obj : m_digits)
-            {
-                obj->MyDestroy();
+                if (d) d->MyDestroy();
             }
             m_digits.clear();
-            m_digits.reserve(str.size());
+            m_digits.reserve(digitCount);
 
-            // 新しい桁Spriteを生成
-            for (int i = 0; i < str.size(); i++) 
+            float totalWidth = m_size.x * digitCount;
+
+            for (int i = 0; i < digitCount; ++i)
             {
                 float x = m_pos.x + (i * m_size.x) - totalWidth + m_size.x;
-
-                x = round(x);
-
-                Vec3 digitPos = Vec3(
-                    x,
-                    m_pos.y,
-                    m_pos.z
-                );
 
                 auto digitSprite = GetStage()->AddGameObject<Sprite>(
                     m_textureName,
                     m_size,
-                    digitPos,
+                    Vec3(round(x), m_pos.y, m_pos.z),
                     m_rot,
                     m_color,
                     m_layer
@@ -162,12 +121,68 @@ namespace basecross {
             }
         }
 
-        // UVで数字部分を切り出す
-        for (int i = 0; i < str.size(); i++)
+        // 数字のアニメーションする時は処理を止める
+        if (!m_numberUpDater)
         {
-            int value = str[i] - L'0';
+            // 下位桁から数字を入れる
+            for (int i = digitCount - 1; i >= 0; --i)
+            {
+                int digit = n % 10;
+                n /= 10;
 
-            m_digits[i]->SetDigit(value);
+                m_digits[i]->SetDigit(digit);
+            }
+        }
+    }
+
+    void NumberSprite::SetSignedNumber(int symbol, int number)
+    {
+        m_number = number;
+        int n = max(0, number);
+
+        // 数値部分の桁数
+        int numberDigitCount = max(1, (int)to_string(n).size());
+
+        // 記号 + 数値
+        int digitCount = numberDigitCount + 1;
+
+        // 桁数が違えば作り直す
+        if ((int)m_digits.size() != digitCount)
+        {
+            for (auto& d : m_digits)
+            {
+                if (d) d->MyDestroy();
+            }
+            m_digits.clear();
+            m_digits.reserve(digitCount);
+
+            float totalWidth = m_size.x * digitCount;
+
+            for (int i = 0; i < digitCount; ++i)
+            {
+                float x = m_pos.x + (i * m_size.x) - totalWidth + m_size.x;
+
+                auto digitSprite = GetStage()->AddGameObject<Sprite>(
+                    m_textureName,
+                    m_size,
+                    Vec3(round(x), m_pos.y, m_pos.z),
+                    m_rot,
+                    m_color,
+                    m_layer
+                );
+                m_digits.push_back(digitSprite);
+            }
+        }
+
+        // 先頭の記号
+        m_digits[0]->SetDigit(symbol);
+
+        // 数値部分を下位桁からセット
+        for (int i = digitCount - 1; i >= 1; --i)
+        {
+            int digit = n % 10;
+            n /= 10;
+            m_digits[i]->SetDigit(digit);
         }
     }
 
@@ -183,17 +198,59 @@ namespace basecross {
 
     void NumberSprite::OnDestory()
     {
+        // 子の桁Spriteを全て破棄
+        for (auto& digit : m_digits)
+        {
+            if (digit)
+            {
+                digit->MyDestroy();
+            }
+        }
+        m_digits.clear();
+
+        // 自分自身を破棄
         GetStage()->RemoveGameObject<NumberSprite>(GetThis<NumberSprite>());
     }
 
-    void NumberSprite::SetLayer(int layer)
-    {
-        m_layer = layer;
-    }
-
-    void NumberSprite::SetRankingNumberCount(int number)
+    void NumberSprite::AddRankingNumberCount(int number)
     {
         m_rankingNumber += number;
+    }
+
+    void NumberSprite::SetNumberUpdateFlag(bool flag)
+    {
+        m_numberUpDater = flag;
+    }
+
+    bool NumberSprite::GetNumberUpdateFlag()
+    {
+        return m_numberUpDater;
+    }
+
+    void NumberSprite::SetNumberLayer(int number)
+    {
+        m_layer = number;
+    }
+
+    void NumberSprite::SetPosition(const Vec3& pos)
+    {
+        Vec3 diff = pos - m_pos;
+
+        m_pos = pos;
+
+        for (auto& digit : m_digits)
+        {
+            Vec3 digitPos = digit->GetPosition();
+            digit->SetPosition(digitPos + diff);
+        }
+    }
+
+    void NumberSprite::SetColor(const Col4& col)
+    {
+        for (auto& digit : m_digits)
+        {
+            digit->SetColor(col);
+        }
     }
 }
 //end basecross

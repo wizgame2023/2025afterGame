@@ -20,7 +20,7 @@
 #include "Plane.h"
 #include "UIManager.h"
 #include "StageWall.h"
-#include "TestCsv.h"
+#include "StageObject.h"
 #include "DashRing.h"
 #include "ScoreObjectManager.h"
 #include "StageCreateManager.h"
@@ -33,6 +33,7 @@
 #include "MyGameObject.h";
 
 // 親クラスがMyGameObject//////////////////////////
+#include "PlayerGrv.h"
 #include "Actor.h";
 #include "AttackCollision.h"
 #include "MainCameraManager.h"
@@ -40,6 +41,7 @@
 #include "Sprite.h"
 #include "BillBoard.h"
 #include "ScoreManager.h"
+#include "BillBoardNumber.h"
 ///////////////////////////////////////////////////
 
 // EffectManager
