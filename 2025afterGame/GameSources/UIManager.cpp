@@ -249,17 +249,17 @@ namespace basecross
 			);
 		}
 
-		for (int i = 0; i < m_enemyCount + playerCount; i++)
-		{
-			auto obj = stage->AddGameObject<RankingUI>(
-				Vec3(500, 200 - i * 50, 0),
-				i + 1,
-				!playerOnlyRanking,
-				!rankingDraw
-			);
+		//for (int i = 0; i < m_enemyCount + playerCount; i++)
+		//{
+		//	auto obj = stage->AddGameObject<RankingUI>(
+		//		Vec3(500, 200 - i * 50, 0),
+		//		i + 1,
+		//		!playerOnlyRanking,
+		//		!rankingDraw
+		//	);
 
-			obj->SetScoreUIDraw(false);
-		}
+		//	obj->SetScoreUIDraw(false);
+		//}
 	}
 
 	void UIManager::UpdateTime(int limit)
