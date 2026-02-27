@@ -13,7 +13,7 @@
 
 namespace basecross {
 
-	class DebagPlayer : public FighterAircraftBase
+	class DebagPlayer : public Player
 	{
 	private:
 		shared_ptr<Barrier> m_barrier;

@@ -9,7 +9,7 @@
 
 namespace basecross {
 	DebagPlayer::DebagPlayer(const shared_ptr<Stage>& ptrStage) :
-		FighterAircraftBase(ptrStage)
+		Player(ptrStage)
 	{
 	}
 
