@@ -30,6 +30,18 @@ namespace basecross {
 		// 回転の目的地
 		Vec3 m_goalRotVec;
 
+		// レイ関係のベクトル
+		bool m_CollisionRayFlag; // レイが他のオブジェクトに衝突した際のフラグ
+		bool m_CollisionPersonalFlag; // 例がパーソナルレンジに衝突した際のフラグ
+
+		// レイ関係の処理
+		float m_personalRange;
+		Vec3 m_rayEndPos;
+
+		// 回避系
+		Vec3 m_avoidVec;
+		bool m_avoidFlag;
+
 		// 進みたいベクトル
 		Vec3 m_moveVec;
 
@@ -57,6 +69,12 @@ namespace basecross {
 
 		// 当たり判定
 		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
+
+		// 向いている方向のレイ処理
+		void DirectionalRay(const vector<shared_ptr<GameObject>>& objVec);
+
+		// 現在進んでいる方向が衝突してしまう可能性があるか確認する処理
+		void PersonalRange(const vector<shared_ptr<GameObject>>& objVec);
 
 		// 角度の調整0~360度までしか出ないようにする
 		float AdjustmentAngle(float angle);
@@ -93,6 +111,11 @@ namespace basecross {
 
 		// 追いかける対象ポインタのゲッタ
 		shared_ptr<Actor> GetTrackingObj();
+
+		// 回避処理をするかのフラグゲッタ
+		bool GetAvoidFlag();
+		// 回避するために必要な方向ベクトルゲッタ
+		Vec3 GetAvoidVec();
 
 		// ターゲットのセッタ
 		void SetTracking(const shared_ptr<Actor>& target);

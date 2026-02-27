@@ -155,5 +155,21 @@ namespace basecross{
 	{
 		return m_id;
 	}
+
+	// 狙われる敵の数追加
+	void ScoreObject::Addtargeted()
+	{
+		m_targeted++;
+	}
+	// 狙われる敵の数マイナス
+	void ScoreObject::SubtractTargeted()
+	{
+		m_targeted--;
+	}
+	// 狙われる敵の数のゲッタ
+	int ScoreObject::GetTargeted()
+	{
+		return m_targeted;
+	}
 }
 //end basecross

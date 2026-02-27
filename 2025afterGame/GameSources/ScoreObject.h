@@ -15,6 +15,7 @@ namespace basecross{
 		int m_id;
 		int m_point;
 		int m_score;
+		int m_targeted; // ‚Ç‚Ì‚­‚ç‚¢‚Ì”‚Ì“G‚É‘_‚í‚ê‚Ä‚¢‚é‚©
 		float m_countDown;
 		bool m_countDownFlug;
 		Vec3 m_uiPos;
@@ -37,6 +38,13 @@ namespace basecross{
 		virtual void OnUpdate() override;
 
 		int GetObjectID();
+
+		// ‘_‚í‚ê‚é“G‚Ì”’Ç‰Á
+		void Addtargeted();
+		// ‘_‚í‚ê‚é“G‚Ì”ƒ}ƒCƒiƒX
+		void SubtractTargeted();
+		// ‘_‚í‚ê‚é“G‚Ì”‚ÌƒQƒbƒ^
+		int GetTargeted();
 
 		void OnCollisionEnter(shared_ptr<GameObject>& obj)override;
 	};
