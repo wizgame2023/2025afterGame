@@ -9,10 +9,33 @@
 
 namespace basecross
 {
+	// キーコンフィグメニューの選択肢
+	enum class KeyConfigSelect
+	{
+		UpDownSwap,		// 上下反転
+		Accel,			// 加速
+		Bullet,			// 弾丸
+		ViewBehind,		// 背面視点
+		Max				// 項目の最大数
+	};
+
+	// ボタンのスプライトの種類
+	enum class ButtonsType : int
+	{
+		A, B, X, Y,
+		LB, RB, LT, RT,
+		Back, Start,
+		LS, RS,
+		Up, Right, Down, Left,
+		Max
+	};
+
+
 	class Enemy;
 	class BillBoardGauge;
-	class NumberSprite;
 	class Sprite;
+	class NumberSprite;
+	class RankingUI;
 	class UIManager
 	{
 	private:
@@ -27,6 +50,19 @@ namespace basecross
 		shared_ptr<NumberSprite> m_countNumber;
 		shared_ptr<NumberSprite> m_score;
 		shared_ptr<NumberSprite> m_secondUI;
+		vector<shared_ptr<RankingUI>> m_rankingUI;
+
+		static constexpr int ButtonsTypeCount = static_cast<int>(ButtonsType::Max);
+
+		// キーコンフィグメニューのスプライトの数
+		vector<shared_ptr<Sprite>> m_keyConfigSprites;
+		
+		array<shared_ptr<Sprite>, ButtonsTypeCount> m_buttonSprites;
+		unordered_map<wstring, ButtonsType> m_buttonTypeMap;
+
+		wstring m_lastAccelKey;
+		wstring m_lastBulletKey;
+		wstring m_lastViewKey;
 
 		int m_minute;
 		int m_second;
@@ -73,6 +109,20 @@ namespace basecross
 		int GetSecondTimer();
 		// リザルトUIが作られたか
 		void SetCreateUIFlag(bool flag);
+
+		void SpriteUV();
+		void Show(const wstring& buttonName, const Vec3& pos);
+		void Hide(const wstring& buttonName);
+		void HideAll();
+		void InitButtonTypeMap();
+		void UpdateOperationUI();
+		void ForceRefreshOperationUI();
+		void PushBackSprite();
+		void ShowSprite(KeyConfigSelect type);
+		void HideSprite(KeyConfigSelect type);
+		void SetSpritePos(KeyConfigSelect type, const Vec3& pos);
+		void CreateKeyConfigSprite();
+		void ForceRefreshKeyConfigSprite();
 
 	private:
 		//コピー禁止

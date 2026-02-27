@@ -28,7 +28,6 @@ namespace basecross{
 	
 	RankingUI::~RankingUI()
 	{
-
 	}
 
 	void RankingUI::OnCreate()
@@ -113,6 +112,8 @@ namespace basecross{
 			m_nameSprite->SetTexture(L"ResultEnemy");
 			m_scoreUI->SetNumber(info.crntScore);
 		}
+
+		ApplyRankColor(m_rankingNumber);
 	}
 
 	void RankingUI::NameOnly()
@@ -135,6 +136,8 @@ namespace basecross{
 		{
 			m_nameSprite->SetTexture(L"ResultEnemy");
 		}
+
+		ApplyRankColor(m_rankingNumber);
 	}
 
 	void RankingUI::PlayerOnlyRanking()
@@ -174,6 +177,9 @@ namespace basecross{
 		// 名前表示
 		m_nameSprite->SetTexture(L"ResultPlayer");
 
+		// カラーチェンジ
+		ApplyRankColor(playerRank);
+
 		// スコアの表示
 		m_scoreUI->SetNumber(plScore);
 	}
@@ -181,6 +187,33 @@ namespace basecross{
 	void RankingUI::SetScoreUIDraw(bool flag)
 	{
 		m_scoreDraw = flag;
+	}
+
+	void RankingUI::ApplyRankColor(int number)
+	{
+		Col4 color;
+
+		if (number == 1)
+		{
+			color = Col4(1.0f, 0.85f, 0.2f, 1.0f);
+		}
+		else if (number == 2)
+		{
+			color = Col4(0.8f, 0.8f, 0.8f, 1.0f);
+		}
+		else if (number == 3)
+		{
+			color = Col4(0.8f, 0.5f, 0.2f, 1.0f);
+		}
+		else
+		{
+			color = Col4(1.0f);
+		}
+
+		if (m_rankUI)
+		{
+			m_rankUI->SetColor(color);
+		}
 	}
 }
 //end basecross

@@ -75,6 +75,8 @@ namespace basecross{
 		void SetNumberLayer(int number);
 
 		void SetPosition(const Vec3& pos);
+
+		void SetColor(const Col4& col);
 	};
 }
 //end basecross

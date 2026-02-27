@@ -90,11 +90,10 @@ namespace basecross {
         int n = max(0, number);
 
         // 表示する桁数
-        int digitCount =
-            (m_digit > 0) ? m_digit :
-            max(1, (int)to_string(n).size());
+        // 最初1桁固定そこらnumberで数を変える
+        int digitCount = (m_digit > 0) ? m_digit : max(1, (int)to_string(n).size());
 
-        // 数が違えば作り直す
+        // 桁が違えば作り直す
         if ((int)m_digits.size() != digitCount)
         {
             for (auto& d : m_digits)
@@ -122,10 +121,10 @@ namespace basecross {
             }
         }
 
-        // 下位桁から数字を入れる
-
+        // 数字のアニメーションする時は処理を止める
         if (!m_numberUpDater)
         {
+            // 下位桁から数字を入れる
             for (int i = digitCount - 1; i >= 0; --i)
             {
                 int digit = n % 10;
@@ -243,6 +242,14 @@ namespace basecross {
         {
             Vec3 digitPos = digit->GetPosition();
             digit->SetPosition(digitPos + diff);
+        }
+    }
+
+    void NumberSprite::SetColor(const Col4& col)
+    {
+        for (auto& digit : m_digits)
+        {
+            digit->SetColor(col);
         }
     }
 }

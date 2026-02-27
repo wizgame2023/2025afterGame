@@ -19,7 +19,7 @@ namespace basecross{
 		m_siz(Siz),
 		m_id(ID),
 		m_repair(10),
-		m_countDown(2.0f),
+		m_countDown(2.5f),
 		m_countDownFlug(false)
 	{
 		try
@@ -65,6 +65,12 @@ namespace basecross{
 		if (m_countDownFlug)
 		{
 			m_countDown -= m_delta;
+
+			m_uiPos.y += m_delta * 150;
+			m_uiPos.x -= m_delta * 150;
+
+			m_number->SetPosition(m_uiPos);
+
 			if (m_countDown <= 0)
 			{
 				m_number->RemoveSprite();
@@ -83,6 +89,7 @@ namespace basecross{
 			auto& app = App::GetApp();
 			auto scene = app->GetScene<Scene>();
 			auto stage = scene->GetActiveStage();
+			auto player = dynamic_pointer_cast<Player>(obj);
 
 			if (body)
 			{
@@ -90,16 +97,18 @@ namespace basecross{
 				auto m_audioManager = App::GetApp()->GetXAudio2Manager();
 				m_audioManager->Start(L"GetScoreSE", 1, 1.0f);
 
-				// 回復UI作成
-				m_number = stage->AddGameObject<Sprite>(L"RepairString", Vec2(500.0f, 100.0f), Vec3(0.0f, 0.0f, 0.0f));
+				if (player)
+				{
+					// 回復UI作成
+					m_number = stage->AddGameObject<Sprite>(L"RepairString", Vec2(500.0f, 100.0f), Vec3(m_uiPos));
+					m_countDownFlug = true;
+				}
 
 				float hp = body->GetHpCurrent();
 				hp += 30.0f;
 				body->SetHPCurrent(hp);
 
 				m_billBoard->RemoveBill();
-
-				m_countDownFlug = true;
 			}
 		}
 	}

@@ -20,7 +20,8 @@ namespace basecross{
 		m_id(ID),
 		m_reload(30),
 		m_countDown(2.0f),
-		m_countDownFlug(false)
+		m_countDownFlug(false),
+		m_uiPos(0.0f, 0.0f, 0.0f)
 	{
 		try
 		{
@@ -65,6 +66,12 @@ namespace basecross{
 		if (m_countDownFlug)
 		{
 			m_countDown -= m_delta;
+
+			m_uiPos.y += m_delta * 150;
+			m_uiPos.x -= m_delta * 150;
+
+			m_number->SetPosition(m_uiPos);
+
 			if (m_countDown <= 0)
 			{
 				m_number->RemoveSprite();
@@ -83,14 +90,20 @@ namespace basecross{
 			auto scene = app->GetScene<Scene>();
 			auto stage = scene->GetActiveStage();
 			auto body = dynamic_pointer_cast<FighterAircraftBase>(obj);
+			auto player = dynamic_pointer_cast<Player>(obj);
+
 			if (body)
 			{
 				// BGM、SE用のマネージャー作成
 				auto m_audioManager = App::GetApp()->GetXAudio2Manager();
 				m_audioManager->Start(L"GetScoreSE", 1, 1.0f);
 
-				// 弾UI作成
-				m_number = stage->AddGameObject<Sprite>(L"ReloadString", Vec2(500.0f, 100.0f), Vec3(0.0f, 0.0f, 0.0f));
+				if (player)
+				{
+					// 弾UI作成
+					m_number = stage->AddGameObject<Sprite>(L"ReloadString", Vec2(500.0f, 100.0f), Vec3(m_uiPos));
+					m_countDownFlug = true;
+				}
 
 				int ammo = body->GetBulletNumCurrentNow();
 				ammo += m_reload;
@@ -98,7 +111,6 @@ namespace basecross{
 
 				m_billBoard->RemoveBill();
 
-				m_countDownFlug = true;
 			}
 		}
 	}

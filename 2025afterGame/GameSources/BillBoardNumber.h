@@ -45,6 +45,7 @@ namespace basecross {
         void ApplyUV();
         // ランキングの順位に応じてTextureの名前を返す
         wstring GetOrdinalSuffix(int rank);
-    };
 
+        void ApplyRankColor(int number);
+    };
 } // namespace basecross

@@ -73,6 +73,25 @@ namespace basecross{
 		float m_rollAngle;
 
 		Mat4x4 m_baseMeshMat;
+
+		float m_playerHpRate;
+		float m_explosionRate;
+
+		bool  m_isMove;
+		float m_deadTime;
+
+		// エフェクト
+		float m_replayTime;
+		float m_effectTimer;
+		bool  m_smokePlayEffect;
+		bool  m_sparkPlayEffect;
+
+		// エフェクト
+		// 黒煙
+		Effekseer::Handle m_smokeEffect;
+		// 衝突時
+		Effekseer::Handle m_sparkEffect;
+
 	public:
 		Player::Player(const shared_ptr<Stage>& ptrStage);
 		Player::~Player();
@@ -147,9 +166,35 @@ namespace basecross{
 		*/
 		void ChangePlayer(Vec2 lstick);
 
-		void GetPlayerScore();
-
+		/*
+		@brief プレイヤー復活処理
+		*/
 		void PlayerRespon();
+
+		/*
+		@brief プレイヤー無敵処理
+		*/
+		void Invincible();
+
+		/*
+		@brief プレイヤーが死んだ時に停止させる
+		@param bool 動いているどうか
+		@return なし
+		*/
+		void SetMove(bool flag);
+
+		/*
+		@brief プレイヤーが死んだ際の処理
+		*/
+		void PlayerDead();
+
+		/*
+		@brief プレイヤーが生存のゲッター
+		@return m_aliveFlagを返す
+		*/
+		bool GetAliveFlag();
+
+		void HomingUpdate(float dt);
 	};
 }
 //end basecross

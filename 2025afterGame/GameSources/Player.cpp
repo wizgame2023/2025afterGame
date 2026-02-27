@@ -6,6 +6,7 @@
 
 #include "stdafx.h"
 #include "Project.h"
+#include "Player.h"
 
 namespace basecross {
 	Player::Player(const shared_ptr<Stage>& ptrStage) :
@@ -16,7 +17,7 @@ namespace basecross {
 		m_respawnPos(Vec3(0.0f)),
 		m_visualRoll(0.0f),
 		m_bankRoll(0.0f),
-		m_turnPower(1.0f),
+		m_turnPower(2.0f),
 		m_pitchSpeed(0.0f),
 		m_yawSpeed(0.0f),
 		m_recoveryTime(0.0f),
@@ -30,7 +31,12 @@ namespace basecross {
 		m_stopAnimationFlag(false),
 		m_aButton(false),
 		m_isGrounded(false),
-		m_aliveflag(true)
+		m_aliveflag(true),
+		m_isMove(true),
+		m_deadTime(2.0f),
+		m_effectTimer(40.0f),
+		m_replayTime(10.0f),
+		m_smokePlayEffect(false)
 	{
 	}
 
@@ -45,7 +51,7 @@ namespace basecross {
 
 		m_hpMax = 100;
 		m_hpCurrent = m_hpMax;
-
+		m_color = Col4(1.0f);
 		auto ptrTrans = GetComponent<Transform>();
 		ptrTrans->SetPosition(Vec3(0.0f, -14.0f, -1.0f));
 		auto ptrShadow = AddComponent<Shadowmap>();
@@ -53,6 +59,9 @@ namespace basecross {
 		m_draw = AddComponent<PNTBoneModelDraw>();
 		m_draw->SetMeshResource(L"Sentouki");
 		m_draw->SetTextureResource(L"diffuse_TX");
+		// 透明化アクティブにすることでSetDiffuseで半透明に出来る
+		m_draw->SetDiffuse(m_color);
+		SetAlphaActive(true);
 
 		auto ptrCol = AddComponent<CollisionObb>();
 		ptrCol->SetDrawActive(false);
@@ -92,26 +101,84 @@ namespace basecross {
 		FighterAircraftBase::OnUpdate();
 		auto& app = App::GetApp();
 		auto deltaTime = app->GetElapsedTime();
+		auto stage = app->GetScene<Scene>()->GetActiveStage();
 		auto pos = GetComponent<Transform>()->GetPosition();
 		auto& gameManager = GameManager::GetGameManager();
 		auto start = gameManager->GetGameStartCountDown();
 
+		m_playerHpRate = static_cast<float>(m_hpCurrent) / static_cast<float>(m_hpMax);
+		m_explosionRate = 1.0f - m_playerHpRate;
+
 		if (start == 0) return;
 		
 		// プレイヤーの挙動
-		PlayerMove();
-		TurnUpdate(deltaTime);
+		if (m_isMove == true)
+		{
+			PlayerMove();
+			TurnUpdate(deltaTime);
+		}
+
 		PlayerGravity(deltaTime);
 
 		// プレイヤーの装備
-		// CreateBarrier();
 		CreateBullet();
 		
 		// dpadでコントローラーを変える
 		ChangController();
 
-		PlayerRespon();
-		
+		PlayerDead();
+
+		auto plPos = GetComponent<Transform>()->GetPosition();
+
+
+		if (m_invincibleFlag)
+		{
+			if (m_sparkPlayEffect == false)
+			{
+				auto plPos = GetComponent<Transform>()->GetPosition();
+				auto spark = EffectManager::Instance().PlayEffect(L"Spark", Vec3(plPos));
+				m_sparkPlayEffect = true;
+			}
+		}
+		else
+		{
+			m_sparkPlayEffect = false;
+		}
+
+
+		//if (m_playerHpRate < 0.4f)
+		//{
+		//	m_replayTime -= deltaTime;
+
+		//	// 生成
+		//	if (m_replayTime <= 0.0f && !m_smokePlayEffect)
+		//	{
+		//		EffectManager::Instance().PlayEffect(L"Spark", Vec3(plPos));
+		//		m_smokeEffect = EffectManager::Instance().PlayEffect(L"SmokeBlack", Vec3(plPos));
+		//		m_replayTime = 10.0f;
+		//		m_smokePlayEffect = true;
+		//	}
+
+		//	// 追従
+		//	if (m_smokePlayEffect)
+		//	{
+		//		m_effectTimer -= deltaTime;
+		//		
+		//		if (m_effectTimer >= 0.0f)
+		//		{
+		//			EffectManager::Instance().SetPosition(m_smokeEffect, plPos);
+		//			m_smokePlayEffect = false;
+		//		}
+		//		else
+		//		{
+		//			m_effectTimer = 10.0f;
+		//		}
+		//	}
+		//}
+
+		// カラー適応
+		m_draw->SetDiffuse(m_color);
+
 	}
 
 	void Player::OnCollisionEnter(shared_ptr<GameObject>& obj)
@@ -119,6 +186,9 @@ namespace basecross {
 		FighterAircraftBase::OnCollisionEnter(obj);
 		
 		auto bullet = dynamic_pointer_cast<Bullet>(obj);
+		auto enemy = dynamic_pointer_cast<Enemy>(obj);
+		// 0.0～1.0fの値になる
+		float r = (float)rand() / RAND_MAX;
 
 		if (bullet)
 		{
@@ -128,17 +198,34 @@ namespace basecross {
 			// 弾の所属がエネミーならダメージを受ける
 			if (bulletAffiliation == false)
 			{
-				m_hpCurrent -= bullet->GetDamage();
+				if (m_invincibleFlag == false)
+				{
+					m_hpCurrent -= bullet->GetDamage();
+
+					m_invincibleFlag = true;
+				}
 			}
 
 			// HPが0になったら相手にスコアを渡す
 			if (m_hpCurrent <= 0 && m_aliveflag)
 			{
 				// スコアを10%倒した敵に譲渡する
-				DownTransferScore(bullet, 0.1f);
+				DownTransferScore(bullet, 0.3f);
 				m_aliveflag = false;
 			}
 		}
+
+		//if (m_invincibleFlag == true)
+		//{
+		//	auto plPos = GetComponent<Transform>()->GetPosition();
+		//	auto spark = EffectManager::Instance().PlayEffect(L"Spark", Vec3(plPos));
+		//}
+
+		//// HPが0になったら相手にスコアを渡す
+		//if (m_hpCurrent <= 0 && m_aliveflag)
+		//{
+		//	m_aliveflag = false;
+		//}
 	}
 
 	void Player::PlayerMove() 
@@ -294,11 +381,13 @@ namespace basecross {
 		{
 			m_yawSpeed = 0.0f;
 
-			float accel = 0.7f;
+			float accel = 1.7f;
 
 			if (fabs(lstick.y) > deadZone)
 			{
-				m_pitchSpeed += lstick.y * accel * deltaTime;
+				bool upDownFlag = GameManager::GetGameManager()->GetUpDownSwapFlag();
+				float lstickUp = upDownFlag ? -lstick.y : lstick.y;
+				m_pitchSpeed += lstickUp * accel * deltaTime;
 			}
 
 			float maxPitchSpeed = XMConvertToRadians(60.0f);
@@ -501,7 +590,7 @@ namespace basecross {
 		const float slowFallTime = 4.0f;     // ゆっくり落ちる時間
 
 
-		if (isFlyInput)
+		if (isFlyInput && m_isMove == true)
 		{
 			// A押下中は完全停止
 			verticalVelocity = 0.0f;
@@ -542,14 +631,15 @@ namespace basecross {
 
 	void Player::PlayerRespon()
 	{
-		if (m_hpCurrent <= 0 && m_aliveflag == false)
-		{
-			auto trans = GetComponent<Transform>();
-			trans->SetPosition(Vec3(0.0f,-14.0f, -1.0f));
-			m_aliveflag = true;
+		auto trans = GetComponent<Transform>();
+		trans->SetPosition(Vec3(0.0f, -14.0f, -1.0f));
+		m_isMove = true;
+		m_aliveflag = true;
+		m_deadTime = 2.0f;
+		m_invincibleFlag = true;
+		m_invincibleTimer = 5.0f;
 
-			m_hpCurrent = m_hpMax;
-		}
+		m_hpCurrent = m_hpMax;
 	}
 
 	void Player::CreateBullet()
@@ -567,7 +657,7 @@ namespace basecross {
 
 		if (bulletKeyDown && m_bulletNumCurrentNow > 0)
 		{
-			ptrMana->Start(L"ShotSE", 0, 1.0f);
+			ptrMana->Start(L"ShotSE", 0, game->GetSEVolume());
 			m_bullet = stage->AddGameObject<Bullet>(GetThis<Player>());
 			m_bulletNumCurrentNow -= 1;
 		}
@@ -669,6 +759,34 @@ namespace basecross {
 			lstick = input->GetLStick2();
 		}
 	}
+
+	void Player::SetMove(bool flag)
+	{
+		m_isMove = flag;
+	}
+
+	void Player::PlayerDead()
+	{
+		auto& app = App::GetApp();
+		auto deltaTime = app->GetElapsedTime();
+
+		if (m_hpCurrent <= 0 && m_aliveflag == false)
+		{
+			m_isMove = false;
+			m_deadTime -= deltaTime;
+
+			if (m_deadTime <= 0.0f)
+			{
+				PlayerRespon();
+			}
+		}
+	}
+
+	bool Player::GetAliveFlag()
+	{
+		return m_aliveflag;
+	}
+
 }
 //end basecross
 
