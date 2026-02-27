@@ -243,6 +243,7 @@ namespace basecross {
 		m_enemyLock->OnInvincibleFlag();
 
 		// •œŠˆˆ—
+		m_enemyLock->GetComponent<Transform>()->SetPosition(Vec3(0.0f, -200.0f, 200.0f));
 		m_enemyLock->SetPos(Vec3(0.0f, -200.0f, 200.0f));
 	}
 
